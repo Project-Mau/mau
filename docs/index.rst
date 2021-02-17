@@ -1,34 +1,19 @@
 ===
-mau
+Mau
 ===
 
-This is the documentation of **mau**.
+This is the documentation of **Mau**, a lightweight a lightweight markup language heavily inspired by AsciiDoc_, Asciidoctor_ and Markdown_.
 
-.. note::
+Please refer to the README.md file for now to get a quick intro to the tool command line.
 
-    This is the main page of your project's `Sphinx`_ documentation.
-    It is formatted in `reStructuredText`_. Add additional pages
-    by creating rst-files in ``docs`` and adding them to the `toctree`_ below.
-    Use then `references`_ in order to link them from this page, e.g.
-    :ref:`authors` and :ref:`changes`.
-
-    It is also possible to refer to the documentation of other Python packages
-    with the `Python domain syntax`_. By default you can reference the
-    documentation of `Sphinx`_, `Python`_, `NumPy`_, `SciPy`_, `matplotlib`_,
-    `Pandas`_, `Scikit-Learn`_. You can add more by extending the
-    ``intersphinx_mapping`` in your Sphinx's ``conf.py``.
-
-    The pretty useful extension `autodoc`_ is activated by default and lets
-    you include documentation from docstrings. Docstrings can be written in
-    `Google style`_ (recommended!), `NumPy style`_ and `classical style`_.
-
-
+   
 Contents
 ========
 
 .. toctree::
    :maxdepth: 2
 
+   Quick reference <quick_reference>
    License <license>
    Authors <authors>
    Changelog <changelog>
@@ -57,3 +42,6 @@ Indices and tables
 .. _Google style: https://github.com/google/styleguide/blob/gh-pages/pyguide.md#38-comments-and-docstrings
 .. _NumPy style: https://numpydoc.readthedocs.io/en/latest/format.html
 .. _classical style: http://www.sphinx-doc.org/en/stable/domains.html#info-field-lists
+.. _AsciiDoc: https://asciidoctor.org/docs/what-is-asciidoc
+.. _Asciidoctor: https://asciidoctor.org/
+.. _Markdown: https://daringfireball.net/projects/markdown/

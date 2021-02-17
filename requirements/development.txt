@@ -1,0 +1,2 @@
+-e .[testing]
+-e .[development]

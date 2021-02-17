@@ -13,4 +13,5 @@ VCS = {
     "commit_message": (
         "Version updated from {{ current_version }}" " to {{ new_version }}"
     ),
+    "target_branch": "main",
 }

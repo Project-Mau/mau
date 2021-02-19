@@ -29,37 +29,49 @@ def test_create_toc(header_anchor_mock):
 
     assert listasdict(p.toc) == [
         {
+            "type": "toc_entry",
+            "level": 1,
+            "text": "Header 1",
             "anchor": "Header 1-XXXXXX",
             "children": [
                 {
+                    "type": "toc_entry",
+                    "level": 2,
+                    "text": "Header 1.1",
                     "anchor": "Header 1.1-XXXXXX",
                     "children": [],
-                    "value": "Header 1.1",
                 },
                 {
+                    "type": "toc_entry",
+                    "level": 2,
+                    "text": "Header 1.2",
                     "anchor": "Header 1.2-XXXXXX",
                     "children": [],
-                    "value": "Header 1.2",
                 },
             ],
-            "value": "Header 1",
         },
         {
+            "type": "toc_entry",
+            "level": 1,
+            "text": "Header 2",
             "anchor": "Header 2-XXXXXX",
             "children": [
                 {
+                    "type": "toc_entry",
+                    "level": 2,
+                    "text": "Header 2.1",
                     "anchor": "Header 2.1-XXXXXX",
                     "children": [
                         {
+                            "type": "toc_entry",
+                            "level": 3,
+                            "text": "Header 2.1.1",
                             "anchor": "Header 2.1.1-XXXXXX",
                             "children": [],
-                            "value": "Header 2.1.1",
                         },
                     ],
-                    "value": "Header 2.1",
                 },
             ],
-            "value": "Header 2",
         },
     ]
 
@@ -84,14 +96,18 @@ def test_create_toc_ignore_headers(header_anchor_mock):
 
     assert listasdict(p.toc) == [
         {
+            "type": "toc_entry",
+            "level": 1,
+            "text": "Header 1",
             "anchor": "Header 1-XXXXXX",
             "children": [],
-            "value": "Header 1",
         },
         {
+            "type": "toc_entry",
+            "level": 1,
+            "text": "Header 2",
             "anchor": "Header 2-XXXXXX",
             "children": [],
-            "value": "Header 2",
         },
     ]
 
@@ -104,7 +120,7 @@ def test_create_toc_orphan_nodes(header_anchor_mock):
         dedent(
             """
             = Header 1
-            === Header 1.1
+            === Header 1.1.1
             == Header 1.2
             """
         )
@@ -113,20 +129,26 @@ def test_create_toc_orphan_nodes(header_anchor_mock):
 
     assert [i.asdict() for i in p.toc] == [
         {
+            "type": "toc_entry",
+            "level": 1,
+            "text": "Header 1",
             "anchor": "Header 1-XXXXXX",
             "children": [
                 {
-                    "anchor": "Header 1.1-XXXXXX",
+                    "type": "toc_entry",
+                    "level": 3,
+                    "text": "Header 1.1.1",
+                    "anchor": "Header 1.1.1-XXXXXX",
                     "children": [],
-                    "value": "Header 1.1",
                 },
                 {
+                    "type": "toc_entry",
+                    "level": 2,
+                    "text": "Header 1.2",
                     "anchor": "Header 1.2-XXXXXX",
                     "children": [],
-                    "value": "Header 1.2",
                 },
             ],
-            "value": "Header 1",
         },
     ]
 

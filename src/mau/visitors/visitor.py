@@ -64,7 +64,19 @@ class Visitor:
         if node is None:
             return ""
 
-        return getattr(self, f'_visit_{node["type"]}')(node, *args, **kwargs)
+        keys = getattr(self, f'_visit_{node["type"]}')(node, *args, **kwargs)
+
+        node_types = []
+        node_types.extend(keys.pop("node_types", []))
+        node_types.append(node["type"])
+
+        for i in node_types:
+            try:
+                return self._render(i, **keys)
+            except TemplateNotFound:
+                continue
+
+        raise ValueError(f"Cannot find any suitable template among {node_types}")
 
     def visitlist(self, nodes):
         return [self.visit(i) for i in nodes]

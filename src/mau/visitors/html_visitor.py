@@ -7,12 +7,11 @@ from mau.visitors.visitor import Visitor, TemplateNotFound
 DEFAULT_TEMPLATES = {
     "admonition.html": '<div class="{{ admclass }}"><table><tbody><tr><td class="icon"><i class="fa icon-{{ icon }}" title="{{ label }}"></i></td><td class="content">{{ content|join }}</td></tr></tbody></table></div>',
     "block.html": '<div{% if kwargs["classes"] %} class="{{ kwargs["classes"] }}"{% endif %}>{% if title %}<div class="title">{{ title }}</div>{% endif %}<div class="content">{{ content|join }}</div></div>',
-    "quote.html": '<blockquote><div class="content">{{ content|join }}</div></blockquote><div class="attribution">{{ attribution }}</div>',
-    "source.html": '<div class="source">{% if title %}<div class="title">{{ title }}</div>{% endif %}<div class="content">{{ code }}</div></div>{% if callouts %}<div class="colist arabic"><table><tbody>{% for callout in callouts %}<tr><td>{{ callout[0] }}</td><td>{{ callout[1] }}</td></tr>{% endfor %}</tbody></table></div>{% endif %}',
     "callout.html": '<i class="conum" data-value="{{ name }}"></i><b>({{ name }})</b>',
-    "class.html": """<span class="{{ classes|join(' ') }}">{{ text }}</span>""",
+    "class.html": """<span class="{{ classes|join(' ') }}">{{ content }}</span>""",
+    "command.html": "{{ content }}",
     "document.html": "<html><head></head><body>{{ content|join() }}</body></html>",
-    "footnote_def.html": '<div id="{{ defanchor }}"><a href="#{{ refanchor }}">{{ number }}</a> {{ text|join }}</div>',
+    "footnote_def.html": '<div id="{{ defanchor }}"><a href="#{{ refanchor }}">{{ number }}</a> {{ text }}</div>',
     "footnote_ref.html": '<sup>[<a id="{{ refanchor }}" href="#{{ defanchor }}">{{ number }}</a>]</sup>',
     "footnotes.html": '<div id="_footnotes">{{ entries|join }}</div>',
     "header.html": '<h{{ level }} id="{{ anchor }}">{% if id %}<a id="{{ id }}"></a>{% endif %}{{ value }}</h{{ level }}>',
@@ -22,13 +21,18 @@ DEFAULT_TEMPLATES = {
     "link.html": '<a href="{{ target }}">{{ text }}</a>',
     "list.html": "<{% if ordered %}ol{% else %}ul{% endif %}>{{ items|join }}</{% if ordered %}ol{% else %}ul{% endif %}>",
     "list_item.html": "<li>{{ content }}</li>",
-    "paragraph.html": "<p>{{ text }}</p>",
+    "macro.html": "",
+    "paragraph.html": "<p>{{ content }}</p>",
+    "quote.html": '<blockquote><div class="content">{{ content|join }}</div></blockquote><div class="attribution">{{ attribution }}</div>',
     "raw.html": "{{ content }}",
-    "star.html": "<strong>{{ text }}</strong>",
-    "toc_entry.html": '<li><a href="#{{ anchor }}">{{ text }}</a>{% if children %}<ul>{{ children|join }}</ul>{% endif %}</li>',
+    "sentence.html": "{{ content }}",
+    "source.html": '<div class="source">{% if title %}<div class="title">{{ title }}</div>{% endif %}<div class="content">{{ code }}</div></div>{% if callouts %}<div class="colist arabic"><table><tbody>{% for callout in callouts %}<tr><td>{{ callout[0] }}</td><td>{{ callout[1] }}</td></tr>{% endfor %}</tbody></table></div>{% endif %}',
+    "star.html": "<strong>{{ content }}</strong>",
+    "text.html": "{{ value }}",
     "toc.html": "<ul>{% if entries%}{{ entries|join }}{% endif %}</ul>",
-    "underscore.html": "<em>{{ text }}</em>",
-    "verbatim.html": "<code>{{ text }}</code>",
+    "toc_entry.html": '<li><a href="#{{ anchor }}">{{ text }}</a>{% if children %}<ul>{{ children|join }}</ul>{% endif %}</li>',
+    "underscore.html": "<em>{{ content }}</em>",
+    "verbatim.html": "<code>{{ content }}</code>",
 }
 
 
@@ -52,87 +56,63 @@ class HTMLVisitor(Visitor):
         )
 
     def _visit_text(self, node):
-        return node["value"]
+        return {"value": node["value"]}
 
     def _visit_sentence(self, node):
-        return "".join([self.visit(t) for t in node["content"]])
+        return {"content": "".join([self.visit(t) for t in node["content"]])}
 
     def _visit_paragraph(self, node):
-        return self._render("paragraph", text=self.visit(node["content"]))
+        return {"content": self.visit(node["content"])}
 
     def _visit_horizontal_rule(self, node):
-        return self._render("horizontal_rule")
+        return {}
 
     def _visit_style(self, node):
-        content = self.visit(node["content"])
-        return self._render(node["value"], text=content)
+        return {"node_types": [node["value"]], "content": self.visit(node["content"])}
 
     def _visit_verbatim(self, node):
-        return self._render("verbatim", text=node["value"])
+        return {"content": node["value"]}
 
     def _visit_class(self, node):
-        text = self.visit(node["content"])
-        return self._render("class", classes=node["classes"], text=text)
+        return {"classes": node["classes"], "content": self.visit(node["content"])}
 
     def _visit_link(self, node):
-        return self._render("link", text=node["text"], target=node["target"])
+        return {"text": node["text"], "target": node["target"]}
 
     def _visit_header(self, node):
-        return self._render(
-            "header",
-            level=node["level"],
-            value=node["value"],
-            anchor=node["anchor"],
-        )
+        return {
+            "level": node["level"],
+            "value": node["value"],
+            "anchor": node["anchor"],
+        }
 
     def _visit_quote(self, node):
-        return self._render(
-            "quote",
-            attribution=node["attribution"],
-            content=self.visitlist(node["content"]),
-        )
+        return {
+            "attribution": node["attribution"],
+            "content": self.visitlist(node["content"]),
+        }
 
     def _visit_raw(self, node):
-        return self._render(
-            "raw",
-            content="\n".join(self.visitlist(node["content"])),
-        )
+        return {"content": "\n".join(self.visitlist(node["content"]))}
 
     def _visit_admonition(self, node):
-        admclass = node["class"]
-        icon = node["icon"]
-        label = node["label"]
-        content = self.visitlist(node["content"])
-
-        templates = [
-            f"admonition_{admclass}",
-            "admonition",
-        ]
-
-        for t in templates:
-            try:
-                return self._render(
-                    t,
-                    admclass=admclass,
-                    icon=icon,
-                    label=label,
-                    content=content,
-                )
-            except TemplateNotFound:
-                continue
-
-        raise ValueError(
-            "Cannot find any suitable template among "
-            + ", ".join([f"{i}.html" for i in templates])
-        )
+        return {
+            "node_types": [
+                f'admonition_{node["class"]}',
+                "admonition",
+            ],
+            "admclass": node["class"],
+            "icon": node["icon"],
+            "label": node["label"],
+            "content": self.visitlist(node["content"]),
+        }
 
     def _visit_block(self, node):
-        return self._render(
-            "block",
-            content=self.visitlist(node["content"]),
-            title=self.visit(node["title"]),
-            kwargs=node["kwargs"],
-        )
+        return {
+            "content": self.visitlist(node["content"]),
+            "title": self.visit(node["title"]),
+            "kwargs": node["kwargs"],
+        }
 
     def _visit_source(self, node):
         lexer = get_lexer_by_name(node["language"])
@@ -158,82 +138,76 @@ class HTMLVisitor(Visitor):
             for name, text in callouts.items()
         ]
 
-        return self._render(
-            "source",
-            code=highlighted_src,
-            callouts=callouts_list,
-            title=self.visit(node["title"]),
-        )
+        return {
+            "code": highlighted_src,
+            "callouts": callouts_list,
+            "title": self.visit(node["title"]),
+        }
 
     def _visit_document(self, node):
-        return self._render(
-            "document", content=[self.visit(item) for item in node["content"]]
-        )
+        return {"content": [self.visit(item) for item in node["content"]]}
 
     def _visit_list_item(self, node):
-        return self._render("list_item", content=self.visit(node["content"]))
+        return {"content": self.visit(node["content"])}
 
     def _visit_list(self, node):
-        return self._render(
-            "list",
-            ordered=node["ordered"],
-            items=[self.visit(i) for i in node["items"]],
-        )
+        return {
+            "ordered": node["ordered"],
+            "items": [self.visit(i) for i in node["items"]],
+        }
 
     def _visit_toc_entry(self, node):
-        return self._render(
-            "toc_entry",
-            anchor=node["anchor"],
-            text=node["value"],
-            children=[self._visit_toc_entry(i) for i in node["children"]],
-        )
+        return {
+            "anchor": node["anchor"],
+            "text": node["text"],
+            "children": [self.visit(i) for i in node["children"]],
+        }
 
     def visit_toc(self, nodes):
-        return self._render("toc", entries=[self._visit_toc_entry(i) for i in nodes])
+        keys = {"entries": [self.visit(i) for i in nodes]}
+        return self._render("toc", **keys)
 
-    def _visit_footnote(self, node):
-        return self._render(
-            "footnote_ref",
-            number=node["number"],
-            refanchor=node["refanchor"],
-            defanchor=node["defanchor"],
-        )
+    def _visit_footnote_ref(self, node):
+        return {
+            "node_types": ["footnote_ref"],
+            "number": node["number"],
+            "refanchor": node["refanchor"],
+            "defanchor": node["defanchor"],
+        }
 
     def _visit_footnote_def(self, node):
-        return self._render(
-            "footnote_def",
-            number=node["number"],
-            refanchor=node["refanchor"],
-            defanchor=node["defanchor"],
-            text=[self.visit(i) for i in node["content"]],
-        )
+        return {
+            "number": node["number"],
+            "refanchor": node["refanchor"],
+            "defanchor": node["defanchor"],
+            "text": "".join([self.visit(i) for i in node["content"]]),
+        }
 
     def visit_footnotes(self, nodes):
-        entries = [self._visit_footnote_def(i) for i in nodes]
-
-        return self._render("footnotes", entries=entries)
+        keys = {"entries": [self.visit(i) for i in nodes]}
+        return self._render("footnotes", **keys)
 
     def _visit_command(self, node):
         if node["name"] == "toc":
-            return self.visit_toc(self.toc)
+            return {"content": "".join(self.visit_toc(self.toc))}
 
         if node["name"] == "footnotes":
-            return self.visit_footnotes(self.footnotes)
+            return {"content": "".join(self.visit_footnotes(self.footnotes))}
 
     def _visit_content_image(self, node):
-        return self._render(
-            "image",
-            uri=node["uri"],
-            title=self.visit(node["title"]),
-            alt_text=node["alt_text"],
-        )
+        return {
+            "node_types": ["image"],
+            "uri": node["uri"],
+            "title": self.visit(node["title"]),
+            "alt_text": node["alt_text"],
+        }
 
     def _visit_image(self, node):
-        return self._render(
-            "inline_image",
-            uri=node["uri"],
-            alt_text=node["alt_text"],
-        )
+        return {
+            "node_types": ["inline_image"],
+            "uri": node["uri"],
+            "alt_text": node["alt_text"],
+        }
 
     def _visit_macro(self, node):
-        return ""
+        return {}

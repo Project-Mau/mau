@@ -216,7 +216,7 @@ def test_macro_footnote(footnote_anchors_mock):
             "type": "sentence",
             "content": [
                 {
-                    "type": "footnote",
+                    "type": "footnote_ref",
                     "number": 1,
                     "refanchor": "refXYZ",
                     "defanchor": "defXYZ",
@@ -229,7 +229,7 @@ def test_macro_footnote(footnote_anchors_mock):
 
     assert listasdict(p.footnotes) == [
         {
-            "type": "footnote_content",
+            "type": "footnote_def",
             "number": 1,
             "refanchor": "refXYZ",
             "defanchor": "defXYZ",
@@ -282,7 +282,7 @@ def test_parse_macro_footnote_can_start_with_different_number(footnote_anchors_m
             "type": "sentence",
             "content": [
                 {
-                    "type": "footnote",
+                    "type": "footnote_ref",
                     "number": 6,
                     "refanchor": "refXYZ",
                     "defanchor": "defXYZ",
@@ -304,7 +304,7 @@ def test_parse_macro_footnote_with_other_text_around(footnote_anchors_mock):
             "content": [
                 {"type": "text", "value": "text"},
                 {
-                    "type": "footnote",
+                    "type": "footnote_ref",
                     "number": 1,
                     "refanchor": "refXYZ",
                     "defanchor": "defXYZ",
@@ -318,7 +318,7 @@ def test_parse_macro_footnote_with_other_text_around(footnote_anchors_mock):
 
     assert listasdict(p.footnotes) == [
         {
-            "type": "footnote_content",
+            "type": "footnote_def",
             "number": 1,
             "refanchor": "refXYZ",
             "defanchor": "defXYZ",
@@ -346,7 +346,7 @@ def test_parse_macro_footnote_includes_quotes(footnote_anchors_mock):
             "content": [
                 {"type": "text", "value": "text"},
                 {
-                    "type": "footnote",
+                    "type": "footnote_ref",
                     "number": 1,
                     "refanchor": "refXYZ",
                     "defanchor": "defXYZ",
@@ -360,7 +360,7 @@ def test_parse_macro_footnote_includes_quotes(footnote_anchors_mock):
 
     assert listasdict(p.footnotes) == [
         {
-            "type": "footnote_content",
+            "type": "footnote_def",
             "number": 1,
             "refanchor": "refXYZ",
             "defanchor": "defXYZ",
@@ -388,7 +388,7 @@ def test_parse_macro_footnote_includes_round_brakets(footnote_anchors_mock):
             "content": [
                 {"type": "text", "value": "text"},
                 {
-                    "type": "footnote",
+                    "type": "footnote_ref",
                     "number": 1,
                     "refanchor": "refXYZ",
                     "defanchor": "defXYZ",
@@ -402,7 +402,7 @@ def test_parse_macro_footnote_includes_round_brakets(footnote_anchors_mock):
 
     assert listasdict(p.footnotes) == [
         {
-            "type": "footnote_content",
+            "type": "footnote_def",
             "number": 1,
             "refanchor": "refXYZ",
             "defanchor": "defXYZ",

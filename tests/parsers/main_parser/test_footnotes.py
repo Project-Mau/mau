@@ -35,7 +35,7 @@ def test_macro_footnote(footnote_anchors_mock, header_anchor_mock):
                         "refanchor": "refXYZ",
                         "defanchor": "defXYZ",
                         "number": 1,
-                        "type": "footnote",
+                        "type": "footnote_ref",
                     },
                 ],
             },
@@ -46,7 +46,7 @@ def test_macro_footnote(footnote_anchors_mock, header_anchor_mock):
 
     assert listasdict(p.footnotes) == [
         {
-            "type": "footnote_content",
+            "type": "footnote_def",
             "refanchor": "refXYZ",
             "defanchor": "defXYZ",
             "number": 1,
@@ -82,7 +82,7 @@ def test_macro_footnote_inside_admonition(footnote_anchors_mock):
 
     assert listasdict(p.footnotes) == [
         {
-            "type": "footnote_content",
+            "type": "footnote_def",
             "refanchor": "refXYZ",
             "defanchor": "defXYZ",
             "number": 1,
@@ -96,7 +96,7 @@ def test_macro_footnote_inside_admonition(footnote_anchors_mock):
             ],
         },
         {
-            "type": "footnote_content",
+            "type": "footnote_def",
             "refanchor": "refXYZ",
             "defanchor": "defXYZ",
             "number": 1,

@@ -146,8 +146,8 @@ class ImageNode(Node):
         }
 
 
-class FootnoteNode(Node):
-    node_type = "footnote"
+class FootnoteRefNode(Node):
+    node_type = "footnote_ref"
 
     def __init__(self, number, refanchor, defanchor):
         self.number = number
@@ -368,8 +368,8 @@ class QuoteNode(PageNode):
         }
 
 
-class FootnoteContentNode(PageNode):
-    node_type = "footnote_content"
+class FootnoteDefNode(PageNode):
+    node_type = "footnote_def"
 
     def __init__(self, number, refanchor, defanchor, content):
         self.number = number
@@ -387,15 +387,20 @@ class FootnoteContentNode(PageNode):
         }
 
 
-class TocNode:
-    def __init__(self, level, value, anchor):
-        self.value = value
+class TocNode(Node):
+    node_type = "toc_entry"
+
+    def __init__(self, level, text, anchor):
+        self.level = level
+        self.text = text
         self.anchor = anchor
         self.children = []
 
     def asdict(self):
         return {
-            "value": self.value,
+            "type": self.node_type,
+            "level": self.level,
+            "text": self.text,
             "anchor": self.anchor,
             "children": [i.asdict() for i in self.children],
         }

@@ -12,7 +12,7 @@ def test_footnote():
 
     result = v.visit(
         {
-            "type": "footnote",
+            "type": "footnote_ref",
             "number": 6,
             "refanchor": "refXYZ",
             "defanchor": "defXYZ",
@@ -27,7 +27,7 @@ def test_footnote_definition():
 
     result = v._visit_footnote_def(
         {
-            "type": "footnote_content",
+            "type": "footnote_def",
             "number": 1,
             "refanchor": "refXYZ",
             "defanchor": "defXYZ",
@@ -42,13 +42,12 @@ def test_footnote_definition():
         }
     )
 
-    assert result == remove_indentation(
-        """
-        <div id="defXYZ">
-          <a href="#refXYZ">1</a> Some text 1
-        </div>
-        """
-    )
+    assert result == {
+        "defanchor": "defXYZ",
+        "number": 1,
+        "refanchor": "refXYZ",
+        "text": "Some text 1",
+    }
 
 
 def test_footnotes():
@@ -57,7 +56,7 @@ def test_footnotes():
     result = v.visit_footnotes(
         [
             {
-                "type": "footnote_content",
+                "type": "footnote_def",
                 "number": 1,
                 "refanchor": "refXYZ1",
                 "defanchor": "defXYZ1",
@@ -71,7 +70,7 @@ def test_footnotes():
                 ],
             },
             {
-                "type": "footnote_content",
+                "type": "footnote_def",
                 "number": 2,
                 "refanchor": "refXYZ2",
                 "defanchor": "defXYZ2",
@@ -104,7 +103,7 @@ def test_footnotes():
 def test_command_footnotes():
     footnotes = [
         {
-            "type": "footnote_content",
+            "type": "footnote_def",
             "number": 1,
             "refanchor": "refXYZ1",
             "defanchor": "defXYZ1",
@@ -118,7 +117,7 @@ def test_command_footnotes():
             ],
         },
         {
-            "type": "footnote_content",
+            "type": "footnote_def",
             "number": 2,
             "refanchor": "refXYZ2",
             "defanchor": "defXYZ2",

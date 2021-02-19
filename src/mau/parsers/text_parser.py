@@ -12,8 +12,8 @@ from mau.parsers.nodes import (
     MacroNode,
     LinkNode,
     ImageNode,
-    FootnoteNode,
-    FootnoteContentNode,
+    FootnoteRefNode,
+    FootnoteDefNode,
 )
 
 MAP_STYLES = {"_": "underscore", "*": "star"}
@@ -162,11 +162,11 @@ class TextParser(BaseParser):
         p = analyse(TextParser(), content_text)
 
         self.footnotes.append(
-            FootnoteContentNode(
+            FootnoteDefNode(
                 refanchor=refanchor, defanchor=defanchor, number=number, content=p.nodes
             )
         )
-        return FootnoteNode(refanchor=refanchor, defanchor=defanchor, number=number)
+        return FootnoteRefNode(refanchor=refanchor, defanchor=defanchor, number=number)
 
     def parse_macro(self):
         self.get_token(TokenTypes.LITERAL, "[")

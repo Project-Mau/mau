@@ -17,7 +17,7 @@ DEFAULT_TEMPLATES = {
     "inline_image.adoc": "image::{{ uri }}{%if alt_text %}[{{ alt_text }}]{% endif %}",
     "link.adoc": "{{ target }}{% if text %}[{{ text }}]{% endif %}",
     "list.adoc": "{{ items|join('\n') }}{% if main_node %}\n{% endif %}",
-    "list_item.adoc": "{{ prefix }} {{ content }}",
+    "list_item.adoc": "{% if prefix %}{{ prefix }} {% endif %}{{ content }}",
     "paragraph.adoc": "{{ content }}\n",
     "quote.adoc": '[quote, "{{ attribution }}"]\n____\n{{ content|join }}____\n',
     "sentence.adoc": "{{ content }}",
@@ -144,7 +144,10 @@ class AsciidoctorVisitor(Visitor):
         if ordered:
             mark = "."
 
-        prefix = mark * int(node["level"])
+        prefix = None
+        if node["content"]["type"] != "list":
+            prefix = mark * int(node["level"])
+
         return {"content": self.visit(node["content"]), "prefix": prefix}
 
     def _visit_list(self, node, ordered=False):

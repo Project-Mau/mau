@@ -342,9 +342,11 @@ def test_list_unordered():
             """
             <ul>
               <li>Item 1</li>
-              <ul>
-                <li>Item 1.1</li>
-              </ul>
+              <li>
+                <ul>
+                  <li>Item 1.1</li>
+                </ul>
+              </li>
               <li>Item 2</li>
             </ul>
             """
@@ -370,9 +372,11 @@ def test_list_ordered():
             """
             <ol>
               <li>Item 1</li>
-              <ol>
-                <li>Item 1.1</li>
-              </ol>
+              <li>
+                <ol>
+                  <li>Item 1.1</li>
+                </ol>
+              </li>
               <li>Item 2</li>
             </ol>
             """
@@ -398,9 +402,11 @@ def test_list_mixed():
             """
             <ol>
               <li>Item 1</li>
-              <ul>
-                <li>Item 1.1</li>
-              </ul>
+              <li>
+                <ul>
+                  <li>Item 1.1</li>
+                </ul>
+              </li>
               <li>Item 2</li>
             </ol>
             """

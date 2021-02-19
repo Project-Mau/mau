@@ -478,7 +478,7 @@ class MainParser(BaseParser):
             elif len(self.peek_token().value) > level:
                 numbered = True if self.peek_token().value[0] == "#" else False
                 subnodes = self._parse_list_nodes()
-                nodes.append(ListNode(numbered, subnodes))
+                nodes.append(ListItemNode(len(header), ListNode(numbered, subnodes)))
             else:
                 break
 

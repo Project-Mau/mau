@@ -18,6 +18,7 @@ def test_include_image_with_only_path():
             "uri": "/path/to/it.jpg",
             "alt_text": None,
             "title": None,
+            "classes": None,
             "args": [],
             "kwargs": {},
         },
@@ -37,6 +38,7 @@ def test_include_image_with_full_uri():
             "uri": "/path/to/it.jpg",
             "alt_text": None,
             "title": None,
+            "classes": None,
             "args": [],
             "kwargs": {},
         },
@@ -56,6 +58,7 @@ def test_include_image_with_http():
             "uri": "https:///some.domain/path/to/it.jpg",
             "alt_text": None,
             "title": None,
+            "classes": None,
             "args": [],
             "kwargs": {},
         },
@@ -76,6 +79,28 @@ def test_include_image_with_alt_text():
             "uri": "/path/to/it.jpg",
             "alt_text": "This is a beautiful image",
             "title": None,
+            "classes": None,
+            "args": [],
+            "kwargs": {},
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_include_image_with_classes():
+    source = """
+    [classes="class1,class2"]
+    << image:/path/to/it.jpg
+    """
+
+    expected = [
+        {
+            "type": "content_image",
+            "uri": "/path/to/it.jpg",
+            "alt_text": None,
+            "title": None,
+            "classes": ["class1", "class2"],
             "args": [],
             "kwargs": {},
         },
@@ -96,6 +121,7 @@ def test_include_image_with_arguments():
             "uri": "/path/to/it.jpg",
             "alt_text": None,
             "title": None,
+            "classes": None,
             "args": [],
             "kwargs": {"argument1": "value1", "argument2": "value2"},
         },
@@ -119,6 +145,7 @@ def test_include_image_with_title():
                 "content": [{"type": "text", "value": "A nice caption"}],
                 "type": "sentence",
             },
+            "classes": None,
             "args": [],
             "kwargs": {},
         },

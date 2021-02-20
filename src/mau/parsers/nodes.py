@@ -201,10 +201,11 @@ class HorizontalRuleNode(PageNode):
 class ContentImageNode(PageNode):
     node_type = "content_image"
 
-    def __init__(self, uri, alt_text, title=None, args=None, kwargs=None):
+    def __init__(self, uri, alt_text, classes=None, title=None, args=None, kwargs=None):
         super().__init__(args, kwargs)
         self.uri = uri
         self.alt_text = alt_text
+        self.classes = classes
         self.title = title
 
     def asdict(self):
@@ -213,6 +214,7 @@ class ContentImageNode(PageNode):
             "alt_text": self.alt_text,
             "uri": self.uri,
             "title": self.title.asdict() if self.title else None,
+            "classes": self.classes,
             "args": self.args,
             "kwargs": self.kwargs,
         }

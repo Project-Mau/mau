@@ -115,25 +115,6 @@ class MainParser(BaseParser):
 
         self._push_title(title)
 
-    # @parser
-    # def _parse_id(self):
-    #     self.get_token(TokenTypes.LITERAL, "#")
-    #     text = self.get_token(TokenTypes.TEXT).value
-    #     self.get_token(TokenTypes.EOL)
-
-    #     if text.startswith(" "):
-    #         # This is an ordered list
-    #         raise TokenError
-
-    #     content = self.collect_lines([Token(TokenTypes.EOL), Token(TokenTypes.EOF)])
-
-    #     if len(content) == 0:
-    #         raise ParseError
-
-    #     p = analyse(MainParser(), "\n".join(content))
-
-    #     self._save(IdNode(text, content=p.nodes[0]))
-
     @parser
     def _parse_header(self):
         header = self.get_token(
@@ -170,12 +151,17 @@ class MainParser(BaseParser):
         args, kwargs = self._pop_attributes()
 
         alt_text = kwargs.pop("alt_text", None)
+        classes = kwargs.pop("classes", None)
         title = self._pop_title()
+
+        if classes:
+            classes = classes.split(",")
 
         self._save(
             ContentImageNode(
                 uri=uri,
                 alt_text=alt_text,
+                classes=classes,
                 title=title,
                 args=args,
                 kwargs=kwargs,

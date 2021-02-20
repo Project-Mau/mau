@@ -263,7 +263,7 @@ class HeaderNode(PageValueNode):
 class BlockNode(PageNode):
     # DOCUMENT
     def __init__(
-        self, blocktype, content, secondary_content, args=None, kwargs=None, title=None
+        self, blocktype, content, secondary_content, title=None, args=None, kwargs=None
     ):
         super().__init__(args, kwargs)
         self.blocktype = blocktype
@@ -285,7 +285,7 @@ class BlockNode(PageNode):
 
 class SourceNode(PageNode):
     # DOCUMENT
-    def __init__(self, language, callouts, code, args=None, kwargs=None, title=None):
+    def __init__(self, language, callouts, code, title=None, args=None, kwargs=None):
         super().__init__(args, kwargs)
         self.language = language
         self.callouts = callouts
@@ -322,7 +322,7 @@ class RawNode(PageNode):
 class AdmonitionNode(PageNode):
     # DOCUMENT
     def __init__(
-        self, admclass, icon, label, content, args=None, kwargs=None, title=None
+        self, admclass, icon, label, content, title=None, args=None, kwargs=None
     ):
         super().__init__(args, kwargs)
         self.admclass = admclass

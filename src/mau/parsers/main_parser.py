@@ -199,14 +199,14 @@ class MainParser(BaseParser):
 
         if len(args) != 0 and args[0] == "source":
             return self._parse_source_block(
-                content, secondary_content, args[1:], kwargs, title
+                content, secondary_content, title, args[1:], kwargs
             )
 
         if len(args) != 0 and args[0] == "admonition":
-            return self._parse_admonition_block(content, args[1:], kwargs, title)
+            return self._parse_admonition_block(content, title, args[1:], kwargs)
 
         if len(args) != 0 and args[0] == "quote":
-            return self._parse_quote_block(content, args[1:], kwargs, title)
+            return self._parse_quote_block(content, title, args[1:], kwargs)
 
         try:
             blocktype = args[0]
@@ -215,7 +215,7 @@ class MainParser(BaseParser):
             blocktype = None
 
         return self._parse_standard_block(
-            blocktype, content, secondary_content, args, kwargs, title
+            blocktype, content, secondary_content, title, args, kwargs
         )
 
     def _parse_conditional_block(self, condition, content, args, kwargs):
@@ -236,7 +236,7 @@ class MainParser(BaseParser):
 
         self._save(RawNode(content=textlines))
 
-    def _parse_source_block(self, content, secondary_content, args, kwargs, title):
+    def _parse_source_block(self, content, secondary_content, title, args, kwargs):
         delimiter = kwargs.get("callouts", ":")
 
         # This removes callouts from the source code
@@ -299,7 +299,7 @@ class MainParser(BaseParser):
             )
         )
 
-    def _parse_admonition_block(self, content, args, kwargs, title):
+    def _parse_admonition_block(self, content, title, args, kwargs):
         args, kwargs = merge_args(args, kwargs, ["class", "icon", "label"])
 
         p = analyse(MainParser(variables=self.variables), "\n".join(content))
@@ -318,7 +318,7 @@ class MainParser(BaseParser):
             )
         )
 
-    def _parse_quote_block(self, content, args, kwargs, title):
+    def _parse_quote_block(self, content, title, args, kwargs):
         args, kwargs = merge_args(args, kwargs, ["attribution"])
 
         p = analyse(MainParser(), "\n".join(content))
@@ -333,7 +333,7 @@ class MainParser(BaseParser):
         )
 
     def _parse_standard_block(
-        self, blocktype, content, secondary_content, args, kwargs, title
+        self, blocktype, content, secondary_content, title, args, kwargs
     ):
         pc = analyse(MainParser(variables=self.variables), "\n".join(content))
         ps = analyse(MainParser(variables=self.variables), "\n".join(secondary_content))

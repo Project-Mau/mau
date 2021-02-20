@@ -445,11 +445,13 @@ class ListItemNode(PageNode):
 
 
 class DocumentNode(Node):
-    def __init__(self, content):
+    def __init__(self, content, no_document=False):
         self.content = content
+        self.no_document = no_document
 
     def asdict(self):
         return {
             "type": "document",
+            "no_document": self.no_document,
             "content": [i.asdict() for i in self.content],
         }

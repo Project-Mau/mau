@@ -207,9 +207,9 @@ def test_block(header_anchor_mock):
         [sometype]
         ++++
         = A block
-        
+
         This contains headers, paragraphs and blocks
-        
+
         ++++
         """
     )
@@ -265,9 +265,9 @@ def test_basic_block_title(header_anchor_mock):
         [sometype]
         ++++
         = A block
-        
+
         This contains headers, paragraphs and blocks
-        
+
         ++++
         """
     )
@@ -319,9 +319,25 @@ def test_document():
     ]
 
 
-def test_list_unordered():
-    v = HTMLVisitor()
+def test_no_document():
+    parser = init_parser(
+        dedent(
+            """
+            This is text
+            """
+        )
+    )
+    parser.parse()
 
+    document = DocumentNode(parser.nodes, no_document=True)
+    node = document.asdict()
+
+    result = visitlist([node])
+
+    assert result == ["<p>This is text</p>"]
+
+
+def test_list_unordered():
     source = dedent(
         """
         * Item 1
@@ -350,8 +366,6 @@ def test_list_unordered():
 
 
 def test_list_ordered():
-    v = HTMLVisitor()
-
     source = dedent(
         """
         # Item 1
@@ -380,8 +394,6 @@ def test_list_ordered():
 
 
 def test_list_mixed():
-    v = HTMLVisitor()
-
     source = dedent(
         """
         # Item 1

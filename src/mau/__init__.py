@@ -25,6 +25,8 @@ class Mau:
         self.default_templates = default_templates
         self.templates_directory = templates_directory
 
+        self.no_document = config.get("no_document", False)
+
         self.variables = {}
 
     def process(self, text):
@@ -36,7 +38,7 @@ class Mau:
 
         self.variables = parser.variables
 
-        document = DocumentNode(parser.nodes)
+        document = DocumentNode(parser.nodes, self.no_document)
 
         ast = document.asdict()
 

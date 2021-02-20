@@ -22,11 +22,23 @@ DEFAULT_TEMPLATES = {
     "callout.html": '<span class="callout">{{ name }}</span>',
     "class.html": '<span class="{{ classes }}">{{ content }}</span>',
     "command.html": "{{ content }}",
+    "container.html": "{{ content }}",
     "document.html": "<html><head></head><body>{{ content }}</body></html>",
-    "footnote_def.html": '<div id="{{ defanchor }}"><a href="#{{ refanchor }}">{{ number }}</a> {{ text }}</div>',
-    "footnote_ref.html": '<sup>[<a id="{{ refanchor }}" href="#{{ defanchor }}">{{ number }}</a>]</sup>',
+    "footnote_def.html": (
+        '<div id="{{ defanchor }}">'
+        '<a href="#{{ refanchor }}">{{ number }}</a> {{ text }}</div>'
+    ),
+    "footnote_ref.html": (
+        "<sup>"
+        '[<a id="{{ refanchor }}" href="#{{ defanchor }}">{{ number }}</a>]'
+        "</sup>"
+    ),
     "footnotes.html": '<div id="_footnotes">{{ entries }}</div>',
-    "header.html": '<h{{ level }} id="{{ anchor }}">{% if id %}<a id="{{ id }}"></a>{% endif %}{{ value }}</h{{ level }}>',
+    "header.html": (
+        '<h{{ level }} id="{{ anchor }}">'
+        '{% if id %}<a id="{{ id }}"></a>{% endif %}'
+        "{{ value }}</h{{ level }}>"
+    ),
     "horizontal_rule.html": "<hr>",
     "image.html": (
         '<div class="imageblock">'
@@ -35,13 +47,23 @@ DEFAULT_TEMPLATES = {
         '{% if title %}<div class="title">{{ title }}</div>{% endif %}'
         "</div></div>"
     ),
-    "inline_image.html": '<span class="image"><img src="{{ uri }}"{%if alt_text %} alt="{{ alt_text }}"{% endif %}></span>',
+    "inline_image.html": (
+        '<span class="image">'
+        '<img src="{{ uri }}"{%if alt_text %} alt="{{ alt_text }}"{% endif %}>'
+        "</span>"
+    ),
     "link.html": '<a href="{{ target }}">{{ text }}</a>',
-    "list.html": "<{% if ordered %}ol{% else %}ul{% endif %}>{{ items }}</{% if ordered %}ol{% else %}ul{% endif %}>",
+    "list.html": (
+        "<{% if ordered %}ol{% else %}ul{% endif %}>"
+        "{{ items }}"
+        "</{% if ordered %}ol{% else %}ul{% endif %}>"
+    ),
     "list_item.html": "<li>{{ content }}</li>",
     "macro.html": "",
     "paragraph.html": "<p>{{ content }}</p>",
-    "quote.html": "<blockquote>{{ content }}<cite>{{ attribution }}</cite></blockquote>",
+    "quote.html": (
+        "<blockquote>" "{{ content }}" "<cite>{{ attribution }}</cite>" "</blockquote>"
+    ),
     "raw.html": "{{ content }}",
     "sentence.html": "{{ content }}",
     "source.html": (
@@ -50,7 +72,10 @@ DEFAULT_TEMPLATES = {
         '<div class="content">{{ code }}</div>'
         '{% if callouts %}<div class="callouts">'
         "<table><tbody>"
-        "{% for callout in callouts %}<tr><td>{{ callout[0] }}</td><td>{{ callout[1] }}</td></tr>{% endfor %}"
+        "{% for callout in callouts %}<tr>"
+        "<td>{{ callout[0] }}</td>"
+        "<td>{{ callout[1] }}</td>"
+        "</tr>{% endfor %}"
         "</tbody></table>"
         "</div>{% endif %}"
         "</div>"
@@ -58,7 +83,12 @@ DEFAULT_TEMPLATES = {
     "star.html": "<strong>{{ content }}</strong>",
     "text.html": "{{ value }}",
     "toc.html": "<div>{% if entries%}<ul>{{ entries }}</ul>{% endif %}</div>",
-    "toc_entry.html": '<li><a href="#{{ anchor }}">{{ text }}</a>{% if children %}<ul>{{ children }}</ul>{% endif %}</li>',
+    "toc_entry.html": (
+        "<li>"
+        '<a href="#{{ anchor }}">{{ text }}</a>'
+        "{% if children %}<ul>{{ children }}</ul>{% endif %}"
+        "</li>"
+    ),
     "underscore.html": "<em>{{ content }}</em>",
     "verbatim.html": "<code>{{ content }}</code>",
 }
@@ -177,7 +207,14 @@ class HTMLVisitor(Visitor):
         }
 
     def _visit_document(self, node):
-        return {"content": "".join([self.visit(item) for item in node["content"]])}
+        node_type = "document"
+        if node["no_document"] is True:
+            node_type = "container"
+
+        return {
+            "node_types": [node_type],
+            "content": "".join([self.visit(item) for item in node["content"]]),
+        }
 
     def _visit_list_item(self, node):
         return {"content": self.visit(node["content"])}

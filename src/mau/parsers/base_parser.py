@@ -149,22 +149,26 @@ class BaseParser:
         if self.peek_token() not in tokens:
             raise ExpectedError({"expected": tokens, "found": self.current_token})
 
-    def collect(self, stop_tokens, ignore_escapes=False):
+    def collect(self, stop_tokens, preserve_escaped_stop_tokens=False):
         tokens = []
 
         while self.peek_token() not in stop_tokens:
             if self.peek_token() == Literal("\\"):
                 escape = self.get_token()
 
-                if self.peek_token() not in stop_tokens:
+                if self.peek_token() not in stop_tokens or preserve_escaped_stop_tokens:
                     tokens.append(escape)
 
             tokens.append(self.get_token())
 
         return tokens
 
-    def collect_join(self, stop_tokens, join_with="", ignore_escapes=False):
-        token_values = [t.value for t in self.collect(stop_tokens, ignore_escapes)]
+    def collect_join(
+        self, stop_tokens, join_with="", preserve_escaped_stop_tokens=False
+    ):
+        token_values = [
+            t.value for t in self.collect(stop_tokens, preserve_escaped_stop_tokens)
+        ]
         token_values = [t for t in token_values if t is not None]
 
         return join_with.join(token_values)

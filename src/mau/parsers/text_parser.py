@@ -109,7 +109,7 @@ class TextParser(BaseParser):
     def parse_verbatim(self):
         self.get_token(TokenTypes.LITERAL, "`")
         content = self.collect_join(
-            [Token(TokenTypes.LITERAL, "`"), Token(TokenTypes.EOL)]
+            [Token(TokenTypes.LITERAL, "`"), Token(TokenTypes.EOL)],
         )
         self.get_token(TokenTypes.LITERAL, "`")
 
@@ -180,7 +180,6 @@ class TextParser(BaseParser):
 
         arguments = self.collect_join(
             stop_tokens=[Token(TokenTypes.LITERAL, ")"), Token(TokenTypes.EOL)],
-            ignore_escapes=True,
         )
         p = analyse(ArgumentsParser(raw=raw), arguments)
 

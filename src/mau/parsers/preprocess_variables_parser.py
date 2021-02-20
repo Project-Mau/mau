@@ -22,7 +22,7 @@ class PreprocessVariablesParser(BaseParser):
         self.get_token(TokenTypes.LITERAL, "`")
         text = self.collect_join(
             [Token(TokenTypes.LITERAL, "`"), Token(TokenTypes.EOF)],
-            ignore_escapes=True,
+            preserve_escaped_stop_tokens=True,
         )
         self.get_token(TokenTypes.LITERAL, "`")
 

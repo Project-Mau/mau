@@ -203,6 +203,19 @@ def test_verbatim():
     _test(source, expected)
 
 
+def test_verbatim_backtick():
+    source = r"`\``"
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [{"type": "verbatim", "value": "`"}],
+        }
+    ]
+
+    _test(source, expected)
+
+
 def test_verbatim_ignore_style():
     source = "`_Many different words_`"
 

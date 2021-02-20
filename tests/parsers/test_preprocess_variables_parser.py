@@ -167,3 +167,15 @@ def test_variables_can_contain_markers():
             "value": "A very *bold* text\nSome code: `adict = {'a':5}`\n",
         }
     ]
+
+
+def test_escape_backtick():
+    p = init_parser(r"This is `\``")
+    p.parse()
+
+    assert listasdict(p.nodes) == [
+        {
+            "type": "text",
+            "value": "This is `\``\n",
+        }
+    ]

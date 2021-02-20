@@ -224,7 +224,7 @@ def test_block(header_anchor_mock):
     expected = [
         remove_indentation(
             """
-            <div>
+            <div class="sometype">
               <div class="content">
                 <h1 id="XXXXXX">A block</h1>
                 <p>This contains headers, paragraphs and blocks</p>
@@ -237,10 +237,10 @@ def test_block(header_anchor_mock):
     _test(source, expected)
 
 
-def test_block_classes():
+def test_basic_block_attributes():
     source = dedent(
         """
-        [sometype,classes="class_a,class_b"]
+        [sometype,mayattr1=value1]
         ++++
         This contains headers, paragraphs and blocks
         ++++
@@ -250,7 +250,7 @@ def test_block_classes():
     expected = [
         remove_indentation(
             """
-            <div class="class_a,class_b">
+            <div class="sometype">
               <div class="content">
                 <p>This contains headers, paragraphs and blocks</p>
               </div>
@@ -263,7 +263,7 @@ def test_block_classes():
 
 
 @patch("mau.parsers.main_parser.header_anchor")
-def test_block_title(header_anchor_mock):
+def test_basic_block_title(header_anchor_mock):
     header_anchor_mock.return_value = "XXXXXX"
 
     source = dedent(
@@ -282,7 +282,7 @@ def test_block_title(header_anchor_mock):
     expected = [
         remove_indentation(
             """
-            <div>
+            <div class="sometype">
               <div class="title">Title</div>
               <div class="content">
                 <h1 id="XXXXXX">A block</h1>
@@ -460,7 +460,7 @@ def test_include_image_alt_text():
 def test_include_image_title():
     source = dedent(
         """
-        . A nice caption
+        . A nice _caption_
         << image:/path/to/it.jpg
         """
     )
@@ -471,7 +471,7 @@ def test_include_image_title():
             <div class="imageblock">
               <div class="content">
                 <img src="/path/to/it.jpg">
-                <div class="title">A nice caption</div>
+                <div class="title">A nice <em>caption</em></div>
               </div>
             </div>
             """

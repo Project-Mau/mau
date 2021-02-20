@@ -1,8 +1,4 @@
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import get_formatter_by_name
-
-from mau.visitors.visitor import Visitor, TemplateNotFound
+from mau.visitors.visitor import Visitor
 
 DEFAULT_TEMPLATES = {
     "admonition.adoc": "[{{ admclass }}{% if icon %}.{{ icon }}{% endif %}]\n====\n{{ content|join }}====\n",

@@ -23,7 +23,7 @@ def test_toc_entry():
     assert result == {
         "text": "Header 1",
         "anchor": "Header 1-XXXXXX",
-        "children": [],
+        "children": "",
     }
 
 
@@ -62,19 +62,21 @@ def test_command_toc():
     assert result == [
         remove_indentation(
             """
-            <ul>
-              <li>
-                <a href="#Header 1-XXXXXX">Header 1</a>
-                <ul>
-                  <li>
-                    <a href="#Header 1.1-XXXXXX">Header 1.1</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#Header 2-XXXXXX">Header 2</a>
-              </li>
-            </ul>
+            <div>
+              <ul>
+                <li>
+                  <a href="#Header 1-XXXXXX">Header 1</a>
+                  <ul>
+                    <li>
+                      <a href="#Header 1.1-XXXXXX">Header 1.1</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="#Header 2-XXXXXX">Header 2</a>
+                </li>
+              </ul>
+            </div>
             """
         )
     ]

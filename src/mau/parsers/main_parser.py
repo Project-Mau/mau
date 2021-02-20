@@ -222,8 +222,14 @@ class MainParser(BaseParser):
         if len(args) != 0 and args[0] == "quote":
             return self._parse_quote_block(content, args[1:], kwargs, title)
 
+        try:
+            blocktype = args[0]
+            args = args[1:]
+        except IndexError:
+            blocktype = None
+
         return self._parse_standard_block(
-            content, secondary_content, args, kwargs, title
+            blocktype, content, secondary_content, args, kwargs, title
         )
 
     def _parse_conditional_block(self, condition, content, args, kwargs):
@@ -340,7 +346,9 @@ class MainParser(BaseParser):
             )
         )
 
-    def _parse_standard_block(self, content, secondary_content, args, kwargs, title):
+    def _parse_standard_block(
+        self, blocktype, content, secondary_content, args, kwargs, title
+    ):
         pc = analyse(MainParser(variables=self.variables), "\n".join(content))
         ps = analyse(MainParser(variables=self.variables), "\n".join(secondary_content))
 
@@ -348,6 +356,7 @@ class MainParser(BaseParser):
 
         self._save(
             BlockNode(
+                blocktype=blocktype,
                 content=pc.nodes,
                 secondary_content=ps.nodes,
                 args=args,

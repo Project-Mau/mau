@@ -260,8 +260,11 @@ class HeaderNode(PageValueNode):
 
 class BlockNode(PageNode):
     # DOCUMENT
-    def __init__(self, content, secondary_content, args=None, kwargs=None, title=None):
+    def __init__(
+        self, blocktype, content, secondary_content, args=None, kwargs=None, title=None
+    ):
         super().__init__(args, kwargs)
+        self.blocktype = blocktype
         self.content = content
         self.secondary_content = secondary_content
         self.title = title
@@ -269,6 +272,7 @@ class BlockNode(PageNode):
     def asdict(self):
         return {
             "type": "block",
+            "blocktype": self.blocktype,
             "content": [i.asdict() for i in self.content],
             "secondary_content": [i.asdict() for i in self.secondary_content],
             "args": self.args,

@@ -18,6 +18,7 @@ def test_parse_block_with_empty_body():
     expected = [
         {
             "type": "block",
+            "blocktype": None,
             "content": [],
             "secondary_content": [],
             "title": None,
@@ -39,6 +40,7 @@ def test_parse_block_content():
     expected = [
         {
             "type": "block",
+            "blocktype": None,
             "content": [
                 {
                     "type": "paragraph",
@@ -76,6 +78,7 @@ def test_parse_block_content_variables():
     expected = [
         {
             "type": "block",
+            "blocktype": None,
             "content": [
                 {
                     "type": "paragraph",
@@ -113,6 +116,7 @@ def test_parse_block_content_external_variables():
     expected = [
         {
             "type": "block",
+            "blocktype": None,
             "content": [
                 {
                     "type": "paragraph",
@@ -160,6 +164,7 @@ def test_parse_block_secondary_content():
         {
             "type": "block",
             "title": None,
+            "blocktype": None,
             "args": [],
             "kwargs": {},
             "content": [],
@@ -211,12 +216,14 @@ def test_parse_block_inside_block():
         {
             "type": "block",
             "title": None,
+            "blocktype": None,
             "args": [],
             "kwargs": {},
             "secondary_content": [],
             "content": [
                 {
                     "type": "block",
+                    "blocktype": None,
                     "title": None,
                     "content": [],
                     "secondary_content": [],
@@ -232,11 +239,11 @@ def test_parse_block_inside_block():
 
 def test_attributes_block():
     source = """
-    [blocktype]
+    [blocktype,myattr1=value1]
     ----
     This is a simple line of text
     followed by another line of text
-    
+
     And this is another paragraph
     ----
     """
@@ -244,8 +251,9 @@ def test_attributes_block():
     expected = [
         {
             "type": "block",
-            "args": ["blocktype"],
-            "kwargs": {},
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {"myattr1": "value1"},
             "secondary_content": [],
             "title": None,
             "content": [

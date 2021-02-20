@@ -2,35 +2,35 @@ from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import get_formatter_by_name
 
-from mau.visitors.visitor import Visitor, TemplateNotFound
+from mau.visitors.visitor import Visitor
 
 DEFAULT_TEMPLATES = {
-    "admonition.html": '<div class="{{ admclass }}"><table><tbody><tr><td class="icon"><i class="fa icon-{{ icon }}" title="{{ label }}"></i></td><td class="content">{{ content|join }}</td></tr></tbody></table></div>',
-    "block.html": '<div{% if kwargs["classes"] %} class="{{ kwargs["classes"] }}"{% endif %}>{% if title %}<div class="title">{{ title }}</div>{% endif %}<div class="content">{{ content|join }}</div></div>',
+    "admonition.html": '<div class="{{ class }}"><table><tbody><tr><td class="icon"><i class="fa icon-{{ icon }}" title="{{ label }}"></i></td><td class="content">{{ content }}</td></tr></tbody></table></div>',
+    "block.html": '<div{% if type %} class="{{ type }}{% endif %}">{% if title %}<div class="title">{{ title }}</div>{% endif %}<div class="content">{{ content }}</div></div>',
     "callout.html": '<i class="conum" data-value="{{ name }}"></i><b>({{ name }})</b>',
-    "class.html": """<span class="{{ classes|join(' ') }}">{{ content }}</span>""",
+    "class.html": """<span class="{{ classes }}">{{ content }}</span>""",
     "command.html": "{{ content }}",
-    "document.html": "<html><head></head><body>{{ content|join() }}</body></html>",
+    "document.html": "<html><head></head><body>{{ content }}</body></html>",
     "footnote_def.html": '<div id="{{ defanchor }}"><a href="#{{ refanchor }}">{{ number }}</a> {{ text }}</div>',
     "footnote_ref.html": '<sup>[<a id="{{ refanchor }}" href="#{{ defanchor }}">{{ number }}</a>]</sup>',
-    "footnotes.html": '<div id="_footnotes">{{ entries|join }}</div>',
+    "footnotes.html": '<div id="_footnotes">{{ entries }}</div>',
     "header.html": '<h{{ level }} id="{{ anchor }}">{% if id %}<a id="{{ id }}"></a>{% endif %}{{ value }}</h{{ level }}>',
     "horizontal_rule.html": "<hr>",
-    "image.html": '<div class="imageblock"><div class="content"><img src="{{ uri }}"{% if alt_text %} alt="{{ alt_text }}"{% endif %}>{% if title %}<div class="title">{{ title|join }}</div>{% endif %}</div></div>',
+    "image.html": '<div class="imageblock"><div class="content"><img src="{{ uri }}"{% if alt_text %} alt="{{ alt_text }}"{% endif %}>{% if title %}<div class="title">{{ title }}</div>{% endif %}</div></div>',
     "inline_image.html": '<span class="image"><img src="{{ uri }}"{%if alt_text %} alt="{{ alt_text }}"{% endif %}></span>',
     "link.html": '<a href="{{ target }}">{{ text }}</a>',
-    "list.html": "<{% if ordered %}ol{% else %}ul{% endif %}>{{ items|join }}</{% if ordered %}ol{% else %}ul{% endif %}>",
+    "list.html": "<{% if ordered %}ol{% else %}ul{% endif %}>{{ items }}</{% if ordered %}ol{% else %}ul{% endif %}>",
     "list_item.html": "<li>{{ content }}</li>",
     "macro.html": "",
     "paragraph.html": "<p>{{ content }}</p>",
-    "quote.html": '<blockquote><div class="content">{{ content|join }}</div></blockquote><div class="attribution">{{ attribution }}</div>',
+    "quote.html": '<blockquote><div class="content">{{ content }}</div></blockquote><div class="attribution">{{ attribution }}</div>',
     "raw.html": "{{ content }}",
     "sentence.html": "{{ content }}",
     "source.html": '<div class="source">{% if title %}<div class="title">{{ title }}</div>{% endif %}<div class="content">{{ code }}</div></div>{% if callouts %}<div class="colist arabic"><table><tbody>{% for callout in callouts %}<tr><td>{{ callout[0] }}</td><td>{{ callout[1] }}</td></tr>{% endfor %}</tbody></table></div>{% endif %}',
     "star.html": "<strong>{{ content }}</strong>",
     "text.html": "{{ value }}",
-    "toc.html": "<ul>{% if entries%}{{ entries|join }}{% endif %}</ul>",
-    "toc_entry.html": '<li><a href="#{{ anchor }}">{{ text }}</a>{% if children %}<ul>{{ children|join }}</ul>{% endif %}</li>',
+    "toc.html": "<div>{% if entries%}<ul>{{ entries }}</ul>{% endif %}</div>",
+    "toc_entry.html": '<li><a href="#{{ anchor }}">{{ text }}</a>{% if children %}<ul>{{ children }}</ul>{% endif %}</li>',
     "underscore.html": "<em>{{ content }}</em>",
     "verbatim.html": "<code>{{ content }}</code>",
 }
@@ -74,7 +74,10 @@ class HTMLVisitor(Visitor):
         return {"content": node["value"]}
 
     def _visit_class(self, node):
-        return {"classes": node["classes"], "content": self.visit(node["content"])}
+        return {
+            "classes": " ".join(node["classes"]),
+            "content": self.visit(node["content"]),
+        }
 
     def _visit_link(self, node):
         return {"text": node["text"], "target": node["target"]}
@@ -89,7 +92,7 @@ class HTMLVisitor(Visitor):
     def _visit_quote(self, node):
         return {
             "attribution": node["attribution"],
-            "content": self.visitlist(node["content"]),
+            "content": "".join(self.visitlist(node["content"])),
         }
 
     def _visit_raw(self, node):
@@ -101,15 +104,16 @@ class HTMLVisitor(Visitor):
                 f'admonition_{node["class"]}',
                 "admonition",
             ],
-            "admclass": node["class"],
+            "class": node["class"],
             "icon": node["icon"],
             "label": node["label"],
-            "content": self.visitlist(node["content"]),
+            "content": "".join(self.visitlist(node["content"])),
         }
 
     def _visit_block(self, node):
         return {
-            "content": self.visitlist(node["content"]),
+            "type": node["blocktype"],
+            "content": "".join(self.visitlist(node["content"])),
             "title": self.visit(node["title"]),
             "kwargs": node["kwargs"],
         }
@@ -145,7 +149,7 @@ class HTMLVisitor(Visitor):
         }
 
     def _visit_document(self, node):
-        return {"content": [self.visit(item) for item in node["content"]]}
+        return {"content": "".join([self.visit(item) for item in node["content"]])}
 
     def _visit_list_item(self, node):
         return {"content": self.visit(node["content"])}
@@ -153,18 +157,18 @@ class HTMLVisitor(Visitor):
     def _visit_list(self, node):
         return {
             "ordered": node["ordered"],
-            "items": [self.visit(i) for i in node["items"]],
+            "items": "".join([self.visit(i) for i in node["items"]]),
         }
 
     def _visit_toc_entry(self, node):
         return {
             "anchor": node["anchor"],
             "text": node["text"],
-            "children": [self.visit(i) for i in node["children"]],
+            "children": "".join([self.visit(i) for i in node["children"]]),
         }
 
     def visit_toc(self, nodes):
-        keys = {"entries": [self.visit(i) for i in nodes]}
+        keys = {"entries": "".join([self.visit(i) for i in nodes])}
         return self._render("toc", **keys)
 
     def _visit_footnote_ref(self, node):
@@ -184,7 +188,7 @@ class HTMLVisitor(Visitor):
         }
 
     def visit_footnotes(self, nodes):
-        keys = {"entries": [self.visit(i) for i in nodes]}
+        keys = {"entries": "".join([self.visit(i) for i in nodes])}
         return self._render("footnotes", **keys)
 
     def _visit_command(self, node):

@@ -22,6 +22,7 @@ def test_title_block():
         {
             "type": "block",
             "args": [],
+            "blocktype": None,
             "kwargs": {},
             "secondary_content": [],
             "title": {
@@ -84,6 +85,7 @@ def test_title_without_spaces():
         {
             "type": "block",
             "args": [],
+            "blocktype": None,
             "kwargs": {},
             "secondary_content": [],
             "title": {
@@ -146,6 +148,7 @@ def test_title_with_rich_text():
         {
             "type": "block",
             "args": [],
+            "blocktype": None,
             "kwargs": {},
             "secondary_content": [],
             "title": {
@@ -225,7 +228,8 @@ def test_title_block_with_attributes():
     expected = [
         {
             "type": "block",
-            "args": ["blocktype"],
+            "args": [],
+            "blocktype": "blocktype",
             "kwargs": {"attr1": "value1"},
             "secondary_content": [],
             "title": {

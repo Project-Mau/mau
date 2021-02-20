@@ -5,10 +5,22 @@ from pygments.formatters import get_formatter_by_name
 from mau.visitors.visitor import Visitor
 
 DEFAULT_TEMPLATES = {
-    "admonition.html": '<div class="{{ class }}"><table><tbody><tr><td class="icon"><i class="fa icon-{{ icon }}" title="{{ label }}"></i></td><td class="content">{{ content }}</td></tr></tbody></table></div>',
-    "block.html": '<div{% if type %} class="{{ type }}{% endif %}">{% if title %}<div class="title">{{ title }}</div>{% endif %}<div class="content">{{ content }}</div></div>',
-    "callout.html": '<i class="conum" data-value="{{ name }}"></i><b>({{ name }})</b>',
-    "class.html": """<span class="{{ classes }}">{{ content }}</span>""",
+    "admonition.html": (
+        '<div class="admonition {{ class }}">'
+        '<i class="fab fa-{{ icon }}"></i>'
+        '<div class="content">'
+        '<div class="title">{{ label }}</div>'
+        "<div>{{ content }}</div>"
+        "</div></div>"
+    ),
+    "block.html": (
+        '<div{% if type %} class="{{ type }}{% endif %}">'
+        '{% if title %}<div class="title">{{ title }}</div>{% endif %}'
+        '<div class="content">{{ content }}</div>'
+        "</div>"
+    ),
+    "callout.html": '<span class="callout">{{ name }}</span>',
+    "class.html": '<span class="{{ classes }}">{{ content }}</span>',
     "command.html": "{{ content }}",
     "document.html": "<html><head></head><body>{{ content }}</body></html>",
     "footnote_def.html": '<div id="{{ defanchor }}"><a href="#{{ refanchor }}">{{ number }}</a> {{ text }}</div>',
@@ -16,17 +28,33 @@ DEFAULT_TEMPLATES = {
     "footnotes.html": '<div id="_footnotes">{{ entries }}</div>',
     "header.html": '<h{{ level }} id="{{ anchor }}">{% if id %}<a id="{{ id }}"></a>{% endif %}{{ value }}</h{{ level }}>',
     "horizontal_rule.html": "<hr>",
-    "image.html": '<div class="imageblock"><div class="content"><img src="{{ uri }}"{% if alt_text %} alt="{{ alt_text }}"{% endif %}>{% if title %}<div class="title">{{ title }}</div>{% endif %}</div></div>',
+    "image.html": (
+        '<div class="imageblock">'
+        '<div class="content">'
+        '<img src="{{ uri }}"{% if alt_text %} alt="{{ alt_text }}"{% endif %}>'
+        '{% if title %}<div class="title">{{ title }}</div>{% endif %}'
+        "</div></div>"
+    ),
     "inline_image.html": '<span class="image"><img src="{{ uri }}"{%if alt_text %} alt="{{ alt_text }}"{% endif %}></span>',
     "link.html": '<a href="{{ target }}">{{ text }}</a>',
     "list.html": "<{% if ordered %}ol{% else %}ul{% endif %}>{{ items }}</{% if ordered %}ol{% else %}ul{% endif %}>",
     "list_item.html": "<li>{{ content }}</li>",
     "macro.html": "",
     "paragraph.html": "<p>{{ content }}</p>",
-    "quote.html": '<blockquote><div class="content">{{ content }}</div></blockquote><div class="attribution">{{ attribution }}</div>',
+    "quote.html": "<blockquote>{{ content }}<cite>{{ attribution }}</cite></blockquote>",
     "raw.html": "{{ content }}",
     "sentence.html": "{{ content }}",
-    "source.html": '<div class="source">{% if title %}<div class="title">{{ title }}</div>{% endif %}<div class="content">{{ code }}</div></div>{% if callouts %}<div class="colist arabic"><table><tbody>{% for callout in callouts %}<tr><td>{{ callout[0] }}</td><td>{{ callout[1] }}</td></tr>{% endfor %}</tbody></table></div>{% endif %}',
+    "source.html": (
+        '<div class="code">'
+        '{% if title %}<div class="title">{{ title }}</div>{% endif %}'
+        '<div class="content">{{ code }}</div>'
+        '{% if callouts %}<div class="callouts">'
+        "<table><tbody>"
+        "{% for callout in callouts %}<tr><td>{{ callout[0] }}</td><td>{{ callout[1] }}</td></tr>{% endfor %}"
+        "</tbody></table>"
+        "</div>{% endif %}"
+        "</div>"
+    ),
     "star.html": "<strong>{{ content }}</strong>",
     "text.html": "{{ value }}",
     "toc.html": "<div>{% if entries%}<ul>{{ entries }}</ul>{% endif %}</div>",

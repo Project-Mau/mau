@@ -33,7 +33,7 @@ def test_source(mock_highlight):
         """
     )
 
-    expected = ['<div class="source"><div class="content">XYXYXY</div></div>']
+    expected = ['<div class="code"><div class="content">XYXYXY</div></div>']
 
     _test(source, expected)
 
@@ -54,7 +54,7 @@ def test_source_indentation(mock_highlight):
     )
 
     expected = [
-        '<div class="source"><div class="content">Not indented\n\n    Indented</div></div>'
+        '<div class="code"><div class="content">Not indented\n\n    Indented</div></div>'
     ]
 
     _test(source, expected)
@@ -75,7 +75,19 @@ def test_source_callouts():
     )
 
     expected = [
-        """<div class="source"><div class="content"><div class="highlight"><pre><span></span>Some code <i class="conum" data-value="1"></i><b>(1)</b>\n\nSome other code <i class="conum" data-value="3"></i><b>(3)</b>\n</pre></div>\n</div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>(1)</b></td><td>This is the first line</td></tr><tr><td><i class="conum" data-value="3"></i><b>(3)</b></td><td>This is the second line</td></tr></tbody></table></div>"""
+        (
+            '<div class="code">'
+            '<div class="content">'
+            '<div class="highlight">'
+            '<pre><span></span>Some code <span class="callout">1</span>\n\nSome other code <span class="callout">3</span>\n</pre>'
+            "</div>\n</div>"
+            '<div class="callouts">'
+            "<table><tbody>"
+            '<tr><td><span class="callout">1</span></td><td>This is the first line</td></tr>'
+            '<tr><td><span class="callout">3</span></td><td>This is the second line</td></tr>'
+            "</tbody></table>"
+            "</div></div>"
+        )
     ]
 
     _test(source, expected)

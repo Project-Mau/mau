@@ -142,11 +142,9 @@ def test_quote():
         remove_indentation(
             """
             <blockquote>
-              <div class="content">
-                <p>Learn about the Force, Luke.</p>
-              </div>
+              <p>Learn about the Force, Luke.</p>
+              <cite>Star Wars, 1977</cite>
             </blockquote>
-            <div class="attribution">Star Wars, 1977</div>
             """
         )
     ]
@@ -167,19 +165,14 @@ def test_admonition():
     expected = [
         remove_indentation(
             """
-            <div class="aclass">
-              <table>
-                <tbody>
-                  <tr>
-                    <td class="icon">
-                      <i class="fa icon-anicon" title="alabel"></i>
-                    </td>
-                    <td class="content">
-                      <p>This is my test admonition</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="admonition aclass">
+              <i class="fab fa-anicon"></i>
+              <div class="content">
+                <div class="title">alabel</div>
+                <div>
+                  <p>This is my test admonition</p>
+                </div>
+              </div>
             </div>
             """
         )

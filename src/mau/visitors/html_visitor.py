@@ -7,14 +7,14 @@ from mau.visitors.visitor import Visitor
 DEFAULT_TEMPLATES = {
     "admonition.html": (
         '<div class="admonition {{ class }}">'
-        '<i class="fab fa-{{ icon }}"></i>'
+        '<i class="{{ icon }}"></i>'
         '<div class="content">'
         '<div class="title">{{ label }}</div>'
         "<div>{{ content }}</div>"
         "</div></div>"
     ),
     "block.html": (
-        '<div{% if type %} class="{{ type }}{% endif %}">'
+        '<div{% if type %} class="{{ type }}"{% endif %}>'
         '{% if title %}<div class="title">{{ title }}</div>{% endif %}'
         '<div class="content">{{ content }}</div>'
         "</div>"
@@ -202,6 +202,7 @@ class HTMLVisitor(Visitor):
 
         return {
             "code": highlighted_src,
+            "language": node["language"],
             "callouts": callouts_list,
             "title": self.visit(node["title"]),
         }

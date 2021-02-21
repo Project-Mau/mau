@@ -105,31 +105,27 @@ def test_parse_list_with_multiple_levels():
                             {
                                 "type": "text",
                                 "value": "Item 1",
-                            }
-                        ],
-                    },
-                },
-                {
-                    "type": "list_item",
-                    "level": 1,
-                    "content": {
-                        "type": "list",
-                        "ordered": False,
-                        "main_node": False,
-                        "items": [
+                            },
                             {
-                                "type": "list_item",
-                                "level": 2,
-                                "content": {
-                                    "type": "sentence",
-                                    "content": [
-                                        {
-                                            "type": "text",
-                                            "value": "Item 1.1",
-                                        }
-                                    ],
-                                },
-                            }
+                                "type": "list",
+                                "ordered": False,
+                                "main_node": False,
+                                "items": [
+                                    {
+                                        "type": "list_item",
+                                        "level": 2,
+                                        "content": {
+                                            "type": "sentence",
+                                            "content": [
+                                                {
+                                                    "type": "text",
+                                                    "value": "Item 1.1",
+                                                }
+                                            ],
+                                        },
+                                    }
+                                ],
+                            },
                         ],
                     },
                 },
@@ -175,31 +171,27 @@ def test_parse_numbered_list():
                             {
                                 "type": "text",
                                 "value": "Item 1",
-                            }
-                        ],
-                    },
-                },
-                {
-                    "type": "list_item",
-                    "level": 1,
-                    "content": {
-                        "type": "list",
-                        "ordered": True,
-                        "main_node": False,
-                        "items": [
+                            },
                             {
-                                "type": "list_item",
-                                "level": 2,
-                                "content": {
-                                    "type": "sentence",
-                                    "content": [
-                                        {
-                                            "type": "text",
-                                            "value": "Item 1.1",
-                                        }
-                                    ],
-                                },
-                            }
+                                "type": "list",
+                                "ordered": True,
+                                "main_node": False,
+                                "items": [
+                                    {
+                                        "type": "list_item",
+                                        "level": 2,
+                                        "content": {
+                                            "type": "sentence",
+                                            "content": [
+                                                {
+                                                    "type": "text",
+                                                    "value": "Item 1.1",
+                                                }
+                                            ],
+                                        },
+                                    }
+                                ],
+                            },
                         ],
                     },
                 },
@@ -245,31 +237,27 @@ def test_parse_mixed_list():
                             {
                                 "type": "text",
                                 "value": "Item 1",
-                            }
-                        ],
-                    },
-                },
-                {
-                    "type": "list_item",
-                    "level": 1,
-                    "content": {
-                        "type": "list",
-                        "ordered": True,
-                        "main_node": False,
-                        "items": [
+                            },
                             {
-                                "type": "list_item",
-                                "level": 2,
-                                "content": {
-                                    "type": "sentence",
-                                    "content": [
-                                        {
-                                            "type": "text",
-                                            "value": "Item 1.1",
-                                        }
-                                    ],
-                                },
-                            }
+                                "type": "list",
+                                "ordered": True,
+                                "main_node": False,
+                                "items": [
+                                    {
+                                        "type": "list_item",
+                                        "level": 2,
+                                        "content": {
+                                            "type": "sentence",
+                                            "content": [
+                                                {
+                                                    "type": "text",
+                                                    "value": "Item 1.1",
+                                                }
+                                            ],
+                                        },
+                                    }
+                                ],
+                            },
                         ],
                     },
                 },

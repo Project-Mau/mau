@@ -134,11 +134,9 @@ class MainParser(BaseParser):
         if in_toc:
             self.headers.append((text, level, anchor))
 
-        args, kwargs = self._pop_attributes()
+        _, kwargs = self._pop_attributes()
 
-        self._save(
-            HeaderNode(value=text, level=level, anchor=anchor, args=args, kwargs=kwargs)
-        )
+        self._save(HeaderNode(value=text, level=level, anchor=anchor, kwargs=kwargs))
 
     @parser
     def _parse_content(self):
@@ -148,7 +146,7 @@ class MainParser(BaseParser):
 
         content_type, uri = content_type_and_uri.split(":", maxsplit=1)
 
-        args, kwargs = self._pop_attributes()
+        _, kwargs = self._pop_attributes()
 
         alt_text = kwargs.pop("alt_text", None)
         classes = kwargs.pop("classes", None)
@@ -163,7 +161,6 @@ class MainParser(BaseParser):
                 alt_text=alt_text,
                 classes=classes,
                 title=title,
-                args=args,
                 kwargs=kwargs,
             )
         )
@@ -219,7 +216,7 @@ class MainParser(BaseParser):
         )
 
     def _parse_conditional_block(self, condition, content, args, kwargs):
-        args, kwargs = merge_args(args, kwargs, ["variable", "value"])
+        _, kwargs = merge_args(args, kwargs, ["variable", "value"])
 
         match = self.variables.get(kwargs["variable"]) == kwargs.get("value", True)
         test = True if condition == "if" else False
@@ -237,7 +234,7 @@ class MainParser(BaseParser):
         self._save(RawNode(content=textlines))
 
     def _parse_source_block(self, content, secondary_content, title, args, kwargs):
-        delimiter = kwargs.get("callouts", ":")
+        delimiter = kwargs.pop("callouts", ":")
 
         # This removes callouts from the source code
         # and maps line numbers to callouts and text
@@ -288,19 +285,23 @@ class MainParser(BaseParser):
         # Source blocks must preserve the content literally
         textlines = [TextNode(line) for line in content]
 
-        args, kwargs = merge_args(args, kwargs, ["language"])
+        _, kwargs = merge_args(args, kwargs, ["language"])
 
-        if "language" not in kwargs:
-            kwargs["language"] = "text"
+        language = kwargs.pop("language", "text")
 
         self._save(
             SourceNode(
-                kwargs["language"], callouts=callouts, code=textlines, title=title
+                language,
+                callouts=callouts,
+                delimiter=delimiter,
+                code=textlines,
+                title=title,
+                kwargs=kwargs,
             )
         )
 
     def _parse_admonition_block(self, content, title, args, kwargs):
-        args, kwargs = merge_args(args, kwargs, ["class", "icon", "label"])
+        _, kwargs = merge_args(args, kwargs, ["class", "icon", "label"])
 
         p = analyse(MainParser(variables=self.variables), "\n".join(content))
 
@@ -313,13 +314,12 @@ class MainParser(BaseParser):
                 label=kwargs.pop("label"),
                 title=title,
                 content=p.nodes,
-                args=args,
                 kwargs=kwargs,
             )
         )
 
     def _parse_quote_block(self, content, title, args, kwargs):
-        args, kwargs = merge_args(args, kwargs, ["attribution"])
+        _, kwargs = merge_args(args, kwargs, ["attribution"])
 
         p = analyse(MainParser(), "\n".join(content))
 
@@ -327,7 +327,6 @@ class MainParser(BaseParser):
             QuoteNode(
                 kwargs.pop("attribution"),
                 content=p.nodes,
-                args=args,
                 kwargs=kwargs,
             )
         )
@@ -461,6 +460,9 @@ class MainParser(BaseParser):
         nodes.append(ListItemNode(level, content))
 
         while not self.peek_token() in [Token(TokenTypes.EOF), Token(TokenTypes.EOL)]:
+            # This is the SentenceNode inside the last node added to the list
+            last_node_sentence = nodes[-1].content
+
             with self:
                 self.get_token(TokenTypes.WHITESPACE)
 
@@ -473,7 +475,7 @@ class MainParser(BaseParser):
             elif len(self.peek_token().value) > level:
                 numbered = True if self.peek_token().value[0] == "#" else False
                 subnodes = self._parse_list_nodes()
-                nodes.append(ListItemNode(len(header), ListNode(numbered, subnodes)))
+                last_node_sentence.content.append(ListNode(numbered, subnodes))
             else:
                 break
 

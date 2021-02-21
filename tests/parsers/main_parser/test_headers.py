@@ -143,7 +143,7 @@ def test_attributes_header(header_anchor_mock):
             "type": "header",
             "value": "Header",
             "level": 1,
-            "args": ["value1"],
+            "args": [],
             "kwargs": {"someattr1": "somevalue1", "someattr2": "somevalue2"},
             "anchor": "Header-XXXXXX",
         },

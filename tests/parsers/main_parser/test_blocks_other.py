@@ -86,7 +86,6 @@ def test_parse_block_quote():
         {
             "type": "quote",
             "attribution": "Star Wars, 1977",
-            "args": [],
             "kwargs": {},
             "content": [
                 {
@@ -120,7 +119,6 @@ def test_parse_block_quote_ignores_title():
         {
             "type": "quote",
             "attribution": "Star Wars, 1977",
-            "args": [],
             "kwargs": {},
             "content": [
                 {

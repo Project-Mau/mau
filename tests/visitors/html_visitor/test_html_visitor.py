@@ -166,7 +166,7 @@ def test_admonition():
         remove_indentation(
             """
             <div class="admonition aclass">
-              <i class="fab fa-anicon"></i>
+              <i class="anicon"></i>
               <div class="content">
                 <div class="title">alabel</div>
                 <div>
@@ -350,8 +350,7 @@ def test_list_unordered():
         remove_indentation(
             """
             <ul>
-              <li>Item 1</li>
-              <li>
+              <li>Item 1
                 <ul>
                   <li>Item 1.1</li>
                 </ul>
@@ -378,8 +377,7 @@ def test_list_ordered():
         remove_indentation(
             """
             <ol>
-              <li>Item 1</li>
-              <li>
+              <li>Item 1
                 <ol>
                   <li>Item 1.1</li>
                 </ol>
@@ -406,8 +404,7 @@ def test_list_mixed():
         remove_indentation(
             """
             <ol>
-              <li>Item 1</li>
-              <li>
+              <li>Item 1
                 <ul>
                   <li>Item 1.1</li>
                 </ul>

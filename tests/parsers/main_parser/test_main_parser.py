@@ -126,7 +126,6 @@ def test_command():
         {
             "type": "command",
             "name": "somecommand",
-            "args": [],
             "kwargs": {"argument1": "value1", "argument2": "value2"},
         },
     ]
@@ -140,7 +139,6 @@ def test_command_without_arguments():
         {
             "type": "command",
             "name": "somecommand",
-            "args": [],
             "kwargs": {},
         },
     ]

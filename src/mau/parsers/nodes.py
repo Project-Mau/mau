@@ -201,8 +201,8 @@ class HorizontalRuleNode(PageNode):
 class ContentImageNode(PageNode):
     node_type = "content_image"
 
-    def __init__(self, uri, alt_text, classes=None, title=None, args=None, kwargs=None):
-        super().__init__(args, kwargs)
+    def __init__(self, uri, alt_text, classes=None, title=None, kwargs=None):
+        super().__init__((), kwargs)
         self.uri = uri
         self.alt_text = alt_text
         self.classes = classes
@@ -244,8 +244,8 @@ class HeaderNode(PageValueNode):
     # DOCUMENT
     node_type = "header"
 
-    def __init__(self, value, level, anchor, args=None, kwargs=None):
-        super().__init__(value, args, kwargs)
+    def __init__(self, value, level, anchor, kwargs=None):
+        super().__init__(value, (), kwargs)
         self.level = level
         self.anchor = anchor
 
@@ -285,10 +285,11 @@ class BlockNode(PageNode):
 
 class SourceNode(PageNode):
     # DOCUMENT
-    def __init__(self, language, callouts, code, title=None, args=None, kwargs=None):
-        super().__init__(args, kwargs)
+    def __init__(self, language, callouts, delimiter, code, title=None, kwargs=None):
+        super().__init__((), kwargs)
         self.language = language
         self.callouts = callouts
+        self.delimiter = delimiter
         self.code = code
         self.title = title
 
@@ -297,9 +298,9 @@ class SourceNode(PageNode):
             "type": "source",
             "language": self.language,
             "callouts": self.callouts,
+            "delimiter": self.delimiter,
             "code": [i.asdict() for i in self.code],
             "title": self.title.asdict() if self.title else None,
-            "args": self.args,
             "kwargs": self.kwargs,
         }
 
@@ -321,10 +322,8 @@ class RawNode(PageNode):
 
 class AdmonitionNode(PageNode):
     # DOCUMENT
-    def __init__(
-        self, admclass, icon, label, content, title=None, args=None, kwargs=None
-    ):
-        super().__init__(args, kwargs)
+    def __init__(self, admclass, icon, label, content, title=None, kwargs=None):
+        super().__init__((), kwargs)
         self.admclass = admclass
         self.icon = icon
         self.label = label
@@ -352,15 +351,14 @@ class CommandNode(PageNode):
         return {
             "type": "command",
             "name": self.name,
-            "args": self.args,
             "kwargs": self.kwargs,
         }
 
 
 class QuoteNode(PageNode):
     # DOCUMENT
-    def __init__(self, attribution, content, args=None, kwargs=None):
-        super().__init__(args, kwargs)
+    def __init__(self, attribution, content, kwargs=None):
+        super().__init__((), kwargs)
         self.attribution = attribution
         self.content = content
 
@@ -369,7 +367,6 @@ class QuoteNode(PageNode):
             "type": "quote",
             "attribution": self.attribution,
             "content": [i.asdict() for i in self.content],
-            "args": self.args,
             "kwargs": self.kwargs,
         }
 

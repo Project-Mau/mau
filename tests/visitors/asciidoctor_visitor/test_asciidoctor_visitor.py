@@ -244,7 +244,7 @@ def test_unordered_list():
         """
     )
 
-    expected = ["* Item 1\n* Item 2\n** Item 2.1\n*** Item 2.1.1\n* Item 3\n"]
+    expected = ["\n* Item 1\n* Item 2\n** Item 2.1\n*** Item 2.1.1\n* Item 3\n"]
 
     _test(source, expected)
 
@@ -260,7 +260,7 @@ def test_ordered_list():
         """
     )
 
-    expected = [". Item 1\n. Item 2\n.. Item 2.1\n... Item 2.1.1\n. Item 3\n"]
+    expected = ["\n. Item 1\n. Item 2\n.. Item 2.1\n... Item 2.1.1\n. Item 3\n"]
 
     _test(source, expected)
 

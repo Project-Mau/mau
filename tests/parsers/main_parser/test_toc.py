@@ -164,7 +164,6 @@ def test_parse_header_not_in_toc(header_anchor_mock):
     expected = [
         {
             "type": "header",
-            "args": [],
             "kwargs": {},
             "value": "Title of the section",
             "level": 1,

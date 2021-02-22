@@ -19,7 +19,6 @@ def test_include_image_with_only_path():
             "alt_text": None,
             "title": None,
             "classes": None,
-            "args": [],
             "kwargs": {},
         },
     ]
@@ -39,7 +38,6 @@ def test_include_image_with_full_uri():
             "alt_text": None,
             "title": None,
             "classes": None,
-            "args": [],
             "kwargs": {},
         },
     ]
@@ -59,7 +57,6 @@ def test_include_image_with_http():
             "alt_text": None,
             "title": None,
             "classes": None,
-            "args": [],
             "kwargs": {},
         },
     ]
@@ -80,7 +77,6 @@ def test_include_image_with_alt_text():
             "alt_text": "This is a beautiful image",
             "title": None,
             "classes": None,
-            "args": [],
             "kwargs": {},
         },
     ]
@@ -101,7 +97,6 @@ def test_include_image_with_classes():
             "alt_text": None,
             "title": None,
             "classes": ["class1", "class2"],
-            "args": [],
             "kwargs": {},
         },
     ]
@@ -122,7 +117,6 @@ def test_include_image_with_arguments():
             "alt_text": None,
             "title": None,
             "classes": None,
-            "args": [],
             "kwargs": {"argument1": "value1", "argument2": "value2"},
         },
     ]
@@ -146,7 +140,6 @@ def test_include_image_with_title():
                 "type": "sentence",
             },
             "classes": None,
-            "args": [],
             "kwargs": {},
         },
     ]

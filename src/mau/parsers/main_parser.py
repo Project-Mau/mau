@@ -200,7 +200,7 @@ class MainParser(BaseParser):
             )
 
         if len(args) != 0 and args[0] == "admonition":
-            return self._parse_admonition_block(content, title, args[1:], kwargs)
+            return self._parse_admonition_block(content, args[1:], kwargs)
 
         if len(args) != 0 and args[0] == "quote":
             return self._parse_quote_block(content, title, args[1:], kwargs)
@@ -300,7 +300,7 @@ class MainParser(BaseParser):
             )
         )
 
-    def _parse_admonition_block(self, content, title, args, kwargs):
+    def _parse_admonition_block(self, content, args, kwargs):
         _, kwargs = merge_args(args, kwargs, ["class", "icon", "label"])
 
         p = analyse(MainParser(variables=self.variables), "\n".join(content))
@@ -312,7 +312,6 @@ class MainParser(BaseParser):
                 admclass=kwargs.pop("class"),
                 icon=kwargs.pop("icon"),
                 label=kwargs.pop("label"),
-                title=title,
                 content=p.nodes,
                 kwargs=kwargs,
             )

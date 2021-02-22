@@ -21,7 +21,6 @@ def test_admonition():
             "class": "someclass",
             "icon": "someicon",
             "label": "somelabel",
-            "args": [],
             "kwargs": {},
             "content": [
                 {
@@ -55,7 +54,6 @@ def test_admonition_ignores_title():
             "class": "someclass",
             "icon": "someicon",
             "label": "somelabel",
-            "args": [],
             "kwargs": {},
             "content": [
                 {

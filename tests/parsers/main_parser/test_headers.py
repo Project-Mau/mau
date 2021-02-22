@@ -20,7 +20,6 @@ def test_parse_header_level_1(header_anchor_mock):
     expected = [
         {
             "type": "header",
-            "args": [],
             "kwargs": {},
             "value": "Title of the section",
             "level": 1,
@@ -42,7 +41,6 @@ def test_parse_header_level_3(header_anchor_mock):
     expected = [
         {
             "type": "header",
-            "args": [],
             "kwargs": {},
             "value": "Title of a subsection",
             "level": 3,
@@ -69,7 +67,6 @@ def test_parse_collect_headers(header_anchor_mock):
     expected = [
         {
             "type": "header",
-            "args": [],
             "kwargs": {},
             "value": "Header 1",
             "level": 1,
@@ -77,7 +74,6 @@ def test_parse_collect_headers(header_anchor_mock):
         },
         {
             "type": "header",
-            "args": [],
             "kwargs": {},
             "value": "Header 1.1",
             "level": 2,
@@ -85,7 +81,6 @@ def test_parse_collect_headers(header_anchor_mock):
         },
         {
             "type": "header",
-            "args": [],
             "kwargs": {},
             "value": "Header 1.2",
             "level": 2,
@@ -93,7 +88,6 @@ def test_parse_collect_headers(header_anchor_mock):
         },
         {
             "type": "header",
-            "args": [],
             "kwargs": {},
             "value": "Header 2",
             "level": 1,
@@ -101,7 +95,6 @@ def test_parse_collect_headers(header_anchor_mock):
         },
         {
             "type": "header",
-            "args": [],
             "kwargs": {},
             "value": "Header 2.1",
             "level": 2,
@@ -109,7 +102,6 @@ def test_parse_collect_headers(header_anchor_mock):
         },
         {
             "type": "header",
-            "args": [],
             "kwargs": {},
             "value": "Header 2.1.1",
             "level": 3,
@@ -143,7 +135,6 @@ def test_attributes_header(header_anchor_mock):
             "type": "header",
             "value": "Header",
             "level": 1,
-            "args": [],
             "kwargs": {"someattr1": "somevalue1", "someattr2": "somevalue2"},
             "anchor": "Header-XXXXXX",
         },

@@ -110,13 +110,13 @@ Headers are created using the character ``=``. The number of equal signs represe
   
   == Header 2
   
-  == Header 3
+  === Header 3
   
-  === Header 4
+  ==== Header 4
   
-  ==== Header 5
+  ===== Header 5
   
-  ===== Header 6
+  ====== Header 6
 
 Headers are automatically collected and included in the Table of Contents, but if you want to avoid it for a specific section you can exclude the header using an exclamation mark::
 

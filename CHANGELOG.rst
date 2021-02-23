@@ -2,10 +2,10 @@
 Changelog
 =========
 
-Version 1.0.0
+Version 1.1.1
 =============
 
-- A working initial implementation
+- GitHub user AlexNodex (https://github.com/AlexNodex) contributed a fix to the documentation (wrong headers). Thanks!
 
 Version 1.1.0
 =============
@@ -21,3 +21,8 @@ Version 1.1.0
 - [internal] A global review of arguments and how they are passed to nodes
 - [internal] A global review of node objects
 - [internal] Code of ``Visitor`` objects has been improved to make them simpler to write
+
+Version 1.0.0
+=============
+
+- A working initial implementation

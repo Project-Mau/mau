@@ -192,7 +192,8 @@ class HTMLVisitor(Visitor):
                 line=highlighted_src_lines[linenum],
                 callout=self._render("callout", name=callout_name),
             )
-            callouts[callout_name] = callout_text
+            if callout_text != "":
+                callouts[callout_name] = callout_text
 
         highlighted_src = "\n".join(highlighted_src_lines)
         callouts_list = [

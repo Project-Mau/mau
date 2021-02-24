@@ -91,3 +91,31 @@ def test_source_callouts():
     ]
 
     _test(source, expected)
+
+
+def test_source_empty_callouts():
+    source = textwrap.dedent(
+        """
+        [source,callouts=":"]
+        ----
+        Some code:1:
+        
+        Some other code:3:
+        ----
+        1:
+        3:
+        """
+    )
+
+    expected = [
+        (
+            '<div class="code">'
+            '<div class="content">'
+            '<div class="highlight">'
+            '<pre><span></span>Some code <span class="callout">1</span>\n\nSome other code <span class="callout">3</span>\n</pre>'
+            "</div>\n</div>"
+            "</div>"
+        )
+    ]
+
+    _test(source, expected)

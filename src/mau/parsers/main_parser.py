@@ -273,7 +273,8 @@ class MainParser(BaseParser):
             if ":" not in line:
                 raise ParseError
 
-            callout_name, text = line.split(": ")
+            callout_name, text = line.split(":")
+            text = text.strip()
 
             try:
                 linenum = callout_name_to_linenum[callout_name]

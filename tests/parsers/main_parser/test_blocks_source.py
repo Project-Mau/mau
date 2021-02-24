@@ -458,3 +458,39 @@ def test_source_callout_wrong_format():
 
     with pytest.raises(ParseError):
         p.parse()
+
+
+def test_source_callouts_without_definition():
+    source = """
+            [source,somelang]
+            ----
+            import sys
+            import os:3:
+
+            print(os.environ["HOME"]):6:
+            ----
+            3:
+            6:
+            """
+
+    expected = [
+        {
+            "type": "source",
+            "language": "somelang",
+            "callouts": {
+                1: ("3", ""),
+                3: ("6", ""),
+            },
+            "delimiter": ":",
+            "kwargs": {},
+            "title": None,
+            "code": [
+                {"type": "text", "value": "import sys"},
+                {"type": "text", "value": "import os"},
+                {"type": "text", "value": ""},
+                {"type": "text", "value": 'print(os.environ["HOME"])'},
+            ],
+        },
+    ]
+
+    _test(source, expected)

@@ -197,6 +197,17 @@ class HTMLVisitor(Visitor):
         # 'hl_lines' which is a list of comma-separated integers
         hl_lines = node_pygments_config.get("hl_lines", "")
         hl_lines = hl_lines.split(",")
+
+        # Add all lines that have been highlighted with Mau's custom callouts
+        hl_lines = [i for i in hl_lines if i != ""]
+
+        # Pygments starts counting form 1, Mau from 0
+        highlight_markers = [i + 1 for i in node["highlights"]]
+
+        # Merge the two
+        hl_lines = list(set(hl_lines) | set(highlight_markers))
+
+        # Tell Pygments which lines we want to highlight
         formatter_config["hl_lines"] = hl_lines
 
         # Create the formatter and pass the config

@@ -395,6 +395,7 @@ class SourceNode(Node):
         language: the language of the code contained in this block
         callouts: callouts for this source code
                   {"markers": [(linenum, name)], "contents": {name:text}}
+        highlights: list of lines that have to be highlighted
         delimiter: callouts delimiter
         code: content of the block
         title: title of this block
@@ -403,9 +404,12 @@ class SourceNode(Node):
 
     node_type = "source"
 
-    def __init__(self, language, callouts, delimiter, code, title=None, kwargs=None):
+    def __init__(
+        self, language, callouts, highlights, delimiter, code, title=None, kwargs=None
+    ):
         self.language = language
         self.callouts = callouts
+        self.highlights = highlights
         self.delimiter = delimiter
         self.code = code
         self.title = title
@@ -416,6 +420,7 @@ class SourceNode(Node):
             "type": self.node_type,
             "language": self.language,
             "callouts": self.callouts,
+            "highlights": self.highlights,
             "delimiter": self.delimiter,
             "code": [i.asdict() for i in self.code],
             "title": self.title.asdict() if self.title else None,

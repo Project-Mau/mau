@@ -24,6 +24,7 @@ def test_source():
             "type": "source",
             "language": "somelang",
             "callouts": {"markers": {}, "contents": {}},
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -54,6 +55,7 @@ def test_source_with_title():
             "type": "source",
             "language": "somelang",
             "callouts": {"markers": {}, "contents": {}},
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": {
@@ -86,6 +88,7 @@ def test_source_without_language():
             "type": "source",
             "language": "text",
             "callouts": {"markers": {}, "contents": {}},
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -114,6 +117,7 @@ def test_source_ignores_mau_syntax():
             "type": "source",
             "language": "text",
             "callouts": {"markers": {}, "contents": {}},
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -140,6 +144,7 @@ def test_source_respects_spaces():
             "type": "source",
             "language": "text",
             "callouts": {"markers": {}, "contents": {}},
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -166,6 +171,7 @@ def test_source_respects_indentation():
             "type": "source",
             "language": "text",
             "callouts": {"markers": {}, "contents": {}},
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -194,6 +200,7 @@ def test_source_named_language():
             "type": "source",
             "language": "somelang",
             "callouts": {"markers": {}, "contents": {}},
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -223,6 +230,7 @@ def test_source_named_language_wins():
             "type": "source",
             "language": "somelang",
             "callouts": {"markers": {}, "contents": {}},
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -261,6 +269,7 @@ def test_source_callouts():
                     "6": "Environment variables are paramount",
                 },
             },
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -300,6 +309,7 @@ def test_source_callouts_possible_clash():
                     "6": "Environment variables are paramount",
                 },
             },
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -340,6 +350,7 @@ def test_source_callouts_default_delimiter():
                     "6": "Environment variables are paramount",
                 },
             },
+            "highlights": [],
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -379,6 +390,7 @@ def test_source_callouts_custom_delimiter():
                     "6": "Environment variables are paramount",
                 },
             },
+            "highlights": [],
             "delimiter": "|",
             "kwargs": {},
             "title": None,
@@ -439,6 +451,7 @@ def test_source_callouts_non_numeric_labels():
                     "step2": "Environment variables are paramount",
                 },
             },
+            "highlights": [],
             "delimiter": "|",
             "kwargs": {},
             "title": None,
@@ -494,6 +507,77 @@ def test_source_callouts_without_definition():
                 "markers": {1: "3", 3: "6"},
                 "contents": {},
             },
+            "highlights": [],
+            "delimiter": ":",
+            "kwargs": {},
+            "title": None,
+            "code": [
+                {"type": "text", "value": "import sys"},
+                {"type": "text", "value": "import os"},
+                {"type": "text", "value": ""},
+                {"type": "text", "value": 'print(os.environ["HOME"])'},
+            ],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_source_highlights():
+    source = """
+            [source,somelang]
+            ----
+            import sys
+            import os:@:
+
+            print(os.environ["HOME"]):@:
+            ----
+            """
+
+    expected = [
+        {
+            "type": "source",
+            "language": "somelang",
+            "callouts": {
+                "markers": {},
+                "contents": {},
+            },
+            "highlights": [1, 3],
+            "delimiter": ":",
+            "kwargs": {},
+            "title": None,
+            "code": [
+                {"type": "text", "value": "import sys"},
+                {"type": "text", "value": "import os"},
+                {"type": "text", "value": ""},
+                {"type": "text", "value": 'print(os.environ["HOME"])'},
+            ],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_source_highlights_custom_marker():
+    source = """
+            [source,somelang,highlight=#]
+            ----
+            import sys:#:
+            import os
+
+            print(os.environ["HOME"]):#:
+            ----
+            """
+
+    expected = [
+        {
+            "type": "source",
+            "language": "somelang",
+            "callouts": {
+                "markers": {},
+                "contents": {},
+            },
+            "highlights": [0, 3],
             "delimiter": ":",
             "kwargs": {},
             "title": None,

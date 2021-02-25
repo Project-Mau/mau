@@ -235,10 +235,14 @@ class MainParser(BaseParser):
 
     def _parse_source_block(self, content, secondary_content, title, args, kwargs):
         delimiter = kwargs.pop("callouts", ":")
+        highlight_marker = kwargs.pop("highlight", "@")
 
         # A dictionary that contains callout markers in
         # the form {linenum:name}
         callout_markers = {}
+
+        # A list of highlighted lines
+        highlighted_lines = []
 
         lines_with_callouts = [
             (linenum, line)
@@ -258,8 +262,12 @@ class MainParser(BaseParser):
             callout_name = splits[-1]
             line = delimiter.join(splits[:-1])
 
-            callout_markers[linenum] = callout_name
             content[linenum] = line
+
+            if callout_name == highlight_marker:
+                highlighted_lines.append(linenum)
+            else:
+                callout_markers[linenum] = callout_name
 
         # A dictionary that contains the text for each
         # marker in the form {name:text}
@@ -296,6 +304,7 @@ class MainParser(BaseParser):
             SourceNode(
                 language,
                 callouts=callouts,
+                highlights=highlighted_lines,
                 delimiter=delimiter,
                 code=textlines,
                 title=title,

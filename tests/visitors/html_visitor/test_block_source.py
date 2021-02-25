@@ -136,3 +136,22 @@ def test_source_pygments_config():
     ]
 
     _test(source, expected)
+
+
+def test_source_highlights():
+    source = textwrap.dedent(
+        """
+        [source]
+        ----
+        import os:@:
+
+        print(os.environ["HOME"]):@:
+        ----
+        """
+    )
+
+    expected = [
+        '<div class="code"><div class="content"><div class="highlight"><pre><span></span><span class="hll">import os\n</span>\n<span class="hll">print(os.environ[&quot;HOME&quot;])\n</span></pre></div>\n</div></div>'
+    ]
+
+    _test(source, expected)

@@ -212,21 +212,21 @@ class HTMLVisitor(Visitor):
         highlighted_src_lines = highlighted_src.split("\n")
 
         # Inject callout markers in the highlighted code
+        callout_markers = node["callouts"]["markers"]
+        callout_contents = node["callouts"]["contents"]
+
         callouts = {}
-        for linenum, callout in node["callouts"].items():
-            callout_name, callout_text = callout
+        for linenum, callout_name in callout_markers.items():
             highlighted_src_lines[linenum] = "{line} {callout}".format(
                 line=highlighted_src_lines[linenum],
                 callout=self._render("callout", name=callout_name),
             )
-            if callout_text != "":
-                callouts[callout_name] = callout_text
 
         # Rebuild the source code part and the list of callouts
         highlighted_src = "\n".join(highlighted_src_lines)
         callouts_list = [
             (self._render("callout", name=name), text)
-            for name, text in callouts.items()
+            for name, text in callout_contents.items()
         ]
 
         return {

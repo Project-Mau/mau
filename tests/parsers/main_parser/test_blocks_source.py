@@ -23,7 +23,7 @@ def test_source():
         {
             "type": "source",
             "language": "somelang",
-            "callouts": {},
+            "callouts": {"markers": {}, "contents": {}},
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -53,7 +53,7 @@ def test_source_with_title():
         {
             "type": "source",
             "language": "somelang",
-            "callouts": {},
+            "callouts": {"markers": {}, "contents": {}},
             "delimiter": ":",
             "kwargs": {},
             "title": {
@@ -85,7 +85,7 @@ def test_source_without_language():
         {
             "type": "source",
             "language": "text",
-            "callouts": {},
+            "callouts": {"markers": {}, "contents": {}},
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -113,7 +113,7 @@ def test_source_ignores_mau_syntax():
         {
             "type": "source",
             "language": "text",
-            "callouts": {},
+            "callouts": {"markers": {}, "contents": {}},
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -139,7 +139,7 @@ def test_source_respects_spaces():
         {
             "type": "source",
             "language": "text",
-            "callouts": {},
+            "callouts": {"markers": {}, "contents": {}},
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -165,7 +165,7 @@ def test_source_respects_indentation():
         {
             "type": "source",
             "language": "text",
-            "callouts": {},
+            "callouts": {"markers": {}, "contents": {}},
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -193,7 +193,7 @@ def test_source_named_language():
         {
             "type": "source",
             "language": "somelang",
-            "callouts": {},
+            "callouts": {"markers": {}, "contents": {}},
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -222,7 +222,7 @@ def test_source_named_language_wins():
         {
             "type": "source",
             "language": "somelang",
-            "callouts": {},
+            "callouts": {"markers": {}, "contents": {}},
             "delimiter": ":",
             "kwargs": {},
             "title": None,
@@ -255,8 +255,11 @@ def test_source_callouts():
             "type": "source",
             "language": "somelang",
             "callouts": {
-                1: ("3", "This is an import"),
-                3: ("6", "Environment variables are paramount"),
+                "markers": {1: "3", 3: "6"},
+                "contents": {
+                    "3": "This is an import",
+                    "6": "Environment variables are paramount",
+                },
             },
             "delimiter": ":",
             "kwargs": {},
@@ -291,8 +294,11 @@ def test_source_callouts_possible_clash():
             "type": "source",
             "language": "somelang",
             "callouts": {
-                1: ("3", "This is an import"),
-                3: ("6", "Environment variables are paramount"),
+                "markers": {1: "3", 3: "6"},
+                "contents": {
+                    "3": "This is an import",
+                    "6": "Environment variables are paramount",
+                },
             },
             "delimiter": ":",
             "kwargs": {},
@@ -328,8 +334,11 @@ def test_source_callouts_default_delimiter():
             "type": "source",
             "language": "somelang",
             "callouts": {
-                1: ("3", "This is an import"),
-                3: ("6", "Environment variables are paramount"),
+                "markers": {1: "3", 3: "6"},
+                "contents": {
+                    "3": "This is an import",
+                    "6": "Environment variables are paramount",
+                },
             },
             "delimiter": ":",
             "kwargs": {},
@@ -364,8 +373,11 @@ def test_source_callouts_custom_delimiter():
             "type": "source",
             "language": "somelang",
             "callouts": {
-                1: ("3", "This is an import"),
-                3: ("6", "Environment variables are paramount"),
+                "markers": {1: "3", 3: "6"},
+                "contents": {
+                    "3": "This is an import",
+                    "6": "Environment variables are paramount",
+                },
             },
             "delimiter": "|",
             "kwargs": {},
@@ -421,8 +433,11 @@ def test_source_callouts_non_numeric_labels():
             "type": "source",
             "language": "somelang",
             "callouts": {
-                1: ("step1", "This is an import"),
-                3: ("step2", "Environment variables are paramount"),
+                "markers": {1: "step1", 3: "step2"},
+                "contents": {
+                    "step1": "This is an import",
+                    "step2": "Environment variables are paramount",
+                },
             },
             "delimiter": "|",
             "kwargs": {},
@@ -469,8 +484,6 @@ def test_source_callouts_without_definition():
 
             print(os.environ["HOME"]):6:
             ----
-            3:
-            6:
             """
 
     expected = [
@@ -478,8 +491,8 @@ def test_source_callouts_without_definition():
             "type": "source",
             "language": "somelang",
             "callouts": {
-                1: ("3", ""),
-                3: ("6", ""),
+                "markers": {1: "3", 3: "6"},
+                "contents": {},
             },
             "delimiter": ":",
             "kwargs": {},

@@ -110,19 +110,20 @@ class AsciidoctorVisitor(Visitor):
     def _visit_source(self, node):
         src = [i["value"] for i in node["code"]]
 
-        callouts = {}
-        for linenum, callout in node["callouts"].items():
-            callout_name, callout_text = callout
+        # Inject callout markers in the highlighted code
+        callout_markers = node["callouts"]["markers"]
+        callout_contents = node["callouts"]["contents"]
+
+        for linenum, callout_name in callout_markers.items():
             src[linenum] = "{line} {callout}".format(
                 line=src[linenum],
                 callout=self._render("callout", name=callout_name),
             )
-            callouts[callout_name] = callout_text
 
         src = "\n".join(src)
         callouts_list = [
             (self._render("callout", name=name), text)
-            for name, text in callouts.items()
+            for name, text in callout_contents.items()
         ]
 
         return {

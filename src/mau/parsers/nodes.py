@@ -394,6 +394,7 @@ class SourceNode(Node):
     Arguments:
         language: the language of the code contained in this block
         callouts: callouts for this source code
+                  {"markers": [(linenum, name)], "contents": {name:text}}
         delimiter: callouts delimiter
         code: content of the block
         title: title of this block

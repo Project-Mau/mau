@@ -236,15 +236,17 @@ class MainParser(BaseParser):
     def _parse_source_block(self, content, secondary_content, title, args, kwargs):
         delimiter = kwargs.pop("callouts", ":")
 
-        # This removes callouts from the source code
-        # and maps line numbers to callouts and text
-        # {linenum:(callout,text)}
-        marked_lines = {}
+        # A dictionary that contains callout markers in
+        # the form {linenum:name}
+        callout_markers = {}
 
-        for linenum, line in enumerate(content):
-            if not line.endswith(delimiter):
-                continue
+        lines_with_callouts = [
+            (linenum, line)
+            for linenum, line in enumerate(content)
+            if line.endswith(delimiter)
+        ]
 
+        for linenum, line in lines_with_callouts:
             # Remove the final delimiter
             line = line[:-1]
 
@@ -256,32 +258,32 @@ class MainParser(BaseParser):
             callout_name = splits[-1]
             line = delimiter.join(splits[:-1])
 
-            marked_lines[linenum] = (callout_name, line)
+            callout_markers[linenum] = callout_name
+            content[linenum] = line
 
-        # This maps callouts names to line numbers
-        # {callout_name:linenum}
-        callout_name_to_linenum = {}
-        for linenum, mark in marked_lines.items():
-            callout_name, fixed_line = mark
-            content[linenum] = fixed_line
-            callout_name_to_linenum[callout_name] = linenum
+        # A dictionary that contains the text for each
+        # marker in the form {name:text}
+        callout_contents = {}
 
-        # This reads the callout text and connects
-        # it with the text line
-        callouts = {}
         for line in secondary_content:
             if ":" not in line:
-                raise ParseError
+                raise ParseError(
+                    f"Callout description should be written as 'linuenum: text'. Missing ':' in '{line}'"
+                )
 
-            callout_name, text = line.split(":")
+            name, text = line.split(":")
+
+            if name not in callout_markers.values():
+                raise ParseError(
+                    f"Callout {name} has not been created in the source code"
+                )
+
             text = text.strip()
 
-            try:
-                linenum = callout_name_to_linenum[callout_name]
-            except KeyError:
-                raise ParseError(f"Callout {callout_name} can't be found")
+            callout_contents[name] = text
 
-            callouts[linenum] = (callout_name, text)
+        # Put markers and contents together
+        callouts = {"markers": callout_markers, "contents": callout_contents}
 
         # Source blocks must preserve the content literally
         textlines = [TextNode(line) for line in content]

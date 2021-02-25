@@ -102,8 +102,6 @@ def test_source_empty_callouts():
         
         Some other code:3:
         ----
-        1:
-        3:
         """
     )
 

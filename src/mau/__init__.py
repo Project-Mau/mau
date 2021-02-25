@@ -30,7 +30,7 @@ class Mau:
         self.variables = {}
 
     def process(self, text):
-        self.config["mau"] = {"target_format": self.target_format}
+        self.config["target_format"] = self.target_format
 
         parser = MainParser(variables=self.config)
         parser.load(text)

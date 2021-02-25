@@ -178,7 +178,11 @@ class HTMLVisitor(Visitor):
 
     def _visit_source(self, node):
         lexer = get_lexer_by_name(node["language"])
-        formatter = get_formatter_by_name("html")
+
+        pygments_config = self.config.get("pygments", {})
+        formatter_config = pygments_config.get("html", {})
+
+        formatter = get_formatter_by_name("html", **formatter_config)
         src = "\n".join([i["value"] for i in node["code"]])
 
         highlighted_src = highlight(src, lexer, formatter)

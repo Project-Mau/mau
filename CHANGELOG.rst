@@ -2,6 +2,16 @@
 Changelog
 =========
 
+Version 1.2.0
+=============
+
+- [enhancement] Callouts can be added to source code without any definition
+- [enhancement] Lines can be highlighted with special markers and with Pygments syntax
+- [enhancement] Pygments can be configured through Mau's config dictionary
+- [enhancement] Source blocks now accept ``pygments.hl_lines`` to highlight lines
+- [fix] Fixed structure of the config dictionary
+- [internal] Simplified code to manage callouts
+
 Version 1.1.1
 =============
 

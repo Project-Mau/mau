@@ -177,18 +177,41 @@ class HTMLVisitor(Visitor):
         }
 
     def _visit_source(self, node):
+        # The Pygments lexer for the given language
         lexer = get_lexer_by_name(node["language"])
 
+        # Fetch global configuration for Pygments and for the HtmlFormatter
         pygments_config = self.config.get("pygments", {})
         formatter_config = pygments_config.get("html", {})
 
+        # Get all the attributes of this specific block
+        # that start with `pygments.`
+        node_pygments_config = dict(
+            (k.replace("pygments.", ""), v)
+            for k, v in node["kwargs"].items()
+            if k.startswith("pygments.")
+        )
+
+        # Converting from text to Python might be tricky,
+        # so for now I just update the formatter config with
+        # 'hl_lines' which is a list of comma-separated integers
+        hl_lines = node_pygments_config.get("hl_lines", "")
+        hl_lines = hl_lines.split(",")
+        formatter_config["hl_lines"] = hl_lines
+
+        # Create the formatter and pass the config
         formatter = get_formatter_by_name("html", **formatter_config)
+
+        # Get the raw source from the node
         src = "\n".join([i["value"] for i in node["code"]])
 
+        # Highlight the source with Pygments
         highlighted_src = highlight(src, lexer, formatter)
 
+        # Split it again into lines to work out callouts
         highlighted_src_lines = highlighted_src.split("\n")
 
+        # Inject callout markers in the highlighted code
         callouts = {}
         for linenum, callout in node["callouts"].items():
             callout_name, callout_text = callout
@@ -199,6 +222,7 @@ class HTMLVisitor(Visitor):
             if callout_text != "":
                 callouts[callout_name] = callout_text
 
+        # Rebuild the source code part and the list of callouts
         highlighted_src = "\n".join(highlighted_src_lines)
         callouts_list = [
             (self._render("callout", name=name), text)

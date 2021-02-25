@@ -119,3 +119,22 @@ def test_source_empty_callouts():
     ]
 
     _test(source, expected)
+
+
+def test_source_pygments_config():
+    source = textwrap.dedent(
+        """
+        [source,pygments.hl_lines="1,2,3"]
+        ----
+        import os
+
+        print(os.environ["HOME"])
+        ----
+        """
+    )
+
+    expected = [
+        '<div class="code"><div class="content"><div class="highlight"><pre><span></span><span class="hll">import os\n</span><span class="hll">\n</span><span class="hll">print(os.environ[&quot;HOME&quot;])\n</span></pre></div>\n</div></div>'
+    ]
+
+    _test(source, expected)

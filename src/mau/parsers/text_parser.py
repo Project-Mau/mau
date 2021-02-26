@@ -131,7 +131,10 @@ class TextParser(BaseParser):
 
     def parse_macro_link(self, args, kwargs):
         args, kwargs = merge_args(args, kwargs, ["target", "text"])
-        return LinkNode(kwargs.get("target"), kwargs.get("text"))
+        target = kwargs.get("target")
+        text = kwargs.get("text", target)
+
+        return LinkNode(target, text)
 
     def parse_macro_mailto(self, args, kwargs):
         args, kwargs = merge_args(args, kwargs, ["email"])

@@ -106,6 +106,25 @@ def test_macro_link_with_escaped_quotes():
     _test(source, expected)
 
 
+def test_macro_link_without_text():
+    source = "[link](https://somedomain.org/the/path)"
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {
+                    "type": "link",
+                    "target": "https://somedomain.org/the/path",
+                    "text": "https://somedomain.org/the/path",
+                }
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
 def test_automatic_link():
     source = "This is https://somedomain.org/the/path text"
 

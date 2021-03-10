@@ -1,5 +1,7 @@
 .. highlight:: none
 
+You can see all these examples rendered at TDC_
+	       
 ==========================
 Mau Syntax Quick Reference
 ==========================
@@ -440,3 +442,5 @@ and specify the alternate text with ``alt_text``::
 Images can be added inline with the macro ``image``::
 
   This is a paragraph with an image [image](/path/to/it.jpg,alt_text="A nice cat",width=120,height=120)
+
+.. _TDC: https://www.thedigitalcatonline.com/blog/2021/02/22/mau-a-lightweight-markup-language/

@@ -34,11 +34,7 @@ DEFAULT_TEMPLATES = {
         "</sup>"
     ),
     "footnotes.html": '<div id="_footnotes">{{ entries }}</div>',
-    "header.html": (
-        '<h{{ level }} id="{{ anchor }}">'
-        '{% if id %}<a id="{{ id }}"></a>{% endif %}'
-        "{{ value }}</h{{ level }}>"
-    ),
+    "header.html": '<h{{ level }} id="{{ anchor }}">{{ value }}</h{{ level }}>',
     "horizontal_rule.html": "<hr>",
     "image.html": (
         '<div class="imageblock">'

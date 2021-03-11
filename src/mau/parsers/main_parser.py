@@ -1,4 +1,4 @@
-from urllib.parse import quote
+import re
 import copy
 
 from mau.lexers.base_lexer import TokenTypes, Token, TokenError
@@ -26,9 +26,16 @@ from mau.parsers.nodes import (
 
 
 def header_anchor(text, level):
-    return "h{}-{}-{}".format(
-        level, quote(text.lower())[:20], str(id(text))[:8]
-    )  # pragma: no cover
+    # Everything lowercase
+    sanitised_text = text.lower()
+
+    # Get only letters, numbers, dashes, and spaces
+    sanitised_text = "".join(re.findall("[a-z0-9- ]+", sanitised_text))
+
+    # Remove multiple spaces
+    sanitised_text = "-".join(sanitised_text.split())
+
+    return sanitised_text
 
 
 class MainParser(BaseParser):
@@ -46,6 +53,10 @@ class MainParser(BaseParser):
         self._args = []
         self._kwargs = {}
         self._title = None
+
+        self.header_anchor = self.variables.get(
+            "mau.header_anchor_function", header_anchor
+        )
 
     def _add_footnotes(self, footnotes):
         self.footnotes.extend(footnotes)
@@ -129,7 +140,7 @@ class MainParser(BaseParser):
 
         text = self.get_token(TokenTypes.TEXT).value
         level = len(header)
-        anchor = header_anchor(text, level)
+        anchor = self.header_anchor(text, level)
 
         if in_toc:
             self.headers.append((text, level, anchor))

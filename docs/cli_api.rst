@@ -38,3 +38,23 @@ Allowed keys are
 ``theme``: specifies the name of the theme. This is used as a path that has to contain a directory named ``templates`` where custom templates can be stored.
 
 ``no_document``: prevents Mau from wrapping the file in a ``Document`` object that renders using the relative template. This is useful in tools like static site generators that already have a template for the page.
+
+``mau.header_anchor_function``: a function that accepts a header's ``text`` and ``level`` and returns a string that is a unique ID for that header. The default function can be found in ``parsers/main_parser.py``.
+
+================
+Custom templates
+================
+
+You can achieve a lot with custom templates. For example, let's say that you want to add a permanent link to all ``h1`` and ``h2`` headers. You can replace the default template::
+
+  "header.html": '<h{{ level }} id="{{ anchor }}">{{ value }}</h{{ level }}>'
+
+with::
+
+  "header.html": (
+      '<h{{ level }} id="{{ anchor }}">'
+      "{{ value }}"
+      '{% if anchor and level <= 2 %}<a href="#{{ anchor }}" title="Permanent link">¶</a>{% endif %}'
+      "</h{{ level }}>"
+  )
+

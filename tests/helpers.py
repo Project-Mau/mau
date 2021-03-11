@@ -25,12 +25,12 @@ def init_parser_factory(parser_class):
     return _init_parser
 
 
-def parser_test_factory(parser_class):
+def parser_test_factory(parser_class, *args, **kwds):
 
     init_parser = init_parser_factory(parser_class)
 
     def _test(source, expected):
-        p = init_parser(textwrap.dedent(source))
+        p = init_parser(textwrap.dedent(source), *args, **kwds)
         p.parse()
 
         assert listasdict(p.nodes) == expected

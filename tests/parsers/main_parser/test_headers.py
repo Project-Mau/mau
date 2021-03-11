@@ -9,6 +9,82 @@ init_parser = init_parser_factory(MainParser)
 _test = parser_test_factory(MainParser)
 
 
+def test_default_header_anchor_function():
+    source = """
+    = Some Words 1234 56
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "kwargs": {},
+            "value": "Some Words 1234 56",
+            "level": 1,
+            "anchor": "some-words-1234-56",
+        }
+    ]
+
+    _test(source, expected)
+
+
+def test_default_header_anchor_function_multiple_spaces():
+    source = """
+    = Some    Words     1234    56
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "kwargs": {},
+            "value": "Some    Words     1234    56",
+            "level": 1,
+            "anchor": "some-words-1234-56",
+        }
+    ]
+
+    _test(source, expected)
+
+
+def test_default_header_anchor_function_filter_characters():
+    source = """
+    = Some #Words @ 12!34 56
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "kwargs": {},
+            "value": "Some #Words @ 12!34 56",
+            "level": 1,
+            "anchor": "some-words-1234-56",
+        }
+    ]
+
+    _test(source, expected)
+
+
+def test_custom_header_anchor_function():
+    source = """
+    = Title of the section
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "kwargs": {},
+            "value": "Title of the section",
+            "level": 1,
+            "anchor": "XXXXXY",
+        }
+    ]
+
+    config = {"mau.header_anchor_function": lambda text, level: "XXXXXY"}
+
+    _test = parser_test_factory(MainParser, variables=config)
+
+    _test(source, expected)
+
+
 @patch("mau.parsers.main_parser.header_anchor")
 def test_parse_header_level_1(header_anchor_mock):
     header_anchor_mock.return_value = "XXXXXX"

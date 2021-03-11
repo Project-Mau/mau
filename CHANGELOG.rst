@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 1.3.0
+=============
+
+- [fix] Fixed behaviour of the ``link`` macro when no text is specified
+- [enhancement] Added link to blog page with a rendered version of the examples
+- [enhancement] Added documentation for the CLI and the API
+- [enhancement] New default header anchor function that produces deterministic IDs. Added config value ``mau.header_anchor_function`` that allows the user to provide a different function
+
 Version 1.2.0
 =============
 

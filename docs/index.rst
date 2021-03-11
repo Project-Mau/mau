@@ -14,6 +14,7 @@ Contents
    :maxdepth: 2
 
    Quick reference <quick_reference>
+   CLI and API <cli_api.rst>
    License <license>
    Authors <authors>
    Changelog <changelog>

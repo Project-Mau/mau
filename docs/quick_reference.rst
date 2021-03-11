@@ -1,12 +1,10 @@
 .. highlight:: none
 
-You can see all these examples rendered at TDC_
-	       
 ==========================
 Mau Syntax Quick Reference
 ==========================
 
-A quick overview of what Mau can do.
+A quick overview of what Mau can do. You can see all these examples rendered at TDC_.
 
 Paragraphs
 ==========

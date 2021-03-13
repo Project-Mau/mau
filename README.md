@@ -30,6 +30,8 @@ mau = Mau(target_format="html")
 mau.process(text)
 ```
 
+Check out Mau [documentation](https://mau.readthedocs.io/en/latest/) for further information.
+
 ## Support
 
 You may report bugs or missing features use the [issues page](https://github.com/Project-Mau/mau/issues).

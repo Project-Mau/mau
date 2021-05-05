@@ -47,7 +47,7 @@ def parse_args(args):
         action="store",
         required=False,
         default="html",
-        choices=["html", "asciidoctor"],
+        choices=["html", "asciidoctor", "markua"],
         help="Output format",
     )
 
@@ -104,6 +104,8 @@ def main(args):
         output_extension = ".html"
     elif args.format == "asciidoctor":
         output_extension = ".adoc"
+    elif args.format == "markua":
+        output_extension = ".md"
 
     output_file = args.output_file or args.input_file.replace(".mau", output_extension)
 

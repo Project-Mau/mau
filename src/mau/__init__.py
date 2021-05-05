@@ -14,6 +14,7 @@ from mau.parsers.main_parser import MainParser
 from mau.parsers.nodes import DocumentNode
 from mau.visitors.html_visitor import HTMLVisitor
 from mau.visitors.asciidoctor_visitor import AsciidoctorVisitor
+from mau.visitors.markua_visitor import MarkuaVisitor
 
 
 class Mau:
@@ -46,6 +47,8 @@ class Mau:
             visitor_class = HTMLVisitor
         elif self.target_format == "asciidoctor":
             visitor_class = AsciidoctorVisitor
+        elif self.target_format == "markua":
+            visitor_class = MarkuaVisitor
 
         visitor = visitor_class(
             default_templates=self.default_templates,

@@ -20,16 +20,29 @@ class Mau:
     def __init__(
         self, config, target_format, default_templates=None, templates_directory=None
     ):
+        # This is an external configuration file that
+        # will be used here and also injected into the variables
         self.config = config
+
+        # The target format that corresponds to a specific visitor
         self.target_format = target_format
+
+        # A dictionary with the default templates.
         self.default_templates = default_templates
+
+        # A directory that contains the custom templates as files
         self.templates_directory = templates_directory
 
+        # A flag that triggers a custom behaviour
+        # of the document node
         self.no_document = config.get("no_document", False)
 
+        # This will contain all the variables declared
+        # in the text and in the configuration
         self.variables = {}
 
     def process(self, text):
+        # Store the target format
         self.config["target_format"] = self.target_format
 
         parser = MainParser(variables=self.config)

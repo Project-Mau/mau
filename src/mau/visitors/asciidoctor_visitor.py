@@ -31,37 +31,19 @@ class AsciidoctorVisitor(Visitor):
 
     def __init__(
         self,
-        default_templates=None,
+        default_templates=DEFAULT_TEMPLATES,
         templates_directory=None,
         config=None,
         toc=None,
         footnotes=None,
     ):
         super().__init__(
-            default_templates=DEFAULT_TEMPLATES,
+            default_templates=default_templates,
             templates_directory=templates_directory,
             config=config,
             toc=toc,
             footnotes=footnotes,
         )
-
-    def _visit_text(self, node):
-        return {"value": node["value"]}
-
-    def _visit_sentence(self, node):
-        return {"content": "".join([self.visit(t) for t in node["content"]])}
-
-    def _visit_paragraph(self, node):
-        return {"content": self.visit(node["content"])}
-
-    def _visit_horizontal_rule(self, node):
-        return {}
-
-    def _visit_style(self, node):
-        return {"node_types": [node["value"]], "content": self.visit(node["content"])}
-
-    def _visit_verbatim(self, node):
-        return {"content": node["value"]}
 
     def _visit_class(self, node):
         classes = [f".{cls}" for cls in node["classes"]]

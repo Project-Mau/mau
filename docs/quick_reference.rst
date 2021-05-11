@@ -66,7 +66,7 @@ Styles can be applied to only part of a word::
   
   There are too many `if`s in this function.
 
-Using a single style marker doesn't trigger any effect, if you need to use two of them in the sentence, though, you have to escape at least one::
+Using a single style marker doesn't trigger any effect. If you need to use two of them in the sentence, though, you have to escape at least one::
 
   You can use _single *markers.
   
@@ -95,6 +95,10 @@ Links beginning with ``http://`` or ``https://`` are automatically parsed. If yo
   
   [link](https://projectmau.org,"Project Mau")
 
+The text part in this macro is optional. So, if you need you can just specify the target::
+
+  [link](https://projectmau.org)
+  
 You can include spaces and other special characters in the URL::
 
   [link]("https://example.org/?q=[a b]","URL with special characters")
@@ -118,6 +122,8 @@ Headers are created using the character ``=``. The number of equal signs represe
   
   ====== Header 6
 
+When you render Mau in HTML the maximum level is 6, but Mau doesn't have any constraints.
+
 Headers are automatically collected and included in the Table of Contents, but if you want to avoid it for a specific section you can exclude the header using an exclamation mark::
 
   ===! This header is not in the TOC
@@ -135,13 +141,13 @@ You can avoid variable replacement escaping curly braces::
 
   :answer:42
 
-  The answer is \{answer\}
+  The answer is \{answer\} (this won't be replaced)
 
 Curly braces are used a lot in programming languages, so verbatim text automatically escapes them::
 
   :answer:42
 
-  The answer is `{answer}`
+  The answer is `{answer}` (this won't be replaced)
 
 Variables are replaced before parsing paragraphs, so they can contain any inline item such as styles or links::
 
@@ -154,13 +160,13 @@ Variables without a value will automatically become booleans::
 
   :flag:
 
-  The flag is {flag}.
+  The flag is {flag}. (rendered as "The flag is True")
 
 You can set a flag to false negating it::
 
   :!flag:
 
-  The flag is {flag}.
+  The flag is {flag}. (rendered as "The flag is False")
 
 Blocks
 ======
@@ -181,7 +187,7 @@ you can use any sequence of 4 identical characters to delimit a block, provided 
   This is another block
   %%%%
 
-Should you need to insert 4 identical characters on a line for some reasons, you need to escape one of them:::
+Should you need to insert 4 identical characters on a line for some reasons, you need to escape one of them::
 
   \++++
 
@@ -413,12 +419,12 @@ You can insert a footnote in a paragraph using the macro ``footnote``::
 
   This is a paragraph that ends with a note[footnote](extra information here)
 
-Footnotes can be inserted with the command ``::footnotes:`` and are then rendered according to the template.
+The definitions can then be inserted with the command ``::footnotes:`` and are then rendered according to the template.
 
 Table of contents
 =================
 
-The table of contents (TOC) can be inserted with the command ``::toc:`` and is rendered according to the template
+The table of contents (TOC) can be inserted with the command ``::toc:`` and is rendered according to the template.
 
 Images
 ======

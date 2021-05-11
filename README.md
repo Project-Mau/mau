@@ -739,6 +739,12 @@ and eventually processed by the template
 
 Now, it would be pretty easy to move the `"".join()` into the template (even though it might make it a bit too difficult to read). On the other hand, if you have a look at `HTMLVisitor._visit_source` you will quickly realise that the logic implemented there cannot be packed into a template.
 
+## Pelican plugin
+
+There is a Pelican plugin that enables you to use Mau in your blog. Check it at https://github.com/pelican-plugins/mau-reader.
+
+You can see the plugin in action at https://www.thedigitalcatonline.com/blog/2021/02/22/mau-a-lightweight-markup-language/ and on other pages in my blog.
+
 ## Support
 
 You may report bugs or missing features use the [issues page](https://github.com/Project-Mau/mau/issues).

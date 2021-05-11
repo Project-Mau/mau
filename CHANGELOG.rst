@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 1.4.0
+=============
+
+- [enhancement] The README has been improved to provide documentation about the syntax and the templates. 
+- [enhancement] Added a link to the docs (`#2`_)
+- [enhancement] A new visitor for Leanpub's Markua language has been added.
+- [break] The interface of the main object has changed to accept the argument ``full_document`` that replaces the configuration entry ``no_document``
+
 Version 1.3.0
 =============
 
@@ -44,3 +52,5 @@ Version 1.0.0
 =============
 
 - A working initial implementation
+
+.. _#2: https://github.com/Project-Mau/mau/pull/2

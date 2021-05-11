@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from mau.parsers.nodes import DocumentNode
+from mau.parsers.nodes import DocumentNode, ContainerNode
 from mau.parsers.main_parser import MainParser
 from mau.visitors.html_visitor import HTMLVisitor
 
@@ -319,7 +319,7 @@ def test_document():
     ]
 
 
-def test_no_document():
+def test_container():
     parser = init_parser(
         dedent(
             """
@@ -329,12 +329,18 @@ def test_no_document():
     )
     parser.parse()
 
-    document = DocumentNode(parser.nodes, no_document=True)
+    document = ContainerNode(parser.nodes)
     node = document.asdict()
 
     result = visitlist([node])
 
-    assert result == ["<p>This is text</p>"]
+    assert result == [
+        remove_indentation(
+            """
+            <p>This is text</p>
+            """
+        )
+    ]
 
 
 def test_list_unordered():

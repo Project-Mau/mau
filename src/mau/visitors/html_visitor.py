@@ -95,37 +95,19 @@ class HTMLVisitor(Visitor):
 
     def __init__(
         self,
-        default_templates=None,
+        default_templates=DEFAULT_TEMPLATES,
         templates_directory=None,
         config=None,
         toc=None,
         footnotes=None,
     ):
         super().__init__(
-            default_templates=DEFAULT_TEMPLATES,
+            default_templates=default_templates,
             templates_directory=templates_directory,
             config=config,
             toc=toc,
             footnotes=footnotes,
         )
-
-    def _visit_text(self, node):
-        return {"value": node["value"]}
-
-    def _visit_sentence(self, node):
-        return {"content": "".join([self.visit(t) for t in node["content"]])}
-
-    def _visit_paragraph(self, node):
-        return {"content": self.visit(node["content"])}
-
-    def _visit_horizontal_rule(self, node):
-        return {}
-
-    def _visit_style(self, node):
-        return {"node_types": [node["value"]], "content": self.visit(node["content"])}
-
-    def _visit_verbatim(self, node):
-        return {"content": node["value"]}
 
     def _visit_class(self, node):
         return {
@@ -244,12 +226,7 @@ class HTMLVisitor(Visitor):
         }
 
     def _visit_document(self, node):
-        node_type = "document"
-        if node["no_document"] is True:
-            node_type = "container"
-
         return {
-            "node_types": [node_type],
             "content": "".join([self.visit(item) for item in node["content"]]),
         }
 
@@ -275,7 +252,6 @@ class HTMLVisitor(Visitor):
 
     def _visit_footnote_ref(self, node):
         return {
-            "node_types": ["footnote_ref"],
             "number": node["number"],
             "refanchor": node["refanchor"],
             "defanchor": node["defanchor"],
@@ -314,6 +290,3 @@ class HTMLVisitor(Visitor):
             "uri": node["uri"],
             "alt_text": node["alt_text"],
         }
-
-    def _visit_macro(self, node):
-        return {}

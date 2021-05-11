@@ -38,7 +38,7 @@ def parse_args(args):
         "--config-file",
         action="store",
         required=False,
-        help="Optional config file",
+        help="Optional YAML config file",
     )
 
     parser.add_argument(
@@ -96,7 +96,10 @@ def main(args):
     templates_directory = f'{config["theme"]}/templates' if "theme" in config else None
 
     mau = Mau(
-        config, target_format=args.format, templates_directory=templates_directory
+        config,
+        target_format=args.format,
+        templates_directory=templates_directory,
+        full_document=True,
     )
     output = mau.process(text)
 

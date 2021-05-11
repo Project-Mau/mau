@@ -651,25 +651,13 @@ class ListItemNode(Node):
         }
 
 
-class DocumentNode(Node):
+class DocumentNode(ContainerNode):
     """A document.
 
     This node represents the full document.
 
     Arguments:
         content: the content of the document
-        no_document (:obj:`bool`): if True the content won't be wrapped by a template
     """
 
     node_type = "document"
-
-    def __init__(self, content, no_document=False):
-        self.content = content
-        self.no_document = no_document
-
-    def asdict(self):
-        return {
-            "type": self.node_type,
-            "no_document": self.no_document,
-            "content": [i.asdict() for i in self.content],
-        }

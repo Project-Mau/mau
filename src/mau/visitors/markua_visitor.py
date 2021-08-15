@@ -7,7 +7,7 @@ DEFAULT_TEMPLATES = {
     "class.md": "{{ content }}",
     "command.md": "{{ content }}",
     "document.md": "{{ content|join('\n') }}",
-    "footnote_ref.md": " ({{ text|join }})",
+    "footnote_ref.md": "[^footnote{{ number }}]",
     "header.md": "{{ header }} {{ text }}\n",
     "horizontal_rule.md": "* * *",
     "image.md": '{% if alt_text %}{alt: "{{ alt_text }}"}\n{% endif %}![{{ title }}]({{ uri }})\n',
@@ -45,6 +45,8 @@ class MarkuaVisitor(Visitor):
             toc=toc,
             footnotes=footnotes,
         )
+
+        self.footnotes_store = {}
 
     def _visit_text(self, node):
         return {"value": node["value"]}
@@ -142,12 +144,9 @@ class MarkuaVisitor(Visitor):
 
     def _visit_footnote_ref(self, node):
         number = node["number"]
-        footnote = [i for i in self.footnotes if i["number"] == number][0]
+        self.footnotes_store[number] = [self.visit(i) for i in node["content"]]
 
-        return {
-            "node_types": ["footnote_ref"],
-            "text": [self.visit(i) for i in footnote["content"]],
-        }
+        return {"node_types": ["footnote_ref"], "number": number}
 
     def _visit_content_image(self, node):
         return {

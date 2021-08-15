@@ -221,7 +221,7 @@ def test_block(header_anchor_mock):
     _test(source, expected)
 
 
-def test_footnote():
+def test_footnote_ref():
     p = init_parser(
         dedent(
             """
@@ -232,10 +232,30 @@ def test_footnote():
 
     p.parse()
     ast = listasdict(p.nodes)
-
     result = visitlist(ast, footnotes=[i.asdict() for i in p.footnotes])
 
-    assert result == ["This is a sentence (with a note)\n"]
+    assert result == ["This is a sentence[^footnote1]\n"]
+
+
+def test_footnote_def():
+    v = MarkuaVisitor()
+
+    p = init_parser(
+        dedent(
+            """
+            This is a sentence[footnote](with a note)
+
+            ::footnotes:
+            """
+        )
+    )
+
+    p.parse()
+    ast = listasdict(p.nodes)
+    footnotes = [i.asdict() for i in p.footnotes]
+    result = visitlist(ast, footnotes=footnotes)
+
+    assert result == ["This is a sentence[^footnote1]\n", "[^footnote1]: with a note"]
 
 
 def test_unordered_list():

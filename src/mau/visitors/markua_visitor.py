@@ -1,13 +1,15 @@
 from mau.visitors.visitor import Visitor
 
 DEFAULT_TEMPLATES = {
-    "admonition.md": "{blurb, class: {{ admclass }}}\n{{ content|join }}{/blurb}",
+    "admonition.md": "{blurb, class: {{ admclass }}}\n**{{ label }}**\n\n{{ content|join }}{/blurb}\n\n",
     "block.md": "{{ content|join('\n') }}",
     "callout.md": "",
     "class.md": "{{ content }}",
     "command.md": "{{ content }}",
     "document.md": "{{ content|join('\n') }}",
+    "footnote_def.md": "[^footnote{{ number }}]: {{ text }}",
     "footnote_ref.md": "[^footnote{{ number }}]",
+    "footnotes.md": "{{ entries }}",
     "header.md": "{{ header }} {{ text }}\n",
     "horizontal_rule.md": "* * *",
     "image.md": '{% if alt_text %}{alt: "{{ alt_text }}"}\n{% endif %}![{{ title }}]({{ uri }})\n',
@@ -16,7 +18,7 @@ DEFAULT_TEMPLATES = {
     "list.md": "{{ items|join }}{% if main_node %}\n{% endif %}",
     "list_item.md": "{% if not main_node %}\n{% endif %}{% if prefix %}{{ prefix }} {% endif %}{{ content }}",
     "paragraph.md": "{{ content }}\n",
-    "quote.md": "{blockquote}\n{{ content|join }}\n{{ attribution }}\n{/blockquote}",
+    "quote.md": "{blurb, icon: quote-right}\n{{ content|join }}\n{{ attribution }}\n{/blurb}\n\n",
     "sentence.md": "{{ content }}",
     "source.md": '{% if title %}{caption: "{{ title }}"}\n{% endif %}``` {% if language %}{{ language }}{% endif %}\n{{ code }}\n```',
     "star.md": "**{{ content }}**",
@@ -45,8 +47,6 @@ class MarkuaVisitor(Visitor):
             toc=toc,
             footnotes=footnotes,
         )
-
-        self.footnotes_store = {}
 
     def _visit_text(self, node):
         return {"value": node["value"]}
@@ -101,6 +101,7 @@ class MarkuaVisitor(Visitor):
         return {
             "admclass": admclass,
             "icon": node["icon"],
+            "label": node["label"],
             "content": content,
         }
 
@@ -143,10 +144,23 @@ class MarkuaVisitor(Visitor):
         }
 
     def _visit_footnote_ref(self, node):
-        number = node["number"]
-        self.footnotes_store[number] = [self.visit(i) for i in node["content"]]
+        return {
+            "number": node["number"],
+            "refanchor": node["refanchor"],
+            "defanchor": node["defanchor"],
+        }
 
-        return {"node_types": ["footnote_ref"], "number": number}
+    def _visit_footnote_def(self, node):
+        return {
+            "number": node["number"],
+            "refanchor": node["refanchor"],
+            "defanchor": node["defanchor"],
+            "text": "".join([self.visit(i) for i in node["content"]]),
+        }
+
+    def visit_footnotes(self, nodes):
+        keys = {"entries": "".join([self.visit(i) for i in nodes])}
+        return self._render("footnotes", **keys)
 
     def _visit_content_image(self, node):
         return {
@@ -165,4 +179,7 @@ class MarkuaVisitor(Visitor):
         }
 
     def _visit_command(self, node):
+        if node["name"] == "footnotes":
+            return {"content": "".join(self.visit_footnotes(self.footnotes))}
+
         return {"content": ""}

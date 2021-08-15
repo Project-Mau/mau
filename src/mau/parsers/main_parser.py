@@ -420,8 +420,7 @@ class MainParser(BaseParser):
         # Text should return a single sentence node
         result = p.nodes[0]
 
-        if len(p.footnotes) > 0:
-            self._add_footnotes(p.footnotes)
+        self._add_footnotes(p.footnotes)
 
         return result
 

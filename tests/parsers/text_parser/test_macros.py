@@ -106,6 +106,44 @@ def test_macro_link_with_escaped_quotes():
     _test(source, expected)
 
 
+def test_macro_link_with_escaped_round_braces():
+    source = '[link](https://somedomain.org/the/path,"link (text\)")'
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {
+                    "type": "link",
+                    "target": "https://somedomain.org/the/path",
+                    "text": "link (text)",
+                }
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
+def test_macro_link_with_escaped_round_braces_in_the_url():
+    source = '[link](https://somedomain.org/the/path_(note\),"link")'
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {
+                    "type": "link",
+                    "target": "https://somedomain.org/the/path_(note)",
+                    "text": "link",
+                }
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
 def test_macro_link_without_text():
     source = "[link](https://somedomain.org/the/path)"
 
@@ -239,6 +277,36 @@ def test_macro_footnote(footnote_anchors_mock):
                     "number": 1,
                     "refanchor": "refXYZ",
                     "defanchor": "defXYZ",
+                    "content": [
+                        {
+                            "type": "sentence",
+                            "content": [
+                                {"type": "text", "value": "Some text "},
+                                {
+                                    "type": "style",
+                                    "value": "underscore",
+                                    "content": {
+                                        "type": "sentence",
+                                        "content": [
+                                            {"type": "text", "value": "and style"},
+                                        ],
+                                    },
+                                },
+                                {"type": "text", "value": " and "},
+                                {
+                                    "type": "style",
+                                    "value": "star",
+                                    "content": {
+                                        "type": "sentence",
+                                        "content": [
+                                            {"type": "text", "value": "more style"},
+                                        ],
+                                    },
+                                },
+                                {"type": "text", "value": " here"},
+                            ],
+                        }
+                    ],
                 }
             ],
         }
@@ -305,6 +373,36 @@ def test_parse_macro_footnote_can_start_with_different_number(footnote_anchors_m
                     "number": 6,
                     "refanchor": "refXYZ",
                     "defanchor": "defXYZ",
+                    "content": [
+                        {
+                            "content": [
+                                {"type": "text", "value": "Some text "},
+                                {
+                                    "type": "style",
+                                    "value": "underscore",
+                                    "content": {
+                                        "type": "sentence",
+                                        "content": [
+                                            {"type": "text", "value": "and style"},
+                                        ],
+                                    },
+                                },
+                                {"type": "text", "value": " and "},
+                                {
+                                    "type": "style",
+                                    "value": "star",
+                                    "content": {
+                                        "type": "sentence",
+                                        "content": [
+                                            {"type": "text", "value": "more style"},
+                                        ],
+                                    },
+                                },
+                                {"type": "text", "value": " here"},
+                            ],
+                            "type": "sentence",
+                        },
+                    ],
                 }
             ],
         }
@@ -327,6 +425,14 @@ def test_parse_macro_footnote_with_other_text_around(footnote_anchors_mock):
                     "number": 1,
                     "refanchor": "refXYZ",
                     "defanchor": "defXYZ",
+                    "content": [
+                        {
+                            "type": "sentence",
+                            "content": [
+                                {"type": "text", "value": "Some text"},
+                            ],
+                        }
+                    ],
                 },
                 {"type": "text", "value": " other text"},
             ],
@@ -369,6 +475,14 @@ def test_parse_macro_footnote_includes_quotes(footnote_anchors_mock):
                     "number": 1,
                     "refanchor": "refXYZ",
                     "defanchor": "defXYZ",
+                    "content": [
+                        {
+                            "type": "sentence",
+                            "content": [
+                                {"type": "text", "value": '"Some text"'},
+                            ],
+                        }
+                    ],
                 },
                 {"type": "text", "value": " other text"},
             ],
@@ -411,6 +525,14 @@ def test_parse_macro_footnote_includes_round_brakets(footnote_anchors_mock):
                     "number": 1,
                     "refanchor": "refXYZ",
                     "defanchor": "defXYZ",
+                    "content": [
+                        {
+                            "type": "sentence",
+                            "content": [
+                                {"type": "text", "value": '"Some code()"'},
+                            ],
+                        }
+                    ],
                 },
                 {"type": "text", "value": " other text"},
             ],

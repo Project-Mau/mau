@@ -36,6 +36,14 @@ def test_macro_footnote(footnote_anchors_mock, header_anchor_mock):
                         "defanchor": "defXYZ",
                         "number": 1,
                         "type": "footnote_ref",
+                        "content": [
+                            {
+                                "type": "sentence",
+                                "content": [
+                                    {"type": "text", "value": "just a note"},
+                                ],
+                            }
+                        ],
                     },
                 ],
             },

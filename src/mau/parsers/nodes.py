@@ -232,10 +232,11 @@ class FootnoteRefNode(Node):
 
     node_type = "footnote_ref"
 
-    def __init__(self, number, refanchor, defanchor):
+    def __init__(self, number, refanchor, defanchor, content):
         self.number = number
         self.refanchor = refanchor
         self.defanchor = defanchor
+        self.content = content
 
     def asdict(self):
         return {
@@ -243,6 +244,7 @@ class FootnoteRefNode(Node):
             "refanchor": self.refanchor,
             "defanchor": self.defanchor,
             "number": self.number,
+            "content": [i.asdict() for i in self.content],
         }
 
 

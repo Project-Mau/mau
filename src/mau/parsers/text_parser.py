@@ -169,7 +169,9 @@ class TextParser(BaseParser):
                 refanchor=refanchor, defanchor=defanchor, number=number, content=p.nodes
             )
         )
-        return FootnoteRefNode(refanchor=refanchor, defanchor=defanchor, number=number)
+        return FootnoteRefNode(
+            refanchor=refanchor, defanchor=defanchor, number=number, content=p.nodes
+        )
 
     def parse_macro(self):
         self.get_token(TokenTypes.LITERAL, "[")

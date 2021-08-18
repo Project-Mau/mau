@@ -2,6 +2,12 @@
 Changelog
 =========
 
+Version 1.4.1
+=============
+
+- [fix] Fixed wrong behaviour of footnotes and links with round brackets
+- [fix] Better management of footnotes in the Markua visitor
+
 Version 1.4.0
 =============
 

@@ -95,12 +95,16 @@ class HTMLVisitor(Visitor):
 
     def __init__(
         self,
-        default_templates=DEFAULT_TEMPLATES,
+        default_templates=None,
         templates_directory=None,
         config=None,
         toc=None,
         footnotes=None,
     ):
+        default_templates = (
+            default_templates if default_templates is not None else DEFAULT_TEMPLATES
+        )
+
         super().__init__(
             default_templates=default_templates,
             templates_directory=templates_directory,

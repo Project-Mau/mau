@@ -129,7 +129,7 @@ def main(args):
         sys.exit(1)
 
     # Find out the name of the output file
-    output_extension = FORMATS[args.format]["extension"]
+    output_extension = FORMATS[config["target_format"]]["extension"]
     output_file = args.output_file or args.input_file.replace(".mau", output_extension)
 
     # Write the output

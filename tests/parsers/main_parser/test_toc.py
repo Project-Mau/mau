@@ -165,6 +165,7 @@ def test_parse_header_not_in_toc(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Title of the section",
             "level": 1,
             "anchor": "XXXXXX",

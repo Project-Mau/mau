@@ -18,6 +18,7 @@ def test_default_header_anchor_function():
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Some Words 1234 56",
             "level": 1,
             "anchor": "some-words-1234-56",
@@ -36,6 +37,7 @@ def test_default_header_anchor_function_multiple_spaces():
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Some    Words     1234    56",
             "level": 1,
             "anchor": "some-words-1234-56",
@@ -54,6 +56,7 @@ def test_default_header_anchor_function_filter_characters():
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Some #Words @ 12!34 56",
             "level": 1,
             "anchor": "some-words-1234-56",
@@ -72,6 +75,7 @@ def test_custom_header_anchor_function():
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Title of the section",
             "level": 1,
             "anchor": "XXXXXY",
@@ -97,6 +101,7 @@ def test_parse_header_level_1(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Title of the section",
             "level": 1,
             "anchor": "XXXXXX",
@@ -118,6 +123,7 @@ def test_parse_header_level_3(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Title of a subsection",
             "level": 3,
             "anchor": "XXXXXX",
@@ -144,6 +150,7 @@ def test_parse_collect_headers(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Header 1",
             "level": 1,
             "anchor": "Header 1-XXXXXX",
@@ -151,6 +158,7 @@ def test_parse_collect_headers(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Header 1.1",
             "level": 2,
             "anchor": "Header 1.1-XXXXXX",
@@ -158,6 +166,7 @@ def test_parse_collect_headers(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Header 1.2",
             "level": 2,
             "anchor": "Header 1.2-XXXXXX",
@@ -165,6 +174,7 @@ def test_parse_collect_headers(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Header 2",
             "level": 1,
             "anchor": "Header 2-XXXXXX",
@@ -172,6 +182,7 @@ def test_parse_collect_headers(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Header 2.1",
             "level": 2,
             "anchor": "Header 2.1-XXXXXX",
@@ -179,6 +190,7 @@ def test_parse_collect_headers(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Header 2.1.1",
             "level": 3,
             "anchor": "Header 2.1.1-XXXXXX",
@@ -212,6 +224,76 @@ def test_attributes_header(header_anchor_mock):
             "value": "Header",
             "level": 1,
             "kwargs": {"someattr1": "somevalue1", "someattr2": "somevalue2"},
+            "tags": [],
+            "anchor": "Header-XXXXXX",
+        },
+    ]
+
+    _test(source, expected)
+
+
+@patch("mau.parsers.main_parser.header_anchor")
+def test_single_tag_header(header_anchor_mock):
+    header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
+
+    source = """
+    [tags=section]
+    = Header
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "value": "Header",
+            "level": 1,
+            "kwargs": {},
+            "tags": ["section"],
+            "anchor": "Header-XXXXXX",
+        },
+    ]
+
+    _test(source, expected)
+
+
+@patch("mau.parsers.main_parser.header_anchor")
+def test_multiple_tags_header(header_anchor_mock):
+    header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
+
+    source = """
+    [tags="section,important"]
+    = Header
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "value": "Header",
+            "level": 1,
+            "kwargs": {},
+            "tags": ["section", "important"],
+            "anchor": "Header-XXXXXX",
+        },
+    ]
+
+    _test(source, expected)
+
+
+@patch("mau.parsers.main_parser.header_anchor")
+def test_attributes_and_tags_header(header_anchor_mock):
+    header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
+
+    source = """
+    [value1,someattr1=somevalue1,someattr2=somevalue2,tags="section,important"]
+    = Header
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "value": "Header",
+            "level": 1,
+            "kwargs": {"someattr1": "somevalue1", "someattr2": "somevalue2"},
+            "tags": ["section", "important"],
             "anchor": "Header-XXXXXX",
         },
     ]
@@ -233,6 +315,7 @@ def test_parse_headers_not_in_toc(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Header 1",
             "level": 1,
             "anchor": "Header 1-XXXXXX",
@@ -240,6 +323,7 @@ def test_parse_headers_not_in_toc(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Header 1.1",
             "level": 2,
             "anchor": "Header 1.1-XXXXXX",
@@ -247,6 +331,7 @@ def test_parse_headers_not_in_toc(header_anchor_mock):
         {
             "type": "header",
             "kwargs": {},
+            "tags": [],
             "value": "Header 1.2",
             "level": 2,
             "anchor": "Header 1.2-XXXXXX",

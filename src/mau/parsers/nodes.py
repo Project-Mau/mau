@@ -5,6 +5,13 @@
 # inside a paragraph.
 
 
+def extract_tags_from_kwargs(kwargs):
+    tags_list = kwargs.pop("tags", "").split(",")
+
+    # Remove empty strings and return
+    return list(filter(None, tags_list))
+
+
 class Node:
     node_type = "node"
 
@@ -366,6 +373,7 @@ class HeaderNode(Node):
         self.level = level
         self.anchor = anchor
         self.kwargs = kwargs or {}
+        self.tags = extract_tags_from_kwargs(self.kwargs)
 
     def asdict(self):
         return {
@@ -373,6 +381,7 @@ class HeaderNode(Node):
             "value": self.value,
             "level": self.level,
             "anchor": self.anchor,
+            "tags": self.tags,
             "kwargs": self.kwargs,
         }
 

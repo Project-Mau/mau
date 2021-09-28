@@ -114,41 +114,35 @@ class HTMLVisitor(Visitor):
         )
 
     def _visit_class(self, node):
-        return {
-            "classes": " ".join(node["classes"]),
-            "content": self.visit(node["content"]),
-        }
+        node["classes"] = " ".join(node["classes"])
+        node["content"] = self.visit(node["content"])
+
+        return node
 
     def _visit_link(self, node):
-        return {"text": node["text"], "target": node["target"]}
+        return node
 
     def _visit_header(self, node):
-        return {
-            "level": node["level"],
-            "value": node["value"],
-            "anchor": node["anchor"],
-        }
+        return node
 
     def _visit_quote(self, node):
-        return {
-            "attribution": node["attribution"],
-            "content": "".join(self.visitlist(node["content"])),
-        }
+        node["content"] = "".join(self.visitlist(node["content"]))
+
+        return node
 
     def _visit_raw(self, node):
-        return {"content": "\n".join(self.visitlist(node["content"]))}
+        node["content"] = "\n".join(self.visitlist(node["content"]))
+
+        return node
 
     def _visit_admonition(self, node):
-        return {
-            "node_types": [
-                f'admonition_{node["class"]}',
-                "admonition",
-            ],
-            "class": node["class"],
-            "icon": node["icon"],
-            "label": node["label"],
-            "content": "".join(self.visitlist(node["content"])),
-        }
+        node["node_types"] = [
+            f'admonition_{node["class"]}',
+            "admonition",
+        ]
+        node["content"] = "".join(self.visitlist(node["content"]))
+
+        return node
 
     def _visit_block(self, node):
         return {

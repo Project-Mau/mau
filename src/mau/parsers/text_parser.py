@@ -224,6 +224,27 @@ class TextParser(BaseParser):
 
         return LinkNode(target, email)
 
+    def parse_macro_class(self, arguments):
+        """
+        Parse a class macro in the form [class](text, "class1,class2,...").
+        """
+
+        pa = ArgumentsParser().analyse(arguments)
+
+        # Set the name of the first two unnamed arguments
+        pa.merge_unnamed_args(["text", "classes"])
+
+        # Parse the text
+        pt = TextParser().analyse(pa.kwargs.get("text"))
+
+        # Text should return a single sentence node
+        result = pt.nodes[0]
+
+        # Multiple classes are separated by commas
+        classes = pa.kwargs.get("classes").split(",")
+
+        return ClassNode(classes, result)
+
     def parse_macro_image(self, arguments):
         """
         Parse an inline image macro in the form
@@ -309,6 +330,8 @@ class TextParser(BaseParser):
             return self.parse_macro_link(arguments)
         elif macro_name == "mailto":
             return self.parse_macro_mailto(arguments)
+        elif macro_name == "class":
+            return self.parse_macro_class(arguments)
         elif macro_name == "image":
             return self.parse_macro_image(arguments)
         elif macro_name == "footnote":

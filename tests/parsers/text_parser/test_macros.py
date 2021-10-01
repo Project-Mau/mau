@@ -656,3 +656,85 @@ def test_parse_macro_mailto():
     ]
 
     _test(source, expected)
+
+
+def test_single_class():
+    source = 'Some text [class]("text with that class", classname)'
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {"type": "text", "value": "Some text "},
+                {
+                    "type": "class",
+                    "classes": ["classname"],
+                    "content": {
+                        "type": "sentence",
+                        "content": [{"type": "text", "value": "text with that class"}],
+                    },
+                },
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
+def test_multiple_classes():
+    source = 'Some text [class]("text with that class", "classname1,classname2")'
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {"type": "text", "value": "Some text "},
+                {
+                    "type": "class",
+                    "classes": ["classname1", "classname2"],
+                    "content": {
+                        "type": "sentence",
+                        "content": [{"type": "text", "value": "text with that class"}],
+                    },
+                },
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
+def test_parse_class_with_rich_text():
+    source = '[class]("Some text with `verbatim words` and _styled ones_", classname)'
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {
+                    "type": "class",
+                    "classes": ["classname"],
+                    "content": {
+                        "type": "sentence",
+                        "content": [
+                            {"type": "text", "value": "Some text with "},
+                            {"type": "verbatim", "value": "verbatim words"},
+                            {"type": "text", "value": " and "},
+                            {
+                                "type": "style",
+                                "value": "underscore",
+                                "content": {
+                                    "type": "sentence",
+                                    "content": [
+                                        {"type": "text", "value": "styled ones"}
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                }
+            ],
+        }
+    ]
+
+    _test(source, expected)

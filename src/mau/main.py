@@ -14,6 +14,14 @@ __license__ = "mit"
 
 _logger = logging.getLogger(__name__)
 
+# This is a convenience dictionary that collects the output formats
+# that Mau supports and some matadata
+FORMATS = {
+    "html": {"extension": ".html"},
+    "asciidoctor": {"extension": ".adoc"},
+    "markua": {"extension": ".md"},
+}
+
 
 def parse_args(args):
     parser = argparse.ArgumentParser()
@@ -47,7 +55,7 @@ def parse_args(args):
         action="store",
         required=False,
         default="html",
-        choices=["html", "asciidoctor", "markua"],
+        choices=FORMATS.keys(),
         help="Output format",
     )
 
@@ -82,36 +90,40 @@ def setup_logging(loglevel):
 
 
 def main(args):
+    # Get arguments and logging set up
     args = parse_args(args)
     setup_logging(args.loglevel)
 
+    # Read the input file
     with open(args.input_file, "r") as f:
         text = f.read()
 
+    # Load the YAML configuration file into a dictionary
     config = {}
     if args.config_file:
         with open(args.config_file, "r") as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
 
+    # Theming is pretty simple. If the config file contains the variable "theme"
+    # that is the directory that shall contain all templates.
     templates_directory = f'{config["theme"]}/templates' if "theme" in config else None
 
+    # The Mau object configured with what we figured out above.
     mau = Mau(
         config,
         target_format=args.format,
         templates_directory=templates_directory,
         full_document=True,
     )
+
+    # Process the input text.
     output = mau.process(text)
 
-    if args.format == "html":
-        output_extension = ".html"
-    elif args.format == "asciidoctor":
-        output_extension = ".adoc"
-    elif args.format == "markua":
-        output_extension = ".md"
-
+    # Find out the name of the output file
+    output_extension = FORMAT[args.format]["extension"]
     output_file = args.output_file or args.input_file.replace(".mau", output_extension)
 
+    # Write the output
     with open(output_file, "w") as f:
         text = f.write(output)
 

@@ -26,6 +26,10 @@ from mau.parsers.nodes import (
 
 
 def header_anchor(text, level):
+    """
+    Return a sanitised anchor for a header.
+    """
+
     # Everything lowercase
     sanitised_text = text.lower()
 
@@ -38,6 +42,10 @@ def header_anchor(text, level):
     return sanitised_text
 
 
+# The MainParser is in charge of parsing
+# the whole input, calling other parsers
+# to manage single paragraphs or other
+# things like variables.
 class MainParser(BaseParser):
     def __init__(self, variables=None):
         super().__init__()
@@ -52,8 +60,13 @@ class MainParser(BaseParser):
 
         self._args = []
         self._kwargs = {}
+        # This is a buffer for a block title
         self._title = None
 
+        # This is the function used to create the header
+        # anchors. It can be specified through
+        # mau.header_anchor_function to override
+        # the default one.
         self.header_anchor = self.variables.get(
             "mau.header_anchor_function", header_anchor
         )
@@ -75,17 +88,25 @@ class MainParser(BaseParser):
         self._kwargs = copy.deepcopy(kwargs)
 
     def _pop_title(self):
+        # This return the title and resets the
+        # cached one, so no other block will
+        # use it.
         title = self._title
         self._title = None
         return title
 
     def _push_title(self, title):
+        # When we parse a title we can store it here
+        # so that it is available to the next block
+        # that will use it.
         self._title = title
 
     def collect_lines(self, stop_tokens):
         # This collects several lines of text in a list
         # until it gets to a line that begins with one
         # of the tokens listed in stop_tokens.
+        # It is useful for block or other elements that
+        # are clearly surrounded by delimiters.
         lines = []
         while self.peek_token() not in stop_tokens:
             lines.append(self.collect_join([Token(TokenTypes.EOL)]))
@@ -95,6 +116,8 @@ class MainParser(BaseParser):
 
     @parser
     def _parse_horizontal_rule(self):
+        # The horizontal rule ---
+
         self.get_token(TokenTypes.LITERAL, "---")
         self.get_token(TokenTypes.EOL)
 
@@ -102,25 +125,42 @@ class MainParser(BaseParser):
 
     @parser
     def _parse_single_line_comment(self):
+        # // A comment on a single line
+
         self.get_token(TokenTypes.TEXT, check=lambda x: x.startswith("//"))
         self.get_token(TokenTypes.EOL)
 
     @parser
     def _parse_multi_line_comment(self):
+        # ////
+        # A comment
+        # on multiple lines
+        # ////
+
         self.get_token(TokenTypes.LITERAL, "////")
         self.collect_lines([Token(TokenTypes.LITERAL, "////"), Token(TokenTypes.EOF)])
         self.force_token(TokenTypes.LITERAL, "////")
 
     @parser
     def _parse_title(self):
+        # Parse a title in the form
+        #
+        # . This is a title
+        # or
+        # .This is a title
+
+        # Parse the mandatory dot
         self.get_token(TokenTypes.LITERAL, ".")
 
+        # Parse the optional white spaces
         with self:
             self.get_token(TokenTypes.WHITESPACE)
 
+        # Get the text of the title
         text = self.get_token(TokenTypes.TEXT).value
         self.get_token(TokenTypes.EOL)
 
+        # Titles can contain Mau code
         p = TextParser(footnotes_start_with=len(self.footnotes) + 1).analyse(text)
         title = p.nodes[0]
 
@@ -128,18 +168,38 @@ class MainParser(BaseParser):
 
     @parser
     def _parse_header(self):
+        # Parse a header in the form
+        #
+        # = Header
+        #
+        # The number of equal signs is arbitrary
+        # and represents the level of the header.
+        # Headers are automatically assigned an anchor
+        # created using the provided function self.header_anchor
+        #
+        # Headers in the form
+        # =! Header
+        # are rendered but not included in the TOC
+
+        # Get all the equal signs
         header = self.get_token(
             TokenTypes.LITERAL, check=lambda x: x.startswith("=")
         ).value
+
+        # Get the mandatory white spaces
         self.get_token(TokenTypes.WHITESPACE)
 
+        # Check if the header has to be in the TOC
         in_toc = True
         if header.endswith("!"):
             header = header[:-1]
             in_toc = False
 
+        # Get the text of the header and calculate the level
         text = self.get_token(TokenTypes.TEXT).value
         level = len(header)
+
+        # Generate the anchor and append it to the TOC
         anchor = self.header_anchor(text, level)
 
         if in_toc:
@@ -178,6 +238,16 @@ class MainParser(BaseParser):
 
     @parser
     def _parse_block(self):
+        # Parse a block in the form
+        #
+        # ----
+        # Content
+        # ----
+        # Optional secondary content
+        #
+        # Blocks are delimited by 4 consecutive identical characters.
+
+        # Get the delimiter and check the length
         delimiter = self.get_token(TokenTypes.TEXT).value
 
         if len(delimiter) != 4 or len(set(delimiter)) != 1:
@@ -185,6 +255,7 @@ class MainParser(BaseParser):
 
         self.get_token(TokenTypes.EOL)
 
+        # Collect everything until the next delimiter
         content = self.collect_lines(
             [Token(TokenTypes.TEXT, delimiter), Token(TokenTypes.EOF)]
         )
@@ -192,11 +263,14 @@ class MainParser(BaseParser):
         self.force_token(TokenTypes.TEXT, delimiter)
         self.get_token(TokenTypes.EOL)
 
+        # Get the optional secondary content
         secondary_content = self.collect_lines(
             [Token(TokenTypes.EOL), Token(TokenTypes.EOF)]
         )
 
         args, kwargs = self._pop_attributes()
+
+        # Consume the title
         title = self._pop_title()
 
         if len(args) != 0 and args[0] in ["if", "ifnot"]:
@@ -227,11 +301,29 @@ class MainParser(BaseParser):
         )
 
     def _parse_conditional_block(self, condition, content, args, kwargs):
+        # Parse a conditional block in the form
+        #
+        # [if,variable,value]
+        # ----
+        # content
+        # ----
+        #
+        # or
+        #
+        # [ifnot,variable,value]
+        # ----
+        # content
+        # ----
+        #
+        # where value can be omitted and is True by default.
+
+        # Check if the variable matches the value and apply the requested test
         _, kwargs = merge_args(args, kwargs, ["variable", "value"])
 
         match = self.variables.get(kwargs["variable"]) == kwargs.get("value", True)
         test = True if condition == "if" else False
 
+        # If the condition is satisfied go ahead and parse the content
         if match is test:
             p = MainParser(variables=self.variables).analyse("\n".join(content))
 
@@ -240,27 +332,72 @@ class MainParser(BaseParser):
             self.nodes.extend(p.nodes)
 
     def _parse_raw_block(self, content, args, kwargs):
+        # Parse a raw block.
+
+        # Just put each line in a text node as it is
         textlines = [TextNode(line) for line in content]
 
         self._save(RawNode(content=textlines))
 
     def _parse_source_block(self, content, secondary_content, title, args, kwargs):
+        # Parse a source block in the form
+        #
+        # [source, language, attributes...]
+        # ----
+        # content
+        # ----
+        #
+        # Source blocks support the following attributes
+        #
+        # callouts=":" The separator used by callouts
+        # highlight="@" The special character to turn on highlight
+        #
+        # [source, language, attributes...]
+        # ----
+        # content:1:
+        # ----
+        #
+        # [source, language, attributes...]
+        # ----
+        # content:@:
+        # ----
+        #
+        # Callout descriptions can be added to the block
+        # as secondary content with the syntax
+        #
+        # [source, language, attributes...]
+        # ----
+        # content:name:
+        # ----
+        # <name>: <description>
+        #
+        # Since Mau uses Pygments, the attribute language
+        # is one of the langauges supported by that tool.
+
+        # Get the delimiter for callouts (":" by default)
         delimiter = kwargs.pop("callouts", ":")
-        highlight_marker = kwargs.pop("highlight", "@")
 
         # A dictionary that contains callout markers in
         # the form {linenum:name}
         callout_markers = {}
 
+        # Get the marker for highlighted lines ("@" by default)
+        highlight_marker = kwargs.pop("highlight", "@")
+
         # A list of highlighted lines
         highlighted_lines = []
 
+        # This is a list of all lines that might contain
+        # a callout. They will be further processed
+        # later to be sure.
         lines_with_callouts = [
             (linenum, line)
             for linenum, line in enumerate(content)
             if line.endswith(delimiter)
         ]
 
+        # Each line in the previous list is processed
+        # and stored if it contains a callout
         for linenum, line in lines_with_callouts:
             # Remove the final delimiter
             line = line[:-1]
@@ -270,11 +407,13 @@ class MainParser(BaseParser):
                 # It's a trap! There are no separators left
                 continue
 
+            # Get the callout and the line
             callout_name = splits[-1]
             line = delimiter.join(splits[:-1])
 
             content[linenum] = line
 
+            # Check if we want to just highlight the line
             if callout_name == highlight_marker:
                 highlighted_lines.append(linenum)
             else:
@@ -284,10 +423,13 @@ class MainParser(BaseParser):
         # marker in the form {name:text}
         callout_contents = {}
 
+        # If there was secondary content it should be formatted
+        # with callout names followed by colon and the
+        # callout text.
         for line in secondary_content:
             if ":" not in line:
                 raise ParseError(
-                    f"Callout description should be written as 'linuenum: text'. Missing ':' in '{line}'"
+                    f"Callout description should be written as 'name: text'. Missing ':' in '{line}'"
                 )
 
             name, text = line.split(":")
@@ -309,6 +451,7 @@ class MainParser(BaseParser):
 
         _, kwargs = merge_args(args, kwargs, ["language"])
 
+        # Get the language for this block
         language = kwargs.pop("language", "text")
 
         self._save(
@@ -324,6 +467,13 @@ class MainParser(BaseParser):
         )
 
     def _parse_admonition_block(self, content, args, kwargs):
+        # Parse an admonition in the form
+        #
+        # [class, icon, label]
+        # ----
+        # content
+        # ----
+
         _, kwargs = merge_args(args, kwargs, ["class", "icon", "label"])
 
         p = MainParser(variables=self.variables).analyse("\n".join(content))
@@ -341,6 +491,13 @@ class MainParser(BaseParser):
         )
 
     def _parse_quote_block(self, content, title, args, kwargs):
+        # Parse a quote block in the form
+        #
+        # [quote, attribution]
+        # ----
+        # content
+        # ----
+
         _, kwargs = merge_args(args, kwargs, ["attribution"])
 
         p = MainParser().analyse("\n".join(content))
@@ -356,6 +513,16 @@ class MainParser(BaseParser):
     def _parse_standard_block(
         self, blocktype, content, secondary_content, title, args, kwargs
     ):
+        # Parse a standard block in the form
+        #
+        # [blocktype, attributes...]
+        # ----
+        # content
+        # ----
+        # secondary_content
+        #
+        # This is used to parse blocks which do not have special code.
+
         pc = MainParser(variables=self.variables).analyse("\n".join(content))
         ps = MainParser(variables=self.variables).analyse("\n".join(secondary_content))
 
@@ -465,14 +632,21 @@ class MainParser(BaseParser):
                 self.variables[namespace] = {variable_name: variable_value}
 
     def _parse_list_nodes(self):
+        # This parses all items of a list
+
+        # Ignore initial white spaces
         with self:
             self.get_token(TokenTypes.WHITESPACE)
 
+        # Parse the header and ignore the following white spaces
         header = self.get_token(TokenTypes.LITERAL, check=lambda x: x[0] in "*#").value
         self.get_token(TokenTypes.WHITESPACE)
-        text = self._collect_text_content()
 
+        # Collect and parse the text of the item
+        text = self._collect_text_content()
         content = self._parse_text_content(text)
+
+        # Compute the level of the item
         level = len(header)
 
         nodes = []
@@ -480,18 +654,29 @@ class MainParser(BaseParser):
 
         while not self.peek_token() in [Token(TokenTypes.EOF), Token(TokenTypes.EOL)]:
             # This is the SentenceNode inside the last node added to the list
+            # which is used to append potential nested nodes
             last_node_sentence = nodes[-1].content
 
             with self:
                 self.get_token(TokenTypes.WHITESPACE)
 
             if len(self.peek_token().value) == level:
+                # The new item is on the same level
+
+                # Get the header
                 header = self.get_token().value
+
+                # Ignore white spaces
                 self.get_token(TokenTypes.WHITESPACE)
+
+                # Collect and parse the text of the item
                 text = self._collect_text_content()
                 content = self._parse_text_content(text)
                 nodes.append(ListItemNode(len(header), content))
             elif len(self.peek_token().value) > level:
+                # The new item is on a deeper level
+
+                # Treat the new line as a new list
                 numbered = True if self.peek_token().value[0] == "#" else False
                 subnodes = self._parse_list_nodes()
                 last_node_sentence.content.append(ListNode(numbered, subnodes))
@@ -502,6 +687,37 @@ class MainParser(BaseParser):
 
     @parser
     def _parse_list(self):
+        # Parse a list.
+        # Lists can be ordered (using numbers)
+        #
+        # * One item
+        # * Another item
+        #
+        # or unordered (using bullets)
+        #
+        # # Item 1
+        # # Item 2
+        #
+        # The number of headers increases
+        # the depth of each item
+        #
+        # # Item 1
+        # ## Sub-Item 1.1
+        #
+        # Spaces before and after the header are ignored.
+        # So the previous list can be also written
+        #
+        # # Item 1
+        #   ## Sub-Item 1.1
+        #
+        # Ordered and unordered lists can be mixed.
+        #
+        # * One item
+        # ## Sub Item 1
+        # ## Sub Item 2
+        #
+
+        # Ignore initial white spaces
         with self:
             self.get_token(TokenTypes.WHITESPACE)
 
@@ -513,6 +729,11 @@ class MainParser(BaseParser):
 
     @parser
     def _parse_paragraph(self):
+        # This parses a paragraph.
+        # Paragraphs can be written on multiple lines and
+        # end with an empty line.
+
+        # Get all the lines, join them and parse them
         lines = self.collect_lines([Token(TokenTypes.EOL), Token(TokenTypes.EOF)])
         text = " ".join(lines)
         sentence = self._parse_text_content(text)
@@ -526,6 +747,8 @@ class MainParser(BaseParser):
         self.get_token(TokenTypes.EOL)
 
     def _parse_functions(self):
+        # All the functions that this parser provides.
+
         return [
             self._parse_eol,
             self._parse_horizontal_rule,
@@ -543,6 +766,8 @@ class MainParser(BaseParser):
         ]
 
     def _create_toc(self):
+        # Create the TOC from the list of headers.
+
         nodes = []
         latest_by_level = {}
 

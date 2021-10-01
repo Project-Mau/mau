@@ -210,3 +210,6 @@ class BaseLexer:
 
     def _process_error(self):
         raise LexerError(f'Can\'t process "{self._tail}"')
+
+    def _insert(self, text):
+        self._text_buffer.insert(text)

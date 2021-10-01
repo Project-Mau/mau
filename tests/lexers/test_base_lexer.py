@@ -94,3 +94,17 @@ def test_current_char_and_line():
 
     assert lex._current_char == "J"
     assert lex._current_line == "Just an example"
+
+
+def test_insert():
+    lex = BaseLexer()
+    buf = text_buffer.TextBuffer()
+    buf.load("Just an example\nOn two lines")
+    lex._text_buffer = buf
+    lex._nextline()
+
+    lex._insert("A third line!")
+
+    assert lex._current_line == "A third line!"
+    lex._nextline()
+    assert lex._current_line == "On two lines"

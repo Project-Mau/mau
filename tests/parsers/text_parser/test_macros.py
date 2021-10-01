@@ -184,6 +184,27 @@ def test_automatic_link():
     _test(source, expected)
 
 
+def test_automatic_link_ending_with_period():
+    source = "The link is https://somedomain.org/the/path."
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {"type": "text", "value": "The link is "},
+                {
+                    "type": "link",
+                    "target": "https://somedomain.org/the/path",
+                    "text": "https://somedomain.org/the/path",
+                },
+                {"type": "text", "value": "."},
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
 def test_http_mentions():
     source = "Dangerous words: http and https"
 

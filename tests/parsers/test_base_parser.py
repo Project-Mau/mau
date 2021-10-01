@@ -44,6 +44,16 @@ def test_get_token():
     assert p.get_token() == EOF
 
 
+def test_put_token():
+    p = init_parser("\n")
+
+    assert p.get_token() == EOL
+    p.put_token(Literal("*"))
+    assert p.get_token() == Literal("*")
+    assert p.get_token() == EOL
+    assert p.get_token() == EOF
+
+
 def test_tokens_contain_position():
     p = init_parser("\n")
 

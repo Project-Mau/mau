@@ -130,6 +130,9 @@ class BaseParser:
         except IndexError:
             return Token(TokenTypes.EOF)
 
+    def put_token(self, token):
+        self.tokens.insert(self.index + 1, token)
+
     def peek_token_is(self, *args, **kwargs):
         try:
             self.peek_token(*args, **kwargs)

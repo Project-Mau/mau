@@ -207,6 +207,12 @@ class TextParser(BaseParser):
             check=lambda x: x.startswith("http://") or x.startswith("https://"),
         )
 
+        # Check the last character.
+        # Common punctuation shouldn't be part of the link
+        if link[-1] in [".", ","]:
+            self.put_token(Literal(link[-1]))
+            link = link[:-1]
+
         return LinkNode(link, link)
 
     def _parse(self):

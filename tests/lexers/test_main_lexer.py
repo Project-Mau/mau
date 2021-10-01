@@ -1,5 +1,7 @@
 import textwrap
 
+from unittest.mock import patch, mock_open
+
 from mau.lexers.base_lexer import Text, Literal, EOL, EOF, WS
 from mau.lexers.main_lexer import MainLexer
 
@@ -235,28 +237,6 @@ def test_title_multiple_spaces_after_mark():
         Literal("."),
         WS("     "),
         Text("A title with spaces"),
-        EOL,
-        Text("Some text"),
-        EOL,
-        EOF,
-    ]
-
-
-def test_id():
-    lex = MainLexer()
-
-    lex.process(
-        dedent(
-            """
-            #someid
-            Some text
-            """
-        )
-    )
-
-    assert lex.tokens == [
-        Literal("#"),
-        Text("someid"),
         EOL,
         Text("Some text"),
         EOL,
@@ -567,6 +547,28 @@ def test_unlisted_header():
         Literal("==!"),
         WS(" "),
         Text("Header"),
+        EOL,
+        EOF,
+    ]
+
+
+@patch("mau.lexers.main_lexer.MainLexer._process_directive")
+def test_directive(mock_process_directive):
+    lex = MainLexer()
+
+    lex.process("::#name:/path/to/file")
+
+    assert mock_process_directive.called_with("name", "/path/to/file")
+
+
+@patch("builtins.open", new_callable=mock_open, read_data="just some data")
+def test_import_directive(mock_file):
+    lex = MainLexer()
+
+    lex.process("::#include:/path/to/file")
+
+    assert lex.tokens == [
+        Text("just some data"),
         EOL,
         EOF,
     ]

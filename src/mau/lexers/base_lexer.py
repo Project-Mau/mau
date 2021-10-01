@@ -23,10 +23,19 @@ class TokenError(ValueError):
 
 
 class Token:
+    """
+    This represents a token.
+    Tokens have a type, a value (the actual characters), and a position
+    in the global text, expressed as a tuple of line and column
+    """
+
     def __init__(self, _type, value=None, position=None):
         self.type = _type
-        self.value = str(value) if value is not None else None
         self.position = position
+
+        # This ensures things like numbers or other
+        # strange beasts are just treated as text.
+        self.value = str(value) if value is not None else None
 
     def __str__(self):
         position_string = ""
@@ -63,6 +72,7 @@ class Token:
         return True
 
 
+# These are convenient shortcuts
 EOL = Token(TokenTypes.EOL)
 EOF = Token(TokenTypes.EOF)
 WS = partial(Token, TokenTypes.WHITESPACE)
@@ -71,26 +81,48 @@ Literal = partial(Token, TokenTypes.LITERAL)
 
 
 class BaseLexer:
+    """
+    The base class for lexers.
+    The lexer decomposes the input text into a list of tokens
+    and provides basic navigation functions in the
+    output results.
+    """
+
     def __init__(self, initial_position=None):
+        # Use a TextBuffer internally to manage the text
         self._text_buffer = text_buffer.TextBuffer()
 
-        self._text_buffer.position
+        # A buffer of tokens, useful when you need to
+        # collect them but later post-process them
+        # before you actually store them as result.
         self._buffer = []
+
         self._initial_position = initial_position or (0, 0)
 
+        # These are the tokens identified so far
         self.tokens = []
 
     @property
     def _token_position(self):
+        # This returns the token position taking into
+        # account that the initial position might
+        # not be (0,0)
         return tuple(map(sum, zip(self._text_buffer.position, self._initial_position)))
 
     def process(self, text):
+        # Reset the lexer
         self.tokens = []
-        self.index = -1
+
+        # Load the text into the TextBuffer
         self._text_buffer.load(text)
 
+        # Process tokens until we reach the end of file
         self._process()
-        while self.tokens[-1].type is not TokenTypes.EOF:
+        while True:
+            # Preprocess functions can return no tokens
+            if len(self.tokens) > 0 and self.tokens[-1].type is TokenTypes.EOF:
+                break
+
             self._process()
 
     def _process(self):
@@ -105,6 +137,7 @@ class BaseLexer:
         process_functions.append(self._process_error)
 
         for process_func in process_functions:
+            # This ensures result is always either None or a list
             result = self._wrap(process_func())
 
             if result is None:
@@ -115,6 +148,9 @@ class BaseLexer:
 
     def _wrap(self, result):
         # Makes sure the result is either None or a list of tokens
+        # which makes  processing function that return a single token
+        # more readable.
+
         if result is None:
             return
 
@@ -124,7 +160,7 @@ class BaseLexer:
         return result
 
     def _nextline(self):
-        # Carriage return =)
+        # Carriage return =) go to column 0
         self._initial_position = (self._initial_position[0], 0)
 
         # Skip the whole line including the EOL
@@ -136,23 +172,34 @@ class BaseLexer:
 
     @property
     def _current_char(self):
+        # Return the current character
         return self._text_buffer.current_char
 
     @property
     def _current_line(self):
+        # Return the current line
         return self._text_buffer.current_line
 
     @property
     def _tail(self):
+        # A wrapper to return the rest of the line
         return self._text_buffer.tail
 
     def _create_token(self, token_type, token_value=None):
+        # A wrapper to create a token with the current position.
+        # This doesn't affect the position in the text being lexed
         return Token(token_type, token_value, position=self._token_position)
 
     def _create_token_and_skip(self, token_type, token_value=None, skip_value=None):
+        # Create the token and skip the characters in the text
+
+        # This skips the first non-None value between skip_value, token_type and the empty string
         skip = next(x for x in [skip_value, token_value, ""] if x is not None)
+
+        # This creates the token
         token = self._create_token(token_type, token_value)
 
+        # Perform the right skip
         if token_type == TokenTypes.EOL:
             self._nextline()
         else:
@@ -161,11 +208,13 @@ class BaseLexer:
         return token
 
     def _store(self, token_type, token_value=None, skip_value=None):
+        # Create and skip a token, then store it in the buffer
         self._buffer.append(
             self._create_token_and_skip(token_type, token_value, skip_value)
         )
 
     def _pop(self):
+        # Get the content of the buffer
         tokens = list(self._buffer)
         self._buffer = []
         return tokens
@@ -213,3 +262,8 @@ class BaseLexer:
 
     def _insert(self, text):
         self._text_buffer.insert(text)
+
+    def _rematch(self, regexp):
+        # Compile the regexp and get a match on the current line
+        regexp = re.compile(regexp)
+        return regexp.match(self._current_line)

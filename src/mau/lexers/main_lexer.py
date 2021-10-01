@@ -1,16 +1,12 @@
-import re
-
 from mau.lexers.base_lexer import BaseLexer, TokenTypes
 from mau.lexers.arguments_lexer import ArgumentsLexer
 
 
 class MainLexer(BaseLexer):
     def _process_empty_line(self):
-        regexp = re.compile(r"^\ +$")
+        match = self._rematch(r"^\ +$")
 
-        match = regexp.match(self._current_line)
-
-        if not match:
+        if not match:  # pragma: no cover
             return None
 
         self._skip(len(match.group()))
@@ -22,62 +18,51 @@ class MainLexer(BaseLexer):
         return self._create_token_and_skip(TokenTypes.LITERAL, self._current_line)
 
     def _process_comment(self):
-        regexp = re.compile("^(//.*)")
+        match = self._rematch(r"^(//.*)")
 
-        match = regexp.match(self._current_line)
-
-        if not match:
+        if not match:  # pragma: no cover
             return None
 
-        tokens = [
+        return [
             self._create_token_and_skip(TokenTypes.TEXT, match.group(1)),
             self._create_token_and_skip(TokenTypes.EOL),
         ]
-
-        return tokens
 
     def _process_multiline_comment(self):
         if not self._current_line.startswith("////"):
             return None
 
-        tokens = [
+        return [
             self._create_token_and_skip(TokenTypes.LITERAL, self._current_line),
             self._create_token_and_skip(TokenTypes.EOL),
         ]
-        return tokens
 
     def _process_header(self):
-        regexp = re.compile("^(=+!?)( +)(.*)")
+        match = self._rematch("^(=+!?)( +)(.*)")
 
-        match = regexp.match(self._current_line)
-
-        if not match:
+        if not match:  # pragma: no cover
             return None
 
-        if not match.group(2):
+        if not match.group(2):  # pragma: no cover
             return None
 
-        if not match.group(3):
+        if not match.group(3):  # pragma: no cover
             return None
 
-        tokens = [
+        return [
             self._create_token_and_skip(TokenTypes.LITERAL, match.group(1)),
             self._create_token_and_skip(TokenTypes.WHITESPACE, match.group(2)),
             self._create_token_and_skip(TokenTypes.TEXT, match.group(3)),
             self._create_token_and_skip(TokenTypes.EOL),
         ]
 
-        return tokens
-
     def _process_list(self):
-        regexp = re.compile(r"^( *)([\*#]+)( +)(.*)")
+        match = self._rematch(r"^( *)([\*#]+)( +)(.*)")
 
-        match = regexp.match(self._current_line)
-
-        if not match:
+        if not match:  # pragma: no cover
             return None
 
-        if not match.group(4):
+        if not match.group(4):  # pragma: no cover
             return None
 
         tokens = []
@@ -97,21 +82,13 @@ class MainLexer(BaseLexer):
 
         return tokens
 
-    def _process_id(self):
-        if self._current_char != "#":
-            return None
-
-        return self._create_token_and_skip(TokenTypes.LITERAL, self._current_char)
-
     def _process_title(self):
-        regexp = re.compile(r"^\.( *)(.*)")
+        match = self._rematch(r"^\.( *)(.*)")
 
-        match = regexp.match(self._current_line)
-
-        if not match:
+        if not match:  # pragma: no cover
             return None
 
-        if not match.group(2):
+        if not match.group(2):  # pragma: no cover
             return None
 
         tokens = [
@@ -150,14 +127,12 @@ class MainLexer(BaseLexer):
         return tokens
 
     def _process_include_content(self):
-        regexp = re.compile(r"^<<( +)([^(]+)((.*))?")
+        match = self._rematch(r"^<<( +)([^(]+)((.*))?")
 
-        match = regexp.match(self._current_line)
-
-        if not match:
+        if not match:  # pragma: no cover
             return None
 
-        if not match.group(2):
+        if not match.group(2):  # pragma: no cover
             return None
 
         tokens = [
@@ -176,18 +151,23 @@ class MainLexer(BaseLexer):
             )
 
         tokens.append(self._create_token_and_skip(TokenTypes.EOL))
+
         return tokens
 
     def _process_command(self):
         if not self._current_line.startswith("::"):
             return None
 
-        regexp = re.compile(r"::([a-z0-9_]+):(.*)?")
-
-        match = regexp.match(self._current_line)
+        match = self._rematch(r"::([a-z0-9_#]+):(.*)?")
 
         if not match:  # pragma: no cover
             return None
+
+        if match.group(1).startswith("#"):
+            # This is a directive
+            self._nextline()
+
+            return self._process_directive(match.group(1)[1:], match.group(2))
 
         tokens = [
             self._create_token_and_skip(TokenTypes.LITERAL, "::"),
@@ -202,13 +182,20 @@ class MainLexer(BaseLexer):
 
         return tokens
 
+    def _process_directive(self, directive, value):
+        # Process a directive
+
+        if directive == "include":
+            with open(value) as f:
+                self._insert(f.read())
+
+        return []
+
     def _process_variable_definition(self):
         if self._current_char != ":":
             return None
 
-        regexp = re.compile(r":([!a-zA-Z0-9\-_\.]+):(.*)?")
-
-        match = regexp.match(self._current_line)
+        match = self._rematch(r":([!a-zA-Z0-9\-_\.]+):(.*)?")
 
         if not match:  # pragma: no cover
             return None
@@ -247,7 +234,6 @@ class MainLexer(BaseLexer):
             self._process_header,
             self._process_list,
             self._process_title,
-            self._process_id,
             self._process_attributes,
             self._process_include_content,
             self._process_variable_definition,

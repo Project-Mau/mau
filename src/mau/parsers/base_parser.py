@@ -61,9 +61,6 @@ class BaseParser:
     def _pop(self):
         return self._stack.pop()
 
-    def fail(self):
-        raise TokenError
-
     def _save(self, node):
         self.nodes.append(node)
 

@@ -301,7 +301,7 @@ def test_token_error_can_be_raised():
 
     with p:
         assert p.get_token(TokenTypes.EOL)
-        p.fail()
+        raise TokenError
 
     assert p.get_token(TokenTypes.EOL)
     assert p.get_token(TokenTypes.EOL)

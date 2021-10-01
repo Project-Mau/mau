@@ -107,7 +107,7 @@ def test_macro_link_with_escaped_quotes():
 
 
 def test_macro_link_with_escaped_round_braces():
-    source = '[link](https://somedomain.org/the/path,"link (text\)")'
+    source = '[link](https://somedomain.org/the/path,"link (text\\)")'
 
     expected = [
         {
@@ -126,7 +126,7 @@ def test_macro_link_with_escaped_round_braces():
 
 
 def test_macro_link_with_escaped_round_braces_in_the_url():
-    source = '[link](https://somedomain.org/the/path_(note\),"link")'
+    source = '[link](https://somedomain.org/the/path_(note\\),"link")'
 
     expected = [
         {

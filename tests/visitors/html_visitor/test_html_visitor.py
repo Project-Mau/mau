@@ -495,3 +495,53 @@ def test_macro():
     expected = ["<p></p>"]
 
     _test(source, expected)
+
+
+def test_block_code_default():
+    source = dedent(
+        """
+        [code]
+        ----
+        <div class="someclass">
+          <p>This is HTML</>
+        </div>
+        ----
+        """
+    )
+
+    expected = ["""<div class="someclass">\n  <p>This is HTML</>\n</div>"""]
+
+    _test(source, expected)
+
+
+def test_block_code_mau():
+    source = dedent(
+        """
+        = Header out
+
+        [code, engine=mau]
+        ----
+        = Header in
+
+        ::toc:
+        ----
+        """
+    )
+
+    expected = [
+        '<h1 id="header-out">Header out</h1>',
+        remove_indentation(
+            """
+            <h1 id="header-in">Header in</h1>
+            <div>
+              <ul>
+                <li>
+                  <a href="#header-in">Header in</a>
+                </li>
+              </ul>
+            </div>
+            """
+        ),
+    ]
+
+    _test(source, expected)

@@ -276,3 +276,79 @@ def test_raw_block():
     ]
 
     _test(source, expected)
+
+
+def test_code_block_default_raw():
+    source = """
+    = Header out
+
+    [code]
+    ----
+    = Header in
+
+    ::toc:
+    ----
+    """
+
+    expected = [
+        {
+            "anchor": "header-out",
+            "kwargs": {},
+            "level": 1,
+            "tags": [],
+            "type": "header",
+            "value": "Header out",
+        },
+        {
+            "args": [],
+            "content": [
+                {"type": "text", "value": "= Header in"},
+                {"type": "text", "value": ""},
+                {"type": "text", "value": "::toc:"},
+            ],
+            "engine": "raw",
+            "title": None,
+            "kwargs": {},
+            "type": "code",
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_code_block_engine():
+    source = """
+    = Header out
+
+    [code, engine=mau]
+    ----
+    = Header in
+
+    ::toc:
+    ----
+    """
+
+    expected = [
+        {
+            "anchor": "header-out",
+            "kwargs": {},
+            "level": 1,
+            "tags": [],
+            "type": "header",
+            "value": "Header out",
+        },
+        {
+            "args": [],
+            "content": [
+                {"type": "text", "value": "= Header in"},
+                {"type": "text", "value": ""},
+                {"type": "text", "value": "::toc:"},
+            ],
+            "engine": "mau",
+            "title": None,
+            "kwargs": {},
+            "type": "code",
+        },
+    ]
+
+    _test(source, expected)

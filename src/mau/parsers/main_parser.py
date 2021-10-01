@@ -13,6 +13,7 @@ from mau.parsers.nodes import (
     BlockNode,
     SourceNode,
     RawNode,
+    CodeNode,
     AdmonitionNode,
     QuoteNode,
     ContentNode,
@@ -374,6 +375,8 @@ class MainParser(BaseParser):
             return self._parse_conditional_block(blocktype, content)
         elif blocktype == "raw":
             return self._parse_raw_block(content)
+        elif blocktype == "code":
+            return self._parse_code_block(content, title)
         elif blocktype == "source":
             return self._parse_source_block(content, secondary_content, title)
         elif blocktype == "admonition":
@@ -421,6 +424,21 @@ class MainParser(BaseParser):
         textlines = [TextNode(line) for line in content]
 
         self._save(RawNode(content=textlines))
+
+    def _parse_code_block(self, content, title):
+        # Parse a code block.
+
+        # Assign names and consume the attributes
+        self.argsparser.merge_unnamed_args(["engine"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
+
+        # Get the engine for this block
+        engine = kwargs.pop("engine", "raw")
+
+        # Just put each line in a text node as it is
+        textlines = [TextNode(line) for line in content]
+
+        self._save(CodeNode(engine=engine, content=textlines, title=title))
 
     def _parse_source_block(self, content, secondary_content, title):
         # Parse a source block in the form

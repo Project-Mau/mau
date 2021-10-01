@@ -3,7 +3,13 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import get_formatter_by_name
 
 from mau.parsers import nodes
+from mau.parsers.main_parser import MainParser
 from mau.visitors.visitor import Visitor
+
+
+class EngineError(ValueError):
+    """ Used to signal that the engine selected for a code block is not known """
+
 
 DEFAULT_TEMPLATES = {
     "admonition.html": (
@@ -62,6 +68,7 @@ DEFAULT_TEMPLATES = {
         "<blockquote>" "{{ content }}" "<cite>{{ attribution }}</cite>" "</blockquote>"
     ),
     "raw.html": "{{ content }}",
+    "code.html": "{{ content }}",
     "sentence.html": "{{ content }}",
     "source.html": (
         '<div class="code">'
@@ -194,6 +201,28 @@ class HTMLVisitor(Visitor):
         self._reduce(node, ["title"])
 
         return node
+
+    def _visit_code(self, node):
+        # The engine for the code
+        engine = node["engine"]
+
+        self._reducelist(node, ["content"], join_with="\n")
+
+        if engine == "raw":
+            return node
+        elif engine == "mau":
+            p = MainParser().analyse(node["content"])
+            visitor = self.__class__(
+                default_templates=self.default_templates,
+                templates_directory=self.templates_directory,
+                config=p.variables,
+                toc=p.toc,
+                footnotes=p.footnotes,
+            )
+            node["content"] = visitor.visit(nodes.ContainerNode(p.nodes).asdict())
+            return node
+        else:
+            raise EngineError(f"Engine {engine} is not available")
 
     def _visit_toc_entry(self, node, exclude_tags=None):
         exclude_tags = exclude_tags or []

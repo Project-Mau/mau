@@ -496,6 +496,44 @@ class RawNode(Node):
         }
 
 
+class CodeNode(Node):
+    """A block of code that will be executed at render time.
+
+    The content of this node is code that will
+    be executed at render time.
+    This might contain for example raw code
+    that has just to be injected in the render,
+    Mau code that has to be processed and rendered
+    by a subparser, Python code, etc.
+
+    Arguments:
+        engine: the engine used to run the code
+        content: the content of the block
+        title: caption of the image
+        args: unnamed arguments
+        kwargs: named arguments
+    """
+
+    node_type = "code"
+
+    def __init__(self, engine, content, title, args=None, kwargs=None):
+        self.engine = engine
+        self.content = content
+        self.title = title
+        self.args = args or []
+        self.kwargs = kwargs or {}
+
+    def asdict(self):
+        return {
+            "type": self.node_type,
+            "engine": self.engine,
+            "title": self.title,
+            "content": [i.asdict() for i in self.content],
+            "args": self.args,
+            "kwargs": self.kwargs,
+        }
+
+
 class AdmonitionNode(Node):
     """An admonition.
 

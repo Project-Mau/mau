@@ -17,6 +17,10 @@ def merge_args(args, kwargs, names):
     return [], named_args
 
 
+# The ArgumentsParser is used to parse
+# unnamed and named arguments passed to macros.
+# It parses a string into a list of unnamed
+# arguments and a dictionary of named ones.
 class ArgumentsParser(BaseParser):
     def __init__(self, raw=False):
         super().__init__()

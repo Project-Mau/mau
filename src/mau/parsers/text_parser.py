@@ -1,3 +1,5 @@
+import itertools
+
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.text_lexer import TextLexer
 from mau.parsers.base_parser import BaseParser, Literal
@@ -16,16 +18,22 @@ from mau.parsers.nodes import (
     FootnoteDefNode,
 )
 
+# This is a simple map to keep track of the official
+# name of styles introduced by special characters
 MAP_STYLES = {"_": "underscore", "*": "star"}
 
 
-# Returns the id of the reference
-# and the id of the definition
 def footnote_anchors(content):
+    """
+    Return the id of the reference and the id of the definition.
+    """
     h = str(hash(content))[:8]
     return f"fr-{h}", f"fd-{h}"  # pragma: no cover
 
 
+# The TextParser is a nested parser.
+# The parsing always starts with parse_sentence
+# and from there all components of the text are explored
 class TextParser(BaseParser):
     def __init__(self, footnotes_start_with=1):
         super().__init__()
@@ -36,30 +44,61 @@ class TextParser(BaseParser):
         self._classes = set()
         self._verbatim = False
 
+        # This makes footnotes counting start from
+        # the given number. It is needed because
+        # there might be already footnotes in the
+        # parent text to take into account.
         self.footnotes_start_with = footnotes_start_with
+
+        # These are the footnotes found in this text
         self.footnotes = []
         self._nodes = []
+
+        # These are the nodes created by the parsing.
         self.nodes = []
 
     def parse_word(self):
+        """
+        Parse a single word.
+        """
         return WordNode(self.get_token_value())
 
     def parse_style(self):
+        """
+        Parse a sentence surrounded by style markers.
+        """
+
+        # Get the style marker
         style = self.get_token_value(TokenTypes.LITERAL, check=lambda x: x in "*_")
+
+        # Get everything until the next marker
         content = self.parse_sentence(stop_tokens={Token(TokenTypes.LITERAL, style)})
+
+        # Get the closing marker
         self.get_token(TokenTypes.LITERAL, style)
 
         return StyleNode(MAP_STYLES[style], content)
 
     def parse_escape(self):
-        self.get_token(TokenTypes.LITERAL, "\\")
+        """
+        Parse an escaped element.
+        """
 
-        # if self.peek_token() == Literal('"'):
-        #     return WordNode('\\"')
+        # Drop the backslash
+        self.get_token(TokenTypes.LITERAL, "\\")
 
         return WordNode(self.get_token_value())
 
     def parse_styled_text(self, stop_tokens=None):
+        """
+        Parse multiple possible elements: escapes, classes,
+        macros, verbatim, styles, links, words.
+        This is a helper for the function parse_sentence
+        that takes into account all possible elements of
+        syntax, stopping if the token is among the listed ones.
+        """
+        stop_tokens = stop_tokens or set()
+
         if self.peek_token() in stop_tokens:
             return None
 
@@ -84,6 +123,13 @@ class TextParser(BaseParser):
         return self.parse_word()
 
     def parse_sentence(self, stop_tokens=None):
+        """
+        Parse a sentence, which is made of multiple
+        elements identified by parse_styled_text, until
+        the EOF, the EOL, or a specific set of tokens
+        passed as argument.
+        """
+
         content = []
         stop_tokens = stop_tokens or set()
         stop_tokens = stop_tokens.union({Token(TokenTypes.EOF), Token(TokenTypes.EOL)})
@@ -92,8 +138,6 @@ class TextParser(BaseParser):
         while result is not None:
             content.append(result)
             result = self.parse_styled_text(stop_tokens)
-
-        import itertools
 
         # Group consecutive WordNode nodes into a single TextNode
         grouped_nodes = []
@@ -107,42 +151,83 @@ class TextParser(BaseParser):
         return SentenceNode(content=grouped_nodes)
 
     def parse_verbatim(self):
+        """
+        Parse text in `verbatim`.
+        """
+
+        # Get the verbatim marker
         self.get_token(TokenTypes.LITERAL, "`")
+
+        # Get the content tokens until the
+        # next verbatim marker or EOL
         content = self.collect_join(
             [Token(TokenTypes.LITERAL, "`"), Token(TokenTypes.EOL)],
         )
+
+        # Remove the closing marker
         self.get_token(TokenTypes.LITERAL, "`")
 
         return VerbatimNode(content)
 
     def parse_class(self):
+        """
+        Parse a class in the form [class]#content#.
+        """
+
+        # Get the opening square bracket
         self.get_token(TokenTypes.LITERAL, "[")
+
+        # Get everything up to the closing bracket
         classes = self.collect_join(
             [Token(TokenTypes.LITERAL, "]"), Token(TokenTypes.EOL)]
         )
+
+        # Get the closing bracket
         self.get_token(TokenTypes.LITERAL, "]")
-        self.get_token(TokenTypes.LITERAL, "#")
-        content = self.parse_sentence(stop_tokens={Token(TokenTypes.LITERAL, "#")})
+
+        # Multiple classes are separated by commas
+        classes = classes.split(",")
+
+        # Get the opening number sign
         self.get_token(TokenTypes.LITERAL, "#")
 
-        classes = classes.split(",")
+        # Get the content of the class
+        content = self.parse_sentence(stop_tokens={Token(TokenTypes.LITERAL, "#")})
+
+        # Get the closing number sign
+        self.get_token(TokenTypes.LITERAL, "#")
 
         return ClassNode(classes, content)
 
     def parse_macro_link(self, args, kwargs):
+        """
+        Parse a link macro in the form [link](target, text).
+        """
+
         args, kwargs = merge_args(args, kwargs, ["target", "text"])
+
+        # Get the target as it can be used as default text
         target = kwargs.get("target")
         text = kwargs.get("text", target)
 
         return LinkNode(target, text)
 
     def parse_macro_mailto(self, args, kwargs):
+        """
+        Parse a mailto macro in the form [mailto](email).
+        """
+
         args, kwargs = merge_args(args, kwargs, ["email"])
         email = kwargs.get("email")
         target = f"mailto:{email}"
         return LinkNode(target, email)
 
     def parse_macro_image(self, args, kwargs):
+        """
+        Parse an inline image macro in the form
+        [image](uri, alt_text, width, height).
+        """
+
         args, kwargs = merge_args(
             args,
             kwargs,
@@ -157,6 +242,11 @@ class TextParser(BaseParser):
         return ImageNode(uri=uri, alt_text=alt_text, width=width, height=height)
 
     def parse_macro_footnote(self, args, kwargs):
+        """
+        Parse a footnote macro in the form
+        [footnote](content).
+        """
+
         args, kwargs = merge_args(args, kwargs, ["content"])
         content_text = kwargs.get("content")
         refanchor, defanchor = footnote_anchors(content_text)

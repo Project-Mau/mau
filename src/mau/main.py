@@ -6,7 +6,7 @@ import sys
 
 import yaml
 
-from mau import __version__, Mau
+from mau import __version__, Mau, ConfigurationError
 
 __author__ = "Leonardo Giordani"
 __copyright__ = "Leonardo Giordani"
@@ -54,7 +54,6 @@ def parse_args(args):
         "--format",
         action="store",
         required=False,
-        default="html",
         choices=FORMATS.keys(),
         help="Output format",
     )
@@ -108,16 +107,26 @@ def main(args):
     # that is the directory that shall contain all templates.
     templates_directory = f'{config["theme"]}/templates' if "theme" in config else None
 
+    # If a target format is specified on the command line
+    # override the one already set in the config file
+    # or set it if it isn't.
+    if args.format is not None:
+        config["target_format"] = args.format
+
     # The Mau object configured with what we figured out above.
     mau = Mau(
         config,
-        target_format=args.format,
+        None,
         templates_directory=templates_directory,
         full_document=True,
     )
 
-    # Process the input text.
-    output = mau.process(text)
+    try:
+        # Process the input text.
+        output = mau.process(text)
+    except ConfigurationError as e:
+        print(f"Configuration error: {e}")
+        sys.exit(1)
 
     # Find out the name of the output file
     output_extension = FORMATS[args.format]["extension"]

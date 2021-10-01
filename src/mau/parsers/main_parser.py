@@ -574,6 +574,6 @@ class MainParser(BaseParser):
         return nodes
 
     def parse(self):
-        self._parse()
+        super().parse()
 
         self.toc = self._create_toc()

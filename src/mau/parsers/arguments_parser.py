@@ -82,5 +82,5 @@ class ArgumentsParser(BaseParser):
 
                 break
 
-    def _parse(self):
+    def parse(self):
         self._parse_arguments()

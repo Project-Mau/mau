@@ -75,6 +75,6 @@ class PreprocessVariablesParser(BaseParser):
         ]
 
     def parse(self):
-        self._parse()
+        super().parse()
         text = "".join([str(i.value) for i in self.nodes])
         self.nodes = [TextNode(text)]

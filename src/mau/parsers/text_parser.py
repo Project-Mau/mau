@@ -215,5 +215,5 @@ class TextParser(BaseParser):
 
         return LinkNode(link, link)
 
-    def _parse(self):
+    def parse(self):
         self._save(self.parse_sentence())

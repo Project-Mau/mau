@@ -148,15 +148,7 @@ def test_quote():
     )
 
     expected = [
-        dedent(
-            """
-            {blockquote}
-            Learn about the Force, Luke.
-
-            Star Wars, 1977
-            {/blockquote}
-            """
-        )
+        "{blurb, icon: quote-right}\nLearn about the Force, Luke.\n\nStar Wars, 1977\n{/blurb}\n\n"
     ]
 
     _test(source, expected)
@@ -173,13 +165,7 @@ def test_admonition():
     )
 
     expected = [
-        dedent(
-            """
-            {blurb, class: warning}
-            This is my test admonition
-            {/blurb}
-            """
-        )
+        "{blurb, class: warning}\n**alabel**\n\nThis is my test admonition\n{/blurb}\n\n"
     ]
 
     _test(source, expected)
@@ -238,8 +224,6 @@ def test_footnote_ref():
 
 
 def test_footnote_def():
-    v = MarkuaVisitor()
-
     p = init_parser(
         dedent(
             """

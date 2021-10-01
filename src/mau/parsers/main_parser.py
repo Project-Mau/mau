@@ -3,7 +3,7 @@ import copy
 
 from mau.lexers.base_lexer import TokenTypes, Token, TokenError
 from mau.lexers.main_lexer import MainLexer
-from mau.parsers.base_parser import BaseParser, ParseError, parser, analyse
+from mau.parsers.base_parser import BaseParser, ParseError, parser
 from mau.parsers.text_parser import TextParser
 from mau.parsers.arguments_parser import ArgumentsParser, merge_args
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
@@ -121,7 +121,7 @@ class MainParser(BaseParser):
         text = self.get_token(TokenTypes.TEXT).value
         self.get_token(TokenTypes.EOL)
 
-        p = analyse(TextParser(footnotes_start_with=len(self.footnotes) + 1), text)
+        p = TextParser(footnotes_start_with=len(self.footnotes) + 1).analyse(text)
         title = p.nodes[0]
 
         self._push_title(title)
@@ -233,7 +233,7 @@ class MainParser(BaseParser):
         test = True if condition == "if" else False
 
         if match is test:
-            p = analyse(MainParser(variables=self.variables), "\n".join(content))
+            p = MainParser(variables=self.variables).analyse("\n".join(content))
 
             self._add_footnotes(p.footnotes)
 
@@ -326,7 +326,7 @@ class MainParser(BaseParser):
     def _parse_admonition_block(self, content, args, kwargs):
         _, kwargs = merge_args(args, kwargs, ["class", "icon", "label"])
 
-        p = analyse(MainParser(variables=self.variables), "\n".join(content))
+        p = MainParser(variables=self.variables).analyse("\n".join(content))
 
         self._add_footnotes(p.footnotes)
 
@@ -343,7 +343,7 @@ class MainParser(BaseParser):
     def _parse_quote_block(self, content, title, args, kwargs):
         _, kwargs = merge_args(args, kwargs, ["attribution"])
 
-        p = analyse(MainParser(), "\n".join(content))
+        p = MainParser().analyse("\n".join(content))
 
         self._save(
             QuoteNode(
@@ -356,8 +356,8 @@ class MainParser(BaseParser):
     def _parse_standard_block(
         self, blocktype, content, secondary_content, title, args, kwargs
     ):
-        pc = analyse(MainParser(variables=self.variables), "\n".join(content))
-        ps = analyse(MainParser(variables=self.variables), "\n".join(secondary_content))
+        pc = MainParser(variables=self.variables).analyse("\n".join(content))
+        ps = MainParser(variables=self.variables).analyse("\n".join(secondary_content))
 
         self._add_footnotes(pc.footnotes)
 
@@ -378,14 +378,13 @@ class MainParser(BaseParser):
         attributes = self.get_token(TokenTypes.TEXT).value
         self.get_token(TokenTypes.LITERAL, "]")
 
-        p = analyse(
-            PreprocessVariablesParser(self.variables),
+        p = PreprocessVariablesParser(self.variables).analyse(
             attributes,
         )
 
         attributes = p.nodes[0].value
 
-        p = analyse(ArgumentsParser(), attributes)
+        p = ArgumentsParser().analyse(attributes)
 
         self._push_attributes(p.args, p.kwargs)
 
@@ -408,14 +407,13 @@ class MainParser(BaseParser):
         if text is None:
             return None
 
-        p = analyse(
-            PreprocessVariablesParser(self.variables),
+        p = PreprocessVariablesParser(self.variables).analyse(
             text,
         )
 
         text = p.nodes[0].value
 
-        p = analyse(TextParser(footnotes_start_with=len(self.footnotes) + 1), text)
+        p = TextParser(footnotes_start_with=len(self.footnotes) + 1).analyse(text)
 
         # Text should return a single sentence node
         result = p.nodes[0]
@@ -435,7 +433,7 @@ class MainParser(BaseParser):
 
         with self:
             arguments = self.get_token(TokenTypes.TEXT).value
-            p = analyse(ArgumentsParser(), arguments)
+            p = ArgumentsParser().analyse(arguments)
             args = p.args
             kwargs = p.kwargs
 

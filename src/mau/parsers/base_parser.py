@@ -27,13 +27,6 @@ def parser(func):
     return wrapper_decorator
 
 
-def analyse(parser, text):
-    parser.load(text)
-    parser.parse()
-
-    return parser
-
-
 class BaseParser:
     def __init__(self):
         self.lexer = BaseLexer()
@@ -278,3 +271,9 @@ class BaseParser:
             # current token.
             if result is False:
                 raise ParseError(f"Cannot parse token {self.peek_token()}")
+
+    def analyse(self, text):
+        self.load(text)
+        self.parse()
+
+        return self

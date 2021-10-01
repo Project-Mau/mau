@@ -1,6 +1,6 @@
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.text_lexer import TextLexer
-from mau.parsers.base_parser import BaseParser, analyse, Literal
+from mau.parsers.base_parser import BaseParser, Literal
 from mau.parsers.arguments_parser import ArgumentsParser, merge_args
 from mau.parsers.nodes import (
     WordNode,
@@ -162,7 +162,7 @@ class TextParser(BaseParser):
         refanchor, defanchor = footnote_anchors(content_text)
         number = self.footnotes_start_with + len(self.footnotes)
 
-        p = analyse(TextParser(), content_text)
+        p = TextParser().analyse(content_text)
 
         self.footnotes.append(
             FootnoteDefNode(
@@ -186,7 +186,7 @@ class TextParser(BaseParser):
         arguments = self.collect_join(
             stop_tokens=[Token(TokenTypes.LITERAL, ")"), Token(TokenTypes.EOL)],
         )
-        p = analyse(ArgumentsParser(raw=raw), arguments)
+        p = ArgumentsParser(raw=raw).analyse(arguments)
 
         self.get_token(TokenTypes.LITERAL, ")")
 

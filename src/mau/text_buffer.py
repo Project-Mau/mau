@@ -149,3 +149,16 @@ class TextBuffer:
 
         ctx.append(marker_line)
         return ctx
+
+    def insert(self, text):
+        """
+        Inserts the given text in the buffer.
+        """
+
+        # Split the new text removing the trailing newline
+        splittext = text.strip().split("\n") if text is not None else []
+
+        # Insert the new text lines into the current buffer
+        newlines = self.lines[: self.line] + splittext + self.lines[self.line :]
+
+        self.lines = newlines

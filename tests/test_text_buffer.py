@@ -242,3 +242,17 @@ def test_context_long_lines_end():
     )
 
     assert tb.context(2, 60) == context.split("\n")
+
+
+def test_text_buffer_insert():
+    tb = text_buffer.TextBuffer("abc\ndef\nghi")
+    tb.line = 1
+    tb.column = 0
+
+    tb.insert("XYZ\n")
+
+    assert tb.current_line == "XYZ"
+    assert tb.position == (1, 0)
+    tb.nextline()
+    assert tb.current_line == "def"
+    assert tb.position == (2, 0)

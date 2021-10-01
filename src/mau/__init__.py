@@ -17,6 +17,10 @@ from mau.visitors.asciidoctor_visitor import AsciidoctorVisitor
 from mau.visitors.markua_visitor import MarkuaVisitor
 
 
+class ConfigurationError(ValueError):
+    """ Used to signal an error in the configuration """
+
+
 class Mau:
     def __init__(
         self,
@@ -29,9 +33,6 @@ class Mau:
         # This is an external configuration file that
         # will be used here and also injected into the variables
         self.config = config
-
-        # The target format that corresponds to a specific visitor
-        self.target_format = target_format
 
         # A dictionary with the default templates.
         self.default_templates = default_templates
@@ -48,9 +49,6 @@ class Mau:
         self.variables = {}
 
     def process(self, text):
-        # Update the config with the target format
-        self.config["target_format"] = self.target_format
-
         # Store the config under the Mau namespace
         self.variables["mau"] = self.config
 
@@ -67,12 +65,16 @@ class Mau:
         output = wrapper_node_class(parser.nodes)
 
         # Select the visitor class
-        if self.target_format == "html":
+        target_format = self.config.get("target_format", "html")
+
+        if target_format == "html":
             visitor_class = HTMLVisitor
-        elif self.target_format == "asciidoctor":
+        elif target_format == "asciidoctor":
             visitor_class = AsciidoctorVisitor
-        elif self.target_format == "markua":
+        elif target_format == "markua":
             visitor_class = MarkuaVisitor
+        else:
+            raise ConfigurationError(f"Target format {target_format} is not available")
 
         # Retrieve the TOC
         toc = [i.asdict() for i in parser.toc]

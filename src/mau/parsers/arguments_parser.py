@@ -31,9 +31,13 @@ class ArgumentsParser(BaseParser):
         self.args = []
 
     def _parse_named_argument(self):
+        # This parses a named argument
+        # in the form name=value or name="value"
+
         name = self.get_token(TokenTypes.TEXT).value
         self.get_token(TokenTypes.LITERAL, "=")
 
+        # Values can be surrounded by quotes
         if self.peek_token_is(TokenTypes.LITERAL, '"'):
             self.get_token(TokenTypes.LITERAL, '"')
             value = self.collect_join([Token(TokenTypes.LITERAL, '"')])
@@ -44,6 +48,10 @@ class ArgumentsParser(BaseParser):
         return name, value
 
     def _parse_unnamed_argument(self):
+        # This parses a named argument
+        # in the form value or "value"
+
+        # Values can be surrounded by quotes
         if self.peek_token_is(TokenTypes.LITERAL, '"'):
             self.get_token(TokenTypes.LITERAL, '"')
             value = self.collect_join([Token(TokenTypes.LITERAL, '"')])
@@ -54,6 +62,8 @@ class ArgumentsParser(BaseParser):
         return value
 
     def _parse_single_argument(self):
+        # This parses a single argument, named or unnamed
+
         if self.raw:
             value = self.collect_join([Token(TokenTypes.EOL), Token(TokenTypes.EOF)])
             self.args.append(value)
@@ -74,6 +84,8 @@ class ArgumentsParser(BaseParser):
             return
 
     def _parse_arguments(self):
+        # Just run until you can't find any more commas
+
         with self:
             while True:
                 self._parse_single_argument()

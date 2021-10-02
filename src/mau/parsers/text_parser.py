@@ -3,7 +3,7 @@ import itertools
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.text_lexer import TextLexer
 from mau.parsers.base_parser import BaseParser, Literal
-from mau.parsers.arguments_parser import ArgumentsParser, merge_args
+from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.nodes import (
     WordNode,
     SentenceNode,
@@ -199,60 +199,66 @@ class TextParser(BaseParser):
 
         return ClassNode(classes, content)
 
-    def parse_macro_link(self, args, kwargs):
+    def parse_macro_link(self, arguments):
         """
         Parse a link macro in the form [link](target, text).
         """
 
-        args, kwargs = merge_args(args, kwargs, ["target", "text"])
+        p = ArgumentsParser().analyse(arguments)
+
+        # Set the name of the first two unnamed arguments
+        p.merge_unnamed_args(["target", "text"])
 
         # Get the target as it can be used as default text
-        target = kwargs.get("target")
-        text = kwargs.get("text", target)
+        target = p.kwargs.get("target")
 
-        return LinkNode(target, text)
+        return LinkNode(target, p.kwargs.get("text", target))
 
-    def parse_macro_mailto(self, args, kwargs):
+    def parse_macro_mailto(self, arguments):
         """
         Parse a mailto macro in the form [mailto](email).
         """
 
-        args, kwargs = merge_args(args, kwargs, ["email"])
-        email = kwargs.get("email")
+        p = ArgumentsParser().analyse(arguments)
+
+        # Set the name of the first unnamed argument
+        p.merge_unnamed_args(["email"])
+
+        email = p.kwargs.get("email")
         target = f"mailto:{email}"
+
         return LinkNode(target, email)
 
-    def parse_macro_image(self, args, kwargs):
+    def parse_macro_image(self, arguments):
         """
         Parse an inline image macro in the form
         [image](uri, alt_text, width, height).
         """
 
-        args, kwargs = merge_args(
-            args,
-            kwargs,
+        p = ArgumentsParser().analyse(arguments)
+
+        # Set the name of unnamed arguments
+        p.merge_unnamed_args(
             ["uri", "alt_text", "width", "height"],
         )
 
-        uri = kwargs.pop("uri", None)
-        alt_text = kwargs.pop("alt_text", None)
-        width = kwargs.pop("width", None)
-        height = kwargs.pop("height", None)
+        return ImageNode(
+            uri=p.kwargs.get("uri"),
+            alt_text=p.kwargs.get("alt_text", None),
+            width=p.kwargs.get("width", None),
+            height=p.kwargs.get("height", None),
+        )
 
-        return ImageNode(uri=uri, alt_text=alt_text, width=width, height=height)
-
-    def parse_macro_footnote(self, args, kwargs):
+    def parse_macro_footnote(self, text):
         """
         Parse a footnote macro in the form
         [footnote](content).
         """
 
-        args, kwargs = merge_args(args, kwargs, ["content"])
-        content_text = kwargs.get("content")
-        refanchor, defanchor = footnote_anchors(content_text)
+        refanchor, defanchor = footnote_anchors(text)
         number = self.footnotes_start_with + len(self.footnotes)
 
-        p = TextParser().analyse(content_text)
+        p = TextParser().analyse(text)
 
         self.footnotes.append(
             FootnoteDefNode(
@@ -269,27 +275,22 @@ class TextParser(BaseParser):
         self.get_token(TokenTypes.LITERAL, "]")
         self.get_token(TokenTypes.LITERAL, "(")
 
-        raw = False
-        if macro_name == "footnote":
-            raw = True
-
         arguments = self.collect_join(
             stop_tokens=[Token(TokenTypes.LITERAL, ")"), Token(TokenTypes.EOL)],
         )
-        p = ArgumentsParser(raw=raw).analyse(arguments)
 
         self.get_token(TokenTypes.LITERAL, ")")
 
         if macro_name == "link":
-            return self.parse_macro_link(args=p.args, kwargs=p.kwargs)
-        if macro_name == "mailto":
-            return self.parse_macro_mailto(args=p.args, kwargs=p.kwargs)
+            return self.parse_macro_link(arguments)
+        elif macro_name == "mailto":
+            return self.parse_macro_mailto(arguments)
         elif macro_name == "image":
-            return self.parse_macro_image(args=p.args, kwargs=p.kwargs)
+            return self.parse_macro_image(arguments)
         elif macro_name == "footnote":
-            return self.parse_macro_footnote(args=p.args, kwargs=p.kwargs)
+            return self.parse_macro_footnote(arguments)
 
-        return MacroNode(macro_name, args=p.args, kwargs=p.kwargs)
+        return MacroNode(macro_name, arguments)
 
     def parse_link(self):
         link = self.get_token_value(

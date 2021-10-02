@@ -5,7 +5,7 @@ from mau.lexers.base_lexer import TokenTypes, Token, TokenError
 from mau.lexers.main_lexer import MainLexer
 from mau.parsers.base_parser import BaseParser, ParseError, parser
 from mau.parsers.text_parser import TextParser
-from mau.parsers.arguments_parser import ArgumentsParser, merge_args
+from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
 from mau.parsers.nodes import (
     HorizontalRuleNode,
@@ -15,6 +15,7 @@ from mau.parsers.nodes import (
     RawNode,
     AdmonitionNode,
     QuoteNode,
+    ContentNode,
     ContentImageNode,
     CommandNode,
     HeaderNode,
@@ -52,14 +53,18 @@ class MainParser(BaseParser):
 
         self.lexer = MainLexer()
 
+        # This is used as a storage for attributes.
+        # Block attributes are defined before the block
+        # so when we parse them we store them here and
+        # then use them when dealing with the block itself.
+        self.argsparser = ArgumentsParser()
+
         self.variables = copy.deepcopy(variables) if variables else {}
         self.headers = []
         self.footnotes = []
         self.blocks = {}
         self.toc = []
 
-        self._args = []
-        self._kwargs = {}
         # This is a buffer for a block title
         self._title = None
 
@@ -70,22 +75,6 @@ class MainParser(BaseParser):
         self.header_anchor = self.variables.get(
             "mau.header_anchor_function", header_anchor
         )
-
-    def _add_footnotes(self, footnotes):
-        self.footnotes.extend(footnotes)
-
-    def _pop_attributes(self):
-        _args = copy.deepcopy(self._args)
-        _kwargs = copy.deepcopy(self._kwargs)
-
-        self._args = []
-        self._kwargs = {}
-
-        return _args, _kwargs
-
-    def _push_attributes(self, args, kwargs):
-        self._args = copy.deepcopy(args)
-        self._kwargs = copy.deepcopy(kwargs)
 
     def _pop_title(self):
         # This return the title and resets the
@@ -101,18 +90,61 @@ class MainParser(BaseParser):
         # that will use it.
         self._title = title
 
-    def collect_lines(self, stop_tokens):
+    def _collect_lines(self, stop_tokens):
         # This collects several lines of text in a list
         # until it gets to a line that begins with one
         # of the tokens listed in stop_tokens.
         # It is useful for block or other elements that
         # are clearly surrounded by delimiters.
         lines = []
+
         while self.peek_token() not in stop_tokens:
             lines.append(self.collect_join([Token(TokenTypes.EOL)]))
             self.get_token(TokenTypes.EOL)
 
         return lines
+
+    def _collect_text_content(self):
+        # Collects all adjacent text tokens
+        # into a single string
+
+        if not self.peek_token_is(TokenTypes.TEXT):
+            return None
+
+        values = []
+
+        # Get all tokens
+        while self.peek_token_is(TokenTypes.TEXT):
+            values.append(self.get_token().value)
+            self.get_token(TokenTypes.EOL)
+
+        return " ".join(values)
+
+    def _parse_text_content(self, text):
+        # Parse a text using the TextParser.
+
+        # Replace variables
+        p = PreprocessVariablesParser(self.variables).analyse(
+            text,
+        )
+        text = p.nodes[0].value
+
+        # Parse the text
+        p = TextParser(footnotes_start_with=len(self.footnotes) + 1).analyse(text)
+
+        # Text should return a single sentence node
+        result = p.nodes[0]
+
+        # Store the footnotes
+        self.footnotes.extend(p.footnotes)
+
+        return result
+
+    @parser
+    def _parse_eol(self):
+        # This simply parses the end of line.
+
+        self.get_token(TokenTypes.EOL)
 
     @parser
     def _parse_horizontal_rule(self):
@@ -138,8 +170,77 @@ class MainParser(BaseParser):
         # ////
 
         self.get_token(TokenTypes.LITERAL, "////")
-        self.collect_lines([Token(TokenTypes.LITERAL, "////"), Token(TokenTypes.EOF)])
+        self._collect_lines([Token(TokenTypes.LITERAL, "////"), Token(TokenTypes.EOF)])
         self.force_token(TokenTypes.LITERAL, "////")
+
+    @parser
+    def _parse_variable_definition(self):
+        # This parses a variable definition
+        #
+        # Simple variables are defined as :name:value
+        # as True booleans as just :name:
+        # and as False booleas as :!name:
+        #
+        # Variable names can use a namespace with
+        # :namespace.name:value
+
+        # Get the mandatory variable name
+        self.get_token(TokenTypes.LITERAL, ":")
+        variable_name = self.get_token(TokenTypes.TEXT).value
+        self.get_token(TokenTypes.LITERAL, ":")
+
+        # Assume the variable is a flag
+        variable_value = True
+
+        # If the name starts with ! it's a false flag
+        if variable_name.startswith("!"):
+            variable_value = False
+            variable_name = variable_name[1:]
+
+        # Get the optional value
+        value = self.collect_join([Token(TokenTypes.EOL)])
+
+        # The value is assigned only if the variable
+        # is not a negative flag. In that case it is ignored
+        if variable_value and len(value) > 0:
+            variable_value = value
+
+        # If the variable name contains a dot we
+        # want to use a namespace
+        if "." not in variable_name:
+            self.variables[variable_name] = variable_value
+        else:
+            # Let's ignore all others dots
+            namespace, variable_name = variable_name.split(".", maxsplit=1)
+
+            # This defines the namespace if it's not already there
+            try:
+                self.variables[namespace][variable_name] = variable_value
+            except KeyError:
+                self.variables[namespace] = {variable_name: variable_value}
+
+    @parser
+    def _parse_command(self):
+        # Parse a command in the form ::command:
+
+        self.get_token(TokenTypes.LITERAL, "::")
+        name = self.get_token(TokenTypes.TEXT).value
+        self.get_token(TokenTypes.LITERAL, ":")
+
+        args = []
+        kwargs = {}
+
+        # Commands can in theory have arguments
+        # even though so far no command uses them.
+        # I might have over-engineered this a bit
+        # but it was fun ;)
+        with self:
+            arguments = self.get_token(TokenTypes.TEXT).value
+            p = self.argsparser.analyse(arguments)
+            args = p.args
+            kwargs = p.kwargs
+
+        self._save(CommandNode(name=name, args=args, kwargs=kwargs))
 
     @parser
     def _parse_title(self):
@@ -165,6 +266,24 @@ class MainParser(BaseParser):
         title = p.nodes[0]
 
         self._push_title(title)
+
+    @parser
+    def _parse_attributes(self):
+        # Parse block attributes in the form
+        # [unnamed1, unnamed2, ..., named1=value1, name2=value2, ...]
+
+        self.get_token(TokenTypes.LITERAL, "[")
+        attributes = self.get_token(TokenTypes.TEXT).value
+        self.get_token(TokenTypes.LITERAL, "]")
+
+        # Attributes can use variables
+        p = PreprocessVariablesParser(self.variables).analyse(
+            attributes,
+        )
+        attributes = p.nodes[0].value
+
+        # Parse the arguments
+        self.argsparser.analyse(attributes)
 
     @parser
     def _parse_header(self):
@@ -201,40 +320,13 @@ class MainParser(BaseParser):
 
         # Generate the anchor and append it to the TOC
         anchor = self.header_anchor(text, level)
-
         if in_toc:
             self.headers.append((text, level, anchor))
 
-        _, kwargs = self._pop_attributes()
+        # Consume the attributes
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
         self._save(HeaderNode(value=text, level=level, anchor=anchor, kwargs=kwargs))
-
-    @parser
-    def _parse_content(self):
-        self.get_token(TokenTypes.LITERAL, check=lambda x: x.startswith("<<"))
-        self.get_token(TokenTypes.WHITESPACE)
-        content_type_and_uri = self.get_token(TokenTypes.TEXT).value
-
-        content_type, uri = content_type_and_uri.split(":", maxsplit=1)
-
-        _, kwargs = self._pop_attributes()
-
-        alt_text = kwargs.pop("alt_text", None)
-        classes = kwargs.pop("classes", None)
-        title = self._pop_title()
-
-        if classes:
-            classes = classes.split(",")
-
-        self._save(
-            ContentImageNode(
-                uri=uri,
-                alt_text=alt_text,
-                classes=classes,
-                title=title,
-                kwargs=kwargs,
-            )
-        )
 
     @parser
     def _parse_block(self):
@@ -249,58 +341,43 @@ class MainParser(BaseParser):
 
         # Get the delimiter and check the length
         delimiter = self.get_token(TokenTypes.TEXT).value
-
         if len(delimiter) != 4 or len(set(delimiter)) != 1:
             raise TokenError
-
         self.get_token(TokenTypes.EOL)
 
         # Collect everything until the next delimiter
-        content = self.collect_lines(
+        content = self._collect_lines(
             [Token(TokenTypes.TEXT, delimiter), Token(TokenTypes.EOF)]
         )
-
         self.force_token(TokenTypes.TEXT, delimiter)
         self.get_token(TokenTypes.EOL)
 
         # Get the optional secondary content
-        secondary_content = self.collect_lines(
+        secondary_content = self._collect_lines(
             [Token(TokenTypes.EOL), Token(TokenTypes.EOF)]
         )
-
-        args, kwargs = self._pop_attributes()
 
         # Consume the title
         title = self._pop_title()
 
-        if len(args) != 0 and args[0] in ["if", "ifnot"]:
-            return self._parse_conditional_block(args[0], content, args[1:], kwargs)
+        # The first unnamed argument is the block type
+        blocktype = self.argsparser.pop()
 
-        if len(args) != 0 and args[0] in ["raw"]:
-            return self._parse_raw_block(content, args[1:], kwargs)
+        # Parse the content according to the block type
+        if blocktype in ["if", "ifnot"]:
+            return self._parse_conditional_block(blocktype, content)
+        elif blocktype == "raw":
+            return self._parse_raw_block(content)
+        elif blocktype == "source":
+            return self._parse_source_block(content, secondary_content, title)
+        elif blocktype == "admonition":
+            return self._parse_admonition_block(content)
+        elif blocktype == "quote":
+            return self._parse_quote_block(content, title)
 
-        if len(args) != 0 and args[0] == "source":
-            return self._parse_source_block(
-                content, secondary_content, title, args[1:], kwargs
-            )
+        return self._parse_standard_block(blocktype, content, secondary_content, title)
 
-        if len(args) != 0 and args[0] == "admonition":
-            return self._parse_admonition_block(content, args[1:], kwargs)
-
-        if len(args) != 0 and args[0] == "quote":
-            return self._parse_quote_block(content, title, args[1:], kwargs)
-
-        try:
-            blocktype = args[0]
-            args = args[1:]
-        except IndexError:
-            blocktype = None
-
-        return self._parse_standard_block(
-            blocktype, content, secondary_content, title, args, kwargs
-        )
-
-    def _parse_conditional_block(self, condition, content, args, kwargs):
+    def _parse_conditional_block(self, condition, content):
         # Parse a conditional block in the form
         #
         # [if,variable,value]
@@ -317,21 +394,21 @@ class MainParser(BaseParser):
         #
         # where value can be omitted and is True by default.
 
-        # Check if the variable matches the value and apply the requested test
-        _, kwargs = merge_args(args, kwargs, ["variable", "value"])
+        # Assign names and consume the attributes
+        self.argsparser.merge_unnamed_args(["variable", "value"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
+        # Check if the variable matches the value and apply the requested test
         match = self.variables.get(kwargs["variable"]) == kwargs.get("value", True)
         test = True if condition == "if" else False
 
         # If the condition is satisfied go ahead and parse the content
         if match is test:
             p = MainParser(variables=self.variables).analyse("\n".join(content))
-
-            self._add_footnotes(p.footnotes)
-
+            self.footnotes.extend(p.footnotes)
             self.nodes.extend(p.nodes)
 
-    def _parse_raw_block(self, content, args, kwargs):
+    def _parse_raw_block(self, content):
         # Parse a raw block.
 
         # Just put each line in a text node as it is
@@ -339,7 +416,7 @@ class MainParser(BaseParser):
 
         self._save(RawNode(content=textlines))
 
-    def _parse_source_block(self, content, secondary_content, title, args, kwargs):
+    def _parse_source_block(self, content, secondary_content, title):
         # Parse a source block in the form
         #
         # [source, language, attributes...]
@@ -373,6 +450,10 @@ class MainParser(BaseParser):
         #
         # Since Mau uses Pygments, the attribute language
         # is one of the langauges supported by that tool.
+
+        # Assign names and consume the attributes
+        self.argsparser.merge_unnamed_args(["language"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Get the delimiter for callouts (":" by default)
         delimiter = kwargs.pop("callouts", ":")
@@ -449,8 +530,6 @@ class MainParser(BaseParser):
         # Source blocks must preserve the content literally
         textlines = [TextNode(line) for line in content]
 
-        _, kwargs = merge_args(args, kwargs, ["language"])
-
         # Get the language for this block
         language = kwargs.pop("language", "text")
 
@@ -466,7 +545,7 @@ class MainParser(BaseParser):
             )
         )
 
-    def _parse_admonition_block(self, content, args, kwargs):
+    def _parse_admonition_block(self, content):
         # Parse an admonition in the form
         #
         # [class, icon, label]
@@ -474,11 +553,13 @@ class MainParser(BaseParser):
         # content
         # ----
 
-        _, kwargs = merge_args(args, kwargs, ["class", "icon", "label"])
+        # Assign names and consume the attributes
+        self.argsparser.merge_unnamed_args(["class", "icon", "label"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
+        # Parse the content and record footnotes
         p = MainParser(variables=self.variables).analyse("\n".join(content))
-
-        self._add_footnotes(p.footnotes)
+        self.footnotes.extend(p.footnotes)
 
         self._save(
             AdmonitionNode(
@@ -490,7 +571,7 @@ class MainParser(BaseParser):
             )
         )
 
-    def _parse_quote_block(self, content, title, args, kwargs):
+    def _parse_quote_block(self, content, title):
         # Parse a quote block in the form
         #
         # [quote, attribution]
@@ -498,8 +579,11 @@ class MainParser(BaseParser):
         # content
         # ----
 
-        _, kwargs = merge_args(args, kwargs, ["attribution"])
+        # Assign names and consume the attributes
+        self.argsparser.merge_unnamed_args(["attribution"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
+        # Parse the content and record footnotes
         p = MainParser().analyse("\n".join(content))
 
         self._save(
@@ -510,9 +594,7 @@ class MainParser(BaseParser):
             )
         )
 
-    def _parse_standard_block(
-        self, blocktype, content, secondary_content, title, args, kwargs
-    ):
+    def _parse_standard_block(self, blocktype, content, secondary_content, title):
         # Parse a standard block in the form
         #
         # [blocktype, attributes...]
@@ -523,10 +605,13 @@ class MainParser(BaseParser):
         #
         # This is used to parse blocks which do not have special code.
 
+        # Consume the attributes
+        args, kwargs = self.argsparser.get_arguments_and_reset()
+
+        # Parse the primary and secondary content and record footnotes
         pc = MainParser(variables=self.variables).analyse("\n".join(content))
         ps = MainParser(variables=self.variables).analyse("\n".join(secondary_content))
-
-        self._add_footnotes(pc.footnotes)
+        self.footnotes.extend(pc.footnotes)
 
         self._save(
             BlockNode(
@@ -540,150 +625,70 @@ class MainParser(BaseParser):
         )
 
     @parser
-    def _parse_attributes(self):
-        self.get_token(TokenTypes.LITERAL, "[")
-        attributes = self.get_token(TokenTypes.TEXT).value
-        self.get_token(TokenTypes.LITERAL, "]")
+    def _parse_content(self):
+        # Parse attached content in the form
+        #
+        # [attributes]
+        # << content_type:uri
 
-        p = PreprocessVariablesParser(self.variables).analyse(
-            attributes,
-        )
-
-        attributes = p.nodes[0].value
-
-        p = ArgumentsParser().analyse(attributes)
-
-        self._push_attributes(p.args, p.kwargs)
-
-    def _collect_text_content(self):
-        if not self.peek_token_is(TokenTypes.TEXT):
-            return None
-
-        values = []
-
-        while self.peek_token_is(TokenTypes.TEXT):
-            values.append(self.get_token().value)
-            self.get_token(TokenTypes.EOL)
-
-        if len(values) == 0:
-            return None
-
-        return " ".join(values)
-
-    def _parse_text_content(self, text):
-        if text is None:
-            return None
-
-        p = PreprocessVariablesParser(self.variables).analyse(
-            text,
-        )
-
-        text = p.nodes[0].value
-
-        p = TextParser(footnotes_start_with=len(self.footnotes) + 1).analyse(text)
-
-        # Text should return a single sentence node
-        result = p.nodes[0]
-
-        self._add_footnotes(p.footnotes)
-
-        return result
-
-    @parser
-    def _parse_command(self):
-        self.get_token(TokenTypes.LITERAL, "::")
-        name = self.get_token(TokenTypes.TEXT).value
-        self.get_token(TokenTypes.LITERAL, ":")
-
-        args = None
-        kwargs = None
-
-        with self:
-            arguments = self.get_token(TokenTypes.TEXT).value
-            p = ArgumentsParser().analyse(arguments)
-            args = p.args
-            kwargs = p.kwargs
-
-        self._save(CommandNode(name=name, args=args, kwargs=kwargs))
-
-    @parser
-    def _parse_variable_definition(self):
-        self.get_token(TokenTypes.LITERAL, ":")
-        variable_name = self.get_token(TokenTypes.TEXT).value
-        self.get_token(TokenTypes.LITERAL, ":")
-
-        variable_value = True
-        if variable_name.startswith("!"):
-            variable_value = False
-            variable_name = variable_name[1:]
-
-        value = self.collect_join([Token(TokenTypes.EOL)])
-        if len(value) > 0:
-            variable_value = value
-
-        if "." not in variable_name:
-            self.variables[variable_name] = variable_value
-        else:
-            namespace, variable_name = variable_name.split(".")
-
-            try:
-                self.variables[namespace][variable_name] = variable_value
-            except KeyError:
-                self.variables[namespace] = {variable_name: variable_value}
-
-    def _parse_list_nodes(self):
-        # This parses all items of a list
-
-        # Ignore initial white spaces
-        with self:
-            self.get_token(TokenTypes.WHITESPACE)
-
-        # Parse the header and ignore the following white spaces
-        header = self.get_token(TokenTypes.LITERAL, check=lambda x: x[0] in "*#").value
+        # Get the mandatory "<<" and white spaces
+        self.get_token(TokenTypes.LITERAL, check=lambda x: x.startswith("<<"))
         self.get_token(TokenTypes.WHITESPACE)
 
-        # Collect and parse the text of the item
-        text = self._collect_text_content()
-        content = self._parse_text_content(text)
+        # Get the content type and the content URI
+        content_type_and_uri = self.get_token(TokenTypes.TEXT).value
+        content_type, uri = content_type_and_uri.split(":", maxsplit=1)
 
-        # Compute the level of the item
-        level = len(header)
+        title = self._pop_title()
 
-        nodes = []
-        nodes.append(ListItemNode(level, content))
+        if content_type == "image":
+            return self._parse_content_image(uri, title)
 
-        while not self.peek_token() in [Token(TokenTypes.EOF), Token(TokenTypes.EOL)]:
-            # This is the SentenceNode inside the last node added to the list
-            # which is used to append potential nested nodes
-            last_node_sentence = nodes[-1].content
+        return self._parse_standard_content(content_type, uri, title)
 
-            with self:
-                self.get_token(TokenTypes.WHITESPACE)
+    def _parse_content_image(self, uri, title):
+        # Parse a content image in the form
+        #
+        # [alt_text, classes]
+        # << image:uri
+        #
+        # alt_text is the alternate text to use is the image is not reachable
+        # and classes is a comma-separated list of classes
 
-            if len(self.peek_token().value) == level:
-                # The new item is on the same level
+        # Assign names and consume the attributes
+        self.argsparser.merge_unnamed_args(["alt_text"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
-                # Get the header
-                header = self.get_token().value
+        alt_text = kwargs.pop("alt_text", None)
+        classes = kwargs.pop("classes", None)
 
-                # Ignore white spaces
-                self.get_token(TokenTypes.WHITESPACE)
+        if classes:
+            classes = classes.split(",")
 
-                # Collect and parse the text of the item
-                text = self._collect_text_content()
-                content = self._parse_text_content(text)
-                nodes.append(ListItemNode(len(header), content))
-            elif len(self.peek_token().value) > level:
-                # The new item is on a deeper level
+        self._save(
+            ContentImageNode(
+                uri=uri,
+                alt_text=alt_text,
+                classes=classes,
+                title=title,
+                kwargs=kwargs,
+            )
+        )
 
-                # Treat the new line as a new list
-                numbered = True if self.peek_token().value[0] == "#" else False
-                subnodes = self._parse_list_nodes()
-                last_node_sentence.content.append(ListNode(numbered, subnodes))
-            else:
-                break
+    def _parse_standard_content(self, content_type, uri, title):
+        # This is the fallback for an unknown content type
 
-        return nodes
+        # Consume the attributes
+        args, kwargs = self.argsparser.get_arguments_and_reset()
+
+        self._save(
+            ContentNode(
+                uri=uri,
+                title=title,
+                args=args,
+                kwargs=kwargs,
+            )
+        )
 
     @parser
     def _parse_list(self):
@@ -721,11 +726,70 @@ class MainParser(BaseParser):
         with self:
             self.get_token(TokenTypes.WHITESPACE)
 
+        # Get the header and decide if it's a numbered or unnumbered list
         header = self.peek_token(TokenTypes.LITERAL, check=lambda x: x[0] in "*#")
-
         numbered = True if header.value[0] == "#" else False
+
+        # Parse all the following items
         nodes = self._parse_list_nodes()
+
         self._save(ListNode(numbered, nodes, main_node=True))
+
+    def _parse_list_nodes(self):
+        # This parses all items of a list
+
+        # Ignore initial white spaces
+        with self:
+            self.get_token(TokenTypes.WHITESPACE)
+
+        # Parse the header and ignore the following white spaces
+        header = self.get_token(TokenTypes.LITERAL, check=lambda x: x[0] in "*#").value
+        self.get_token(TokenTypes.WHITESPACE)
+
+        # Collect and parse the text of the item
+        text = self._collect_text_content()
+        content = self._parse_text_content(text)
+
+        # Compute the level of the item
+        level = len(header)
+
+        nodes = []
+        nodes.append(ListItemNode(level, content))
+
+        while not self.peek_token() in [Token(TokenTypes.EOF), Token(TokenTypes.EOL)]:
+            # This is the SentenceNode inside the last node added to the list
+            # which is used to append potential nested nodes
+            last_node_sentence = nodes[-1].content
+
+            # Ignore the initial white spaces
+            with self:
+                self.get_token(TokenTypes.WHITESPACE)
+
+            if len(self.peek_token().value) == level:
+                # The new item is on the same level
+
+                # Get the header
+                header = self.get_token().value
+
+                # Ignore white spaces
+                self.get_token(TokenTypes.WHITESPACE)
+
+                # Collect and parse the text of the item
+                text = self._collect_text_content()
+                content = self._parse_text_content(text)
+
+                nodes.append(ListItemNode(len(header), content))
+            elif len(self.peek_token().value) > level:
+                # The new item is on a deeper level
+
+                # Treat the new line as a new list
+                numbered = True if self.peek_token().value[0] == "#" else False
+                subnodes = self._parse_list_nodes()
+                last_node_sentence.content.append(ListNode(numbered, subnodes))
+            else:
+                break
+
+        return nodes
 
     @parser
     def _parse_paragraph(self):
@@ -734,17 +798,14 @@ class MainParser(BaseParser):
         # end with an empty line.
 
         # Get all the lines, join them and parse them
-        lines = self.collect_lines([Token(TokenTypes.EOL), Token(TokenTypes.EOF)])
+        lines = self._collect_lines([Token(TokenTypes.EOL), Token(TokenTypes.EOF)])
         text = " ".join(lines)
         sentence = self._parse_text_content(text)
 
-        args, kwargs = self._pop_attributes()
+        # Consume the attributes
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
         self._save(ParagraphNode(sentence, args=args, kwargs=kwargs))
-
-    @parser
-    def _parse_eol(self):
-        self.get_token(TokenTypes.EOL)
 
     def _parse_functions(self):
         # All the functions that this parser provides.

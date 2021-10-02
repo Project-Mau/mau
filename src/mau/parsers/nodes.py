@@ -145,23 +145,20 @@ class MacroNode(Node):
 
     Attributes:
         value: the name of the macro
-        args (:obj:`tuple`): the unnamed arguments
-        kwargs (:obj:`dict`): the named arguments
+        arguments: the string of arguments
     """
 
     node_type = "macro"
 
-    def __init__(self, value, args=None, kwargs=None):
+    def __init__(self, value, arguments):
         self.value = value
-        self.args = args or []
-        self.kwargs = kwargs or {}
+        self.arguments = arguments
 
     def asdict(self):
         return {
             "type": self.node_type,
             "value": self.value,
-            "args": self.args,
-            "kwargs": self.kwargs,
+            "arguments": self.arguments,
         }
 
 
@@ -257,6 +254,36 @@ class HorizontalRuleNode(Node):
 
     def asdict(self):
         return {"type": "horizontal_rule"}
+
+
+class ContentNode(Node):
+    """Content included in the page.
+
+    This represents generic content included in the page.
+
+    Arguments:
+        uri: the URI of the image
+        title: caption of the image
+        args: unnamed arguments
+        kwargs: named arguments
+    """
+
+    node_type = "content"
+
+    def __init__(self, uri, title=None, args=None, kwargs=None):
+        self.uri = uri
+        self.title = title
+        self.kwargs = kwargs or {}
+        self.args = args or []
+
+    def asdict(self):
+        return {
+            "type": self.node_type,
+            "uri": self.uri,
+            "title": self.title.asdict() if self.title else None,
+            "args": self.args,
+            "kwargs": self.kwargs,
+        }
 
 
 class ContentImageNode(Node):

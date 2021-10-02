@@ -19,8 +19,7 @@ def test_macro():
                 {
                     "type": "macro",
                     "value": "macroname",
-                    "args": ["value1", "value2"],
-                    "kwargs": {},
+                    "arguments": "value1,value2",
                 }
             ],
         }
@@ -39,8 +38,7 @@ def test_macro_arguments_with_quotes():
                 {
                     "type": "macro",
                     "value": "macroname",
-                    "args": ["value1,value2"],
-                    "kwargs": {},
+                    "arguments": '"value1,value2"',
                 }
             ],
         }

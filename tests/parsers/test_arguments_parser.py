@@ -79,9 +79,25 @@ def test_multiple_named_arguments_before_unnamed_ones():
         p.parse()
 
 
-def test_raw_argument():
-    p = init_parser("value0, argument1=value1", raw=True)
+def test_pop():
+    p = init_parser("value1,value2")
     p.parse()
 
-    assert p.args == ["value0, argument1=value1"]
+    assert p.pop() == "value1"
+    assert p.args == ["value2"]
     assert p.kwargs == {}
+
+
+def test_get_argumentss_and_reset():
+    p = init_parser("value1,argument2=value2")
+    p.parse()
+
+    args, kwargs = p.get_arguments_and_reset()
+
+    assert args == ["value1"]
+    assert kwargs == {"argument2": "value2"}
+    assert p.args == []
+    assert p.kwargs == {}
+
+    # This is internal but is important for the logic
+    assert p._named_arguments is False

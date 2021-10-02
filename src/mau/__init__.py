@@ -76,9 +76,6 @@ class Mau:
         else:
             raise ConfigurationError(f"Target format {target_format} is not available")
 
-        # Retrieve the TOC
-        toc = [i.asdict() for i in parser.toc]
-
         # Retrieve the footnotes
         footnotes = [i.asdict() for i in parser.footnote_defs]
 
@@ -90,7 +87,7 @@ class Mau:
             default_templates=self.default_templates,
             templates_directory=self.templates_directory,
             config=parser.variables,
-            toc=toc,
+            toc=parser.toc,
             footnotes=footnotes,
         )
 

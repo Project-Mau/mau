@@ -25,7 +25,7 @@ class Visitor:
         self.default_templates = default_templates or {}
         self.templates_directory = templates_directory
         self.config = copy.deepcopy(config) if config else {}
-        self.toc = toc or []
+        self.toc = toc
         self.footnote_defs = footnotes or []
 
         # This is the fallback environment for templates

@@ -66,6 +66,16 @@ class Visitor:
 
         return template.render(config=self.config, **kwargs)
 
+    def _reduce(self, node, attributes, *args, **kwargs):
+        for attribute in attributes:
+            node[attribute] = self.visit(node[attribute], *args, **kwargs)
+
+    def _reducelist(self, node, attributes, join_with=None, *args, **kwargs):
+        for attribute in attributes:
+            node[attribute] = self.visitlist(
+                node[attribute], join_with, *args, **kwargs
+            )
+
     def visit(self, node, *args, **kwargs):
         # The visitor has to define functions for each node type
         # and those shall return a dictionary of keys.

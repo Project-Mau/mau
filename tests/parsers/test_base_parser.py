@@ -360,17 +360,6 @@ def test_force_token():
         p.force_token(TokenTypes.EOL)
 
 
-def test_force_token_in():
-    p = init_parser("\n")
-
-    p.force_token_in([EOL, EOF])
-    p.get_token()  # Get the first EOL
-    p.get_token()  # Get the second EOL
-
-    with pytest.raises(ExpectedError):
-        p.force_token_in([EOL])
-
-
 def test_collect():
     p = init_parser("\n")
 

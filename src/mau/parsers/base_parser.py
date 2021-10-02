@@ -98,12 +98,7 @@ class BaseParser:
         # Store the node.
         self.nodes.append(node)
 
-    def load(self, text):
-        self.lexer.process(text)
-        self.tokens = self.lexer.tokens
-        self.index = -1
-
-    def _check_token(self, token, ttype=None, tvalue=None, check=None):
+    def _check_token(self, token, ttype=None, tvalue=None, value_check_function=None):
         # This method performs a test on the current token,
         # figuring out if type and value correspond to those passed
         # as arguments. If type or value are not given they are not
@@ -119,7 +114,10 @@ class BaseParser:
 
         if tvalue is not None and token.value != tvalue:
             raise TokenError(f"Value of token {token} is not {tvalue}")
-        elif check is not None and check(token.value) is False:
+        elif (
+            value_check_function is not None
+            and value_check_function(token.value) is False
+        ):
             raise TokenError(f"Value of token {token} didn't pass check")
 
         return token
@@ -198,10 +196,6 @@ class BaseParser:
                 {"expected": Token(ttype, tvalue), "found": self.current_token}
             )
 
-    def force_token_in(self, tokens):
-        if self.peek_token() not in tokens:
-            raise ExpectedError({"expected": tokens, "found": self.current_token})
-
     def collect(self, stop_tokens, preserve_escaped_stop_tokens=False):
         """
         Collect all tokens until one of the stop_tokens pops up.
@@ -238,6 +232,20 @@ class BaseParser:
         token_values = [t for t in token_values if t is not None]
 
         return join_with.join(token_values)
+
+    def load(self, text):
+        """
+        Load the given text and run the lexer on it.
+        """
+
+        # Run the lexer
+        self.lexer.process(text)
+
+        # Store the resulting tokens
+        self.tokens = self.lexer.tokens
+
+        # Reset the index
+        self.index = -1
 
     def parse(self):
         """

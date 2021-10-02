@@ -40,10 +40,6 @@ class TextParser(BaseParser):
 
         self.lexer = TextLexer()
 
-        self._styles = set()
-        self._classes = set()
-        self._verbatim = False
-
         # This makes footnotes counting start from
         # the given number. It is needed because
         # there might be already footnotes in the
@@ -52,7 +48,6 @@ class TextParser(BaseParser):
 
         # These are the footnotes found in this text
         self.footnotes = []
-        self._nodes = []
 
         # These are the nodes created by the parsing.
         self.nodes = []

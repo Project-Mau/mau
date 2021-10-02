@@ -115,24 +115,14 @@ class HTMLVisitor(Visitor):
 
     def _visit_class(self, node):
         node["classes"] = " ".join(node["classes"])
-        node["content"] = self.visit(node["content"])
-
-    def _visit_quote(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="")
-
-    def _visit_raw(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="\n")
+        super()._visit_class(node)
 
     def _visit_admonition(self, node):
         node["node_types"] = [
             f'admonition_{node["class"]}',
             "admonition",
         ]
-        node["content"] = self.visitlist(node["content"], join_with="")
-
-    def _visit_block(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="")
-        node["title"] = self.visit(node["title"])
+        self._reducelist(node, ["content"], join_with="")
 
     def _visit_source(self, node):
         # The Pygments lexer for the given language
@@ -199,22 +189,7 @@ class HTMLVisitor(Visitor):
 
         node["code"] = highlighted_src
         node["callouts"] = callouts_list
-        node["title"] = self.visit(node["title"])
-
-    def _visit_document(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="")
-
-    def _visit_list_item(self, node):
-        node["content"] = self.visit(node["content"])
-
-    def _visit_list(self, node):
-        node["items"] = self.visitlist(node["items"], join_with="")
-
-    def _visit_toc_entry(self, node):
-        node["children"] = self.visitlist(node["children"], join_with="")
-
-    def _visit_footnote_def(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="")
+        self._reduce(node, ["title"])
 
     def _visit_command(self, node):
         if node["name"] == "toc":
@@ -229,10 +204,3 @@ class HTMLVisitor(Visitor):
                     entries=self.visitlist(self.footnote_defs, join_with=""),
                 )
             )
-
-    def _visit_content_image(self, node):
-        node["node_types"] = ["image"]
-        node["title"] = self.visit(node["title"])
-
-    def _visit_image(self, node):
-        node["node_types"] = ["inline_image"]

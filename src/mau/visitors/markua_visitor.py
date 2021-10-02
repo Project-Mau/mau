@@ -48,16 +48,10 @@ class MarkuaVisitor(Visitor):
             footnotes=footnotes,
         )
 
-    def _visit_sentence(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="")
-
-    def _visit_paragraph(self, node):
-        node["content"] = self.visit(node["content"])
-
     def _visit_class(self, node):
         classes = [f".{cls}" for cls in node["classes"]]
         node["classes"] = classes
-        node["content"] = self.visit(node["content"])
+        super()._visit_class(node)
 
     def _visit_link(self, node):
         if node["text"] == node["target"]:
@@ -66,11 +60,8 @@ class MarkuaVisitor(Visitor):
     def _visit_header(self, node):
         node["header"] = "#" * int(node["level"])
 
-    def _visit_quote(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="")
-
     def _visit_admonition(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="")
+        self._reducelist(node, ["content"], join_with="")
 
         if node["class"] == "note":
             node["class"] = "tip"
@@ -85,8 +76,8 @@ class MarkuaVisitor(Visitor):
             raise ValueError(f"""Admonition {node["class"]} cannot be converted""")
 
     def _visit_block(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="\n")
-        node["title"] = self.visit(node["title"])
+        self._reducelist(node, ["content"], join_with="\n")
+        self._reduce(node, ["title"])
 
     def _visit_source(self, node):
         src = [i["value"] for i in node["code"]]
@@ -95,11 +86,11 @@ class MarkuaVisitor(Visitor):
         callouts_list = []
 
         node["code"] = src
-        node["title"] = self.visit(node["title"])
         node["callouts"] = callouts_list
+        self._reduce(node, ["title"])
 
     def _visit_document(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="\n")
+        self._reducelist(node, ["content"], join_with="\n")
 
     def _visit_list_item(self, node, ordered=False):
         mark = "*"
@@ -108,23 +99,13 @@ class MarkuaVisitor(Visitor):
         if node["content"]["type"] != "list":
             prefix = mark * int(node["level"])
 
-        node["content"] = self.visit(node["content"])
+        self._reduce(node, ["content"])
         node["prefix"] = prefix
 
     def _visit_list(self, node, ordered=False):
         node["items"] = "".join(
             [self.visit(i, ordered=node["ordered"]) for i in node["items"]]
         )
-
-    def _visit_footnote_def(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="")
-
-    def _visit_content_image(self, node):
-        node["node_types"] = ["image"]
-        node["title"] = self.visit(node["title"])
-
-    def _visit_image(self, node):
-        node["node_types"] = ["inline_image"]
 
     def _visit_command(self, node):
         if node["name"] == "footnotes":

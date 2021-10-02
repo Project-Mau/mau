@@ -48,7 +48,7 @@ class AsciidoctorVisitor(Visitor):
     def _visit_class(self, node):
         classes = " ".join([f".{cls}" for cls in node["classes"]])
         node["classes"] = classes
-        node["content"] = self.visit(node["content"])
+        super()._visit_class(node)
 
     def _visit_link(self, node):
         if node["text"] == node["target"]:
@@ -57,11 +57,8 @@ class AsciidoctorVisitor(Visitor):
     def _visit_header(self, node):
         node["header"] = "=" * int(node["level"])
 
-    def _visit_quote(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="")
-
     def _visit_admonition(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="")
+        self._reducelist(node, ["content"], join_with="")
 
         if node["class"] in ["note", "tip", "important", "caution", "warning"]:
             node["class"] = node["class"].upper()
@@ -69,7 +66,7 @@ class AsciidoctorVisitor(Visitor):
             raise ValueError(f"""Admonition {node["class"]} cannot be converted""")
 
     def _visit_block(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="\n")
+        self._reducelist(node, ["content"], join_with="\n")
 
     def _visit_source(self, node):
         src = [i["value"] for i in node["code"]]
@@ -91,11 +88,11 @@ class AsciidoctorVisitor(Visitor):
         ]
 
         node["code"] = src
-        node["title"] = self.visit(node["title"])
         node["callouts"] = callouts_list
+        self._reduce(node, ["title"])
 
     def _visit_document(self, node):
-        node["content"] = self.visitlist(node["content"], join_with="\n")
+        self._reducelist(node, ["content"], join_with="\n")
 
     def _visit_list_item(self, node, ordered=False):
         mark = "*"
@@ -106,7 +103,7 @@ class AsciidoctorVisitor(Visitor):
         if node["content"]["type"] != "list":
             prefix = mark * int(node["level"])
 
-        node["content"] = self.visit(node["content"])
+        self._reduce(node, ["content"])
         node["prefix"] = prefix
 
     def _visit_list(self, node, ordered=False):
@@ -119,12 +116,12 @@ class AsciidoctorVisitor(Visitor):
         footnote = [i for i in self.footnote_defs if i["number"] == number][0]
 
         node["node_types"] = (["footnote_ref"],)
-        node["content"] = self.visitlist(footnote["content"], join_with="")
+        self._reducelist(node, ["content"], join_with="")
 
     def _visit_content_image(self, node):
         node["node_types"] = ["image"]
-        node["title"] = self.visit(node["title"])
         node["asciidoctor_classes"] = node["kwargs"].get("asciidoctor_classes", None)
+        self._reduce(node, ["title"])
 
     def _visit_image(self, node):
         node["node_types"] = ["inline_image"]

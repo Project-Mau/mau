@@ -117,19 +117,54 @@ class Visitor:
 
         return visited_nodes
 
-    def _visit_sentence(self, node):
-        node["content"] = "".join(self.visitlist(node["content"]))
+    def _visit_block(self, node):
+        self._reducelist(node, ["content"], join_with="")
+        self._reduce(node, ["title"])
 
-    def _visit_paragraph(self, node):
-        node["content"] = self.visit(node["content"])
-
-    def _visit_style(self, node):
-        node["node_types"] = [node["value"]]
-        node["content"] = self.visit(node["content"])
-
-    def _visit_verbatim(self, node):
-        node["content"] = node["value"]
+    def _visit_class(self, node):
+        self._reduce(node, ["content"])
 
     def _visit_container_node(self, node):
         node["node_types"] = ["container"]
         node["content"] = "".join(self.visitlist(node["content"]))
+
+    def _visit_content_image(self, node):
+        node["node_types"] = ["image"]
+        self._reduce(node, ["title"])
+
+    def _visit_document(self, node):
+        self._reducelist(node, ["content"], join_with="")
+
+    def _visit_footnote_def(self, node):
+        self._reducelist(node, ["content"], join_with="")
+
+    def _visit_image(self, node):
+        node["node_types"] = ["inline_image"]
+
+    def _visit_list(self, node):
+        self._reducelist(node, ["items"], join_with="")
+
+    def _visit_list_item(self, node):
+        self._reduce(node, ["content"])
+
+    def _visit_paragraph(self, node):
+        self._reduce(node, ["content"])
+
+    def _visit_quote(self, node):
+        node["content"] = self.visitlist(node["content"], join_with="")
+
+    def _visit_raw(self, node):
+        node["content"] = self.visitlist(node["content"], join_with="\n")
+
+    def _visit_sentence(self, node):
+        node["content"] = "".join(self.visitlist(node["content"]))
+
+    def _visit_style(self, node):
+        node["node_types"] = [node["value"]]
+        self._reduce(node, ["content"])
+
+    def _visit_toc_entry(self, node):
+        self._reducelist(node, ["children"], join_with="")
+
+    def _visit_verbatim(self, node):
+        node["content"] = node["value"]

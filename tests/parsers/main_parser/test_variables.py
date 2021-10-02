@@ -23,6 +23,14 @@ def test_parse_variable_definition_without_value_can_be_negated():
     assert p.variables == {"attr": False}
 
 
+def test_parse_variable_definition_negative_flag_ignores_value():
+    p = init_parser(":!attr:42")
+    p.parse()
+
+    assert listasdict(p.nodes) == []
+    assert p.variables == {"attr": False}
+
+
 def test_parse_variable_definition_with_value_is_loaded():
     p = init_parser(":attr:42")
     p.parse()
@@ -45,6 +53,14 @@ def test_parse_variable_definition_with_namespace():
 
     assert listasdict(p.nodes) == []
     assert p.variables == {"meta": {"attr": "42"}}
+
+
+def test_parse_variable_definition_with_multiple_dots():
+    p = init_parser(":meta.category.attr:42")
+    p.parse()
+
+    assert listasdict(p.nodes) == []
+    assert p.variables == {"meta": {"category.attr": "42"}}
 
 
 def test_variable_replacement():

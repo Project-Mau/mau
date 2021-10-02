@@ -217,3 +217,45 @@ def test_attributes_header(header_anchor_mock):
     ]
 
     _test(source, expected)
+
+
+@patch("mau.parsers.main_parser.header_anchor")
+def test_parse_headers_not_in_toc(header_anchor_mock):
+    header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
+
+    source = """
+    = Header 1
+    == Header 1.1
+    ==! Header 1.2
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "kwargs": {},
+            "value": "Header 1",
+            "level": 1,
+            "anchor": "Header 1-XXXXXX",
+        },
+        {
+            "type": "header",
+            "kwargs": {},
+            "value": "Header 1.1",
+            "level": 2,
+            "anchor": "Header 1.1-XXXXXX",
+        },
+        {
+            "type": "header",
+            "kwargs": {},
+            "value": "Header 1.2",
+            "level": 2,
+            "anchor": "Header 1.2-XXXXXX",
+        },
+    ]
+
+    p = _test(source, expected)
+
+    assert p.headers == [
+        ("Header 1", 1, "Header 1-XXXXXX"),
+        ("Header 1.1", 2, "Header 1.1-XXXXXX"),
+    ]

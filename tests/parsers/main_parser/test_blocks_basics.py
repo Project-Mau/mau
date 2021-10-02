@@ -290,3 +290,125 @@ def test_attributes_block():
     ]
 
     _test(source, expected)
+
+
+def test_attributes_can_contain_variables():
+    source = """
+    :value:42
+
+    [blocktype,myattr1={value}]
+    ----
+    This is a simple line of text
+    followed by another line of text
+
+    And this is another paragraph
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {"myattr1": "42"},
+            "secondary_content": [],
+            "title": None,
+            "content": [
+                {
+                    "type": "paragraph",
+                    "args": [],
+                    "kwargs": {},
+                    "content": {
+                        "type": "sentence",
+                        "content": [
+                            {
+                                "type": "text",
+                                "value": "This is a simple line of text followed by another line of text",
+                            }
+                        ],
+                    },
+                },
+                {
+                    "type": "paragraph",
+                    "args": [],
+                    "kwargs": {},
+                    "content": {
+                        "type": "sentence",
+                        "content": [
+                            {
+                                "type": "text",
+                                "value": "And this is another paragraph",
+                            }
+                        ],
+                    },
+                },
+            ],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_parse_block_title_and_attributes():
+    source = """
+    .Just a title
+    [blocktype,attribute1,attribute2]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "blocktype": "blocktype",
+            "content": [],
+            "secondary_content": [],
+            "title": {
+                "content": [{"type": "text", "value": "Just a title"}],
+                "type": "sentence",
+            },
+            "args": ["attribute1", "attribute2"],
+            "kwargs": {},
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_parse_block_title_and_attributes_are_reset():
+    source = """
+    .Just a title
+    [blocktype1,attribute1,attribute2]
+    ----
+    ----
+
+    [blocktype2]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "blocktype": "blocktype1",
+            "content": [],
+            "secondary_content": [],
+            "title": {
+                "content": [{"type": "text", "value": "Just a title"}],
+                "type": "sentence",
+            },
+            "args": ["attribute1", "attribute2"],
+            "kwargs": {},
+        },
+        {
+            "type": "block",
+            "blocktype": "blocktype2",
+            "content": [],
+            "secondary_content": [],
+            "title": None,
+            "args": [],
+            "kwargs": {},
+        },
+    ]
+
+    _test(source, expected)

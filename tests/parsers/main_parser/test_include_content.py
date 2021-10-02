@@ -145,3 +145,46 @@ def test_include_image_with_title():
     ]
 
     _test(source, expected)
+
+
+def test_include_image_first_unnamed_attribute_is_alt_text():
+    source = """
+    ["Alternate text"]
+    << image:/path/to/it.jpg
+    """
+
+    expected = [
+        {
+            "type": "content_image",
+            "uri": "/path/to/it.jpg",
+            "alt_text": "Alternate text",
+            "title": None,
+            "classes": None,
+            "kwargs": {},
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_include_unknown_content():
+    source = """
+    . Some title
+    [arg1,arg2,named1="value1",named2="value2"]
+    << unknown:/path/to/it
+    """
+
+    expected = [
+        {
+            "type": "content",
+            "uri": "/path/to/it",
+            "title": {
+                "content": [{"type": "text", "value": "Some title"}],
+                "type": "sentence",
+            },
+            "args": ["arg1", "arg2"],
+            "kwargs": {"named1": "value1", "named2": "value2"},
+        },
+    ]
+
+    _test(source, expected)

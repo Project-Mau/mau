@@ -34,8 +34,8 @@ def header_anchor(text, level):
     # Everything lowercase
     sanitised_text = text.lower()
 
-    # Get only letters, numbers, dashes, and spaces
-    sanitised_text = "".join(re.findall("[a-z0-9- ]+", sanitised_text))
+    # Get only letters, numbers, dashes, spaces, and dots
+    sanitised_text = "".join(re.findall("[a-z0-9-\\. ]+", sanitised_text))
 
     # Remove multiple spaces
     sanitised_text = "-".join(sanitised_text.split())

@@ -92,46 +92,44 @@ class Visitor:
         if node is None:
             return ""
 
-        keys = getattr(self, f'_visit_{node["type"]}')(node, *args, **kwargs)
+        try:
+            getattr(self, f'_visit_{node["type"]}')(node, *args, **kwargs)
+        except AttributeError:
+            pass
 
         node_types = []
-        node_types.extend(keys.pop("node_types", []))
+        node_types.extend(node.pop("node_types", []))
         node_types.append(node["type"])
 
         for i in node_types:
             try:
-                return self._render(i, **keys)
+                return self._render(i, **node)
             except TemplateNotFound:
                 continue
 
         raise ValueError(f"Cannot find any suitable template among {node_types}")
 
-    def visitlist(self, nodes):
-        return [self.visit(i) for i in nodes]
+    def visitlist(self, nodes, join_with=None):
+        visited_nodes = [self.visit(i) for i in nodes]
 
-    def _visit_text(self, node):
-        return {"value": node["value"]}
+        if join_with is not None:
+            return join_with.join(visited_nodes)
+
+        return visited_nodes
 
     def _visit_sentence(self, node):
-        return {"content": "".join([self.visit(t) for t in node["content"]])}
+        node["content"] = "".join(self.visitlist(node["content"]))
 
     def _visit_paragraph(self, node):
-        return {"content": self.visit(node["content"])}
-
-    def _visit_horizontal_rule(self, node):
-        return {}
+        node["content"] = self.visit(node["content"])
 
     def _visit_style(self, node):
-        return {"node_types": [node["value"]], "content": self.visit(node["content"])}
+        node["node_types"] = [node["value"]]
+        node["content"] = self.visit(node["content"])
 
     def _visit_verbatim(self, node):
-        return {"content": node["value"]}
+        node["content"] = node["value"]
 
     def _visit_container_node(self, node):
-        return {
-            "node_types": ["container"],
-            "content": "".join([self.visit(item) for item in node["content"]]),
-        }
-
-    def _visit_macro(self, node):
-        return {}
+        node["node_types"] = ["container"]
+        node["content"] = "".join(self.visitlist(node["content"]))

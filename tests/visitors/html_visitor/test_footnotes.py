@@ -25,12 +25,41 @@ def test_footnote():
 def test_footnote_definition():
     v = HTMLVisitor()
 
-    result = v._visit_footnote_def(
+    node = {
+        "type": "footnote_def",
+        "number": 1,
+        "refanchor": "refXYZ",
+        "defanchor": "defXYZ",
+        "content": [
+            {
+                "type": "sentence",
+                "content": [
+                    {"type": "text", "value": "Some text 1"},
+                ],
+            }
+        ],
+    }
+
+    v._visit_footnote_def(node)
+
+    assert node == {
+        "type": "footnote_def",
+        "defanchor": "defXYZ",
+        "number": 1,
+        "refanchor": "refXYZ",
+        "content": "Some text 1",
+    }
+
+
+def test_footnotes():
+    v = HTMLVisitor()
+
+    nodes = [
         {
             "type": "footnote_def",
             "number": 1,
-            "refanchor": "refXYZ",
-            "defanchor": "defXYZ",
+            "refanchor": "refXYZ1",
+            "defanchor": "defXYZ1",
             "content": [
                 {
                     "type": "sentence",
@@ -39,51 +68,26 @@ def test_footnote_definition():
                     ],
                 }
             ],
-        }
-    )
+        },
+        {
+            "type": "footnote_def",
+            "number": 2,
+            "refanchor": "refXYZ2",
+            "defanchor": "defXYZ2",
+            "content": [
+                {
+                    "type": "sentence",
+                    "content": [
+                        {"type": "text", "value": "Some text 2"},
+                    ],
+                }
+            ],
+        },
+    ]
 
-    assert result == {
-        "defanchor": "defXYZ",
-        "number": 1,
-        "refanchor": "refXYZ",
-        "text": "Some text 1",
-    }
-
-
-def test_footnotes():
-    v = HTMLVisitor()
-
-    result = v.visit_footnotes(
-        [
-            {
-                "type": "footnote_def",
-                "number": 1,
-                "refanchor": "refXYZ1",
-                "defanchor": "defXYZ1",
-                "content": [
-                    {
-                        "type": "sentence",
-                        "content": [
-                            {"type": "text", "value": "Some text 1"},
-                        ],
-                    }
-                ],
-            },
-            {
-                "type": "footnote_def",
-                "number": 2,
-                "refanchor": "refXYZ2",
-                "defanchor": "defXYZ2",
-                "content": [
-                    {
-                        "type": "sentence",
-                        "content": [
-                            {"type": "text", "value": "Some text 2"},
-                        ],
-                    }
-                ],
-            },
-        ]
+    result = v._render(
+        "footnotes",
+        entries="".join([v.visit(i) for i in nodes]),
     )
 
     assert result == remove_indentation(

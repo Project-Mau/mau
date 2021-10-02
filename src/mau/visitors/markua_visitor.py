@@ -1,24 +1,24 @@
 from mau.visitors.visitor import Visitor
 
 DEFAULT_TEMPLATES = {
-    "admonition.md": "{blurb, class: {{ admclass }}}\n**{{ label }}**\n\n{{ content|join }}{/blurb}\n\n",
-    "block.md": "{{ content|join('\n') }}",
+    "admonition.md": "{blurb, class: {{ class }}}\n**{{ label }}**\n\n{{ content }}{/blurb}\n\n",
+    "block.md": "{{ content }}",
     "callout.md": "",
     "class.md": "{{ content }}",
     "command.md": "{{ content }}",
-    "document.md": "{{ content|join('\n') }}",
-    "footnote_def.md": "[^footnote{{ number }}]: {{ text }}",
+    "document.md": "{{ content }}",
+    "footnote_def.md": "[^footnote{{ number }}]: {{ content }}",
     "footnote_ref.md": "[^footnote{{ number }}]",
     "footnotes.md": "{{ entries }}",
-    "header.md": "{{ header }} {{ text }}\n",
+    "header.md": "{{ header }} {{ value }}\n",
     "horizontal_rule.md": "* * *",
     "image.md": '{% if alt_text %}{alt: "{{ alt_text }}"}\n{% endif %}![{{ title }}]({{ uri }})\n',
     "inline_image.md": "![{{ alt_text }}]({{ uri }})",
     "link.md": "{% if text %}[{{ text }}]({{ target }}){% else %}<{{ target }}>{% endif %}",
-    "list.md": "{{ items|join }}{% if main_node %}\n{% endif %}",
+    "list.md": "{{ items }}{% if main_node %}\n{% endif %}",
     "list_item.md": "{% if not main_node %}\n{% endif %}{% if prefix %}{{ prefix }} {% endif %}{{ content }}",
     "paragraph.md": "{{ content }}\n",
-    "quote.md": "{blurb, icon: quote-right}\n{{ content|join }}\n{{ attribution }}\n{/blurb}\n\n",
+    "quote.md": "{blurb, icon: quote-right}\n{{ content }}\n{{ attribution }}\n{/blurb}\n\n",
     "sentence.md": "{{ content }}",
     "source.md": '{% if title %}{caption: "{{ title }}"}\n{% endif %}``` {% if language %}{{ language }}{% endif %}\n{{ code }}\n```',
     "star.md": "**{{ content }}**",
@@ -48,69 +48,45 @@ class MarkuaVisitor(Visitor):
             footnotes=footnotes,
         )
 
-    def _visit_text(self, node):
-        return {"value": node["value"]}
-
     def _visit_sentence(self, node):
-        return {"content": "".join([self.visit(t) for t in node["content"]])}
+        node["content"] = self.visitlist(node["content"], join_with="")
 
     def _visit_paragraph(self, node):
-        return {"content": self.visit(node["content"])}
-
-    def _visit_horizontal_rule(self, node):
-        return {}
-
-    def _visit_style(self, node):
-        return {"node_types": [node["value"]], "content": self.visit(node["content"])}
-
-    def _visit_verbatim(self, node):
-        return {"content": node["value"]}
+        node["content"] = self.visit(node["content"])
 
     def _visit_class(self, node):
         classes = [f".{cls}" for cls in node["classes"]]
-        return {"classes": classes, "content": self.visit(node["content"])}
+        node["classes"] = classes
+        node["content"] = self.visit(node["content"])
 
     def _visit_link(self, node):
-        text = node["text"]
-        target = node["target"]
-
-        if text == target:
-            text = None
-
-        return {"text": text, "target": node["target"]}
+        if node["text"] == node["target"]:
+            node["text"] = None
 
     def _visit_header(self, node):
-        return {"header": "#" * int(node["level"]), "text": node["value"]}
+        node["header"] = "#" * int(node["level"])
 
     def _visit_quote(self, node):
-        return {
-            "attribution": node["attribution"],
-            "content": self.visitlist(node["content"]),
-        }
+        node["content"] = self.visitlist(node["content"], join_with="")
 
     def _visit_admonition(self, node):
-        admclass = node["class"]
-        content = self.visitlist(node["content"])
+        node["content"] = self.visitlist(node["content"], join_with="")
 
-        if admclass == "note":
-            admclass = "tip"
+        if node["class"] == "note":
+            node["class"] = "tip"
 
-        if admclass not in ["discussion", "error", "information", "tip", "warning"]:
-            raise ValueError(f"Admonition {admclass} cannot be converted")
-
-        return {
-            "admclass": admclass,
-            "icon": node["icon"],
-            "label": node["label"],
-            "content": content,
-        }
+        if node["class"] not in [
+            "discussion",
+            "error",
+            "information",
+            "tip",
+            "warning",
+        ]:
+            raise ValueError(f"""Admonition {node["class"]} cannot be converted""")
 
     def _visit_block(self, node):
-        return {
-            "content": self.visitlist(node["content"]),
-            "title": self.visit(node["title"]),
-            "kwargs": node["kwargs"],
-        }
+        node["content"] = self.visitlist(node["content"], join_with="\n")
+        node["title"] = self.visit(node["title"])
 
     def _visit_source(self, node):
         src = [i["value"] for i in node["code"]]
@@ -118,15 +94,12 @@ class MarkuaVisitor(Visitor):
         src = "\n".join(src)
         callouts_list = []
 
-        return {
-            "code": src,
-            "title": self.visit(node["title"]),
-            "language": node["language"],
-            "callouts": callouts_list,
-        }
+        node["code"] = src
+        node["title"] = self.visit(node["title"])
+        node["callouts"] = callouts_list
 
     def _visit_document(self, node):
-        return {"content": [self.visit(item) for item in node["content"]]}
+        node["content"] = self.visitlist(node["content"], join_with="\n")
 
     def _visit_list_item(self, node, ordered=False):
         mark = "*"
@@ -135,51 +108,29 @@ class MarkuaVisitor(Visitor):
         if node["content"]["type"] != "list":
             prefix = mark * int(node["level"])
 
-        return {"content": self.visit(node["content"]), "prefix": prefix}
+        node["content"] = self.visit(node["content"])
+        node["prefix"] = prefix
 
     def _visit_list(self, node, ordered=False):
-        return {
-            "items": [self.visit(i, ordered=node["ordered"]) for i in node["items"]],
-            "main_node": node["main_node"],
-        }
-
-    def _visit_footnote_ref(self, node):
-        return {
-            "number": node["number"],
-            "refanchor": node["refanchor"],
-            "defanchor": node["defanchor"],
-        }
+        node["items"] = "".join(
+            [self.visit(i, ordered=node["ordered"]) for i in node["items"]]
+        )
 
     def _visit_footnote_def(self, node):
-        return {
-            "number": node["number"],
-            "refanchor": node["refanchor"],
-            "defanchor": node["defanchor"],
-            "text": "".join([self.visit(i) for i in node["content"]]),
-        }
-
-    def visit_footnotes(self, nodes):
-        keys = {"entries": "".join([self.visit(i) for i in nodes])}
-        return self._render("footnotes", **keys)
+        node["content"] = self.visitlist(node["content"], join_with="")
 
     def _visit_content_image(self, node):
-        return {
-            "node_types": ["image"],
-            "uri": node["uri"],
-            "title": self.visit(node["title"]),
-            "asciidoctor_classes": node["kwargs"].get("asciidoctor_classes", None),
-            "alt_text": node["alt_text"],
-        }
+        node["node_types"] = ["image"]
+        node["title"] = self.visit(node["title"])
 
     def _visit_image(self, node):
-        return {
-            "node_types": ["inline_image"],
-            "uri": node["uri"],
-            "alt_text": node["alt_text"],
-        }
+        node["node_types"] = ["inline_image"]
 
     def _visit_command(self, node):
         if node["name"] == "footnotes":
-            return {"content": "".join(self.visit_footnotes(self.footnote_defs))}
-
-        return {"content": ""}
+            node["content"] = "".join(
+                self._render(
+                    "footnotes",
+                    entries=self.visitlist(self.footnote_defs, join_with=""),
+                )
+            )

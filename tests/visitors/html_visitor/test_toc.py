@@ -10,18 +10,20 @@ visitlist = visitlist_factory(HTMLVisitor)
 def test_toc_entry():
     v = HTMLVisitor()
 
-    result = v._visit_toc_entry(
-        {
-            "type": "toc_entry",
-            "level": 1,
-            "text": "Header 1",
-            "anchor": "Header 1-XXXXXX",
-            "children": [],
-        }
-    )
-
-    assert result == {
+    node = {
+        "type": "toc_entry",
+        "level": 1,
         "text": "Header 1",
+        "anchor": "Header 1-XXXXXX",
+        "children": [],
+    }
+
+    v._visit_toc_entry(node)
+
+    assert node == {
+        "type": "toc_entry",
+        "text": "Header 1",
+        "level": 1,
         "anchor": "Header 1-XXXXXX",
         "children": "",
     }

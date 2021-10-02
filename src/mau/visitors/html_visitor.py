@@ -126,10 +126,7 @@ class HTMLVisitor(Visitor):
         return super()._visit_class(node)
 
     def _visit_admonition(self, node):
-        node["node_types"] = [
-            f'admonition_{node["class"]}',
-            "admonition",
-        ]
+        node["node_types"] = [f'admonition_{node["class"]}']
         self._reducelist(node, ["content"], join_with="")
         return node
 

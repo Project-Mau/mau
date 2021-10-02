@@ -107,8 +107,8 @@ class BaseParser:
         # the TokenError exception is raised.
         # The argument value_check_function is a function that
         # can be passed to test the token value and shall return a boolean.
-        check_type = ttype if ttype is not None else token.type
 
+        check_type = ttype if ttype is not None else token.type
         if token.type != check_type:
             raise TokenError(f"Type of token {token} is not {check_type}")
 

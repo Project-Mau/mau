@@ -76,9 +76,6 @@ class Mau:
         else:
             raise ConfigurationError(f"Target format {target_format} is not available")
 
-        # Retrieve the footnotes
-        footnotes = [i.asdict() for i in parser.footnote_defs]
-
         # Initialise the visitor
         # Use the parser variables so that the visitor
         # has both the configuration values and the
@@ -88,7 +85,7 @@ class Mau:
             templates_directory=self.templates_directory,
             config=parser.variables,
             toc=parser.toc,
-            footnotes=footnotes,
+            footnotes=parser.footnotes,
         )
 
         # Replace variables with the ones processed by the parser

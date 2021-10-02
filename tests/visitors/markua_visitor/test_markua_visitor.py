@@ -218,7 +218,7 @@ def test_footnote_ref():
 
     p.parse()
     ast = listasdict(p.nodes)
-    result = visitlist(ast, footnotes=[i.asdict() for i in p.footnote_defs])
+    result = visitlist(ast, footnotes=p.footnotes)
 
     assert result == ["This is a sentence[^footnote1]\n"]
 
@@ -236,8 +236,7 @@ def test_footnote_def():
 
     p.parse()
     ast = listasdict(p.nodes)
-    footnotes = [i.asdict() for i in p.footnote_defs]
-    result = visitlist(ast, footnotes=footnotes)
+    result = visitlist(ast, footnotes=p.footnotes)
 
     assert result == ["This is a sentence[^footnote1]\n", "[^footnote1]: with a note"]
 

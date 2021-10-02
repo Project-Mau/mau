@@ -1,5 +1,6 @@
 from mau.visitors.html_visitor import HTMLVisitor
 
+from mau.parsers import nodes
 from mau.parsers.main_parser import MainParser
 from tests.helpers import remove_indentation, init_parser_factory, visitlist_factory
 
@@ -105,36 +106,22 @@ def test_footnotes():
 
 
 def test_command_footnotes():
-    footnotes = [
-        {
-            "type": "footnote_def",
-            "number": 1,
-            "refanchor": "refXYZ1",
-            "defanchor": "defXYZ1",
-            "content": [
-                {
-                    "type": "sentence",
-                    "content": [
-                        {"type": "text", "value": "Some text 1"},
-                    ],
-                }
-            ],
-        },
-        {
-            "type": "footnote_def",
-            "number": 2,
-            "refanchor": "refXYZ2",
-            "defanchor": "defXYZ2",
-            "content": [
-                {
-                    "type": "sentence",
-                    "content": [
-                        {"type": "text", "value": "Some text 2"},
-                    ],
-                }
-            ],
-        },
-    ]
+    footnotes = nodes.FootnotesNode(
+        entries=[
+            nodes.FootnoteDefNode(
+                1,
+                "refXYZ1",
+                "defXYZ1",
+                [nodes.SentenceNode([nodes.TextNode("Some text 1")])],
+            ),
+            nodes.FootnoteDefNode(
+                2,
+                "refXYZ2",
+                "defXYZ2",
+                [nodes.SentenceNode([nodes.TextNode("Some text 2")])],
+            ),
+        ]
+    )
 
     parser = init_parser("::footnotes:")
     parser.parse()

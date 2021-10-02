@@ -52,22 +52,25 @@ def test_macro_footnote(footnote_anchors_mock, header_anchor_mock):
 
     p = _test(source, expected)
 
-    assert listasdict(p.footnote_defs) == [
-        {
-            "type": "footnote_def",
-            "refanchor": "refXYZ",
-            "defanchor": "defXYZ",
-            "number": 1,
-            "content": [
-                {
-                    "type": "sentence",
-                    "content": [
-                        {"type": "text", "value": "just a note"},
-                    ],
-                }
-            ],
-        }
-    ]
+    assert p.footnotes.asdict() == {
+        "type": "footnotes",
+        "entries": [
+            {
+                "type": "footnote_def",
+                "refanchor": "refXYZ",
+                "defanchor": "defXYZ",
+                "number": 1,
+                "content": [
+                    {
+                        "type": "sentence",
+                        "content": [
+                            {"type": "text", "value": "just a note"},
+                        ],
+                    }
+                ],
+            }
+        ],
+    }
 
 
 @patch("mau.parsers.text_parser.footnote_anchors")
@@ -88,33 +91,36 @@ def test_macro_footnote_inside_admonition(footnote_anchors_mock):
     )
     p.parse()
 
-    assert listasdict(p.footnote_defs) == [
-        {
-            "type": "footnote_def",
-            "refanchor": "refXYZ",
-            "defanchor": "defXYZ",
-            "number": 1,
-            "content": [
-                {
-                    "type": "sentence",
-                    "content": [
-                        {"type": "text", "value": "note number 1"},
-                    ],
-                }
-            ],
-        },
-        {
-            "type": "footnote_def",
-            "refanchor": "refXYZ",
-            "defanchor": "defXYZ",
-            "number": 1,
-            "content": [
-                {
-                    "type": "sentence",
-                    "content": [
-                        {"type": "text", "value": "note number 2"},
-                    ],
-                }
-            ],
-        },
-    ]
+    assert p.footnotes.asdict() == {
+        "type": "footnotes",
+        "entries": [
+            {
+                "type": "footnote_def",
+                "refanchor": "refXYZ",
+                "defanchor": "defXYZ",
+                "number": 1,
+                "content": [
+                    {
+                        "type": "sentence",
+                        "content": [
+                            {"type": "text", "value": "note number 1"},
+                        ],
+                    }
+                ],
+            },
+            {
+                "type": "footnote_def",
+                "refanchor": "refXYZ",
+                "defanchor": "defXYZ",
+                "number": 1,
+                "content": [
+                    {
+                        "type": "sentence",
+                        "content": [
+                            {"type": "text", "value": "note number 2"},
+                        ],
+                    }
+                ],
+            },
+        ],
+    }

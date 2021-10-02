@@ -581,6 +581,24 @@ class QuoteNode(Node):
         }
 
 
+class FootnotesNode(Node):
+    """A list of footnote definitions.
+
+    This node contains the footnote definitions.
+
+    Arguments:
+        entries: a list of FootnoteDefNode objects
+    """
+
+    node_type = "footnotes"
+
+    def __init__(self, entries=None):
+        self.entries = entries or []
+
+    def asdict(self):
+        return {"type": self.node_type, "entries": [i.asdict() for i in self.entries]}
+
+
 class FootnoteDefNode(Node):
     """A footnote definition.
 

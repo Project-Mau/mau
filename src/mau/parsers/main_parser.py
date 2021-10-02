@@ -24,6 +24,7 @@ from mau.parsers.nodes import (
     ParagraphNode,
     TocNode,
     TocEntryNode,
+    FootnotesNode,
 )
 
 
@@ -865,3 +866,4 @@ class MainParser(BaseParser):
         super().parse()
 
         self.toc = self._create_toc()
+        self.footnotes = FootnotesNode(entries=self.footnote_defs)

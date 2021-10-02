@@ -76,6 +76,7 @@ class MarkuaVisitor(Visitor):
             "warning",
         ]:
             raise ValueError(f"""Admonition {node["class"]} cannot be converted""")
+
         return node
 
     def _visit_block(self, node):
@@ -115,12 +116,8 @@ class MarkuaVisitor(Visitor):
         )
         return node
 
-    def _visit_command(self, node):
-        if node["name"] == "footnotes":
-            node["content"] = "".join(
-                self._render(
-                    "footnotes",
-                    entries=self.visitlist(self.footnote_defs, join_with=""),
-                )
-            )
-        return node
+    def _visit_command_footnotes(self, node):
+        footnotes_node = self.footnotes.asdict()
+        self._reducelist(footnotes_node, ["entries"], join_with="")
+
+        return footnotes_node

@@ -9,6 +9,48 @@ init_parser = init_parser_factory(TextParser)
 _test = parser_test_factory(TextParser)
 
 
+def test_collect_macro_arguments_single_argument():
+    source = "(value1)"
+
+    p = init_parser(source)
+    assert p._collect_macro_args() == "value1"
+
+
+def test_collect_macro_arguments_multiple_arguments():
+    source = "(value1,value2)"
+
+    p = init_parser(source)
+    assert p._collect_macro_args() == "value1,value2"
+
+
+def test_collect_macro_arguments_single_argument_with_quotes():
+    source = '("value1")'
+
+    p = init_parser(source)
+    assert p._collect_macro_args() == '"value1"'
+
+
+def test_collect_macro_arguments_single_argument_with_quotes_and_parenthesis():
+    source = '("value1()")'
+
+    p = init_parser(source)
+    assert p._collect_macro_args() == '"value1()"'
+
+
+def test_collect_macro_arguments_single_argument_with_parenthesis():
+    source = "(value1())"
+
+    p = init_parser(source)
+    assert p._collect_macro_args() == "value1("
+
+
+def test_collect_macro_arguments_multiple_argument_with_quotes_and_parenthesis():
+    source = '("value1()",value2,value3)'
+
+    p = init_parser(source)
+    assert p._collect_macro_args() == '"value1()",value2,value3'
+
+
 def test_macro():
     source = "[macroname](value1,value2)"
 
@@ -125,6 +167,25 @@ def test_macro_link_with_escaped_round_braces():
 
 def test_macro_link_with_escaped_round_braces_in_the_url():
     source = '[link](https://somedomain.org/the/path_(note\\),"link")'
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {
+                    "type": "link",
+                    "target": "https://somedomain.org/the/path_(note)",
+                    "text": "link",
+                }
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
+def test_macro_link_with_quotes_and_round_braces_in_the_url():
+    source = '[link]("https://somedomain.org/the/path_(note)","link")'
 
     expected = [
         {

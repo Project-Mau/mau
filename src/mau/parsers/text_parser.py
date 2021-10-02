@@ -264,17 +264,46 @@ class TextParser(BaseParser):
             refanchor=refanchor, defanchor=defanchor, number=number, content=p.nodes
         )
 
+    def _collect_macro_args(self):
+        self.get_token(TokenTypes.LITERAL, "(")
+
+        all_args = []
+
+        while not (
+            self.peek_token_is(TokenTypes.LITERAL, ")")
+            or self.peek_token_is(TokenTypes.EOL)
+        ):
+            if self.peek_token_is(TokenTypes.LITERAL, '"'):
+                self.get_token(TokenTypes.LITERAL, '"')
+
+                value = self.collect_join(
+                    stop_tokens=[Token(TokenTypes.LITERAL, '"'), Token(TokenTypes.EOL)],
+                )
+
+                self.get_token(TokenTypes.LITERAL, '"')
+
+                arguments = f'"{value}"'
+            else:
+                arguments = self.collect_join(
+                    stop_tokens=[
+                        Token(TokenTypes.LITERAL, ","),
+                        Token(TokenTypes.LITERAL, ")"),
+                        Token(TokenTypes.EOL),
+                    ],
+                )
+
+            all_args.append(arguments)
+
+        self.get_token(TokenTypes.LITERAL, ")")
+
+        return "".join(all_args)
+
     def parse_macro(self):
         self.get_token(TokenTypes.LITERAL, "[")
         macro_name = self.get_token(TokenTypes.TEXT).value
         self.get_token(TokenTypes.LITERAL, "]")
-        self.get_token(TokenTypes.LITERAL, "(")
 
-        arguments = self.collect_join(
-            stop_tokens=[Token(TokenTypes.LITERAL, ")"), Token(TokenTypes.EOL)],
-        )
-
-        self.get_token(TokenTypes.LITERAL, ")")
+        arguments = self._collect_macro_args()
 
         if macro_name == "link":
             return self.parse_macro_link(arguments)

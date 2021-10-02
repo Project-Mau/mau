@@ -2,6 +2,7 @@ from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import get_formatter_by_name
 
+from mau.parsers import nodes
 from mau.visitors.visitor import Visitor
 
 DEFAULT_TEMPLATES = {
@@ -81,7 +82,7 @@ DEFAULT_TEMPLATES = {
     "toc.html": "<div>{% if entries%}<ul>{{ entries }}</ul>{% endif %}</div>",
     "toc_entry.html": (
         "<li>"
-        '<a href="#{{ anchor }}">{{ text }}</a>'
+        '<a href="#{{ header.anchor }}">{{ header.value }}</a>'
         "{% if children %}<ul>{{ children }}</ul>{% endif %}"
         "</li>"
     ),
@@ -194,18 +195,28 @@ class HTMLVisitor(Visitor):
 
         return node
 
-    def _visit_command(self, node):
-        if node["name"] == "toc":
-            node["content"] = "".join(
-                self._render("toc", entries=self.visitlist(self.toc, join_with=""))
-            )
+    def _visit_toc_entry(self, node, exclude_tags=None):
+        exclude_tags = exclude_tags or []
 
-        if node["name"] == "footnotes":
-            node["content"] = "".join(
-                self._render(
-                    "footnotes",
-                    entries=self.visitlist(self.footnote_defs, join_with=""),
-                )
-            )
+        tags_excluded = [i for i in node["header"]["tags"] if i in exclude_tags]
 
+        if len(tags_excluded) > 0:
+            # Return an empty text node
+            return nodes.TextNode(value="").asdict()
+
+        self._reducelist(node, ["children"], join_with="", exclude_tags=exclude_tags)
         return node
+
+    def _visit_command_toc(self, node):
+        exclude_tags = node["kwargs"].get("exclude_tags", [])
+        toc_node = self.toc.asdict()
+
+        self._reducelist(toc_node, ["entries"], join_with="", exclude_tags=exclude_tags)
+
+        return toc_node
+
+    def _visit_command_footnotes(self, node):
+        footnotes_node = self.footnotes.asdict()
+        self._reducelist(footnotes_node, ["entries"], join_with="")
+
+        return footnotes_node

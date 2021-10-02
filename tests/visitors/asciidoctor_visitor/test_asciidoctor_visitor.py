@@ -228,7 +228,7 @@ def test_footnote():
     p.parse()
     ast = listasdict(p.nodes)
 
-    result = visitlist(ast, footnotes=[i.asdict() for i in p.footnote_defs])
+    result = visitlist(ast, footnotes=p.footnotes)
 
     assert result == ["This is a sentencefootnote:[with a note]\n"]
 

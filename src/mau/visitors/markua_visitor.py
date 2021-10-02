@@ -180,6 +180,6 @@ class MarkuaVisitor(Visitor):
 
     def _visit_command(self, node):
         if node["name"] == "footnotes":
-            return {"content": "".join(self.visit_footnotes(self.footnotes))}
+            return {"content": "".join(self.visit_footnotes(self.footnote_defs))}
 
         return {"content": ""}

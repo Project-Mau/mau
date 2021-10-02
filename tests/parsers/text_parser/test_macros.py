@@ -333,7 +333,7 @@ def test_macro_footnote(footnote_anchors_mock):
 
     p = _test(source, expected)
 
-    assert listasdict(p.footnotes) == [
+    assert listasdict(p.footnote_defs) == [
         {
             "type": "footnote_def",
             "number": 1,
@@ -460,7 +460,7 @@ def test_parse_macro_footnote_with_other_text_around(footnote_anchors_mock):
 
     p = _test(source, expected)
 
-    assert listasdict(p.footnotes) == [
+    assert listasdict(p.footnote_defs) == [
         {
             "type": "footnote_def",
             "number": 1,
@@ -510,7 +510,7 @@ def test_parse_macro_footnote_includes_quotes(footnote_anchors_mock):
 
     p = _test(source, expected)
 
-    assert listasdict(p.footnotes) == [
+    assert listasdict(p.footnote_defs) == [
         {
             "type": "footnote_def",
             "number": 1,
@@ -560,7 +560,7 @@ def test_parse_macro_footnote_includes_round_brakets(footnote_anchors_mock):
 
     p = _test(source, expected)
 
-    assert listasdict(p.footnotes) == [
+    assert listasdict(p.footnote_defs) == [
         {
             "type": "footnote_def",
             "number": 1,

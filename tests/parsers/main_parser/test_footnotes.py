@@ -52,7 +52,7 @@ def test_macro_footnote(footnote_anchors_mock, header_anchor_mock):
 
     p = _test(source, expected)
 
-    assert listasdict(p.footnotes) == [
+    assert listasdict(p.footnote_defs) == [
         {
             "type": "footnote_def",
             "refanchor": "refXYZ",
@@ -88,7 +88,7 @@ def test_macro_footnote_inside_admonition(footnote_anchors_mock):
     )
     p.parse()
 
-    assert listasdict(p.footnotes) == [
+    assert listasdict(p.footnote_defs) == [
         {
             "type": "footnote_def",
             "refanchor": "refXYZ",

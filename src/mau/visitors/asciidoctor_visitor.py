@@ -137,7 +137,7 @@ class AsciidoctorVisitor(Visitor):
 
     def _visit_footnote_ref(self, node):
         number = node["number"]
-        footnote = [i for i in self.footnotes if i["number"] == number][0]
+        footnote = [i for i in self.footnote_defs if i["number"] == number][0]
 
         return {
             "node_types": ["footnote_ref"],

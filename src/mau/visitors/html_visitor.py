@@ -272,7 +272,7 @@ class HTMLVisitor(Visitor):
             return {"content": "".join(self.visit_toc(self.toc))}
 
         if node["name"] == "footnotes":
-            return {"content": "".join(self.visit_footnotes(self.footnotes))}
+            return {"content": "".join(self.visit_footnotes(self.footnote_defs))}
 
     def _visit_content_image(self, node):
         return {

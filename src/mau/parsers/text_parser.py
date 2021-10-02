@@ -47,7 +47,7 @@ class TextParser(BaseParser):
         self.footnotes_start_with = footnotes_start_with
 
         # These are the footnotes found in this text
-        self.footnotes = []
+        self.footnote_defs = []
 
         # These are the nodes created by the parsing.
         self.nodes = []
@@ -251,11 +251,11 @@ class TextParser(BaseParser):
         """
 
         refanchor, defanchor = footnote_anchors(text)
-        number = self.footnotes_start_with + len(self.footnotes)
+        number = self.footnotes_start_with + len(self.footnote_defs)
 
         p = TextParser().analyse(text)
 
-        self.footnotes.append(
+        self.footnote_defs.append(
             FootnoteDefNode(
                 refanchor=refanchor, defanchor=defanchor, number=number, content=p.nodes
             )

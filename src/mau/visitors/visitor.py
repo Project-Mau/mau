@@ -26,7 +26,7 @@ class Visitor:
         self.templates_directory = templates_directory
         self.config = copy.deepcopy(config) if config else {}
         self.toc = toc or []
-        self.footnotes = footnotes or []
+        self.footnote_defs = footnotes or []
 
         # This is the fallback environment for templates
         self.default_templates_env = jinja2.Environment(

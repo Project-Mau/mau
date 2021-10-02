@@ -80,7 +80,7 @@ class Mau:
         toc = [i.asdict() for i in parser.toc]
 
         # Retrieve the footnotes
-        footnotes = [i.asdict() for i in parser.footnotes]
+        footnotes = [i.asdict() for i in parser.footnote_defs]
 
         # Initialise the visitor
         # Use the parser variables so that the visitor

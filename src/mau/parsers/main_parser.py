@@ -61,7 +61,7 @@ class MainParser(BaseParser):
 
         self.variables = copy.deepcopy(variables) if variables else {}
         self.headers = []
-        self.footnotes = []
+        self.footnote_defs = []
         self.blocks = {}
         self.toc = []
 
@@ -130,13 +130,13 @@ class MainParser(BaseParser):
         text = p.nodes[0].value
 
         # Parse the text
-        p = TextParser(footnotes_start_with=len(self.footnotes) + 1).analyse(text)
+        p = TextParser(footnotes_start_with=len(self.footnote_defs) + 1).analyse(text)
 
         # Text should return a single sentence node
         result = p.nodes[0]
 
         # Store the footnotes
-        self.footnotes.extend(p.footnotes)
+        self.footnote_defs.extend(p.footnote_defs)
 
         return result
 
@@ -262,7 +262,7 @@ class MainParser(BaseParser):
         self.get_token(TokenTypes.EOL)
 
         # Titles can contain Mau code
-        p = TextParser(footnotes_start_with=len(self.footnotes) + 1).analyse(text)
+        p = TextParser(footnotes_start_with=len(self.footnote_defs) + 1).analyse(text)
         title = p.nodes[0]
 
         self._push_title(title)
@@ -405,7 +405,7 @@ class MainParser(BaseParser):
         # If the condition is satisfied go ahead and parse the content
         if match is test:
             p = MainParser(variables=self.variables).analyse("\n".join(content))
-            self.footnotes.extend(p.footnotes)
+            self.footnote_defs.extend(p.footnote_defs)
             self.nodes.extend(p.nodes)
 
     def _parse_raw_block(self, content):
@@ -559,7 +559,7 @@ class MainParser(BaseParser):
 
         # Parse the content and record footnotes
         p = MainParser(variables=self.variables).analyse("\n".join(content))
-        self.footnotes.extend(p.footnotes)
+        self.footnote_defs.extend(p.footnote_defs)
 
         self._save(
             AdmonitionNode(
@@ -611,7 +611,7 @@ class MainParser(BaseParser):
         # Parse the primary and secondary content and record footnotes
         pc = MainParser(variables=self.variables).analyse("\n".join(content))
         ps = MainParser(variables=self.variables).analyse("\n".join(secondary_content))
-        self.footnotes.extend(pc.footnotes)
+        self.footnote_defs.extend(pc.footnote_defs)
 
         self._save(
             BlockNode(

@@ -1,8 +1,8 @@
 import itertools
 
-from mau.lexers.base_lexer import Token, TokenTypes
+from mau.lexers.base_lexer import Token, TokenTypes, Literal
 from mau.lexers.text_lexer import TextLexer
-from mau.parsers.base_parser import BaseParser, Literal
+from mau.parsers.base_parser import BaseParser
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.nodes import (
     WordNode,

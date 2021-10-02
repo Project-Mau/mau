@@ -126,6 +126,9 @@ class BaseParser:
         # The parse functions available in this parser
         return []
 
+    def put_token(self, token):
+        self.tokens.insert(self.index + 1, token)
+
     def get_token(self, ttype=None, tvalue=None, check=None):
         """
         Return the next token and advances the index.
@@ -158,9 +161,6 @@ class BaseParser:
             return self._check_token(token, ttype, tvalue, check)
         except IndexError:
             return Token(TokenTypes.EOF)
-
-    def put_token(self, token):
-        self.tokens.insert(self.index + 1, token)
 
     def peek_token_is(self, ttype=None, tvalue=None, check=None):
         """

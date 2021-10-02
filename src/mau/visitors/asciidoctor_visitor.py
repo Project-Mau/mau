@@ -48,14 +48,16 @@ class AsciidoctorVisitor(Visitor):
     def _visit_class(self, node):
         classes = " ".join([f".{cls}" for cls in node["classes"]])
         node["classes"] = classes
-        super()._visit_class(node)
+        return super()._visit_class(node)
 
     def _visit_link(self, node):
         if node["text"] == node["target"]:
             node["text"] = None
+        return node
 
     def _visit_header(self, node):
         node["header"] = "=" * int(node["level"])
+        return node
 
     def _visit_admonition(self, node):
         self._reducelist(node, ["content"], join_with="")
@@ -64,9 +66,11 @@ class AsciidoctorVisitor(Visitor):
             node["class"] = node["class"].upper()
         else:
             raise ValueError(f"""Admonition {node["class"]} cannot be converted""")
+        return node
 
     def _visit_block(self, node):
         self._reducelist(node, ["content"], join_with="\n")
+        return node
 
     def _visit_source(self, node):
         src = [i["value"] for i in node["code"]]
@@ -90,9 +94,11 @@ class AsciidoctorVisitor(Visitor):
         node["code"] = src
         node["callouts"] = callouts_list
         self._reduce(node, ["title"])
+        return node
 
     def _visit_document(self, node):
         self._reducelist(node, ["content"], join_with="\n")
+        return node
 
     def _visit_list_item(self, node, ordered=False):
         mark = "*"
@@ -105,11 +111,13 @@ class AsciidoctorVisitor(Visitor):
 
         self._reduce(node, ["content"])
         node["prefix"] = prefix
+        return node
 
     def _visit_list(self, node, ordered=False):
         node["items"] = "".join(
             [self.visit(i, ordered=node["ordered"]) for i in node["items"]]
         )
+        return node
 
     def _visit_footnote_ref(self, node):
         number = node["number"]
@@ -117,11 +125,14 @@ class AsciidoctorVisitor(Visitor):
 
         node["node_types"] = (["footnote_ref"],)
         self._reducelist(node, ["content"], join_with="")
+        return node
 
     def _visit_content_image(self, node):
         node["node_types"] = ["image"]
         node["asciidoctor_classes"] = node["kwargs"].get("asciidoctor_classes", None)
         self._reduce(node, ["title"])
+        return node
 
     def _visit_image(self, node):
         node["node_types"] = ["inline_image"]
+        return node

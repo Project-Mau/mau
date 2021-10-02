@@ -10,6 +10,10 @@ class TemplateNotFound(ValueError):
     pass
 
 
+def return_node(node, *args, **kwargs):
+    return node
+
+
 class Visitor:
     _template_extension = ".txt"
     _environment_options = {}
@@ -92,10 +96,17 @@ class Visitor:
         if node is None:
             return ""
 
+        if node["type"] == "command":
+            method_name = f'_visit_command_{node["name"]}'
+        else:
+            method_name = f'_visit_{node["type"]}'
+
         try:
-            getattr(self, f'_visit_{node["type"]}')(node, *args, **kwargs)
+            method = getattr(self, method_name)
         except AttributeError:
-            pass
+            method = return_node
+
+        node = method(node, *args, **kwargs)
 
         node_types = []
         node_types.extend(node.pop("node_types", []))
@@ -109,8 +120,8 @@ class Visitor:
 
         raise ValueError(f"Cannot find any suitable template among {node_types}")
 
-    def visitlist(self, nodes, join_with=None):
-        visited_nodes = [self.visit(i) for i in nodes]
+    def visitlist(self, nodes, join_with=None, *args, **kwargs):
+        visited_nodes = [self.visit(i, *args, **kwargs) for i in nodes]
 
         if join_with is not None:
             return join_with.join(visited_nodes)
@@ -120,51 +131,67 @@ class Visitor:
     def _visit_block(self, node):
         self._reducelist(node, ["content"], join_with="")
         self._reduce(node, ["title"])
+        return node
 
     def _visit_class(self, node):
         self._reduce(node, ["content"])
+        return node
 
     def _visit_container_node(self, node):
         node["node_types"] = ["container"]
         node["content"] = "".join(self.visitlist(node["content"]))
+        return node
 
     def _visit_content_image(self, node):
         node["node_types"] = ["image"]
         self._reduce(node, ["title"])
+        return node
 
     def _visit_document(self, node):
         self._reducelist(node, ["content"], join_with="")
+        return node
 
     def _visit_footnote_def(self, node):
         self._reducelist(node, ["content"], join_with="")
+        return node
 
     def _visit_image(self, node):
         node["node_types"] = ["inline_image"]
+        return node
 
     def _visit_list(self, node):
         self._reducelist(node, ["items"], join_with="")
+        return node
 
     def _visit_list_item(self, node):
         self._reduce(node, ["content"])
+        return node
 
     def _visit_paragraph(self, node):
         self._reduce(node, ["content"])
+        return node
 
     def _visit_quote(self, node):
         node["content"] = self.visitlist(node["content"], join_with="")
+        return node
 
     def _visit_raw(self, node):
         node["content"] = self.visitlist(node["content"], join_with="\n")
+        return node
 
     def _visit_sentence(self, node):
         node["content"] = "".join(self.visitlist(node["content"]))
+        return node
 
     def _visit_style(self, node):
         node["node_types"] = [node["value"]]
         self._reduce(node, ["content"])
+        return node
 
     def _visit_toc_entry(self, node):
         self._reducelist(node, ["children"], join_with="")
+        return node
 
     def _visit_verbatim(self, node):
         node["content"] = node["value"]
+        return node

@@ -115,7 +115,7 @@ class HTMLVisitor(Visitor):
 
     def _visit_class(self, node):
         node["classes"] = " ".join(node["classes"])
-        super()._visit_class(node)
+        return super()._visit_class(node)
 
     def _visit_admonition(self, node):
         node["node_types"] = [
@@ -123,6 +123,7 @@ class HTMLVisitor(Visitor):
             "admonition",
         ]
         self._reducelist(node, ["content"], join_with="")
+        return node
 
     def _visit_source(self, node):
         # The Pygments lexer for the given language
@@ -191,6 +192,8 @@ class HTMLVisitor(Visitor):
         node["callouts"] = callouts_list
         self._reduce(node, ["title"])
 
+        return node
+
     def _visit_command(self, node):
         if node["name"] == "toc":
             node["content"] = "".join(
@@ -204,3 +207,5 @@ class HTMLVisitor(Visitor):
                     entries=self.visitlist(self.footnote_defs, join_with=""),
                 )
             )
+
+        return node

@@ -95,12 +95,6 @@ def test_get_token_sets_current_token():
     assert p.current_token == EOF
 
 
-def test_get_token_value():
-    p = init_parser("\n")
-
-    assert p.get_token_value() is None
-
-
 def test_get_token_accepts_type():
     p = init_parser("\n")
 

@@ -56,7 +56,7 @@ class TextParser(BaseParser):
         """
         Parse a single word.
         """
-        return WordNode(self.get_token_value())
+        return WordNode(self.get_token().value)
 
     def parse_style(self):
         """
@@ -64,7 +64,7 @@ class TextParser(BaseParser):
         """
 
         # Get the style marker
-        style = self.get_token_value(TokenTypes.LITERAL, check=lambda x: x in "*_")
+        style = self.get_token(TokenTypes.LITERAL, check=lambda x: x in "*_").value
 
         # Get everything until the next marker
         content = self.parse_sentence(stop_tokens={Token(TokenTypes.LITERAL, style)})
@@ -82,7 +82,7 @@ class TextParser(BaseParser):
         # Drop the backslash
         self.get_token(TokenTypes.LITERAL, "\\")
 
-        return WordNode(self.get_token_value())
+        return WordNode(self.get_token().value)
 
     def parse_styled_text(self, stop_tokens=None):
         """
@@ -266,7 +266,7 @@ class TextParser(BaseParser):
 
     def parse_macro(self):
         self.get_token(TokenTypes.LITERAL, "[")
-        macro_name = self.get_token_value(TokenTypes.TEXT)
+        macro_name = self.get_token(TokenTypes.TEXT).value
         self.get_token(TokenTypes.LITERAL, "]")
         self.get_token(TokenTypes.LITERAL, "(")
 
@@ -288,10 +288,10 @@ class TextParser(BaseParser):
         return MacroNode(macro_name, arguments)
 
     def parse_link(self):
-        link = self.get_token_value(
+        link = self.get_token(
             TokenTypes.TEXT,
             check=lambda x: x.startswith("http://") or x.startswith("https://"),
-        )
+        ).value
 
         # Check the last character.
         # Common punctuation shouldn't be part of the link

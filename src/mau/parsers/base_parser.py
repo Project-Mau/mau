@@ -140,13 +140,6 @@ class BaseParser:
         self.index += 1
         return self._check_token(self.current_token, ttype, tvalue, check)
 
-    def get_token_value(self, ttype=None, tvalue=None, check=None):
-        """
-        A shortcut to get the next token and return the value
-        """
-
-        return self.get_token(ttype, tvalue, check).value
-
     def check_current_token(self, ttype, tvalue=None, check=None):
         """
         Just check the type and value of the current token without

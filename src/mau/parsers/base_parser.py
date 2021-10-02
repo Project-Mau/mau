@@ -171,14 +171,14 @@ class BaseParser:
     def put_token(self, token):
         self.tokens.insert(self.index + 1, token)
 
-    def peek_token_is(self, *args, **kwargs):
+    def peek_token_is(self, ttype=None, tvalue=None, check=None):
         """
         Peek a token and check it.
         This works like peek_token, but returns a boolean
         instead of raising an exception.
         """
         try:
-            self.peek_token(*args, **kwargs)
+            self.peek_token(ttype, tvalue, check)
             return True
         except TokenError:
             return False

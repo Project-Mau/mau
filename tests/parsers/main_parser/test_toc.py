@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from mau.parsers import nodes
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import listasdict, init_parser_factory, parser_test_factory, dedent
@@ -27,53 +28,86 @@ def test_create_toc(header_anchor_mock):
     )
     p.parse()
 
-    assert listasdict(p.toc) == [
-        {
-            "type": "toc_entry",
-            "level": 1,
-            "text": "Header 1",
-            "anchor": "Header 1-XXXXXX",
-            "children": [
-                {
-                    "type": "toc_entry",
-                    "level": 2,
-                    "text": "Header 1.1",
-                    "anchor": "Header 1.1-XXXXXX",
-                    "children": [],
+    assert p.toc.asdict() == {
+        "type": "toc",
+        "entries": [
+            {
+                "type": "toc_entry",
+                "header": {
+                    "level": 1,
+                    "value": "Header 1",
+                    "anchor": "Header 1-XXXXXX",
+                    "tags": [],
+                    "kwargs": {},
+                    "type": "header",
                 },
-                {
-                    "type": "toc_entry",
-                    "level": 2,
-                    "text": "Header 1.2",
-                    "anchor": "Header 1.2-XXXXXX",
-                    "children": [],
-                },
-            ],
-        },
-        {
-            "type": "toc_entry",
-            "level": 1,
-            "text": "Header 2",
-            "anchor": "Header 2-XXXXXX",
-            "children": [
-                {
-                    "type": "toc_entry",
-                    "level": 2,
-                    "text": "Header 2.1",
-                    "anchor": "Header 2.1-XXXXXX",
-                    "children": [
-                        {
-                            "type": "toc_entry",
-                            "level": 3,
-                            "text": "Header 2.1.1",
-                            "anchor": "Header 2.1.1-XXXXXX",
-                            "children": [],
+                "children": [
+                    {
+                        "type": "toc_entry",
+                        "header": {
+                            "level": 2,
+                            "value": "Header 1.1",
+                            "anchor": "Header 1.1-XXXXXX",
+                            "tags": [],
+                            "kwargs": {},
+                            "type": "header",
                         },
-                    ],
+                        "children": [],
+                    },
+                    {
+                        "type": "toc_entry",
+                        "header": {
+                            "level": 2,
+                            "value": "Header 1.2",
+                            "anchor": "Header 1.2-XXXXXX",
+                            "tags": [],
+                            "kwargs": {},
+                            "type": "header",
+                        },
+                        "children": [],
+                    },
+                ],
+            },
+            {
+                "type": "toc_entry",
+                "header": {
+                    "level": 1,
+                    "value": "Header 2",
+                    "anchor": "Header 2-XXXXXX",
+                    "tags": [],
+                    "kwargs": {},
+                    "type": "header",
                 },
-            ],
-        },
-    ]
+                "children": [
+                    {
+                        "type": "toc_entry",
+                        "header": {
+                            "level": 2,
+                            "value": "Header 2.1",
+                            "anchor": "Header 2.1-XXXXXX",
+                            "tags": [],
+                            "kwargs": {},
+                            "type": "header",
+                        },
+                        "children": [
+                            {
+                                "type": "toc_entry",
+                                "header": {
+                                    "level": 3,
+                                    "value": "Header 2.1.1",
+                                    "anchor": "Header 2.1.1-XXXXXX",
+                                    "tags": [],
+                                    "kwargs": {},
+                                    "type": "header",
+                                },
+                                "children": [],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    }
 
 
 @patch("mau.parsers.main_parser.header_anchor")
@@ -94,22 +128,35 @@ def test_create_toc_ignore_headers(header_anchor_mock):
     )
     p.parse()
 
-    assert listasdict(p.toc) == [
-        {
-            "type": "toc_entry",
-            "level": 1,
-            "text": "Header 1",
-            "anchor": "Header 1-XXXXXX",
-            "children": [],
-        },
-        {
-            "type": "toc_entry",
-            "level": 1,
-            "text": "Header 2",
-            "anchor": "Header 2-XXXXXX",
-            "children": [],
-        },
-    ]
+    assert p.toc.asdict() == {
+        "type": "toc",
+        "entries": [
+            {
+                "type": "toc_entry",
+                "header": {
+                    "level": 1,
+                    "value": "Header 1",
+                    "anchor": "Header 1-XXXXXX",
+                    "tags": [],
+                    "kwargs": {},
+                    "type": "header",
+                },
+                "children": [],
+            },
+            {
+                "type": "toc_entry",
+                "header": {
+                    "level": 1,
+                    "value": "Header 2",
+                    "anchor": "Header 2-XXXXXX",
+                    "tags": [],
+                    "kwargs": {},
+                    "type": "header",
+                },
+                "children": [],
+            },
+        ],
+    }
 
 
 @patch("mau.parsers.main_parser.header_anchor")
@@ -127,30 +174,48 @@ def test_create_toc_orphan_nodes(header_anchor_mock):
     )
     p.parse()
 
-    assert [i.asdict() for i in p.toc] == [
-        {
-            "type": "toc_entry",
-            "level": 1,
-            "text": "Header 1",
-            "anchor": "Header 1-XXXXXX",
-            "children": [
-                {
-                    "type": "toc_entry",
-                    "level": 3,
-                    "text": "Header 1.1.1",
-                    "anchor": "Header 1.1.1-XXXXXX",
-                    "children": [],
+    assert p.toc.asdict() == {
+        "type": "toc",
+        "entries": [
+            {
+                "type": "toc_entry",
+                "header": {
+                    "level": 1,
+                    "value": "Header 1",
+                    "anchor": "Header 1-XXXXXX",
+                    "tags": [],
+                    "kwargs": {},
+                    "type": "header",
                 },
-                {
-                    "type": "toc_entry",
-                    "level": 2,
-                    "text": "Header 1.2",
-                    "anchor": "Header 1.2-XXXXXX",
-                    "children": [],
-                },
-            ],
-        },
-    ]
+                "children": [
+                    {
+                        "type": "toc_entry",
+                        "header": {
+                            "level": 3,
+                            "value": "Header 1.1.1",
+                            "anchor": "Header 1.1.1-XXXXXX",
+                            "tags": [],
+                            "kwargs": {},
+                            "type": "header",
+                        },
+                        "children": [],
+                    },
+                    {
+                        "type": "toc_entry",
+                        "header": {
+                            "level": 2,
+                            "value": "Header 1.2",
+                            "anchor": "Header 1.2-XXXXXX",
+                            "tags": [],
+                            "kwargs": {},
+                            "type": "header",
+                        },
+                        "children": [],
+                    },
+                ],
+            },
+        ],
+    }
 
 
 @patch("mau.parsers.main_parser.header_anchor")
@@ -174,4 +239,7 @@ def test_parse_header_not_in_toc(header_anchor_mock):
 
     p = _test(source, expected)
 
-    assert listasdict(p.toc) == []
+    assert p.toc.asdict() == {
+        "type": "toc",
+        "entries": [],
+    }

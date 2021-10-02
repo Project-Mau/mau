@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from mau.parsers import nodes
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_test_factory
@@ -200,12 +201,12 @@ def test_parse_collect_headers(header_anchor_mock):
     p = _test(source, expected)
 
     assert p.headers == [
-        ("Header 1", 1, "Header 1-XXXXXX"),
-        ("Header 1.1", 2, "Header 1.1-XXXXXX"),
-        ("Header 1.2", 2, "Header 1.2-XXXXXX"),
-        ("Header 2", 1, "Header 2-XXXXXX"),
-        ("Header 2.1", 2, "Header 2.1-XXXXXX"),
-        ("Header 2.1.1", 3, "Header 2.1.1-XXXXXX"),
+        nodes.HeaderNode("Header 1", 1, "Header 1-XXXXXX"),
+        nodes.HeaderNode("Header 1.1", 2, "Header 1.1-XXXXXX"),
+        nodes.HeaderNode("Header 1.2", 2, "Header 1.2-XXXXXX"),
+        nodes.HeaderNode("Header 2", 1, "Header 2-XXXXXX"),
+        nodes.HeaderNode("Header 2.1", 2, "Header 2.1-XXXXXX"),
+        nodes.HeaderNode("Header 2.1.1", 3, "Header 2.1.1-XXXXXX"),
     ]
 
 
@@ -341,6 +342,107 @@ def test_parse_headers_not_in_toc(header_anchor_mock):
     p = _test(source, expected)
 
     assert p.headers == [
-        ("Header 1", 1, "Header 1-XXXXXX"),
-        ("Header 1.1", 2, "Header 1.1-XXXXXX"),
+        nodes.HeaderNode("Header 1", 1, "Header 1-XXXXXX"),
+        nodes.HeaderNode("Header 1.1", 2, "Header 1.1-XXXXXX"),
+    ]
+
+
+@patch("mau.parsers.main_parser.header_anchor")
+def test_parse_headers_not_in_toc_with_children(header_anchor_mock):
+    header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
+
+    source = """
+    = Header 1
+    == Header 1.1
+    ==! Header 1.2
+    === Header 1.2.1
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "kwargs": {},
+            "tags": [],
+            "value": "Header 1",
+            "level": 1,
+            "anchor": "Header 1-XXXXXX",
+        },
+        {
+            "type": "header",
+            "kwargs": {},
+            "tags": [],
+            "value": "Header 1.1",
+            "level": 2,
+            "anchor": "Header 1.1-XXXXXX",
+        },
+        {
+            "type": "header",
+            "kwargs": {},
+            "tags": [],
+            "value": "Header 1.2",
+            "level": 2,
+            "anchor": "Header 1.2-XXXXXX",
+        },
+        {
+            "type": "header",
+            "kwargs": {},
+            "tags": [],
+            "value": "Header 1.2.1",
+            "level": 3,
+            "anchor": "Header 1.2.1-XXXXXX",
+        },
+    ]
+
+    p = _test(source, expected)
+
+    assert p.headers == [
+        nodes.HeaderNode("Header 1", 1, "Header 1-XXXXXX"),
+        nodes.HeaderNode("Header 1.1", 2, "Header 1.1-XXXXXX"),
+        nodes.HeaderNode("Header 1.2.1", 3, "Header 1.2.1-XXXXXX"),
+    ]
+
+
+def test_block_headers_not_added_to_global_toc():
+    source = """
+    = Global header
+
+    [someblock]
+    ----
+    = Block header
+    ----
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "kwargs": {},
+            "tags": [],
+            "value": "Global header",
+            "level": 1,
+            "anchor": "global-header",
+        },
+        {
+            "args": [],
+            "blocktype": "someblock",
+            "content": [
+                {
+                    "anchor": "block-header",
+                    "kwargs": {},
+                    "level": 1,
+                    "tags": [],
+                    "type": "header",
+                    "value": "Block header",
+                },
+            ],
+            "kwargs": {},
+            "secondary_content": [],
+            "title": None,
+            "type": "block",
+        },
+    ]
+
+    p = _test(source, expected)
+
+    assert p.headers == [
+        nodes.HeaderNode("Global header", 1, "global-header"),
     ]

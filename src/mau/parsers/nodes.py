@@ -18,6 +18,9 @@ class Node:
     def asdict(self):
         return {"type": self.node_type}  # pragma: no cover
 
+    def __eq__(self, other):
+        return self.asdict() == other.asdict()
+
 
 #############################################################
 # Inline elements
@@ -609,6 +612,24 @@ class FootnoteDefNode(Node):
 
 
 class TocNode(Node):
+    """A Table of Contents.
+
+    This node contains the entries of the Table of Contents.
+
+    Arguments:
+        entries: a list of TocEntryNode objects
+    """
+
+    node_type = "toc"
+
+    def __init__(self, entries=None):
+        self.entries = entries or []
+
+    def asdict(self):
+        return {"type": self.node_type, "entries": [i.asdict() for i in self.entries]}
+
+
+class TocEntryNode(Node):
     """An entry of the Table of Contents.
 
     This node contains an entry of the Table of Contents.
@@ -622,18 +643,14 @@ class TocNode(Node):
 
     node_type = "toc_entry"
 
-    def __init__(self, level, text, anchor):
-        self.level = level
-        self.text = text
-        self.anchor = anchor
-        self.children = []
+    def __init__(self, header_node, children=None):
+        self.header = header_node
+        self.children = children or []
 
     def asdict(self):
         return {
             "type": self.node_type,
-            "level": self.level,
-            "text": self.text,
-            "anchor": self.anchor,
+            "header": self.header.asdict(),
             "children": [i.asdict() for i in self.children],
         }
 

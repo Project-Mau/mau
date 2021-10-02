@@ -23,6 +23,7 @@ from mau.parsers.nodes import (
     ListItemNode,
     ParagraphNode,
     TocNode,
+    TocEntryNode,
 )
 
 
@@ -63,7 +64,7 @@ class MainParser(BaseParser):
         self.headers = []
         self.footnote_defs = []
         self.blocks = {}
-        self.toc = []
+        self.toc = None
 
         # This is a buffer for a block title
         self._title = None
@@ -320,13 +321,17 @@ class MainParser(BaseParser):
 
         # Generate the anchor and append it to the TOC
         anchor = self.header_anchor(text, level)
-        if in_toc:
-            self.headers.append((text, level, anchor))
 
         # Consume the attributes
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
-        self._save(HeaderNode(value=text, level=level, anchor=anchor, kwargs=kwargs))
+        # Generate the header node
+        header_node = HeaderNode(value=text, level=level, anchor=anchor, kwargs=kwargs)
+
+        if in_toc:
+            self.headers.append(header_node)
+
+        self._save(header_node)
 
     @parser
     def _parse_block(self):
@@ -832,11 +837,10 @@ class MainParser(BaseParser):
         nodes = []
         latest_by_level = {}
 
-        for i in self.headers:
-            text, level, anchor = i
-
+        for header_node in self.headers:
             # This is the current node
-            node = TocNode(level, text, anchor)
+            node = TocEntryNode(header_node)
+            level = header_node.level
 
             # This collects the latest node added with a given level
             latest_by_level[level] = node
@@ -855,7 +859,7 @@ class MainParser(BaseParser):
                 # Get the nearest one and append to that
                 children[-1].append(node)
 
-        return nodes
+        return TocNode(entries=nodes)
 
     def parse(self):
         super().parse()

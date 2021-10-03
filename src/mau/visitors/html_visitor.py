@@ -28,6 +28,7 @@ DEFAULT_TEMPLATES = {
     ),
     "callout.html": '<span class="callout">{{ name }}</span>',
     "class.html": '<span class="{{ classes }}">{{ content }}</span>',
+    "code.html": "{{ content }}",
     "command.html": "{{ content }}",
     "container.html": "{{ content }}",
     "document.html": "<html><head></head><body>{{ content }}</body></html>",
@@ -68,7 +69,6 @@ DEFAULT_TEMPLATES = {
         "<blockquote>" "{{ content }}" "<cite>{{ attribution }}</cite>" "</blockquote>"
     ),
     "raw.html": "{{ content }}",
-    "code.html": "{{ content }}",
     "sentence.html": "{{ content }}",
     "source.html": (
         '<div class="code">'
@@ -206,7 +206,7 @@ class HTMLVisitor(Visitor):
         self._reducelist(node, ["content"], join_with="\n")
 
         if engine == "raw":
-            return node
+            pass
         elif engine == "mau":
             p = MainParser().analyse(node["content"])
             visitor = self.__class__(
@@ -217,9 +217,11 @@ class HTMLVisitor(Visitor):
                 footnotes=p.footnotes,
             )
             node["content"] = visitor.visit(nodes.ContainerNode(p.nodes).asdict())
-            return node
         else:
             raise EngineError(f"Engine {engine} is not available")
+
+        node["node_types"] = [f'code-{node["engine"]}']
+        return node
 
     def _visit_toc_entry(self, node, exclude_tags=None):
         exclude_tags = exclude_tags or []

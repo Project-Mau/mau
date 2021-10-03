@@ -129,6 +129,7 @@ class Visitor:
         return visited_nodes
 
     def _visit_block(self, node):
+        node["node_types"] = [f'block-{node["blocktype"]}']
         self._reducelist(node, ["content"], join_with="")
         self._reduce(node, ["title"])
         return node

@@ -573,7 +573,7 @@ class MainParser(BaseParser):
     def _parse_admonition_block(self, content):
         # Parse an admonition in the form
         #
-        # [class, icon, label]
+        # [admonition, class, icon, label]
         # ----
         # content
         # ----

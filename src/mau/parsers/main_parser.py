@@ -339,6 +339,7 @@ class MainParser(BaseParser):
     def _parse_block(self):
         # Parse a block in the form
         #
+        # [block_type]
         # ----
         # Content
         # ----

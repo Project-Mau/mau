@@ -252,6 +252,51 @@ def test_negative_conditional_block():
     _test(source, expected)
 
 
+def test_conditional_block_appends_nodes_in_the_correct_position():
+    source = """
+    :render:yes
+    [if,render,yes]
+    ----
+    This is a paragraph.
+    ----
+
+    This is another paragraph.
+    """
+
+    expected = [
+        {
+            "type": "paragraph",
+            "args": [],
+            "kwargs": {},
+            "content": {
+                "content": [
+                    {
+                        "type": "text",
+                        "value": "This is a paragraph.",
+                    },
+                ],
+                "type": "sentence",
+            },
+        },
+        {
+            "type": "paragraph",
+            "args": [],
+            "kwargs": {},
+            "content": {
+                "content": [
+                    {
+                        "type": "text",
+                        "value": "This is another paragraph.",
+                    },
+                ],
+                "type": "sentence",
+            },
+        },
+    ]
+
+    _test(source, expected)
+
+
 def test_raw_block():
     source = """
     [raw]

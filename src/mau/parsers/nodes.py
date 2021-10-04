@@ -399,6 +399,8 @@ class BlockNode(Node):
         content: content of the block
         secondary_content: secondary content of this block
         title: title of this block
+        classes: a comma-separated list of classes
+        engine: the engine used to render this block
         args: unnamed arguments
         kwargs: named arguments
     """
@@ -406,12 +408,22 @@ class BlockNode(Node):
     node_type = "block"
 
     def __init__(
-        self, blocktype, content, secondary_content, title=None, args=None, kwargs=None
+        self,
+        blocktype,
+        content,
+        secondary_content,
+        title=None,
+        classes=None,
+        engine=None,
+        args=None,
+        kwargs=None,
     ):
         self.blocktype = blocktype
         self.content = content
         self.secondary_content = secondary_content
         self.title = title
+        self.classes = classes or []
+        self.engine = engine
         self.args = args or []
         self.kwargs = kwargs or {}
 
@@ -421,6 +433,8 @@ class BlockNode(Node):
             "blocktype": self.blocktype,
             "content": [i.asdict() for i in self.content],
             "secondary_content": [i.asdict() for i in self.secondary_content],
+            "classes": self.classes,
+            "engine": self.engine,
             "args": self.args,
             "kwargs": self.kwargs,
             "title": self.title.asdict() if self.title else None,

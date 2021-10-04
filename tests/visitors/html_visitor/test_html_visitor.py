@@ -215,16 +215,7 @@ def test_block(header_anchor_mock):
     )
 
     expected = [
-        remove_indentation(
-            """
-            <div class="sometype">
-              <div class="content">
-                <h1 id="XXXXXX">A block</h1>
-                <p>This contains headers, paragraphs and blocks</p>
-              </div>
-            </div>
-            """
-        )
+        """<div class="sometype"><div class="content"><h1 id="XXXXXX">A block</h1>\n<p>This contains headers, paragraphs and blocks</p></div></div>"""
     ]
 
     _test(source, expected)
@@ -273,17 +264,7 @@ def test_basic_block_title(header_anchor_mock):
     )
 
     expected = [
-        remove_indentation(
-            """
-            <div class="sometype">
-              <div class="title">Title</div>
-              <div class="content">
-                <h1 id="XXXXXX">A block</h1>
-                <p>This contains headers, paragraphs and blocks</p>
-              </div>
-            </div>
-            """
-        )
+        """<div class="sometype"><div class="title">Title</div><div class="content"><h1 id="XXXXXX">A block</h1>\n<p>This contains headers, paragraphs and blocks</p></div></div>"""
     ]
 
     _test(source, expected)
@@ -497,10 +478,10 @@ def test_macro():
     _test(source, expected)
 
 
-def test_block_code_default():
+def test_block_engine_raw():
     source = dedent(
         """
-        [code]
+        [block, engine=raw]
         ----
         <div class="someclass">
           <p>This is HTML</>
@@ -509,17 +490,19 @@ def test_block_code_default():
         """
     )
 
-    expected = ["""<div class="someclass">\n  <p>This is HTML</>\n</div>"""]
+    expected = [
+        """<div class="block"><div class="content"><div class="someclass">\n  <p>This is HTML</>\n</div></div></div>"""
+    ]
 
     _test(source, expected)
 
 
-def test_block_code_mau():
+def test_block_engine_mau():
     source = dedent(
         """
         = Header out
 
-        [code, engine=mau]
+        [block, engine=mau]
         ----
         = Header in
 
@@ -528,20 +511,37 @@ def test_block_code_mau():
         """
     )
 
-    expected = [
+    parser = init_parser(source)
+    parser.parse()
+
+    result = visitlist([node.asdict() for node in parser.nodes], toc=parser.toc)
+
+    assert result == [
         '<h1 id="header-out">Header out</h1>',
-        remove_indentation(
-            """
-            <h1 id="header-in">Header in</h1>
-            <div>
-              <ul>
-                <li>
-                  <a href="#header-in">Header in</a>
-                </li>
-              </ul>
-            </div>
-            """
-        ),
+        '<div class="block"><div class="content"><h1 id="header-in">Header in</h1>\n<div><ul><li><a href="#header-out">Header out</a></li><li><a href="#header-in">Header in</a></li></ul></div></div></div>',
     ]
 
-    _test(source, expected)
+
+def test_block_engine_mau_embedded():
+    source = dedent(
+        """
+        = Header out
+
+        [block, engine=mau-embedded]
+        ----
+        = Header in
+
+        ::toc:
+        ----
+        """
+    )
+
+    parser = init_parser(source)
+    parser.parse()
+
+    result = visitlist([node.asdict() for node in parser.nodes], toc=parser.toc)
+
+    assert result == [
+        '<h1 id="header-out">Header out</h1>',
+        '<div class="block"><div class="content"><h1 id="header-in">Header in</h1><div><ul><li><a href="#header-in">Header in</a></li></ul></div></div></div>',
+    ]

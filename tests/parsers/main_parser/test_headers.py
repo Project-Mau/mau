@@ -402,7 +402,7 @@ def test_parse_headers_not_in_toc_with_children(header_anchor_mock):
     ]
 
 
-def test_block_headers_not_added_to_global_toc():
+def test_block_headers_added_to_global_toc():
     source = """
     = Global header
 
@@ -434,6 +434,8 @@ def test_block_headers_not_added_to_global_toc():
                     "value": "Block header",
                 },
             ],
+            "classes": [],
+            "engine": "mau",
             "kwargs": {},
             "secondary_content": [],
             "title": None,
@@ -445,4 +447,5 @@ def test_block_headers_not_added_to_global_toc():
 
     assert p.headers == [
         nodes.HeaderNode("Global header", 1, "global-header"),
+        nodes.HeaderNode("Block header", 1, "block-header"),
     ]

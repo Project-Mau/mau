@@ -3,7 +3,6 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import get_formatter_by_name
 
 from mau.parsers import nodes
-from mau.parsers.main_parser import MainParser
 from mau.visitors.visitor import Visitor
 
 
@@ -28,7 +27,6 @@ DEFAULT_TEMPLATES = {
     ),
     "callout.html": '<span class="callout">{{ name }}</span>',
     "class.html": '<span class="{{ classes }}">{{ content }}</span>',
-    "code.html": "{{ content }}",
     "command.html": "{{ content }}",
     "container.html": "{{ content }}",
     "document.html": "<html><head></head><body>{{ content }}</body></html>",
@@ -197,30 +195,6 @@ class HTMLVisitor(Visitor):
         node["callouts"] = callouts_list
         self._reduce(node, ["title"])
 
-        return node
-
-    def _visit_code(self, node):
-        # The engine for the code
-        engine = node["engine"]
-
-        self._reducelist(node, ["content"], join_with="\n")
-
-        if engine == "raw":
-            pass
-        elif engine == "mau":
-            p = MainParser().analyse(node["content"])
-            visitor = self.__class__(
-                default_templates=self.default_templates,
-                templates_directory=self.templates_directory,
-                config=p.variables,
-                toc=p.toc,
-                footnotes=p.footnotes,
-            )
-            node["content"] = visitor.visit(nodes.ContainerNode(p.nodes).asdict())
-        else:
-            raise EngineError(f"Engine {engine} is not available")
-
-        node["node_types"] = [f'code-{node["engine"]}']
         return node
 
     def _visit_toc_entry(self, node, exclude_tags=None):

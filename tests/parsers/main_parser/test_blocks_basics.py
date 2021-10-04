@@ -1,6 +1,7 @@
 import pytest
 
-from mau.parsers.main_parser import MainParser, ParseError
+from mau.parsers.main_parser import MainParser, ParseError, EngineError
+from mau.parsers.preprocess_variables_parser import PreprocessError
 
 from tests.helpers import init_parser_factory, parser_test_factory
 
@@ -22,6 +23,8 @@ def test_parse_block_with_empty_body():
             "content": [],
             "secondary_content": [],
             "title": None,
+            "classes": [],
+            "engine": "mau",
             "args": [],
             "kwargs": {},
         },
@@ -59,6 +62,8 @@ def test_parse_block_content():
             ],
             "secondary_content": [],
             "title": None,
+            "classes": [],
+            "engine": "mau",
             "args": [],
             "kwargs": {},
         },
@@ -97,6 +102,8 @@ def test_parse_block_content_variables():
             ],
             "secondary_content": [],
             "title": None,
+            "classes": [],
+            "engine": "mau",
             "args": [],
             "kwargs": {},
         },
@@ -135,6 +142,8 @@ def test_parse_block_content_external_variables():
             ],
             "secondary_content": [],
             "title": None,
+            "classes": [],
+            "engine": "mau",
             "args": [],
             "kwargs": {},
         },
@@ -165,6 +174,8 @@ def test_parse_block_secondary_content():
             "type": "block",
             "title": None,
             "blocktype": None,
+            "classes": [],
+            "engine": "mau",
             "args": [],
             "kwargs": {},
             "content": [],
@@ -217,6 +228,8 @@ def test_parse_block_inside_block():
             "type": "block",
             "title": None,
             "blocktype": None,
+            "classes": [],
+            "engine": "mau",
             "args": [],
             "kwargs": {},
             "secondary_content": [],
@@ -227,6 +240,8 @@ def test_parse_block_inside_block():
                     "title": None,
                     "content": [],
                     "secondary_content": [],
+                    "classes": [],
+                    "engine": "mau",
                     "args": [],
                     "kwargs": {},
                 },
@@ -255,6 +270,8 @@ def test_attributes_block():
             "blocktype": "blocktype",
             "kwargs": {"myattr1": "value1"},
             "secondary_content": [],
+            "classes": [],
+            "engine": "mau",
             "title": None,
             "content": [
                 {
@@ -312,6 +329,8 @@ def test_attributes_can_contain_variables():
             "blocktype": "blocktype",
             "kwargs": {"myattr1": "42"},
             "secondary_content": [],
+            "classes": [],
+            "engine": "mau",
             "title": None,
             "content": [
                 {
@@ -367,6 +386,8 @@ def test_parse_block_title_and_attributes():
                 "content": [{"type": "text", "value": "Just a title"}],
                 "type": "sentence",
             },
+            "classes": [],
+            "engine": "mau",
             "args": ["attribute1", "attribute2"],
             "kwargs": {},
         },
@@ -397,6 +418,8 @@ def test_parse_block_title_and_attributes_are_reset():
                 "content": [{"type": "text", "value": "Just a title"}],
                 "type": "sentence",
             },
+            "classes": [],
+            "engine": "mau",
             "args": ["attribute1", "attribute2"],
             "kwargs": {},
         },
@@ -406,6 +429,141 @@ def test_parse_block_title_and_attributes_are_reset():
             "content": [],
             "secondary_content": [],
             "title": None,
+            "classes": [],
+            "engine": "mau",
+            "args": [],
+            "kwargs": {},
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_classes_single_class():
+    source = """
+    [blocktype,classes=cls1]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {},
+            "secondary_content": [],
+            "classes": ["cls1"],
+            "engine": "mau",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_classes_multiple_classes():
+    source = """
+    [blocktype,classes="cls1,cls2"]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {},
+            "secondary_content": [],
+            "classes": ["cls1", "cls2"],
+            "engine": "mau",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_engine():
+    source = """
+    [blocktype,engine=someengine]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "someengine",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    with pytest.raises(EngineError):
+        _test(source, expected)
+
+
+def test_block_embedded_mau_has_no_external_variables():
+    source = """
+    :answer:42
+    [block, engine=mau-embedded]
+    ----
+    The answer is {answer}.
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "blocktype": "block",
+            "content": [{"type": "text", "value": "The answer is {answer}."}],
+            "secondary_content": [],
+            "title": None,
+            "classes": [],
+            "engine": "mau-embedded",
+            "args": [],
+            "kwargs": {},
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_raw_engine():
+    source = """
+    [block, engine=raw]
+    ----
+    Raw content
+    on multiple lines
+    ----
+    Secondary content
+    on multiple lines too
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "blocktype": "block",
+            "content": [
+                {"type": "text", "value": "Raw content"},
+                {"type": "text", "value": "on multiple lines"},
+            ],
+            "secondary_content": [
+                {"type": "text", "value": "Secondary content"},
+                {"type": "text", "value": "on multiple lines too"},
+            ],
+            "title": None,
+            "classes": [],
+            "engine": "raw",
             "args": [],
             "kwargs": {},
         },

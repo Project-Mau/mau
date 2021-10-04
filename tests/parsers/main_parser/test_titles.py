@@ -27,6 +27,8 @@ def test_title_block():
             "blocktype": None,
             "kwargs": {},
             "secondary_content": [],
+            "classes": [],
+            "engine": "mau",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -90,6 +92,8 @@ def test_title_without_spaces():
             "blocktype": None,
             "kwargs": {},
             "secondary_content": [],
+            "classes": [],
+            "engine": "mau",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -153,6 +157,8 @@ def test_title_with_rich_text():
             "blocktype": None,
             "kwargs": {},
             "secondary_content": [],
+            "classes": [],
+            "engine": "mau",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -234,6 +240,8 @@ def test_title_block_with_attributes():
             "blocktype": "blocktype",
             "kwargs": {"attr1": "value1"},
             "secondary_content": [],
+            "classes": [],
+            "engine": "mau",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -300,6 +308,8 @@ def test_title_block_with_footnote(footnote_anchors_mock):
             "blocktype": None,
             "kwargs": {},
             "secondary_content": [],
+            "classes": [],
+            "engine": "mau",
             "title": {
                 "type": "sentence",
                 "content": [

@@ -2,7 +2,12 @@ from mau.visitors.html_visitor import HTMLVisitor
 
 from mau.parsers import nodes
 from mau.parsers.main_parser import MainParser
-from tests.helpers import remove_indentation, init_parser_factory, visitlist_factory
+from tests.helpers import (
+    dedent,
+    remove_indentation,
+    init_parser_factory,
+    visitlist_factory,
+)
 
 init_parser = init_parser_factory(MainParser)
 visitlist = visitlist_factory(HTMLVisitor)
@@ -142,3 +147,20 @@ def test_command_footnotes():
             """
         )
     ]
+
+
+def test_footnotes_generation_without_footnote_definitions():
+    source = dedent(
+        """
+        ::footnotes:
+        """
+    )
+
+    parser = init_parser(source)
+    parser.parse()
+
+    result = visitlist(
+        [node.asdict() for node in parser.nodes], footnotes=parser.footnotes
+    )
+
+    assert result == ["""<div id="_footnotes"></div>"""]

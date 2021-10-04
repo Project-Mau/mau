@@ -29,6 +29,10 @@ from mau.parsers.nodes import (
 )
 
 
+class EngineError(ValueError):
+    """ Used to signal that the engine selected for a code block is not known """
+
+
 def header_anchor(text, level):
     """
     Return a sanitised anchor for a header.
@@ -376,8 +380,6 @@ class MainParser(BaseParser):
             return self._parse_conditional_block(blocktype, content)
         elif blocktype == "raw":
             return self._parse_raw_block(content)
-        elif blocktype == "code":
-            return self._parse_code_block(content, title)
         elif blocktype == "source":
             return self._parse_source_block(content, secondary_content, title)
         elif blocktype == "admonition":
@@ -425,21 +427,6 @@ class MainParser(BaseParser):
         textlines = [TextNode(line) for line in content]
 
         self._save(RawNode(content=textlines))
-
-    def _parse_code_block(self, content, title):
-        # Parse a code block.
-
-        # Assign names and consume the attributes
-        self.argsparser.merge_unnamed_args(["engine"])
-        args, kwargs = self.argsparser.get_arguments_and_reset()
-
-        # Get the engine for this block
-        engine = kwargs.pop("engine", "raw")
-
-        # Just put each line in a text node as it is
-        textlines = [TextNode(line) for line in content]
-
-        self._save(CodeNode(engine=engine, content=textlines, title=title))
 
     def _parse_source_block(self, content, secondary_content, title):
         # Parse a source block in the form
@@ -608,7 +595,7 @@ class MainParser(BaseParser):
         self.argsparser.merge_unnamed_args(["attribution"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
-        # Parse the content and record footnotes
+        # Parse the content
         p = MainParser().analyse("\n".join(content))
 
         self._save(
@@ -633,17 +620,37 @@ class MainParser(BaseParser):
         # Consume the attributes
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
-        # Parse the primary and secondary content and record footnotes
-        pc = MainParser(variables=self.variables).analyse("\n".join(content))
-        ps = MainParser(variables=self.variables).analyse("\n".join(secondary_content))
-        self.footnote_defs.extend(pc.footnote_defs)
+        # Extract classes and convert them into a list
+        classes = [i for i in kwargs.pop("classes", "").split(",") if len(i) > 0]
+
+        # Extract the engine. Default: mau
+        engine = kwargs.pop("engine", "mau")
+
+        if engine in ["raw", "mau-embedded"]:
+            content = [TextNode(line) for line in content]
+            secondary_content = [TextNode(line) for line in secondary_content]
+        elif engine == "mau":
+            # Parse the primary and secondary content and record footnotes
+            pc = MainParser(variables=self.variables).analyse("\n".join(content))
+            ps = MainParser(variables=self.variables).analyse(
+                "\n".join(secondary_content)
+            )
+            content = pc.nodes
+            secondary_content = ps.nodes
+
+            self.footnote_defs.extend(pc.footnote_defs)
+            self.headers.extend(pc.headers)
+        else:
+            raise EngineError(f"Engine {engine} is not available")
 
         self._save(
             BlockNode(
                 blocktype=blocktype,
-                content=pc.nodes,
-                secondary_content=ps.nodes,
+                content=content,
+                secondary_content=secondary_content,
                 args=args,
+                classes=classes,
+                engine=engine,
                 kwargs=kwargs,
                 title=title,
             )

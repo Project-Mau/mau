@@ -163,6 +163,21 @@ def test_command_toc_exclude_tags_multiple_tags():
     ]
 
 
+def test_toc_generation_without_headers():
+    source = dedent(
+        """
+        ::toc:
+        """
+    )
+
+    parser = init_parser(source)
+    parser.parse()
+
+    result = visitlist([node.asdict() for node in parser.nodes], toc=parser.toc)
+
+    assert result == ["<div></div>"]
+
+
 def test_toc_generation_from_headers():
     source = dedent(
         """
@@ -225,25 +240,5 @@ def test_toc_generation_in_standard_blocks():
     assert result == [
         '<h1 id="header-1">Header 1</h1>',
         '<h2 id="header-1.1">Header 1.1</h2>',
-        remove_indentation(
-            """
-            <div class="someblock">
-              <div class="content">
-                <h2 id="header-1.2">Header 1.2</h2>
-                <div>
-                  <ul>
-                    <li>
-                      <a href="#header-1">Header 1</a>
-                      <ul>
-                        <li>
-                          <a href="#header-1.1">Header 1.1</a>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            """
-        ),
+        '<div class="someblock"><div class="content"><h2 id="header-1.2">Header 1.2</h2>\n<div><ul><li><a href="#header-1">Header 1</a><ul><li><a href="#header-1.1">Header 1.1</a></li><li><a href="#header-1.2">Header 1.2</a></li></ul></li></ul></div></div></div>',
     ]

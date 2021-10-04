@@ -3,6 +3,9 @@ import logging
 
 import jinja2
 
+from mau.parsers import nodes
+from mau.parsers.main_parser import MainParser
+
 _logger = logging.getLogger(__name__)
 
 
@@ -29,8 +32,8 @@ class Visitor:
         self.default_templates = default_templates or {}
         self.templates_directory = templates_directory
         self.config = copy.deepcopy(config) if config else {}
-        self.toc = toc
-        self.footnotes = footnotes
+        self.toc = toc or nodes.TocNode()
+        self.footnotes = footnotes or nodes.FootnotesNode()
 
         # This is the fallback environment for templates
         self.default_templates_env = jinja2.Environment(
@@ -130,8 +133,27 @@ class Visitor:
 
     def _visit_block(self, node):
         node["node_types"] = [f'block-{node["blocktype"]}']
-        self._reducelist(node, ["content"], join_with="")
+
+        self._reducelist(node, ["content"], join_with="\n")
         self._reduce(node, ["title"])
+
+        # If the engine is mau-embedded we need to
+        # process the content in an isolated parser
+        # This can't easily be done in the MainParser
+        # class itself because the visitor needs the
+        # TOC from the parser.
+        if node["engine"] == "mau-embedded":
+            p = MainParser().analyse(node["content"])
+
+            visitor = self.__class__(
+                default_templates=self.default_templates,
+                templates_directory=self.templates_directory,
+                config=p.variables,
+                toc=p.toc,
+                footnotes=p.footnotes,
+            )
+            node["content"] = visitor.visit(nodes.ContainerNode(p.nodes).asdict())
+
         return node
 
     def _visit_class(self, node):

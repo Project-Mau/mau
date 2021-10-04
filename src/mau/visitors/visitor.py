@@ -195,6 +195,7 @@ class Visitor:
         return node
 
     def _visit_quote(self, node):
+        self._reduce(node, ["attribution"])
         node["content"] = self.visitlist(node["content"], join_with="")
         return node
 

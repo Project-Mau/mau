@@ -627,7 +627,7 @@ class QuoteNode(Node):
     def asdict(self):
         return {
             "type": self.node_type,
-            "attribution": self.attribution,
+            "attribution": self.attribution.asdict(),
             "content": [i.asdict() for i in self.content],
             "kwargs": self.kwargs,
         }

@@ -152,6 +152,30 @@ def test_quote():
     _test(source, expected)
 
 
+def test_quote_attribution_supports_styles():
+    source = dedent(
+        """
+        [quote,"_Star Wars_, 1977"]
+        ----
+        Learn about the Force, Luke.
+        ----
+        """
+    )
+
+    expected = [
+        remove_indentation(
+            """
+            <blockquote>
+              <p>Learn about the Force, Luke.</p>
+              <cite><em>Star Wars</em>, 1977</cite>
+            </blockquote>
+            """
+        )
+    ]
+
+    _test(source, expected)
+
+
 def test_admonition():
     source = dedent(
         """

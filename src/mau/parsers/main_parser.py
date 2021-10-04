@@ -598,9 +598,12 @@ class MainParser(BaseParser):
         # Parse the content
         p = MainParser().analyse("\n".join(content))
 
+        pa = TextParser().analyse(kwargs.pop("attribution"))
+        attribution = pa.nodes[0]
+
         self._save(
             QuoteNode(
-                kwargs.pop("attribution"),
+                attribution=attribution,
                 content=p.nodes,
                 kwargs=kwargs,
             )

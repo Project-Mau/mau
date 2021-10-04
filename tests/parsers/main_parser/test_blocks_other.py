@@ -83,7 +83,10 @@ def test_parse_block_quote():
     expected = [
         {
             "type": "quote",
-            "attribution": "Star Wars, 1977",
+            "attribution": {
+                "content": [{"type": "text", "value": "Star Wars, 1977"}],
+                "type": "sentence",
+            },
             "kwargs": {},
             "content": [
                 {
@@ -116,7 +119,55 @@ def test_parse_block_quote_ignores_title():
     expected = [
         {
             "type": "quote",
-            "attribution": "Star Wars, 1977",
+            "attribution": {
+                "content": [{"type": "text", "value": "Star Wars, 1977"}],
+                "type": "sentence",
+            },
+            "kwargs": {},
+            "content": [
+                {
+                    "type": "paragraph",
+                    "args": [],
+                    "kwargs": {},
+                    "content": {
+                        "type": "sentence",
+                        "content": [
+                            {"type": "text", "value": "Learn about the Force, Luke."}
+                        ],
+                    },
+                }
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
+def test_parse_block_quote_attribution_supports_styles():
+    source = """
+    [quote,"_Star Wars_, 1977"]
+    ----
+    Learn about the Force, Luke.
+    ----
+    """
+
+    expected = [
+        {
+            "type": "quote",
+            "attribution": {
+                "content": [
+                    {
+                        "content": {
+                            "content": [{"type": "text", "value": "Star Wars"}],
+                            "type": "sentence",
+                        },
+                        "type": "style",
+                        "value": "underscore",
+                    },
+                    {"type": "text", "value": ", 1977"},
+                ],
+                "type": "sentence",
+            },
             "kwargs": {},
             "content": [
                 {

@@ -437,7 +437,7 @@ def test_include_image():
             """
             <div class="imageblock">
               <div class="content">
-                <img src="/path/to/it.jpg">
+                <img src="/path/to/it.jpg" />
               </div>
             </div>
             """
@@ -460,7 +460,7 @@ def test_include_image_alt_text():
             """
             <div class="imageblock">
               <div class="content">
-                <img src="/path/to/it.jpg" alt="This is a beautiful image">
+                <img src="/path/to/it.jpg" alt="This is a beautiful image" />
               </div>
             </div>
             """
@@ -483,7 +483,7 @@ def test_include_image_title():
             """
             <div class="imageblock">
               <div class="content">
-                <img src="/path/to/it.jpg">
+                <img src="/path/to/it.jpg" />
                 <div class="title">A nice <em>caption</em></div>
               </div>
             </div>

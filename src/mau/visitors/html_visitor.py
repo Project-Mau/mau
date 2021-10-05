@@ -45,7 +45,7 @@ DEFAULT_TEMPLATES = {
     "image.html": (
         '<div class="imageblock">'
         '<div class="content">'
-        '<img src="{{ uri }}"{% if alt_text %} alt="{{ alt_text }}"{% endif %}>'
+        '<img src="{{ uri }}"{% if alt_text %} alt="{{ alt_text }}"{% endif %} />'
         '{% if title %}<div class="title">{{ title }}</div>{% endif %}'
         "</div></div>"
     ),

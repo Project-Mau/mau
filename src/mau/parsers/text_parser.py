@@ -337,7 +337,9 @@ class TextParser(BaseParser):
         elif macro_name == "footnote":
             return self.parse_macro_footnote(arguments)
 
-        return MacroNode(macro_name, arguments)
+        p = ArgumentsParser().analyse(arguments)
+
+        return MacroNode(macro_name, p.args, p.kwargs)
 
     def parse_link(self):
         link = self.get_token(

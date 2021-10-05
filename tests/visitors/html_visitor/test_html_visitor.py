@@ -502,6 +502,53 @@ def test_macro():
     _test(source, expected)
 
 
+def test_macro_template():
+    v = HTMLVisitor()
+    v.default_templates["macro.html"] = "whatever"
+
+    ast = init_ast("[unknown](This is an unknown macro)")
+
+    output = visitlist(ast)
+
+    assert output == ["<p>whatever</p>"]
+
+
+def test_macro_uses_specific_template():
+    v = HTMLVisitor()
+    v.default_templates["macro.html"] = "whatever"
+    v.default_templates["macro-unknown.html"] = "the right one"
+
+    ast = init_ast("[unknown](This is an unknown macro)")
+
+    output = visitlist(ast)
+
+    assert output == ["<p>the right one</p>"]
+
+
+def test_macro_provides_args_and_kwargs():
+    v = HTMLVisitor()
+    v.default_templates["macro.html"] = "whatever"
+    v.default_templates["macro-unknown.html"] = "{{ args[0] }} - {{ kwargs.name}}"
+
+    ast = init_ast('[unknown]("some text", name=mau)')
+
+    output = visitlist(ast)
+
+    assert output == ["<p>some text - mau</p>"]
+
+
+def test_macro_alias_value_for_first_unnamed_arg():
+    v = HTMLVisitor()
+    v.default_templates["macro.html"] = "whatever"
+    v.default_templates["macro-unknown.html"] = "{{ value }} - {{ kwargs.name}}"
+
+    ast = init_ast('[unknown]("some text", name=mau)')
+
+    output = visitlist(ast)
+
+    assert output == ["<p>some text - mau</p>"]
+
+
 def test_block_engine_raw():
     source = dedent(
         """

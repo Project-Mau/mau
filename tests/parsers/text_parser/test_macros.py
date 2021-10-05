@@ -60,8 +60,10 @@ def test_macro():
             "content": [
                 {
                     "type": "macro",
-                    "value": "macroname",
-                    "arguments": "value1,value2",
+                    "name": "macroname",
+                    "value": "value1",
+                    "args": ["value1", "value2"],
+                    "kwargs": {},
                 }
             ],
         }
@@ -79,8 +81,31 @@ def test_macro_arguments_with_quotes():
             "content": [
                 {
                     "type": "macro",
-                    "value": "macroname",
-                    "arguments": '"value1,value2"',
+                    "name": "macroname",
+                    "value": "value1,value2",
+                    "args": ["value1,value2"],
+                    "kwargs": {},
+                }
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
+def test_macro_named_arguments():
+    source = "[macroname](name,arg1=value1)"
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {
+                    "type": "macro",
+                    "name": "macroname",
+                    "value": "name",
+                    "args": ["name"],
+                    "kwargs": {"arg1": "value1"},
                 }
             ],
         }

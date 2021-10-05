@@ -131,6 +131,11 @@ class Visitor:
 
         return visited_nodes
 
+    def _visit_macro(self, node):
+        node["node_types"] = [f'macro-{node["name"]}']
+
+        return node
+
     def _visit_block(self, node):
         node["node_types"] = [f'block-{node["blocktype"]}']
 

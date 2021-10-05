@@ -160,15 +160,23 @@ class MacroNode(Node):
 
     node_type = "macro"
 
-    def __init__(self, value, arguments):
-        self.value = value
-        self.arguments = arguments
+    def __init__(self, name, args=None, kwargs=None):
+        self.name = name
+        self.args = args or []
+        self.kwargs = kwargs or {}
+
+        try:
+            self.value = args[0]
+        except IndexError:
+            self.value = None
 
     def asdict(self):
         return {
             "type": self.node_type,
+            "name": self.name,
             "value": self.value,
-            "arguments": self.arguments,
+            "args": self.args,
+            "kwargs": self.kwargs,
         }
 
 

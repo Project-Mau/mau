@@ -78,7 +78,9 @@ class ArgumentsParser(BaseParser):
             value = self.collect_join([Token(TokenTypes.LITERAL, '"')])
             self.get_token(TokenTypes.LITERAL, '"')
         else:
-            value = self.get_token(TokenTypes.TEXT).value
+            value = self.collect_join(
+                [Token(TokenTypes.LITERAL, ","), Token(TokenTypes.EOF)]
+            )
 
         return name, value
 
@@ -92,7 +94,9 @@ class ArgumentsParser(BaseParser):
             value = self.collect_join([Token(TokenTypes.LITERAL, '"')])
             self.get_token(TokenTypes.LITERAL, '"')
         else:
-            value = self.get_token(TokenTypes.TEXT).value
+            value = self.collect_join(
+                [Token(TokenTypes.LITERAL, ","), Token(TokenTypes.EOF)]
+            )
 
         return value
 

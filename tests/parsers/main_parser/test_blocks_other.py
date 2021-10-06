@@ -186,29 +186,3 @@ def test_parse_block_quote_attribution_supports_styles():
     ]
 
     _test(source, expected)
-
-
-def test_raw_block():
-    source = """
-    [raw]
-    ----
-    <div class="someclass">
-      <p>This is HTML</>
-    </div>
-    ----
-    """
-
-    expected = [
-        {
-            "type": "raw",
-            "args": [],
-            "kwargs": {},
-            "content": [
-                {"type": "text", "value": '<div class="someclass">'},
-                {"type": "text", "value": "  <p>This is HTML</>"},
-                {"type": "text", "value": "</div>"},
-            ],
-        },
-    ]
-
-    _test(source, expected)

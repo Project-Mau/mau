@@ -205,23 +205,6 @@ def test_admonition():
     _test(source, expected)
 
 
-def test_raw():
-    source = dedent(
-        """
-        [raw]
-        ----
-        <div class="someclass">
-          <p>This is HTML</>
-        </div>
-        ----
-        """
-    )
-
-    expected = ["""<div class="someclass">\n  <p>This is HTML</>\n</div>"""]
-
-    _test(source, expected)
-
-
 @patch("mau.parsers.main_parser.header_anchor")
 def test_block(header_anchor_mock):
     header_anchor_mock.return_value = "XXXXXX"

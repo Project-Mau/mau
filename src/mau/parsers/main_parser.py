@@ -376,9 +376,7 @@ class MainParser(BaseParser):
         blocktype = self.argsparser.pop()
 
         # Parse the content according to the block type
-        if blocktype == "raw":
-            return self._parse_raw_block(content)
-        elif blocktype == "source":
+        if blocktype == "source":
             return self._parse_source_block(content, secondary_content, title)
         elif blocktype == "admonition":
             return self._parse_admonition_block(content)
@@ -386,14 +384,6 @@ class MainParser(BaseParser):
             return self._parse_quote_block(content, title)
 
         return self._parse_standard_block(blocktype, content, secondary_content, title)
-
-    def _parse_raw_block(self, content):
-        # Parse a raw block.
-
-        # Just put each line in a text node as it is
-        textlines = [TextNode(line) for line in content]
-
-        self._save(RawNode(content=textlines))
 
     def _parse_source_block(self, content, secondary_content, title):
         # Parse a source block in the form

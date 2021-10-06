@@ -52,6 +52,9 @@ class TextParser(BaseParser):
         # These are the nodes created by the parsing.
         self.nodes = []
 
+        # This is used as a storage for macro arguments.
+        self.argsparser = ArgumentsParser()
+
     def parse_word(self):
         """
         Parse a single word.
@@ -194,87 +197,87 @@ class TextParser(BaseParser):
 
         return ClassNode(classes, content)
 
-    def parse_macro_link(self, arguments):
+    def parse_macro_link(self):
         """
         Parse a link macro in the form [link](target, text).
         """
 
-        p = ArgumentsParser().analyse(arguments)
+        # Assign names and get the arguments
+        self.argsparser.merge_unnamed_args(["target", "text"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Set the name of the first two unnamed arguments
-        p.merge_unnamed_args(["target", "text"])
 
         # Get the target as it can be used as default text
-        target = p.kwargs.get("target")
+        target = kwargs.get("target")
 
-        return LinkNode(target, p.kwargs.get("text", target))
+        return LinkNode(target, kwargs.get("text", target))
 
-    def parse_macro_mailto(self, arguments):
+    def parse_macro_mailto(self):
         """
         Parse a mailto macro in the form [mailto](email).
         """
 
-        p = ArgumentsParser().analyse(arguments)
+        # Assign names and get the arguments
+        self.argsparser.merge_unnamed_args(["email"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
-        # Set the name of the first unnamed argument
-        p.merge_unnamed_args(["email"])
-
-        email = p.kwargs.get("email")
+        email = kwargs.get("email")
         target = f"mailto:{email}"
 
         return LinkNode(target, email)
 
-    def parse_macro_class(self, arguments):
+    def parse_macro_class(self):
         """
         Parse a class macro in the form [class](text, "class1,class2,...").
         """
 
-        pa = ArgumentsParser().analyse(arguments)
-
-        # Set the name of the first two unnamed arguments
-        pa.merge_unnamed_args(["text", "classes"])
+        # Assign names and get the arguments
+        self.argsparser.merge_unnamed_args(["text", "classes"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Parse the text
-        pt = TextParser().analyse(pa.kwargs.get("text"))
+        pt = TextParser().analyse(kwargs.get("text"))
 
         # Text should return a single sentence node
         result = pt.nodes[0]
 
         # Multiple classes are separated by commas
-        classes = pa.kwargs.get("classes").split(",")
+        classes = kwargs.get("classes").split(",")
 
         return ClassNode(classes, result)
 
-    def parse_macro_image(self, arguments):
+    def parse_macro_image(self):
         """
         Parse an inline image macro in the form
         [image](uri, alt_text, width, height).
         """
 
-        p = ArgumentsParser().analyse(arguments)
-
-        # Set the name of unnamed arguments
-        p.merge_unnamed_args(
-            ["uri", "alt_text", "width", "height"],
-        )
+        # Assign names and get the arguments
+        self.argsparser.merge_unnamed_args(["uri", "alt_text", "width", "height"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
         return ImageNode(
-            uri=p.kwargs.get("uri"),
-            alt_text=p.kwargs.get("alt_text", None),
-            width=p.kwargs.get("width", None),
-            height=p.kwargs.get("height", None),
+            uri=kwargs.get("uri"),
+            alt_text=kwargs.get("alt_text", None),
+            width=kwargs.get("width", None),
+            height=kwargs.get("height", None),
         )
 
-    def parse_macro_footnote(self, text):
+    def parse_macro_footnote(self):
         """
         Parse a footnote macro in the form
         [footnote](content).
         """
 
-        refanchor, defanchor = footnote_anchors(text)
+        # Assign names and get the arguments
+        self.argsparser.merge_unnamed_args(["text"])
+        args, kwargs = self.argsparser.get_arguments_and_reset()
+
+        refanchor, defanchor = footnote_anchors(kwargs["text"])
         number = self.footnotes_start_with + len(self.footnote_defs)
 
-        p = TextParser().analyse(text)
+        p = TextParser().analyse(kwargs["text"])
 
         self.footnote_defs.append(
             FootnoteDefNode(
@@ -326,20 +329,23 @@ class TextParser(BaseParser):
 
         arguments = self._collect_macro_args()
 
+        self.argsparser.analyse(arguments)
+
         if macro_name == "link":
-            return self.parse_macro_link(arguments)
+            return self.parse_macro_link()
         elif macro_name == "mailto":
-            return self.parse_macro_mailto(arguments)
+            return self.parse_macro_mailto()
         elif macro_name == "class":
-            return self.parse_macro_class(arguments)
+            return self.parse_macro_class()
         elif macro_name == "image":
-            return self.parse_macro_image(arguments)
+            return self.parse_macro_image()
         elif macro_name == "footnote":
-            return self.parse_macro_footnote(arguments)
+            return self.parse_macro_footnote()
 
-        p = ArgumentsParser().analyse(arguments)
+        # Get the arguments
+        args, kwargs = self.argsparser.get_arguments_and_reset()
 
-        return MacroNode(macro_name, p.args, p.kwargs)
+        return MacroNode(macro_name, args, kwargs)
 
     def parse_link(self):
         link = self.get_token(

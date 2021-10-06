@@ -565,60 +565,10 @@ def test_parse_macro_footnote_with_other_text_around(footnote_anchors_mock):
 
 
 @patch("mau.parsers.text_parser.footnote_anchors")
-def test_parse_macro_footnote_includes_quotes(footnote_anchors_mock):
-    footnote_anchors_mock.return_value = ("refXYZ", "defXYZ")
-
-    source = 'text[footnote]("Some text") other text'
-
-    expected = [
-        {
-            "type": "sentence",
-            "content": [
-                {"type": "text", "value": "text"},
-                {
-                    "type": "footnote_ref",
-                    "number": 1,
-                    "refanchor": "refXYZ",
-                    "defanchor": "defXYZ",
-                    "content": [
-                        {
-                            "type": "sentence",
-                            "content": [
-                                {"type": "text", "value": '"Some text"'},
-                            ],
-                        }
-                    ],
-                },
-                {"type": "text", "value": " other text"},
-            ],
-        }
-    ]
-
-    p = _test(source, expected)
-
-    assert listasdict(p.footnote_defs) == [
-        {
-            "type": "footnote_def",
-            "number": 1,
-            "refanchor": "refXYZ",
-            "defanchor": "defXYZ",
-            "content": [
-                {
-                    "type": "sentence",
-                    "content": [
-                        {"type": "text", "value": '"Some text"'},
-                    ],
-                }
-            ],
-        }
-    ]
-
-
-@patch("mau.parsers.text_parser.footnote_anchors")
 def test_parse_macro_footnote_includes_round_brakets(footnote_anchors_mock):
     footnote_anchors_mock.return_value = ("refXYZ", "defXYZ")
 
-    source = r'text[footnote]("Some code(\)") other text'
+    source = r'text[footnote]("Some code()") other text'
 
     expected = [
         {
@@ -634,7 +584,7 @@ def test_parse_macro_footnote_includes_round_brakets(footnote_anchors_mock):
                         {
                             "type": "sentence",
                             "content": [
-                                {"type": "text", "value": '"Some code()"'},
+                                {"type": "text", "value": "Some code()"},
                             ],
                         }
                     ],
@@ -656,7 +606,7 @@ def test_parse_macro_footnote_includes_round_brakets(footnote_anchors_mock):
                 {
                     "type": "sentence",
                     "content": [
-                        {"type": "text", "value": '"Some code()"'},
+                        {"type": "text", "value": "Some code()"},
                     ],
                 }
             ],

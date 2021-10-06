@@ -166,7 +166,7 @@ class MacroNode(Node):
         self.kwargs = kwargs or {}
 
         try:
-            self.value = args[0]
+            self.value = self.args[0]
         except IndexError:
             self.value = None
 

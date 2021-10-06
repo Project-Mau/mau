@@ -376,9 +376,7 @@ class MainParser(BaseParser):
         blocktype = self.argsparser.pop()
 
         # Parse the content according to the block type
-        if blocktype in ["if", "ifnot"]:
-            return self._parse_conditional_block(blocktype, content)
-        elif blocktype == "raw":
+        if blocktype == "raw":
             return self._parse_raw_block(content)
         elif blocktype == "source":
             return self._parse_source_block(content, secondary_content, title)
@@ -388,37 +386,6 @@ class MainParser(BaseParser):
             return self._parse_quote_block(content, title)
 
         return self._parse_standard_block(blocktype, content, secondary_content, title)
-
-    def _parse_conditional_block(self, condition, content):
-        # Parse a conditional block in the form
-        #
-        # [if,variable,value]
-        # ----
-        # content
-        # ----
-        #
-        # or
-        #
-        # [ifnot,variable,value]
-        # ----
-        # content
-        # ----
-        #
-        # where value can be omitted and is True by default.
-
-        # Assign names and consume the attributes
-        self.argsparser.merge_unnamed_args(["variable", "value"])
-        args, kwargs = self.argsparser.get_arguments_and_reset()
-
-        # Check if the variable matches the value and apply the requested test
-        match = self.variables.get(kwargs["variable"]) == kwargs.get("value", True)
-        test = True if condition == "if" else False
-
-        # If the condition is satisfied go ahead and parse the content
-        if match is test:
-            p = MainParser(variables=self.variables).analyse("\n".join(content))
-            self.footnote_defs.extend(p.footnote_defs)
-            self.nodes.extend(p.nodes)
 
     def _parse_raw_block(self, content):
         # Parse a raw block.
@@ -625,6 +592,30 @@ class MainParser(BaseParser):
 
         # Extract classes and convert them into a list
         classes = [i for i in kwargs.pop("classes", "").split(",") if len(i) > 0]
+
+        # Extract condition if present and process it
+        condition = kwargs.pop("condition", "")
+
+        if len(condition) > 0:
+            try:
+                # The condition should be test:variable:value or test:variable:
+                test, variable, value = condition.split(":")
+            except ValueError:
+                raise ParseError(
+                    f'Condition {condition} is not in the form "test:variable:value" or "test:variable:'
+                )
+
+            # If there is no value use True
+            if len(value) == 0:
+                value = True
+
+            # Check if the variable matches the value and apply the requested test
+            match = self.variables.get(variable) == value
+            result = True if test == "if" else False
+
+            # If the condition is not satisfied return
+            if match is not result:
+                return
 
         # Extract the engine. Default: mau
         engine = kwargs.pop("engine", "mau")

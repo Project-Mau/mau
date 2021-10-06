@@ -570,3 +570,146 @@ def test_block_raw_engine():
     ]
 
     _test(source, expected)
+
+
+def test_block_positive_condition_matches():
+    source = """
+    :render:yes
+
+    [block, condition="if:render:yes"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = [
+        {
+            "args": [],
+            "blocktype": "block",
+            "classes": [],
+            "content": [
+                {
+                    "args": [],
+                    "content": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "value": "This is a paragraph.",
+                            },
+                        ],
+                        "type": "sentence",
+                    },
+                    "kwargs": {},
+                    "type": "paragraph",
+                },
+            ],
+            "engine": "mau",
+            "kwargs": {},
+            "secondary_content": [],
+            "title": None,
+            "type": "block",
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_positive_condition_doesnt_match():
+    source = """
+    :render:no
+
+    [block, condition="if:render:yes"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = []
+
+    _test(source, expected)
+
+
+def test_block_negative_condition_matches():
+    source = """
+    :render:yes
+
+    [block, condition="ifnot:render:no"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = [
+        {
+            "args": [],
+            "blocktype": "block",
+            "classes": [],
+            "content": [
+                {
+                    "args": [],
+                    "content": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "value": "This is a paragraph.",
+                            },
+                        ],
+                        "type": "sentence",
+                    },
+                    "kwargs": {},
+                    "type": "paragraph",
+                },
+            ],
+            "engine": "mau",
+            "kwargs": {},
+            "secondary_content": [],
+            "title": None,
+            "type": "block",
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_negative_condition_doesnt_match():
+    source = """
+    :render:no
+
+    [block, condition="ifnot:render:no"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = []
+
+    _test(source, expected)
+
+
+def test_block_condition_accepts_booleans():
+    source = """
+    :render:
+
+    [block, condition="ifnot:render:"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = []
+
+    _test(source, expected)
+
+
+def test_block_condition_raises_exception():
+    source = """
+    [block, condition="if:render"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = []
+
+    with pytest.raises(ParseError):
+        _test(source, expected)

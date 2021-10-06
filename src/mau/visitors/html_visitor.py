@@ -1,3 +1,5 @@
+import copy
+
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import get_formatter_by_name
@@ -108,7 +110,9 @@ class HTMLVisitor(Visitor):
         footnotes=None,
     ):
         default_templates = (
-            default_templates if default_templates is not None else DEFAULT_TEMPLATES
+            copy.deepcopy(default_templates)
+            if default_templates is not None
+            else copy.deepcopy(DEFAULT_TEMPLATES)
         )
 
         super().__init__(

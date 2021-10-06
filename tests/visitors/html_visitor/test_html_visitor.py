@@ -508,7 +508,7 @@ def test_macro_template():
 
     ast = init_ast("[unknown](This is an unknown macro)")
 
-    output = visitlist(ast)
+    output = [v.visit(node) for node in ast]
 
     assert output == ["<p>whatever</p>"]
 
@@ -520,7 +520,7 @@ def test_macro_uses_specific_template():
 
     ast = init_ast("[unknown](This is an unknown macro)")
 
-    output = visitlist(ast)
+    output = [v.visit(node) for node in ast]
 
     assert output == ["<p>the right one</p>"]
 
@@ -532,7 +532,7 @@ def test_macro_provides_args_and_kwargs():
 
     ast = init_ast('[unknown]("some text", name=mau)')
 
-    output = visitlist(ast)
+    output = [v.visit(node) for node in ast]
 
     assert output == ["<p>some text - mau</p>"]
 
@@ -544,7 +544,7 @@ def test_macro_alias_value_for_first_unnamed_arg():
 
     ast = init_ast('[unknown]("some text", name=mau)')
 
-    output = visitlist(ast)
+    output = [v.visit(node) for node in ast]
 
     assert output == ["<p>some text - mau</p>"]
 
@@ -615,4 +615,73 @@ def test_block_engine_mau_embedded():
     assert result == [
         '<h1 id="header-out">Header out</h1>',
         '<div class="block"><div class="content"><h1 id="header-in">Header in</h1><div><ul><li><a href="#header-in">Header in</a></li></ul></div></div></div>',
+    ]
+
+
+def test_block_template():
+    v = HTMLVisitor()
+    v.default_templates["block.html"] = "whatever"
+
+    ast = init_ast(
+        dedent(
+            """
+            [block]
+            ----
+            Primary content
+            ----
+            Secondary content
+            """
+        )
+    )
+
+    output = [v.visit(node) for node in ast]
+
+    assert output == ["whatever"]
+
+
+def test_block_uses_specific_template():
+    v = HTMLVisitor()
+    v.default_templates["block.html"] = "whatever"
+    v.default_templates["block-unknown.html"] = "the right one"
+
+    ast = init_ast(
+        dedent(
+            """
+            [unknown]
+            ----
+            Primary content
+            ----
+            Secondary content
+            """
+        )
+    )
+
+    output = [v.visit(node) for node in ast]
+
+    assert output == ["the right one"]
+
+
+def test_block_provides_primary_and_secondary_content_args_and_kwargs():
+    v = HTMLVisitor()
+    v.default_templates["block.html"] = "whatever"
+    v.default_templates[
+        "block-unknown.html"
+    ] = "{{ content }} - {{ secondary_content }} - {{ args[0] }} - {{ kwargs.name}}"
+
+    ast = init_ast(
+        dedent(
+            """
+            [unknown, somearg, name=value]
+            ----
+            Primary content
+            ----
+            Secondary content
+            """
+        )
+    )
+
+    output = [v.visit(node) for node in ast]
+
+    assert output == [
+        "<p>Primary content</p> - <p>Secondary content</p> - somearg - value"
     ]

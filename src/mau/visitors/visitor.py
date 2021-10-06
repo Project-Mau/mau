@@ -68,7 +68,6 @@ class Visitor:
 
     def _render(self, node_type, **kwargs):
         # This renders a template passing the visitor configuration
-
         template = self._template(node_type)
 
         return template.render(config=self.config, **kwargs)
@@ -140,6 +139,7 @@ class Visitor:
         node["node_types"] = [f'block-{node["blocktype"]}']
 
         self._reducelist(node, ["content"], join_with="\n")
+        self._reducelist(node, ["secondary_content"], join_with="\n")
         self._reduce(node, ["title"])
 
         # If the engine is mau-embedded we need to
@@ -149,6 +149,7 @@ class Visitor:
         # TOC from the parser.
         if node["engine"] == "mau-embedded":
             p = MainParser().analyse(node["content"])
+            ps = MainParser().analyse(node["secondary_content"])
 
             visitor = self.__class__(
                 default_templates=self.default_templates,
@@ -158,6 +159,9 @@ class Visitor:
                 footnotes=p.footnotes,
             )
             node["content"] = visitor.visit(nodes.ContainerNode(p.nodes).asdict())
+            node["secondary_content"] = visitor.visit(
+                nodes.ContainerNode(ps.nodes).asdict()
+            )
 
         return node
 

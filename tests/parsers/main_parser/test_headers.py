@@ -435,7 +435,7 @@ def test_block_headers_added_to_global_toc():
                 },
             ],
             "classes": [],
-            "engine": "mau",
+            "engine": "default",
             "kwargs": {},
             "secondary_content": [],
             "title": None,

@@ -608,12 +608,12 @@ class MainParser(BaseParser):
                 return
 
         # Extract the engine. Default: mau
-        engine = kwargs.pop("engine", "mau")
+        engine = kwargs.pop("engine", "default")
 
         if engine in ["raw", "mau-embedded"]:
             content = [TextNode(line) for line in content]
             secondary_content = [TextNode(line) for line in secondary_content]
-        elif engine == "mau":
+        elif engine == "default":
             # Parse the primary and secondary content and record footnotes
             pc = MainParser(variables=self.variables).analyse("\n".join(content))
             ps = MainParser(variables=self.variables).analyse(

@@ -28,7 +28,7 @@ def test_title_block():
             "kwargs": {},
             "secondary_content": [],
             "classes": [],
-            "engine": "mau",
+            "engine": "default",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -93,7 +93,7 @@ def test_title_without_spaces():
             "kwargs": {},
             "secondary_content": [],
             "classes": [],
-            "engine": "mau",
+            "engine": "default",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -158,7 +158,7 @@ def test_title_with_rich_text():
             "kwargs": {},
             "secondary_content": [],
             "classes": [],
-            "engine": "mau",
+            "engine": "default",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -241,7 +241,7 @@ def test_title_block_with_attributes():
             "kwargs": {"attr1": "value1"},
             "secondary_content": [],
             "classes": [],
-            "engine": "mau",
+            "engine": "default",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -309,7 +309,7 @@ def test_title_block_with_footnote(footnote_anchors_mock):
             "kwargs": {},
             "secondary_content": [],
             "classes": [],
-            "engine": "mau",
+            "engine": "default",
             "title": {
                 "type": "sentence",
                 "content": [

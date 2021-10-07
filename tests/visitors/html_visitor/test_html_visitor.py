@@ -551,12 +551,12 @@ def test_block_engine_raw():
     _test(source, expected)
 
 
-def test_block_engine_mau():
+def test_block_engine_default():
     source = dedent(
         """
         = Header out
 
-        [block, engine=mau]
+        [block, engine=default]
         ----
         = Header in
 

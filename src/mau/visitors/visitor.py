@@ -142,12 +142,12 @@ class Visitor:
         self._reducelist(node, ["secondary_content"], join_with="\n")
         self._reduce(node, ["title"])
 
-        # If the engine is mau-embedded we need to
+        # If the engine is mau we need to
         # process the content in an isolated parser
         # This can't easily be done in the MainParser
         # class itself because the visitor needs the
         # TOC from the parser.
-        if node["engine"] == "mau-embedded":
+        if node["engine"] == "mau":
             p = MainParser().analyse(node["content"])
             ps = MainParser().analyse(node["secondary_content"])
 

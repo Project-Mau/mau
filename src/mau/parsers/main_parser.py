@@ -610,7 +610,7 @@ class MainParser(BaseParser):
         # Extract the engine. Default: mau
         engine = kwargs.pop("engine", "default")
 
-        if engine in ["raw", "mau-embedded"]:
+        if engine in ["raw", "mau"]:
             content = [TextNode(line) for line in content]
             secondary_content = [TextNode(line) for line in secondary_content]
         elif engine == "default":

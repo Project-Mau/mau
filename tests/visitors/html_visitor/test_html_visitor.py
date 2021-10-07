@@ -576,12 +576,12 @@ def test_block_engine_default():
     ]
 
 
-def test_block_engine_mau_embedded():
+def test_block_engine_mau():
     source = dedent(
         """
         = Header out
 
-        [block, engine=mau-embedded]
+        [block, engine=mau]
         ----
         = Header in
 

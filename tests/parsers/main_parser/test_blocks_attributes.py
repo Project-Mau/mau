@@ -269,10 +269,10 @@ def test_block_engine():
         _test(source, expected)
 
 
-def test_block_embedded_mau_has_no_external_variables():
+def test_block_mau_has_no_external_variables():
     source = """
     :answer:42
-    [block, engine=mau-embedded]
+    [block, engine=mau]
     ----
     The answer is {answer}.
     ----
@@ -286,7 +286,7 @@ def test_block_embedded_mau_has_no_external_variables():
             "secondary_content": [],
             "title": None,
             "classes": [],
-            "engine": "mau-embedded",
+            "engine": "mau",
             "args": [],
             "kwargs": {},
         },

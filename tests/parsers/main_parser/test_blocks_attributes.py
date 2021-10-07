@@ -1,0 +1,472 @@
+import pytest
+
+from mau.parsers.main_parser import MainParser, ParseError, EngineError
+
+from tests.helpers import init_parser_factory, parser_test_factory
+
+init_parser = init_parser_factory(MainParser)
+
+_test = parser_test_factory(MainParser)
+
+
+def test_attributes_block():
+    source = """
+    [blocktype,myattr1=value1]
+    ----
+    This is a simple line of text
+    followed by another line of text
+
+    And this is another paragraph
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {"myattr1": "value1"},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "mau",
+            "title": None,
+            "content": [
+                {
+                    "type": "paragraph",
+                    "args": [],
+                    "kwargs": {},
+                    "content": {
+                        "type": "sentence",
+                        "content": [
+                            {
+                                "type": "text",
+                                "value": "This is a simple line of text followed by another line of text",
+                            }
+                        ],
+                    },
+                },
+                {
+                    "type": "paragraph",
+                    "args": [],
+                    "kwargs": {},
+                    "content": {
+                        "type": "sentence",
+                        "content": [
+                            {
+                                "type": "text",
+                                "value": "And this is another paragraph",
+                            }
+                        ],
+                    },
+                },
+            ],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_attributes_can_contain_variables():
+    source = """
+    :value:42
+
+    [blocktype,myattr1={value}]
+    ----
+    This is a simple line of text
+    followed by another line of text
+
+    And this is another paragraph
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {"myattr1": "42"},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "mau",
+            "title": None,
+            "content": [
+                {
+                    "type": "paragraph",
+                    "args": [],
+                    "kwargs": {},
+                    "content": {
+                        "type": "sentence",
+                        "content": [
+                            {
+                                "type": "text",
+                                "value": "This is a simple line of text followed by another line of text",
+                            }
+                        ],
+                    },
+                },
+                {
+                    "type": "paragraph",
+                    "args": [],
+                    "kwargs": {},
+                    "content": {
+                        "type": "sentence",
+                        "content": [
+                            {
+                                "type": "text",
+                                "value": "And this is another paragraph",
+                            }
+                        ],
+                    },
+                },
+            ],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_parse_block_title_and_attributes():
+    source = """
+    .Just a title
+    [blocktype,attribute1,attribute2]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "blocktype": "blocktype",
+            "content": [],
+            "secondary_content": [],
+            "title": {
+                "content": [{"type": "text", "value": "Just a title"}],
+                "type": "sentence",
+            },
+            "classes": [],
+            "engine": "mau",
+            "args": ["attribute1", "attribute2"],
+            "kwargs": {},
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_parse_block_title_and_attributes_are_reset():
+    source = """
+    .Just a title
+    [blocktype1,attribute1,attribute2]
+    ----
+    ----
+
+    [blocktype2]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "blocktype": "blocktype1",
+            "content": [],
+            "secondary_content": [],
+            "title": {
+                "content": [{"type": "text", "value": "Just a title"}],
+                "type": "sentence",
+            },
+            "classes": [],
+            "engine": "mau",
+            "args": ["attribute1", "attribute2"],
+            "kwargs": {},
+        },
+        {
+            "type": "block",
+            "blocktype": "blocktype2",
+            "content": [],
+            "secondary_content": [],
+            "title": None,
+            "classes": [],
+            "engine": "mau",
+            "args": [],
+            "kwargs": {},
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_classes_single_class():
+    source = """
+    [blocktype,classes=cls1]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {},
+            "secondary_content": [],
+            "classes": ["cls1"],
+            "engine": "mau",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_classes_multiple_classes():
+    source = """
+    [blocktype,classes="cls1,cls2"]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {},
+            "secondary_content": [],
+            "classes": ["cls1", "cls2"],
+            "engine": "mau",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_engine():
+    source = """
+    [blocktype,engine=someengine]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "someengine",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    with pytest.raises(EngineError):
+        _test(source, expected)
+
+
+def test_block_embedded_mau_has_no_external_variables():
+    source = """
+    :answer:42
+    [block, engine=mau-embedded]
+    ----
+    The answer is {answer}.
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "blocktype": "block",
+            "content": [{"type": "text", "value": "The answer is {answer}."}],
+            "secondary_content": [],
+            "title": None,
+            "classes": [],
+            "engine": "mau-embedded",
+            "args": [],
+            "kwargs": {},
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_raw_engine():
+    source = """
+    [block, engine=raw]
+    ----
+    Raw content
+    on multiple lines
+    ----
+    Secondary content
+    on multiple lines too
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "blocktype": "block",
+            "content": [
+                {"type": "text", "value": "Raw content"},
+                {"type": "text", "value": "on multiple lines"},
+            ],
+            "secondary_content": [
+                {"type": "text", "value": "Secondary content"},
+                {"type": "text", "value": "on multiple lines too"},
+            ],
+            "title": None,
+            "classes": [],
+            "engine": "raw",
+            "args": [],
+            "kwargs": {},
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_positive_condition_matches():
+    source = """
+    :render:yes
+
+    [block, condition="if:render:yes"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = [
+        {
+            "args": [],
+            "blocktype": "block",
+            "classes": [],
+            "content": [
+                {
+                    "args": [],
+                    "content": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "value": "This is a paragraph.",
+                            },
+                        ],
+                        "type": "sentence",
+                    },
+                    "kwargs": {},
+                    "type": "paragraph",
+                },
+            ],
+            "engine": "mau",
+            "kwargs": {},
+            "secondary_content": [],
+            "title": None,
+            "type": "block",
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_positive_condition_doesnt_match():
+    source = """
+    :render:no
+
+    [block, condition="if:render:yes"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = []
+
+    _test(source, expected)
+
+
+def test_block_negative_condition_matches():
+    source = """
+    :render:yes
+
+    [block, condition="ifnot:render:no"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = [
+        {
+            "args": [],
+            "blocktype": "block",
+            "classes": [],
+            "content": [
+                {
+                    "args": [],
+                    "content": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "value": "This is a paragraph.",
+                            },
+                        ],
+                        "type": "sentence",
+                    },
+                    "kwargs": {},
+                    "type": "paragraph",
+                },
+            ],
+            "engine": "mau",
+            "kwargs": {},
+            "secondary_content": [],
+            "title": None,
+            "type": "block",
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_negative_condition_doesnt_match():
+    source = """
+    :render:no
+
+    [block, condition="ifnot:render:no"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = []
+
+    _test(source, expected)
+
+
+def test_block_condition_accepts_booleans():
+    source = """
+    :render:
+
+    [block, condition="ifnot:render:"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = []
+
+    _test(source, expected)
+
+
+def test_block_condition_raises_exception():
+    source = """
+    [block, condition="if:render"]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    expected = []
+
+    with pytest.raises(ParseError):
+        _test(source, expected)

@@ -607,8 +607,11 @@ class MainParser(BaseParser):
             if match is not result:
                 return
 
-        # Extract the engine. Default: mau
+        # Extract the engine
         engine = kwargs.pop("engine", "default")
+
+        # Extract the preprocessor
+        preprocessor = kwargs.pop("preprocessor", "none")
 
         if engine in ["raw", "mau"]:
             content = [TextNode(line) for line in content]
@@ -635,6 +638,7 @@ class MainParser(BaseParser):
                 args=args,
                 classes=classes,
                 engine=engine,
+                preprocessor=preprocessor,
                 kwargs=kwargs,
                 title=title,
             )

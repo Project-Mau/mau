@@ -29,6 +29,7 @@ def test_title_block():
             "secondary_content": [],
             "classes": [],
             "engine": "default",
+            "preprocessor": "none",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -94,6 +95,7 @@ def test_title_without_spaces():
             "secondary_content": [],
             "classes": [],
             "engine": "default",
+            "preprocessor": "none",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -159,6 +161,7 @@ def test_title_with_rich_text():
             "secondary_content": [],
             "classes": [],
             "engine": "default",
+            "preprocessor": "none",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -242,6 +245,7 @@ def test_title_block_with_attributes():
             "secondary_content": [],
             "classes": [],
             "engine": "default",
+            "preprocessor": "none",
             "title": {
                 "type": "sentence",
                 "content": [
@@ -310,6 +314,7 @@ def test_title_block_with_footnote(footnote_anchors_mock):
             "secondary_content": [],
             "classes": [],
             "engine": "default",
+            "preprocessor": "none",
             "title": {
                 "type": "sentence",
                 "content": [

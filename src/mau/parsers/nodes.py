@@ -409,6 +409,7 @@ class BlockNode(Node):
         title: title of this block
         classes: a comma-separated list of classes
         engine: the engine used to render this block
+        preprocessor: the preprocessor used for this block
         args: unnamed arguments
         kwargs: named arguments
     """
@@ -423,6 +424,7 @@ class BlockNode(Node):
         title=None,
         classes=None,
         engine=None,
+        preprocessor=None,
         args=None,
         kwargs=None,
     ):
@@ -432,6 +434,7 @@ class BlockNode(Node):
         self.title = title
         self.classes = classes or []
         self.engine = engine
+        self.preprocessor = preprocessor
         self.args = args or []
         self.kwargs = kwargs or {}
 
@@ -443,6 +446,7 @@ class BlockNode(Node):
             "secondary_content": [i.asdict() for i in self.secondary_content],
             "classes": self.classes,
             "engine": self.engine,
+            "preprocessor": self.preprocessor,
             "args": self.args,
             "kwargs": self.kwargs,
             "title": self.title.asdict() if self.title else None,

@@ -1,5 +1,6 @@
 import pytest
 
+from mau.parsers import nodes
 from mau.parsers.main_parser import MainParser, ParseError, EngineError
 
 from tests.helpers import init_parser_factory, parser_test_factory
@@ -327,6 +328,55 @@ def test_block_raw_engine():
     ]
 
     _test(source, expected)
+
+
+def test_block_default_engine_adds_headers_to_global_toc():
+    source = """
+    = Global header
+
+    [someblock]
+    ----
+    = Block header
+    ----
+    """
+
+    expected = [
+        {
+            "type": "header",
+            "kwargs": {},
+            "tags": [],
+            "value": "Global header",
+            "level": 1,
+            "anchor": "global-header",
+        },
+        {
+            "args": [],
+            "blocktype": "someblock",
+            "content": [
+                {
+                    "anchor": "block-header",
+                    "kwargs": {},
+                    "level": 1,
+                    "tags": [],
+                    "type": "header",
+                    "value": "Block header",
+                },
+            ],
+            "classes": [],
+            "engine": "default",
+            "kwargs": {},
+            "secondary_content": [],
+            "title": None,
+            "type": "block",
+        },
+    ]
+
+    p = _test(source, expected)
+
+    assert p.headers == [
+        nodes.HeaderNode("Global header", 1, "global-header"),
+        nodes.HeaderNode("Block header", 1, "block-header"),
+    ]
 
 
 def test_block_positive_condition_matches():

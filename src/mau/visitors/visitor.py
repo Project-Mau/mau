@@ -135,7 +135,7 @@ class Visitor:
 
         return node
 
-    def _visit_engine_mau(self, node):
+    def _visit_block_engine_mau(self, node):
         # If the engine is mau we need to
         # process the content in an isolated parser
         # This can't easily be done in the MainParser
@@ -170,7 +170,7 @@ class Visitor:
         self._reduce(node, ["title"])
 
         try:
-            method = getattr(self, f'_visit_engine_{node["engine"]}')
+            method = getattr(self, f'_visit_block_engine_{node["engine"]}')
         except AttributeError:
             return node
 

@@ -68,7 +68,7 @@ class AsciidoctorVisitor(Visitor):
             raise ValueError(f"""Admonition {node["class"]} cannot be converted""")
         return node
 
-    def _visit_engine_source(self, node):
+    def _visit_block_engine_source(self, node):
         src = node["content"].split("\n")
 
         # Inject callout markers in the highlighted code

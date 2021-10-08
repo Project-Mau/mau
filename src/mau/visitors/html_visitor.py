@@ -146,7 +146,7 @@ class HTMLVisitor(Visitor):
         self._reducelist(node, ["content"], join_with="")
         return node
 
-    def _visit_engine_source(self, node):
+    def _visit_block_engine_source(self, node):
         # The Pygments lexer for the given language
         lexer = get_lexer_by_name(node["kwargs"]["language"])
 

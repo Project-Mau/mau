@@ -79,7 +79,7 @@ class MarkuaVisitor(Visitor):
 
         return node
 
-    def _visit_engine_source(self, node):
+    def _visit_block_engine_source(self, node):
         node["kwargs"]["callouts"] = []
 
         return node

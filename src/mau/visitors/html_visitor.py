@@ -8,10 +8,6 @@ from mau.parsers import nodes
 from mau.visitors.visitor import Visitor
 
 
-class EngineError(ValueError):
-    """ Used to signal that the engine selected for a code block is not known """
-
-
 DEFAULT_TEMPLATES = {
     "admonition.html": (
         '<div class="admonition {{ class }}">'

@@ -444,7 +444,6 @@ class MainParser(BaseParser):
         # ----
         # secondary_content
         #
-        # This is used to parse blocks which do not have special code.
 
         # Consume the attributes
         args, kwargs = self.argsparser.get_arguments_and_reset()
@@ -455,9 +454,10 @@ class MainParser(BaseParser):
         # Extract condition if present and process it
         condition = kwargs.pop("condition", "")
 
+        # Run this only if there is a condition on this block
         if len(condition) > 0:
             try:
-                # The condition should be test:variable:value or test:variable:
+                # The condition should be either test:variable:value or test:variable:
                 test, variable, value = condition.split(":")
             except ValueError:
                 raise ParseError(
@@ -482,10 +482,20 @@ class MainParser(BaseParser):
         # Extract the engine
         engine = kwargs.pop("engine", "default")
 
+        # Create the node parameters according to the engine
         if engine in ["raw", "mau"]:
+            # Engine "raw" doesn't process the content,
+            # so we just pass it untouched in the form of
+            # a TextNode per line. The same is true for "mau"
+            # as the visitor will have to fire up an new parser
+            # to process the content.
             content = [TextNode(line) for line in content]
             secondary_content = [TextNode(line) for line in secondary_content]
         elif engine == "source":
+            # Engine "source" extracts the content (source code),
+            # the callouts, and the highlights.
+            # The default language is "text".
+
             content, callouts, highlights = self._parse_source_engine(
                 content, secondary_content, kwargs
             )
@@ -495,6 +505,11 @@ class MainParser(BaseParser):
             kwargs["highlights"] = highlights
             kwargs["language"] = kwargs.get("language", "text")
         elif engine == "default":
+            # This is the default engine and it parses
+            # both content and secondary content using a new parser
+            # but then merges headers and footnotes into the
+            # current one.
+
             # Parse the primary and secondary content and record footnotes
             pc = MainParser(variables=self.variables).analyse("\n".join(content))
             ps = MainParser(variables=self.variables).analyse(

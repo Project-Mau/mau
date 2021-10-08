@@ -24,7 +24,7 @@ def test_source(mock_highlight):
 
     source = textwrap.dedent(
         """
-        [source]
+        [myblock, engine=source]
         ----
         import os
 
@@ -33,7 +33,7 @@ def test_source(mock_highlight):
         """
     )
 
-    expected = ['<div class="code"><div class="content">XYXYXY</div></div>']
+    expected = ['<div class="myblock"><div class="content">XYXYXY</div></div>']
 
     _test(source, expected)
 
@@ -44,7 +44,7 @@ def test_source_indentation(mock_highlight):
 
     source = textwrap.dedent(
         """
-        [source,text]
+        [myblock, engine=source]
         ----
         Not indented
 
@@ -54,7 +54,7 @@ def test_source_indentation(mock_highlight):
     )
 
     expected = [
-        '<div class="code"><div class="content">Not indented\n\n    Indented</div></div>'
+        '<div class="myblock"><div class="content">Not indented\n\n    Indented</div></div>'
     ]
 
     _test(source, expected)
@@ -63,7 +63,7 @@ def test_source_indentation(mock_highlight):
 def test_source_callouts():
     source = textwrap.dedent(
         """
-        [source,callouts=":"]
+        [myblock, engine=source]
         ----
         Some code:1:
         
@@ -76,7 +76,7 @@ def test_source_callouts():
 
     expected = [
         (
-            '<div class="code">'
+            '<div class="myblock">'
             '<div class="content">'
             '<div class="highlight">'
             '<pre><span></span>Some code <span class="callout">1</span>\n\nSome other code <span class="callout">3</span>\n</pre>'
@@ -96,7 +96,7 @@ def test_source_callouts():
 def test_source_empty_callouts():
     source = textwrap.dedent(
         """
-        [source,callouts=":"]
+        [myblock, engine=source]
         ----
         Some code:1:
         
@@ -107,7 +107,7 @@ def test_source_empty_callouts():
 
     expected = [
         (
-            '<div class="code">'
+            '<div class="myblock">'
             '<div class="content">'
             '<div class="highlight">'
             '<pre><span></span>Some code <span class="callout">1</span>\n\nSome other code <span class="callout">3</span>\n</pre>'
@@ -122,7 +122,7 @@ def test_source_empty_callouts():
 def test_source_pygments_config():
     source = textwrap.dedent(
         """
-        [source,pygments.hl_lines="1,2,3"]
+        [myblock, engine=source, pygments.hl_lines="1,2,3"]
         ----
         import os
 
@@ -132,7 +132,7 @@ def test_source_pygments_config():
     )
 
     expected = [
-        '<div class="code"><div class="content"><div class="highlight"><pre><span></span><span class="hll">import os\n</span><span class="hll">\n</span><span class="hll">print(os.environ[&quot;HOME&quot;])\n</span></pre></div>\n</div></div>'
+        '<div class="myblock"><div class="content"><div class="highlight"><pre><span></span><span class="hll">import os\n</span><span class="hll">\n</span><span class="hll">print(os.environ[&quot;HOME&quot;])\n</span></pre></div>\n</div></div>'
     ]
 
     _test(source, expected)
@@ -141,7 +141,7 @@ def test_source_pygments_config():
 def test_source_highlights():
     source = textwrap.dedent(
         """
-        [source]
+        [myblock, engine=source]
         ----
         import os:@:
 
@@ -151,7 +151,7 @@ def test_source_highlights():
     )
 
     expected = [
-        '<div class="code"><div class="content"><div class="highlight"><pre><span></span><span class="hll">import os\n</span>\n<span class="hll">print(os.environ[&quot;HOME&quot;])\n</span></pre></div>\n</div></div>'
+        '<div class="myblock"><div class="content"><div class="highlight"><pre><span></span><span class="hll">import os\n</span>\n<span class="hll">print(os.environ[&quot;HOME&quot;])\n</span></pre></div>\n</div></div>'
     ]
 
     _test(source, expected)

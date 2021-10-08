@@ -27,6 +27,20 @@ DEFAULT_TEMPLATES = {
         '<div class="content">{{ content }}</div>'
         "</div>"
     ),
+    "block-source.html": (
+        '<div{% if blocktype %} class="{{ blocktype }}"{% endif %}>'
+        '{% if title %}<div class="title">{{ title }}</div>{% endif %}'
+        '<div class="content">{{ content }}</div>'
+        '{% if kwargs.callouts %}<div class="callouts">'
+        "<table><tbody>"
+        "{% for callout in kwargs.callouts %}<tr>"
+        "<td>{{ callout[0] }}</td>"
+        "<td>{{ callout[1] }}</td>"
+        "</tr>{% endfor %}"
+        "</tbody></table>"
+        "</div>{% endif %}"
+        "</div>"
+    ),
     "callout.html": '<span class="callout">{{ name }}</span>',
     "class.html": '<span class="{{ classes }}">{{ content }}</span>',
     "command.html": "{{ content }}",
@@ -132,9 +146,9 @@ class HTMLVisitor(Visitor):
         self._reducelist(node, ["content"], join_with="")
         return node
 
-    def _visit_source(self, node):
+    def _visit_engine_source(self, node):
         # The Pygments lexer for the given language
-        lexer = get_lexer_by_name(node["language"])
+        lexer = get_lexer_by_name(node["kwargs"]["language"])
 
         # Fetch global configuration for Pygments and for the HtmlFormatter
         pygments_config = self.config.get("pygments", {})
@@ -158,7 +172,7 @@ class HTMLVisitor(Visitor):
         hl_lines = [i for i in hl_lines if i != ""]
 
         # Pygments starts counting form 1, Mau from 0
-        highlight_markers = [i + 1 for i in node["highlights"]]
+        highlight_markers = [i + 1 for i in node["kwargs"]["highlights"]]
 
         # Merge the two
         hl_lines = list(set(hl_lines) | set(highlight_markers))
@@ -170,7 +184,7 @@ class HTMLVisitor(Visitor):
         formatter = get_formatter_by_name("html", **formatter_config)
 
         # Get the raw source from the node
-        src = "\n".join([i["value"] for i in node["code"]])
+        src = node["content"]
 
         # Highlight the source with Pygments
         highlighted_src = highlight(src, lexer, formatter)
@@ -179,8 +193,8 @@ class HTMLVisitor(Visitor):
         highlighted_src_lines = highlighted_src.split("\n")
 
         # Inject callout markers in the highlighted code
-        callout_markers = node["callouts"]["markers"]
-        callout_contents = node["callouts"]["contents"]
+        callout_markers = node["kwargs"]["callouts"]["markers"]
+        callout_contents = node["kwargs"]["callouts"]["contents"]
 
         for linenum, callout_name in callout_markers.items():
             highlighted_src_lines[linenum] = "{line} {callout}".format(
@@ -195,9 +209,8 @@ class HTMLVisitor(Visitor):
             for name, text in callout_contents.items()
         ]
 
-        node["code"] = highlighted_src
-        node["callouts"] = callouts_list
-        self._reduce(node, ["title"])
+        node["content"] = highlighted_src
+        node["kwargs"]["callouts"] = callouts_list
 
         return node
 

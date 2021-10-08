@@ -376,143 +376,12 @@ class MainParser(BaseParser):
         blocktype = self.argsparser.pop()
 
         # Parse the content according to the block type
-        if blocktype == "source":
-            return self._parse_source_block(content, secondary_content, title)
-        elif blocktype == "admonition":
+        if blocktype == "admonition":
             return self._parse_admonition_block(content)
         elif blocktype == "quote":
             return self._parse_quote_block(content, title)
 
         return self._parse_standard_block(blocktype, content, secondary_content, title)
-
-    def _parse_source_block(self, content, secondary_content, title):
-        # Parse a source block in the form
-        #
-        # [source, language, attributes...]
-        # ----
-        # content
-        # ----
-        #
-        # Source blocks support the following attributes
-        #
-        # callouts=":" The separator used by callouts
-        # highlight="@" The special character to turn on highlight
-        #
-        # [source, language, attributes...]
-        # ----
-        # content:1:
-        # ----
-        #
-        # [source, language, attributes...]
-        # ----
-        # content:@:
-        # ----
-        #
-        # Callout descriptions can be added to the block
-        # as secondary content with the syntax
-        #
-        # [source, language, attributes...]
-        # ----
-        # content:name:
-        # ----
-        # <name>: <description>
-        #
-        # Since Mau uses Pygments, the attribute language
-        # is one of the langauges supported by that tool.
-
-        # Assign names and consume the attributes
-        self.argsparser.merge_unnamed_args(["language"])
-        args, kwargs = self.argsparser.get_arguments_and_reset()
-
-        # Get the delimiter for callouts (":" by default)
-        delimiter = kwargs.pop("callouts", ":")
-
-        # A dictionary that contains callout markers in
-        # the form {linenum:name}
-        callout_markers = {}
-
-        # Get the marker for highlighted lines ("@" by default)
-        highlight_marker = kwargs.pop("highlight", "@")
-
-        # A list of highlighted lines
-        highlighted_lines = []
-
-        # This is a list of all lines that might contain
-        # a callout. They will be further processed
-        # later to be sure.
-        lines_with_callouts = [
-            (linenum, line)
-            for linenum, line in enumerate(content)
-            if line.endswith(delimiter)
-        ]
-
-        # Each line in the previous list is processed
-        # and stored if it contains a callout
-        for linenum, line in lines_with_callouts:
-            # Remove the final delimiter
-            line = line[:-1]
-
-            splits = line.split(delimiter)
-            if len(splits) < 2:
-                # It's a trap! There are no separators left
-                continue
-
-            # Get the callout and the line
-            callout_name = splits[-1]
-            line = delimiter.join(splits[:-1])
-
-            content[linenum] = line
-
-            # Check if we want to just highlight the line
-            if callout_name == highlight_marker:
-                highlighted_lines.append(linenum)
-            else:
-                callout_markers[linenum] = callout_name
-
-        # A dictionary that contains the text for each
-        # marker in the form {name:text}
-        callout_contents = {}
-
-        # If there was secondary content it should be formatted
-        # with callout names followed by colon and the
-        # callout text.
-        for line in secondary_content:
-            if ":" not in line:
-                raise ParseError(
-                    f"Callout description should be written as 'name: text'. Missing ':' in '{line}'"
-                )
-
-            name, text = line.split(":")
-
-            if name not in callout_markers.values():
-                raise ParseError(
-                    f"Callout {name} has not been created in the source code"
-                )
-
-            text = text.strip()
-
-            callout_contents[name] = text
-
-        # Put markers and contents together
-        callouts = {"markers": callout_markers, "contents": callout_contents}
-
-        # Source blocks must preserve the content literally
-        textlines = [TextNode(line) for line in content]
-
-        # Get the language for this block
-        language = kwargs.pop("language", "text")
-
-        self._save(
-            SourceNode(
-                language,
-                callouts=callouts,
-                highlights=highlighted_lines,
-                delimiter=delimiter,
-                code=textlines,
-                title=title,
-                kwargs=kwargs,
-            )
-        )
 
     def _parse_admonition_block(self, content):
         # Parse an admonition in the form
@@ -607,15 +476,24 @@ class MainParser(BaseParser):
             if match is not result:
                 return
 
-        # Extract the engine
-        engine = kwargs.pop("engine", "default")
-
         # Extract the preprocessor
         preprocessor = kwargs.pop("preprocessor", "none")
+
+        # Extract the engine
+        engine = kwargs.pop("engine", "default")
 
         if engine in ["raw", "mau"]:
             content = [TextNode(line) for line in content]
             secondary_content = [TextNode(line) for line in secondary_content]
+        elif engine == "source":
+            content, callouts, highlights = self._parse_source_engine(
+                content, secondary_content, kwargs
+            )
+            secondary_content = []
+
+            kwargs["callouts"] = callouts
+            kwargs["highlights"] = highlights
+            kwargs["language"] = kwargs.get("language", "text")
         elif engine == "default":
             # Parse the primary and secondary content and record footnotes
             pc = MainParser(variables=self.variables).analyse("\n".join(content))
@@ -643,6 +521,130 @@ class MainParser(BaseParser):
                 title=title,
             )
         )
+
+    def _parse_source_engine(self, content, secondary_content, kwargs):
+        # Parse a source block in the form
+        #
+        # [source, language, attributes...]
+        # ----
+        # content
+        # ----
+        #
+        # Source blocks support the following attributes
+        #
+        # callouts=":" The separator used by callouts
+        # highlight="@" The special character to turn on highlight
+        #
+        # [source, language, attributes...]
+        # ----
+        # content:1:
+        # ----
+        #
+        # [source, language, attributes...]
+        # ----
+        # content:@:
+        # ----
+        #
+        # Callout descriptions can be added to the block
+        # as secondary content with the syntax
+        #
+        # [source, language, attributes...]
+        # ----
+        # content:name:
+        # ----
+        # <name>: <description>
+        #
+        # Since Mau uses Pygments, the attribute language
+        # is one of the langauges supported by that tool.
+
+        # Get the delimiter for callouts (":" by default)
+        delimiter = kwargs.pop("callouts", ":")
+
+        # A dictionary that contains callout markers in
+        # the form {linenum:name}
+        callout_markers = {}
+
+        # Get the marker for highlighted lines ("@" by default)
+        highlight_marker = kwargs.pop("highlight", "@")
+
+        # A list of highlighted lines
+        highlighted_lines = []
+
+        # This is a list of all lines that might contain
+        # a callout. They will be further processed
+        # later to be sure.
+        lines_with_callouts = [
+            (linenum, line)
+            for linenum, line in enumerate(content)
+            if line.endswith(delimiter)
+        ]
+
+        # Each line in the previous list is processed
+        # and stored if it contains a callout
+        for linenum, line in lines_with_callouts:
+            # Remove the final delimiter
+            line = line[:-1]
+
+            splits = line.split(delimiter)
+            if len(splits) < 2:
+                # It's a trap! There are no separators left
+                continue
+
+            # Get the callout and the line
+            callout_name = splits[-1]
+            line = delimiter.join(splits[:-1])
+
+            content[linenum] = line
+
+            # Check if we want to just highlight the line
+            if callout_name == highlight_marker:
+                highlighted_lines.append(linenum)
+            else:
+                callout_markers[linenum] = callout_name
+
+        # A dictionary that contains the text for each
+        # marker in the form {name:text}
+        callout_contents = {}
+
+        # If there was secondary content it should be formatted
+        # with callout names followed by colon and the
+        # callout text.
+        for line in secondary_content:
+            if ":" not in line:
+                raise ParseError(
+                    f"Callout description should be written as 'name: text'. Missing ':' in '{line}'"
+                )
+
+            name, text = line.split(":")
+
+            if name not in callout_markers.values():
+                raise ParseError(
+                    f"Callout {name} has not been created in the source code"
+                )
+
+            text = text.strip()
+
+            callout_contents[name] = text
+
+        # Put markers and contents together
+        callouts = {"markers": callout_markers, "contents": callout_contents}
+
+        # Source blocks must preserve the content literally
+        textlines = [TextNode(line) for line in content]
+
+        return textlines, callouts, highlighted_lines
+
+        # self._save(
+        #     SourceNode(
+        #         language,
+        #         callouts=callouts,
+        #         highlights=highlighted_lines,
+        #         delimiter=delimiter,
+        #         code=textlines,
+        #         title=title,
+        #         kwargs=kwargs,
+        #     )
+        # )
 
     @parser
     def _parse_content(self):

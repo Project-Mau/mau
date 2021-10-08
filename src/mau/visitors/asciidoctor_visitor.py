@@ -3,6 +3,7 @@ from mau.visitors.visitor import Visitor
 DEFAULT_TEMPLATES = {
     "admonition.adoc": "[{{ class }}{% if icon %}.{{ icon }}{% endif %}]\n====\n{{ content }}====\n",
     "block.adoc": "--\n{{ content }}\n--",
+    "block-source.adoc": "{% if title %}.{{ title }}\n{% endif %}[source{% if kwargs.language %},{{ kwargs.language }}{% endif %}]\n----\n{{ content }}\n----\n{% if kwargs.callouts %}{% for callout in kwargs.callouts %}{{ callout[0] }} {{ callout[1] }}{% endfor %}\n{% endif %}",
     "callout.adoc": "<{{ name }}>",
     "class.adoc": """[{{ classes }}]#{{ content }}#""",
     "document.adoc": "{{ content }}",
@@ -17,7 +18,6 @@ DEFAULT_TEMPLATES = {
     "paragraph.adoc": "{{ content }}\n",
     "quote.adoc": '[quote, "{{ attribution }}"]\n____\n{{ content }}____\n',
     "sentence.adoc": "{{ content }}",
-    "source.adoc": "{% if title %}.{{ title }}\n{% endif %}[source{% if language %},{{ language }}{% endif %}]\n----\n{{ code }}\n----\n{% if callouts %}{% for callout in callouts %}{{ callout[0] }} {{ callout[1] }}{% endfor %}\n{% endif %}",
     "star.adoc": "*{{ content }}*",
     "text.adoc": "{{ value }}",
     "underscore.adoc": "_{{ content }}_",
@@ -68,16 +68,12 @@ class AsciidoctorVisitor(Visitor):
             raise ValueError(f"""Admonition {node["class"]} cannot be converted""")
         return node
 
-    def _visit_block(self, node):
-        self._reducelist(node, ["content"], join_with="\n")
-        return node
-
-    def _visit_source(self, node):
-        src = [i["value"] for i in node["code"]]
+    def _visit_engine_source(self, node):
+        src = node["content"].split("\n")
 
         # Inject callout markers in the highlighted code
-        callout_markers = node["callouts"]["markers"]
-        callout_contents = node["callouts"]["contents"]
+        callout_markers = node["kwargs"]["callouts"]["markers"]
+        callout_contents = node["kwargs"]["callouts"]["contents"]
 
         for linenum, callout_name in callout_markers.items():
             src[linenum] = "{line} {callout}".format(
@@ -85,15 +81,14 @@ class AsciidoctorVisitor(Visitor):
                 callout=self._render("callout", name=callout_name),
             )
 
-        src = "\n".join(src)
         callouts_list = [
             (self._render("callout", name=name), text)
             for name, text in callout_contents.items()
         ]
 
-        node["code"] = src
-        node["callouts"] = callouts_list
-        self._reduce(node, ["title"])
+        node["content"] = "\n".join(src)
+        node["kwargs"]["callouts"] = callouts_list
+
         return node
 
     def _visit_document(self, node):

@@ -135,35 +135,46 @@ class Visitor:
 
         return node
 
-    def _visit_block(self, node):
-        node["node_types"] = [f'block-{node["blocktype"]}']
-
-        self._reducelist(node, ["content"], join_with="\n")
-        self._reducelist(node, ["secondary_content"], join_with="\n")
-        self._reduce(node, ["title"])
-
+    def _visit_engine_mau(self, node):
         # If the engine is mau we need to
         # process the content in an isolated parser
         # This can't easily be done in the MainParser
         # class itself because the visitor needs the
         # TOC from the parser.
-        if node["engine"] == "mau":
-            p = MainParser().analyse(node["content"])
-            ps = MainParser().analyse(node["secondary_content"])
+        p = MainParser().analyse(node["content"])
+        ps = MainParser().analyse(node["secondary_content"])
 
-            visitor = self.__class__(
-                default_templates=self.default_templates,
-                templates_directory=self.templates_directory,
-                config=p.variables,
-                toc=p.toc,
-                footnotes=p.footnotes,
-            )
-            node["content"] = visitor.visit(nodes.ContainerNode(p.nodes).asdict())
-            node["secondary_content"] = visitor.visit(
-                nodes.ContainerNode(ps.nodes).asdict()
-            )
+        visitor = self.__class__(
+            default_templates=self.default_templates,
+            templates_directory=self.templates_directory,
+            config=p.variables,
+            toc=p.toc,
+            footnotes=p.footnotes,
+        )
+        node["content"] = visitor.visit(nodes.ContainerNode(p.nodes).asdict())
+        node["secondary_content"] = visitor.visit(
+            nodes.ContainerNode(ps.nodes).asdict()
+        )
 
         return node
+
+    def _visit_block(self, node):
+        node["node_types"] = [
+            f'block-{node["engine"]}-{node["blocktype"]}',
+            f'block-{node["engine"]}',
+            f'block-{node["blocktype"]}',
+        ]
+
+        self._reducelist(node, ["content"], join_with="\n")
+        self._reducelist(node, ["secondary_content"], join_with="\n")
+        self._reduce(node, ["title"])
+
+        try:
+            method = getattr(self, f'_visit_engine_{node["engine"]}')
+        except AttributeError:
+            return node
+
+        return method(node)
 
     def _visit_class(self, node):
         self._reduce(node, ["content"])

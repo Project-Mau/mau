@@ -286,14 +286,14 @@ def test_document():
 def test_source():
     source = dedent(
         """
-        [source,language]
+        [myblock, engine=source, language=somelang]
         ----
         Some {} source a:=5 code
         ----
         """
     )
 
-    expected = ["[source,language]\n----\nSome {} source a:=5 code\n----\n"]
+    expected = ["[source,somelang]\n----\nSome {} source a:=5 code\n----\n"]
 
     _test(source, expected)
 
@@ -302,14 +302,14 @@ def test_source_title():
     source = dedent(
         """
         .title
-        [source,language]
+        [myblock, engine=source, language=somelang]
         ----
         Some {} source a:=5 code
         ----
         """
     )
 
-    expected = [".title\n[source,language]\n----\nSome {} source a:=5 code\n----\n"]
+    expected = [".title\n[source,somelang]\n----\nSome {} source a:=5 code\n----\n"]
 
     _test(source, expected)
 
@@ -317,7 +317,7 @@ def test_source_title():
 def test_source_callouts():
     source = dedent(
         """
-        [source, language]
+        [myblock, engine=source, language=somelang]
         ----
         Some {} source a:=5 code:1:
         ----
@@ -326,7 +326,7 @@ def test_source_callouts():
     )
 
     expected = [
-        "[source,language]\n----\nSome {} source a:=5 code <1>\n----\n<1> Callout\n"
+        "[source,somelang]\n----\nSome {} source a:=5 code <1>\n----\n<1> Callout\n"
     ]
 
     _test(source, expected)

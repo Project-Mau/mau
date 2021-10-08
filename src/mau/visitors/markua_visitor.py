@@ -3,6 +3,7 @@ from mau.visitors.visitor import Visitor
 DEFAULT_TEMPLATES = {
     "admonition.md": "{blurb, class: {{ class }}}\n**{{ label }}**\n\n{{ content }}{/blurb}\n\n",
     "block.md": "{{ content }}",
+    "block-source.md": '{% if title %}{caption: "{{ title }}"}\n{% endif %}``` {% if kwargs.language %}{{ kwargs.language }}{% endif %}\n{{ content }}\n```',
     "callout.md": "",
     "class.md": "{{ content }}",
     "command.md": "{{ content }}",
@@ -20,7 +21,6 @@ DEFAULT_TEMPLATES = {
     "paragraph.md": "{{ content }}\n",
     "quote.md": "{blurb, icon: quote-right}\n{{ content }}\n{{ attribution }}\n{/blurb}\n\n",
     "sentence.md": "{{ content }}",
-    "source.md": '{% if title %}{caption: "{{ title }}"}\n{% endif %}``` {% if language %}{{ language }}{% endif %}\n{{ code }}\n```',
     "star.md": "**{{ content }}**",
     "text.md": "{{ value }}",
     "underscore.md": "*{{ content }}*",
@@ -79,20 +79,9 @@ class MarkuaVisitor(Visitor):
 
         return node
 
-    def _visit_block(self, node):
-        self._reducelist(node, ["content"], join_with="\n")
-        self._reduce(node, ["title"])
-        return node
+    def _visit_engine_source(self, node):
+        node["kwargs"]["callouts"] = []
 
-    def _visit_source(self, node):
-        src = [i["value"] for i in node["code"]]
-
-        src = "\n".join(src)
-        callouts_list = []
-
-        node["code"] = src
-        node["callouts"] = callouts_list
-        self._reduce(node, ["title"])
         return node
 
     def _visit_document(self, node):

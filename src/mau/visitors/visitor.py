@@ -98,10 +98,7 @@ class Visitor:
         if node is None:
             return ""
 
-        if node["type"] == "command":
-            method_name = f'_visit_command_{node["name"]}'
-        else:
-            method_name = f'_visit_{node["type"]}'
+        method_name = f'_visit_{node["type"]}'
 
         try:
             method = getattr(self, method_name)
@@ -239,3 +236,15 @@ class Visitor:
     def _visit_verbatim(self, node):
         node["content"] = node["value"]
         return node
+
+    def _visit_command(self, node):
+        node["node_types"] = [
+            f'command-{node["name"]}',
+        ]
+
+        try:
+            method = getattr(self, f'_visit_command_{node["name"]}')
+        except AttributeError:
+            return node
+
+        return method(node)

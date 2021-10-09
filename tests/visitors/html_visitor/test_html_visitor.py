@@ -668,3 +668,29 @@ def test_block_provides_primary_and_secondary_content_args_and_kwargs():
     assert output == [
         "<p>Primary content</p> - <p>Secondary content</p> - somearg - value"
     ]
+
+
+@patch("mau.parsers.main_parser.header_anchor")
+def test_command_consumes_args(header_anchor_mock):
+    header_anchor_mock.return_value = "XXXXXX"
+
+    source = dedent(
+        """
+        ::unknown:unused1,unuse2=value2
+
+        [sometype]
+        ++++
+        = A block
+
+        This contains headers, paragraphs and blocks
+
+        ++++
+        """
+    )
+
+    expected = [
+        "",
+        """<div class="sometype"><div class="content"><h1 id="XXXXXX">A block</h1>\n<p>This contains headers, paragraphs and blocks</p></div></div>""",
+    ]
+
+    _test(source, expected)

@@ -237,15 +237,13 @@ class MainParser(BaseParser):
         args = []
         kwargs = {}
 
-        # Commands can in theory have arguments
-        # even though so far no command uses them.
-        # I might have over-engineered this a bit
-        # but it was fun ;)
+        # Commands can have arguments
         with self:
             arguments = self.get_token(TokenTypes.TEXT).value
             p = self.argsparser.analyse(arguments)
-            args = p.args
-            kwargs = p.kwargs
+
+            # Consume the attributes
+            args, kwargs = self.argsparser.get_arguments_and_reset()
 
         self._save(CommandNode(name=name, args=args, kwargs=kwargs))
 

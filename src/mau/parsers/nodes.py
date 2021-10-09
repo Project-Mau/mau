@@ -607,6 +607,7 @@ class CommandNode(Node):
     node_type = "command"
 
     def __init__(self, name, args=None, kwargs=None):
+        self.args = args or []
         self.kwargs = kwargs or {}
         self.name = name
 
@@ -614,6 +615,7 @@ class CommandNode(Node):
         return {
             "type": self.node_type,
             "name": self.name,
+            "args": self.args,
             "kwargs": self.kwargs,
         }
 

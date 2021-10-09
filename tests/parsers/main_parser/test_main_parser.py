@@ -119,14 +119,15 @@ def test_parse_paragraphs_is_a_macro_only():
 
 
 def test_command():
-    p = init_parser("::somecommand:argument1=value1,argument2=value2")
+    p = init_parser("::somecommand:arg1, arg2, name1=value1, name2=value2")
     p.parse()
 
     assert listasdict(p.nodes) == [
         {
             "type": "command",
             "name": "somecommand",
-            "kwargs": {"argument1": "value1", "argument2": "value2"},
+            "args": ["arg1", "arg2"],
+            "kwargs": {"name1": "value1", "name2": "value2"},
         },
     ]
 
@@ -139,6 +140,7 @@ def test_command_without_arguments():
         {
             "type": "command",
             "name": "somecommand",
+            "args": [],
             "kwargs": {},
         },
     ]

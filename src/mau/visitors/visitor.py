@@ -13,6 +13,10 @@ class TemplateNotFound(ValueError):
     pass
 
 
+class CommandError(ValueError):
+    pass
+
+
 def return_node(node, *args, **kwargs):
     return node
 

@@ -1,8 +1,10 @@
 import textwrap
-
 from unittest.mock import patch
 
+import pytest
+
 from mau.parsers.main_parser import MainParser
+from mau.visitors.visitor import CommandError
 from mau.visitors.html_visitor import HTMLVisitor
 
 from tests.helpers import (
@@ -153,5 +155,27 @@ def test_source_highlights():
     expected = [
         '<div class="myblock"><div class="content"><div class="highlight"><pre><span></span><span class="hll">import os\n</span>\n<span class="hll">print(os.environ[&quot;HOME&quot;])\n</span></pre></div>\n</div></div>'
     ]
+
+    _test(source, expected)
+
+
+@patch("mau.visitors.html_visitor.highlight")
+def test_source_block_definition(mock_highlight):
+    mock_highlight.return_value = "XYXYXY"
+
+    source = textwrap.dedent(
+        """
+        ::defblock:source, myblock, engine=source
+
+        [source]
+        ----
+        import os
+
+        print(os.environ["HOME"])
+        ----
+        """
+    )
+
+    expected = ['<div class="myblock"><div class="content">XYXYXY</div></div>']
 
     _test(source, expected)

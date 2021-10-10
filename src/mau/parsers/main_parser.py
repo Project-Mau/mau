@@ -72,6 +72,14 @@ class MainParser(BaseParser):
         self.blocks = {}
         self.toc = None
 
+        # When we define a block we establish an alias
+        # {alias:actual_block_name}
+        self.block_aliases = {}
+
+        # Each block we define has named and unnamed arguments
+        # {actual_block_name:kwargs}
+        self.block_arguments = {}
+
         # This is a buffer for a block title
         self._title = None
 
@@ -245,6 +253,25 @@ class MainParser(BaseParser):
             # Consume the attributes
             args, kwargs = self.argsparser.get_arguments_and_reset()
 
+        if name == "defblock":
+            # Block definitions must have exactly 2 arguments,
+            # the alias and the block type.
+            # More than that is not acceptable because it would
+            # raise issues when it's time to update the local
+            # unnamed arguments passed to the block
+            if len(args) != 2:
+                raise ParseError(
+                    f"Block definitions require exactly two unnamed arguments: ALIAS and BLOCKTYPE"
+                )
+
+            block_alias = args.pop(0)
+            block_type = args.pop(0)
+
+            self.block_aliases[block_alias] = block_type
+            self.block_arguments[block_type] = kwargs
+
+            return None
+
         self._save(CommandNode(name=name, args=args, kwargs=kwargs))
 
     @parser
@@ -373,6 +400,10 @@ class MainParser(BaseParser):
         # The first unnamed argument is the block type
         blocktype = self.argsparser.pop()
 
+        # If there is a block alias for blocktype replace it
+        # otherwise use the blocktype we already have
+        blocktype = self.block_aliases.get(blocktype, blocktype)
+
         # Parse the content according to the block type
         if blocktype == "admonition":
             return self._parse_admonition_block(content)
@@ -445,6 +476,12 @@ class MainParser(BaseParser):
 
         # Consume the attributes
         args, kwargs = self.argsparser.get_arguments_and_reset()
+
+        # If there are block arguments get them and update them with the ones we read
+        if blocktype in self.block_arguments:
+            defined_kwargs = self.block_arguments[blocktype].copy()
+            defined_kwargs.update(kwargs)
+            kwargs = defined_kwargs
 
         # Extract classes and convert them into a list
         classes = [i for i in kwargs.pop("classes", "").split(",") if len(i) > 0]

@@ -532,3 +532,113 @@ def test_block_condition_raises_exception():
 
     with pytest.raises(ParseError):
         _test(source, expected)
+
+
+def test_command_defblock():
+    p = init_parser("::defblock:source, myblock, language=python, engine=source")
+    p.parse()
+
+    assert p.block_aliases == {"source": "myblock"}
+    assert p.block_arguments == {"myblock": {"language": "python", "engine": "source"}}
+
+
+def test_command_defblock_no_args():
+    p = init_parser("::defblock:")
+
+    with pytest.raises(ParseError):
+        p.parse()
+
+
+def test_command_defblock_single_arg():
+    p = init_parser("::defblock:source")
+
+    with pytest.raises(ParseError):
+        p.parse()
+
+
+def test_command_defblock_too_many_args():
+    p = init_parser("::defblock:alias, blocktype, attr1, attr2")
+
+    with pytest.raises(ParseError):
+        p.parse()
+
+
+def test_block_definitions_are_used():
+    source = """
+    ::defblock:alias, blocktype, name1=value1, name2=value2
+
+    [alias]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {"name1": "value1", "name2": "value2"},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "default",
+            "preprocessor": "none",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_definitions_local_kwargs_overwrite_defined_ones():
+    source = """
+    ::defblock:alias, blocktype, name1=value1, name2=value2
+
+    [alias, name1=value99]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {"name1": "value99", "name2": "value2"},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "default",
+            "preprocessor": "none",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_definitions_local_args_are_used():
+    source = """
+    ::defblock:alias, blocktype, name1=value1, name2=value2
+
+    [alias, attr1, name1=value99]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": ["attr1"],
+            "blocktype": "blocktype",
+            "kwargs": {"name1": "value99", "name2": "value2"},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "default",
+            "preprocessor": "none",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)

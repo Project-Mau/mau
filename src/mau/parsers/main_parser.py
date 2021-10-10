@@ -84,6 +84,18 @@ class MainParser(BaseParser):
         # {actual_block_name:kwargs}
         self.block_arguments = {}
 
+        # Backward compatibility with Mau 1.x
+        # Mau 1.x used [source] to format source, while Mau 2.x
+        # uses [myblock, engine=source], so this establishes
+        # a default block definition so that
+        # [source] = [source, engine=source]
+        # In Mau 2.x this block uses the template "block-source"
+        # so any template called "source" (e.g. "source.html")
+        # must be renamed.
+        # This definition can be overridden by custom block definitions
+        self.block_aliases["source"] = "source"
+        self.block_arguments["source"] = {"engine": "source"}
+
         # Iterate through block definitions passed as variables
         for alias, block_definition in (
             self.variables["mau"].get("block_definitions", {}).items()
@@ -561,7 +573,13 @@ class MainParser(BaseParser):
 
             kwargs["callouts"] = callouts
             kwargs["highlights"] = highlights
+
+            # Language can be specified as unnamed argument to
+            # make the syntax less verbose.
             kwargs["language"] = kwargs.get("language", "text")
+            if len(args) > 0:
+                kwargs["language"] = args.pop(0)
+
         elif engine == "default":
             # This is the default engine and it parses
             # both content and secondary content using a new parser

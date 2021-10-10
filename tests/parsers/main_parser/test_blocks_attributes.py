@@ -535,11 +535,24 @@ def test_block_condition_raises_exception():
 
 
 def test_command_defblock():
-    p = init_parser("::defblock:source, myblock, language=python, engine=source")
+    p = init_parser("::defblock:alias, myblock, language=python, engine=source")
     p.parse()
 
-    assert p.block_aliases == {"source": "myblock"}
-    assert p.block_arguments == {"myblock": {"language": "python", "engine": "source"}}
+    assert p.block_aliases == {"alias": "myblock", "source": "source"}
+    assert p.block_arguments == {
+        "myblock": {"language": "python", "engine": "source"},
+        "source": {"engine": "source"},
+    }
+
+
+def test_command_defblock_backward_compatible_source_can_be_overridden():
+    p = init_parser("::defblock:source, source, language=python, engine=source")
+    p.parse()
+
+    assert p.block_aliases == {"source": "source"}
+    assert p.block_arguments == {
+        "source": {"language": "python", "engine": "source"},
+    }
 
 
 def test_command_defblock_no_args():
@@ -635,6 +648,66 @@ def test_block_definitions_local_args_are_used():
             "secondary_content": [],
             "classes": [],
             "engine": "default",
+            "preprocessor": "none",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_definitions_default_source_has_engine_source():
+    source = """
+    [source]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "source",
+            "kwargs": {
+                "callouts": {"contents": {}, "markers": {}},
+                "highlights": [],
+                "language": "text",
+            },
+            "secondary_content": [],
+            "classes": [],
+            "engine": "source",
+            "preprocessor": "none",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_definitions_default_source_unnamed_language_wins():
+    source = """
+    ::defblock:alias, source, engine=source, language=c
+
+    [alias, python]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "source",
+            "kwargs": {
+                "callouts": {"contents": {}, "markers": {}},
+                "highlights": [],
+                "language": "python",
+            },
+            "secondary_content": [],
+            "classes": [],
+            "engine": "source",
             "preprocessor": "none",
             "title": None,
             "content": [],

@@ -27,6 +27,7 @@ class Mau:
         config,
         target_format,
         default_templates=None,
+        custom_templates=None,
         templates_directory=None,
         full_document=False,
     ):
@@ -36,6 +37,9 @@ class Mau:
 
         # A dictionary with the default templates.
         self.default_templates = default_templates
+
+        # A dictionary with the custom templates.
+        self.custom_templates = custom_templates
 
         # A directory that contains the custom templates as files
         self.templates_directory = templates_directory
@@ -82,6 +86,7 @@ class Mau:
         # variables defined inside the text
         visitor = visitor_class(
             default_templates=self.default_templates,
+            custom_templates=self.custom_templates,
             templates_directory=self.templates_directory,
             config=parser.variables,
             toc=parser.toc,

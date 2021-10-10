@@ -80,20 +80,6 @@ DEFAULT_TEMPLATES = {
     ),
     "raw.html": "{{ content }}",
     "sentence.html": "{{ content }}",
-    "source.html": (
-        '<div class="code">'
-        '{% if title %}<div class="title">{{ title }}</div>{% endif %}'
-        '<div class="content">{{ code }}</div>'
-        '{% if callouts %}<div class="callouts">'
-        "<table><tbody>"
-        "{% for callout in callouts %}<tr>"
-        "<td>{{ callout[0] }}</td>"
-        "<td>{{ callout[1] }}</td>"
-        "</tr>{% endfor %}"
-        "</tbody></table>"
-        "</div>{% endif %}"
-        "</div>"
-    ),
     "star.html": "<strong>{{ content }}</strong>",
     "text.html": "{{ value }}",
     "toc.html": "<div>{% if entries%}<ul>{{ entries }}</ul>{% endif %}</div>",
@@ -114,6 +100,7 @@ class HTMLVisitor(Visitor):
     def __init__(
         self,
         default_templates=None,
+        custom_templates=None,
         templates_directory=None,
         config=None,
         toc=None,
@@ -127,6 +114,7 @@ class HTMLVisitor(Visitor):
 
         super().__init__(
             default_templates=default_templates,
+            custom_templates=custom_templates,
             templates_directory=templates_directory,
             config=config,
             toc=toc,

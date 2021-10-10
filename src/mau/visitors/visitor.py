@@ -28,16 +28,20 @@ class Visitor:
     def __init__(
         self,
         default_templates=None,
+        custom_templates=None,
         templates_directory=None,
         config=None,
         toc=None,
         footnotes=None,
     ):
         self.default_templates = default_templates or {}
+        self.custom_templates = custom_templates or {}
         self.templates_directory = templates_directory
         self.config = copy.deepcopy(config) if config else {}
         self.toc = toc or nodes.TocNode()
         self.footnotes = footnotes or nodes.FootnotesNode()
+
+        self.default_templates.update(self.custom_templates)
 
         # This is the fallback environment for templates
         self.default_templates_env = jinja2.Environment(

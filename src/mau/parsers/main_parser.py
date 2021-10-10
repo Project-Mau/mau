@@ -3,7 +3,7 @@ import copy
 
 from mau.lexers.base_lexer import TokenTypes, Token, TokenError
 from mau.lexers.main_lexer import MainLexer
-from mau.parsers.base_parser import BaseParser, ParseError, parser
+from mau.parsers.base_parser import BaseParser, ParseError, ConfigurationError, parser
 from mau.parsers.text_parser import TextParser
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
@@ -66,7 +66,11 @@ class MainParser(BaseParser):
         # then use them when dealing with the block itself.
         self.argsparser = ArgumentsParser()
 
+        # Copy the variables and make sure the "mau" namespace exists
         self.variables = copy.deepcopy(variables) if variables else {}
+        if "mau" not in self.variables:
+            self.variables["mau"] = {}
+
         self.headers = []
         self.footnote_defs = []
         self.blocks = {}
@@ -80,6 +84,25 @@ class MainParser(BaseParser):
         # {actual_block_name:kwargs}
         self.block_arguments = {}
 
+        # Iterate through block definitions passed as variables
+        for alias, block_definition in (
+            self.variables["mau"].get("block_definitions", {}).items()
+        ):
+            try:
+                blocktype = block_definition["blocktype"]
+                self.block_aliases[alias] = blocktype
+            except KeyError:
+                raise ConfigurationError(
+                    f"Block definition '{alias}' is missing key 'blocktype'"
+                )
+
+            try:
+                self.block_arguments[blocktype] = block_definition["kwargs"]
+            except KeyError:
+                raise ConfigurationError(
+                    f"Block definition '{alias}' is missing key 'kwargs'"
+                )
+
         # This is a buffer for a block title
         self._title = None
 
@@ -87,8 +110,8 @@ class MainParser(BaseParser):
         # anchors. It can be specified through
         # mau.header_anchor_function to override
         # the default one.
-        self.header_anchor = self.variables.get(
-            "mau.header_anchor_function", header_anchor
+        self.header_anchor = self.variables["mau"].get(
+            "header_anchor_function", header_anchor
         )
 
     def _pop_title(self):

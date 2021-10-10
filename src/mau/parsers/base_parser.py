@@ -5,6 +5,10 @@ import functools
 from mau.lexers.base_lexer import BaseLexer, Token, TokenTypes, TokenError, Literal
 
 
+class ConfigurationError(ValueError):
+    """This is a configuration error."""
+
+
 class ParseError(ValueError):
     """This is a generic parsing error."""
 

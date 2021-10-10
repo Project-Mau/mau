@@ -12,7 +12,7 @@ def test_parse_variable_definition_without_value_is_loaded_as_boolean():
     p.parse()
 
     assert listasdict(p.nodes) == []
-    assert p.variables == {"attr": True}
+    assert p.variables == {"mau": {}, "attr": True}
 
 
 def test_parse_variable_definition_without_value_can_be_negated():
@@ -20,7 +20,7 @@ def test_parse_variable_definition_without_value_can_be_negated():
     p.parse()
 
     assert listasdict(p.nodes) == []
-    assert p.variables == {"attr": False}
+    assert p.variables == {"mau": {}, "attr": False}
 
 
 def test_parse_variable_definition_negative_flag_ignores_value():
@@ -28,7 +28,7 @@ def test_parse_variable_definition_negative_flag_ignores_value():
     p.parse()
 
     assert listasdict(p.nodes) == []
-    assert p.variables == {"attr": False}
+    assert p.variables == {"mau": {}, "attr": False}
 
 
 def test_parse_variable_definition_with_value_is_loaded():
@@ -36,7 +36,7 @@ def test_parse_variable_definition_with_value_is_loaded():
     p.parse()
 
     assert listasdict(p.nodes) == []
-    assert p.variables == {"attr": "42"}
+    assert p.variables == {"mau": {}, "attr": "42"}
 
 
 def test_parse_variable_definition_value_can_be_any_text():
@@ -44,7 +44,7 @@ def test_parse_variable_definition_value_can_be_any_text():
     p.parse()
 
     assert listasdict(p.nodes) == []
-    assert p.variables == {"attr": "[footnote](http://some.domain/path)"}
+    assert p.variables == {"mau": {}, "attr": "[footnote](http://some.domain/path)"}
 
 
 def test_parse_variable_definition_with_namespace():
@@ -52,7 +52,7 @@ def test_parse_variable_definition_with_namespace():
     p.parse()
 
     assert listasdict(p.nodes) == []
-    assert p.variables == {"meta": {"attr": "42"}}
+    assert p.variables == {"mau": {}, "meta": {"attr": "42"}}
 
 
 def test_parse_variable_definition_with_multiple_dots():
@@ -60,7 +60,7 @@ def test_parse_variable_definition_with_multiple_dots():
     p.parse()
 
     assert listasdict(p.nodes) == []
-    assert p.variables == {"meta": {"category.attr": "42"}}
+    assert p.variables == {"mau": {}, "meta": {"category.attr": "42"}}
 
 
 def test_variable_replacement():

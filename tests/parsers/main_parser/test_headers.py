@@ -83,7 +83,7 @@ def test_custom_header_anchor_function():
         }
     ]
 
-    config = {"mau.header_anchor_function": lambda text, level: "XXXXXY"}
+    config = {"mau": {"header_anchor_function": lambda text, level: "XXXXXY"}}
 
     _test = parser_test_factory(MainParser, variables=config)
 

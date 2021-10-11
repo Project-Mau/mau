@@ -21,6 +21,25 @@ class ArgumentsParser(BaseParser):
         self.kwargs = {}
         self.args = []
 
+    def apply_prototype(self, positional_names, default_values):
+        # This happens if we passed too many positional
+        # values. The case where we pass less positional
+        # values than required is checked later when named
+        # arguments are merged.
+        if len(self.args) > len(positional_names):
+            raise ParseError
+
+        positional_arguments = dict(zip(positional_names, self.args))
+        default_values.update(self.kwargs)
+        default_values.update(positional_arguments)
+
+        # Positional arguments are mandatory and strict
+        if not set(positional_names).issubset(set(default_values.keys())):
+            raise ParseError
+
+        self.kwargs = default_values
+        self.args = []
+
     def merge_unnamed_args(self, names):
         """
         Give a name to unnamed args.
@@ -30,18 +49,16 @@ class ArgumentsParser(BaseParser):
         overwritten.
         """
 
-        for i, name in enumerate(names):
-            # If the named arguments already
-            # contain that key just ignore it
-            if name in self.kwargs:
-                continue
+        if len(self.args) > len(names):
+            raise ParseError(
+                f"Too many values. Required arguments: {names} - values: {self.args}"
+            )
 
-            # The try/except takes into
-            # account optional arguments
-            try:
-                self.kwargs[name] = self.args[i]
-            except IndexError:
-                pass
+        _kwargs = dict(zip(names, self.args))
+
+        self.kwargs.update(_kwargs)
+
+        self.args = []
 
     def pop(self):
         """

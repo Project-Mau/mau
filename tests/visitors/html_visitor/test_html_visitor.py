@@ -1,6 +1,9 @@
+import pytest
+
 from unittest.mock import patch
 
 from mau.parsers.nodes import DocumentNode, ContainerNode
+from mau.parsers.base_parser import ParseError
 from mau.parsers.main_parser import MainParser
 from mau.visitors.html_visitor import HTMLVisitor
 
@@ -644,30 +647,45 @@ def test_block_uses_specific_template():
     assert output == ["the right one"]
 
 
-def test_block_provides_primary_and_secondary_content_args_and_kwargs():
+def test_block_supports_kwargs():
     v = HTMLVisitor()
     v.default_templates["block.html"] = "whatever"
     v.default_templates[
         "block-unknown.html"
-    ] = "{{ content }} - {{ secondary_content }} - {{ args[0] }} - {{ kwargs.name}}"
+    ] = "{{ kwargs.name }} - {{ kwargs.colour }}"
 
     ast = init_ast(
         dedent(
             """
-            [unknown, somearg, name=value]
+            [unknown, name=myblock, colour=green]
             ----
-            Primary content
             ----
-            Secondary content
             """
         )
     )
 
     output = [v.visit(node) for node in ast]
 
-    assert output == [
-        "<p>Primary content</p> - <p>Secondary content</p> - somearg - value"
-    ]
+    assert output == ["myblock - green"]
+
+
+def test_block_does_not_support_args():
+    v = HTMLVisitor()
+    v.default_templates["block.html"] = "whatever"
+    v.default_templates["block-unknown.html"] = ""
+
+    with pytest.raises(ParseError):
+        ast = init_ast(
+            dedent(
+                """
+                [unknown, value1, value2]
+                ----
+                Primary content
+                ----
+                Secondary content
+                """
+            )
+        )
 
 
 @patch("mau.parsers.main_parser.header_anchor")

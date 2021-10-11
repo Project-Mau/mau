@@ -201,3 +201,92 @@ def test_single_named_argument_with_escaped_quotes():
 
     assert p.args == []
     assert p.kwargs == {"name": 'value "with escaped quotes"'}
+
+
+def test_apply_prototype_unnamed_arguments():
+    p = init_parser("value1, value2")
+    p.parse()
+    p.apply_prototype(["attr1", "attr2"], {"attr3": "value3"})
+
+    assert p.args == []
+    assert p.kwargs == {"attr1": "value1", "attr2": "value2", "attr3": "value3"}
+
+
+def test_apply_prototype_unnamed_and_named_arguments():
+    p = init_parser("value1, value2, attr5=value5")
+    p.parse()
+    p.apply_prototype(["attr1", "attr2"], {"attr3": "value3"})
+
+    assert p.args == []
+    assert p.kwargs == {
+        "attr1": "value1",
+        "attr2": "value2",
+        "attr3": "value3",
+        "attr5": "value5",
+    }
+
+
+def test_apply_prototype_clash_between_default_and_named():
+    p = init_parser("value1, value2, attr3=value5")
+    p.parse()
+    p.apply_prototype(["attr1", "attr2"], {"attr3": "value3"})
+
+    assert p.args == []
+    assert p.kwargs == {
+        "attr1": "value1",
+        "attr2": "value2",
+        "attr3": "value5",
+    }
+
+
+def test_apply_prototype_clash_between_positional_and_named():
+    p = init_parser("value1, value2, attr1=value5")
+    p.parse()
+    p.apply_prototype(["attr1", "attr2"], {"attr3": "value3"})
+
+    assert p.args == []
+    assert p.kwargs == {
+        "attr1": "value1",
+        "attr2": "value2",
+        "attr3": "value3",
+    }
+
+
+def test_apply_prototype_clash_in_prototype():
+    p = init_parser("value1, value2, attr3=value3")
+    p.parse()
+    p.apply_prototype(["attr1", "attr2"], {"attr1": "value7"})
+
+    assert p.args == []
+    assert p.kwargs == {
+        "attr1": "value1",
+        "attr2": "value2",
+        "attr3": "value3",
+    }
+
+
+def test_apply_prototype_positional_values_not_provided():
+    p = init_parser("value1")
+    p.parse()
+
+    with pytest.raises(ParseError):
+        p.apply_prototype(["attr1", "attr2"], {"attr3": "value3"})
+
+
+def test_apply_prototype_too_many_positional_values():
+    p = init_parser("value1, value2")
+    p.parse()
+
+    with pytest.raises(ParseError):
+        p.apply_prototype(["attr1"], {"attr3": "value3"})
+
+
+def test_apply_prototype_missing_positional_with_default():
+    p = init_parser("attr1=value5")
+    p.parse()
+    p.apply_prototype(["attr1"], {})
+
+    assert p.args == []
+    assert p.kwargs == {
+        "attr1": "value5",
+    }

@@ -131,7 +131,7 @@ def test_attributes_can_contain_variables():
 def test_parse_block_title_and_attributes():
     source = """
     .Just a title
-    [blocktype,attribute1,attribute2]
+    [blocktype, name1=value1, name2=value2]
     ----
     ----
     """
@@ -149,8 +149,8 @@ def test_parse_block_title_and_attributes():
             "classes": [],
             "engine": "default",
             "preprocessor": "none",
-            "args": ["attribute1", "attribute2"],
-            "kwargs": {},
+            "args": [],
+            "kwargs": {"name1": "value1", "name2": "value2"},
         },
     ]
 
@@ -160,7 +160,7 @@ def test_parse_block_title_and_attributes():
 def test_parse_block_title_and_attributes_are_reset():
     source = """
     .Just a title
-    [blocktype1,attribute1,attribute2]
+    [blocktype1, name1=value1, name2=value2]
     ----
     ----
 
@@ -182,8 +182,8 @@ def test_parse_block_title_and_attributes_are_reset():
             "classes": [],
             "engine": "default",
             "preprocessor": "none",
-            "args": ["attribute1", "attribute2"],
-            "kwargs": {},
+            "args": [],
+            "kwargs": {"name1": "value1", "name2": "value2"},
         },
         {
             "type": "block",
@@ -541,7 +541,7 @@ def test_command_defblock():
     assert p.block_aliases == {"alias": "myblock", "source": "source"}
     assert p.block_arguments == {
         "myblock": {"language": "python", "engine": "source"},
-        "source": {"engine": "source"},
+        "source": {"language": "text", "engine": "source"},
     }
 
 
@@ -564,13 +564,6 @@ def test_command_defblock_no_args():
 
 def test_command_defblock_single_arg():
     p = init_parser("::defblock:source")
-
-    with pytest.raises(ParseError):
-        p.parse()
-
-
-def test_command_defblock_too_many_args():
-    p = init_parser("::defblock:alias, blocktype, attr1, attr2")
 
     with pytest.raises(ParseError):
         p.parse()
@@ -654,7 +647,8 @@ def test_block_definitions_local_args_are_used():
         },
     ]
 
-    _test(source, expected)
+    with pytest.raises(ParseError):
+        _test(source, expected)
 
 
 def test_block_definitions_default_source_has_engine_source():
@@ -686,11 +680,9 @@ def test_block_definitions_default_source_has_engine_source():
     _test(source, expected)
 
 
-def test_block_definitions_default_source_unnamed_language_wins():
+def test_block_definitions_default_source_language():
     source = """
-    ::defblock:alias, source, engine=source, language=c
-
-    [alias, python]
+    [source, python]
     ----
     ----
     """
@@ -715,3 +707,113 @@ def test_block_definitions_default_source_unnamed_language_wins():
     ]
 
     _test(source, expected)
+
+
+def test_block_definitions_unnamed_args_are_used_as_names():
+    source = """
+    ::defblock:alias, blocktype, attr1, attr2
+
+    [alias, value1, value2]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {"attr1": "value1", "attr2": "value2"},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "default",
+            "preprocessor": "none",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_definitions_unnamed_and_named_args():
+    source = """
+    ::defblock:alias, blocktype, attr1, attr2, attr3=value3
+
+    [alias, value1, value2]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {"attr1": "value1", "attr2": "value2", "attr3": "value3"},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "default",
+            "preprocessor": "none",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    _test(source, expected)
+
+
+def test_block_definitions_no_values_for_unnamed_args():
+    source = """
+    ::defblock:alias, blocktype, attr1, attr2, attr3=value3
+
+    [alias]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": [],
+            "blocktype": "blocktype",
+            "kwargs": {"attr3": "value3"},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "default",
+            "preprocessor": "none",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    with pytest.raises(ParseError):
+        _test(source, expected)
+
+
+def test_block_definitions_values_without_unnamed_args():
+    source = """
+    ::defblock:alias, blocktype, attr3=value3
+
+    [alias, value1, value2]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "args": ["value1", "value2"],
+            "blocktype": "blocktype",
+            "kwargs": {"attr3": "value3"},
+            "secondary_content": [],
+            "classes": [],
+            "engine": "default",
+            "preprocessor": "none",
+            "title": None,
+            "content": [],
+        },
+    ]
+
+    with pytest.raises(ParseError):
+        _test(source, expected)

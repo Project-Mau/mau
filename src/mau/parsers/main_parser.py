@@ -80,9 +80,13 @@ class MainParser(BaseParser):
         # {alias:actual_block_name}
         self.block_aliases = {}
 
-        # Each block we define has named and unnamed arguments
+        # Each block we define can have default values
         # {actual_block_name:kwargs}
         self.block_arguments = {}
+
+        # Each block we define can have names for unnamed arguments
+        # {actual_block_name:kwargs}
+        self.block_names = {}
 
         # Backward compatibility with Mau 1.x
         # Mau 1.x used [source] to format source, while Mau 2.x
@@ -94,7 +98,8 @@ class MainParser(BaseParser):
         # must be renamed.
         # This definition can be overridden by custom block definitions
         self.block_aliases["source"] = "source"
-        self.block_arguments["source"] = {"engine": "source"}
+        self.block_arguments["source"] = {"engine": "source", "language": "text"}
+        self.block_names["source"] = ["language"]
 
         # Iterate through block definitions passed as variables
         for alias, block_definition in (
@@ -289,14 +294,11 @@ class MainParser(BaseParser):
             args, kwargs = self.argsparser.get_arguments_and_reset()
 
         if name == "defblock":
-            # Block definitions must have exactly 2 arguments,
+            # Block definitions must have at least 2 arguments,
             # the alias and the block type.
-            # More than that is not acceptable because it would
-            # raise issues when it's time to update the local
-            # unnamed arguments passed to the block
-            if len(args) != 2:
+            if len(args) < 2:
                 raise ParseError(
-                    f"Block definitions require exactly two unnamed arguments: ALIAS and BLOCKTYPE"
+                    f"Block definitions require at least two unnamed arguments: ALIAS and BLOCKTYPE"
                 )
 
             block_alias = args.pop(0)
@@ -304,6 +306,7 @@ class MainParser(BaseParser):
 
             self.block_aliases[block_alias] = block_type
             self.block_arguments[block_type] = kwargs
+            self.block_names[block_type] = args
 
             return None
 
@@ -509,14 +512,14 @@ class MainParser(BaseParser):
         # secondary_content
         #
 
+        # Assign names
+
+        self.argsparser.apply_prototype(
+            self.block_names.get(blocktype, []), self.block_arguments.get(blocktype, {})
+        )
+
         # Consume the attributes
         args, kwargs = self.argsparser.get_arguments_and_reset()
-
-        # If there are block arguments get them and update them with the ones we read
-        if blocktype in self.block_arguments:
-            defined_kwargs = self.block_arguments[blocktype].copy()
-            defined_kwargs.update(kwargs)
-            kwargs = defined_kwargs
 
         # Extract classes and convert them into a list
         classes = [i for i in kwargs.pop("classes", "").split(",") if len(i) > 0]
@@ -573,12 +576,7 @@ class MainParser(BaseParser):
 
             kwargs["callouts"] = callouts
             kwargs["highlights"] = highlights
-
-            # Language can be specified as unnamed argument to
-            # make the syntax less verbose.
             kwargs["language"] = kwargs.get("language", "text")
-            if len(args) > 0:
-                kwargs["language"] = args.pop(0)
 
         elif engine == "default":
             # This is the default engine and it parses

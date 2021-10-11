@@ -211,7 +211,12 @@ class TextParser(BaseParser):
         # Get the target as it can be used as default text
         target = kwargs.get("target")
 
-        return LinkNode(target, kwargs.get("text", target))
+        # We might omit text
+        text = kwargs.get("text")
+        if text is None:
+            text = target
+
+        return LinkNode(target, text)
 
     def parse_macro_mailto(self):
         """

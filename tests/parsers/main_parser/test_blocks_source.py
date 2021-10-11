@@ -85,7 +85,7 @@ def test_source_with_title():
     _test(source, expected)
 
 
-def test_source_without_language():
+def test_engine_source_without_language():
     source = """
     [myblock, engine=source]
     ----
@@ -324,7 +324,8 @@ def test_source_callouts_default_delimiter():
 
     _test(source, expected)
 
-    # def test_source_callouts_custom_delimiter():
+
+def test_source_callouts_custom_delimiter():
     source = """
     [myblock, engine=source, language=somelang, callouts="|"]
     ----

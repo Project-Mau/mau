@@ -187,8 +187,6 @@ def test_source_block_definition_variables_are_untouched(mock_highlight):
 
     source = textwrap.dedent(
         """
-        ::defblock:source, myblock, engine=source
-
         [source]
         ----
         a = 5
@@ -198,6 +196,6 @@ def test_source_block_definition_variables_are_untouched(mock_highlight):
         """
     )
 
-    expected = ['<div class="myblock"><div class="content">XYXYXY</div></div>']
+    expected = ['<div class="source"><div class="content">XYXYXY</div></div>']
 
     _test(source, expected)

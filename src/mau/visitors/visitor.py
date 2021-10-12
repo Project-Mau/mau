@@ -174,12 +174,20 @@ class Visitor:
         self._reducelist(node, ["secondary_content"], join_with="\n")
         self._reduce(node, ["title"])
 
-        try:
-            method = getattr(self, f'_visit_block_engine_{node["engine"]}')
-        except AttributeError:
-            return node
+        method = None
+        for method_name in [
+            f'_visit_block_engine_{node["engine"]}',
+            f'_visit_block_{node["blocktype"]}',
+        ]:
+            try:
+                method = getattr(self, method_name)
+            except AttributeError:
+                continue
 
-        return method(node)
+        if method:
+            return method(node)
+
+        return node
 
     def _visit_class(self, node):
         self._reduce(node, ["content"])

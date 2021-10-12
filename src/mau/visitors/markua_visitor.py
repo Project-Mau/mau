@@ -1,7 +1,7 @@
 from mau.visitors.visitor import Visitor
 
 DEFAULT_TEMPLATES = {
-    "admonition.md": "{blurb, class: {{ class }}}\n**{{ label }}**\n\n{{ content }}{/blurb}\n\n",
+    "block-admonition.md": "{blurb, class: {{ kwargs.class }}}\n**{{ kwargs.label }}**\n\n{{ content }}{/blurb}\n\n",
     "block.md": "{{ content }}",
     "block-source.md": '{% if title %}{caption: "{{ title }}"}\n{% endif %}``` {% if kwargs.language %}{{ kwargs.language }}{% endif %}\n{{ content }}\n```',
     "callout.md": "",
@@ -62,20 +62,20 @@ class MarkuaVisitor(Visitor):
         node["header"] = "#" * int(node["level"])
         return node
 
-    def _visit_admonition(self, node):
-        self._reducelist(node, ["content"], join_with="")
+    def _visit_block_admonition(self, node):
+        if node["kwargs"]["class"] == "note":
+            node["kwargs"]["class"] = "tip"
 
-        if node["class"] == "note":
-            node["class"] = "tip"
-
-        if node["class"] not in [
+        if node["kwargs"]["class"] not in [
             "discussion",
             "error",
             "information",
             "tip",
             "warning",
         ]:
-            raise ValueError(f"""Admonition {node["class"]} cannot be converted""")
+            raise ValueError(
+                f"""Admonition {node["kwargs"]["class"]} cannot be converted"""
+            )
 
         return node
 

@@ -1,7 +1,7 @@
 from mau.visitors.visitor import Visitor
 
 DEFAULT_TEMPLATES = {
-    "admonition.adoc": "[{{ class }}{% if icon %}.{{ icon }}{% endif %}]\n====\n{{ content }}====\n",
+    "block-admonition.adoc": "[{{ kwargs.class }}{% if kwargs.icon %}.{{ kwargs.icon }}{% endif %}]\n====\n{{ content }}====\n",
     "block.adoc": "--\n{{ content }}\n--",
     "block-source.adoc": "{% if title %}.{{ title }}\n{% endif %}[source{% if kwargs.language %},{{ kwargs.language }}{% endif %}]\n----\n{{ content }}\n----\n{% if kwargs.callouts %}{% for callout in kwargs.callouts %}{{ callout[0] }} {{ callout[1] }}{% endfor %}\n{% endif %}",
     "callout.adoc": "<{{ name }}>",
@@ -59,13 +59,20 @@ class AsciidoctorVisitor(Visitor):
         node["header"] = "=" * int(node["level"])
         return node
 
-    def _visit_admonition(self, node):
-        self._reducelist(node, ["content"], join_with="")
-
-        if node["class"] in ["note", "tip", "important", "caution", "warning"]:
-            node["class"] = node["class"].upper()
+    def _visit_block_admonition(self, node):
+        if node["kwargs"]["class"] in [
+            "note",
+            "tip",
+            "important",
+            "caution",
+            "warning",
+        ]:
+            node["kwargs"]["class"] = node["kwargs"]["class"].upper()
         else:
-            raise ValueError(f"""Admonition {node["class"]} cannot be converted""")
+            raise ValueError(
+                f"""Admonition {node["kwargs"]["class"]} cannot be converted"""
+            )
+
         return node
 
     def _visit_block_engine_source(self, node):

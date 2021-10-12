@@ -101,6 +101,9 @@ class MainParser(BaseParser):
         self.block_arguments["source"] = {"engine": "source", "language": "text"}
         self.block_names["source"] = ["language"]
 
+        self.block_aliases["admonition"] = "admonition"
+        self.block_names["admonition"] = ["class", "icon", "label"]
+
         # Iterate through block definitions passed as variables
         for alias, block_definition in (
             self.variables["mau"].get("block_definitions", {}).items()
@@ -443,38 +446,38 @@ class MainParser(BaseParser):
         blocktype = self.block_aliases.get(blocktype, blocktype)
 
         # Parse the content according to the block type
-        if blocktype == "admonition":
-            return self._parse_admonition_block(content)
-        elif blocktype == "quote":
+        # if blocktype == "admonition":
+        #     return self._parse_admonition_block(content)
+        if blocktype == "quote":
             return self._parse_quote_block(content, title)
 
         return self._parse_standard_block(blocktype, content, secondary_content, title)
 
-    def _parse_admonition_block(self, content):
-        # Parse an admonition in the form
-        #
-        # [admonition, class, icon, label]
-        # ----
-        # content
-        # ----
+    # def _parse_admonition_block(self, content):
+    #     # Parse an admonition in the form
+    #     #
+    #     # [admonition, class, icon, label]
+    #     # ----
+    #     # content
+    #     # ----
 
-        # Assign names and consume the attributes
-        self.argsparser.merge_unnamed_args(["class", "icon", "label"])
-        args, kwargs = self.argsparser.get_arguments_and_reset()
+    #     # Assign names and consume the attributes
+    #     self.argsparser.merge_unnamed_args(["class", "icon", "label"])
+    #     args, kwargs = self.argsparser.get_arguments_and_reset()
 
-        # Parse the content and record footnotes
-        p = MainParser(variables=self.variables).analyse("\n".join(content))
-        self.footnote_defs.extend(p.footnote_defs)
+    #     # Parse the content and record footnotes
+    #     p = MainParser(variables=self.variables).analyse("\n".join(content))
+    #     self.footnote_defs.extend(p.footnote_defs)
 
-        self._save(
-            AdmonitionNode(
-                admclass=kwargs.pop("class"),
-                icon=kwargs.pop("icon"),
-                label=kwargs.pop("label"),
-                content=p.nodes,
-                kwargs=kwargs,
-            )
-        )
+    #     self._save(
+    #         AdmonitionNode(
+    #             admclass=kwargs.pop("class"),
+    #             icon=kwargs.pop("icon"),
+    #             label=kwargs.pop("label"),
+    #             content=p.nodes,
+    #             kwargs=kwargs,
+    #         )
+    #     )
 
     def _parse_quote_block(self, content, title):
         # Parse a quote block in the form

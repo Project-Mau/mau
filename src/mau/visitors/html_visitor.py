@@ -9,11 +9,11 @@ from mau.visitors.visitor import Visitor
 
 
 DEFAULT_TEMPLATES = {
-    "admonition.html": (
-        '<div class="admonition {{ class }}">'
-        '<i class="{{ icon }}"></i>'
+    "block-admonition.html": (
+        '<div class="admonition {{ kwargs.class }}">'
+        '<i class="{{ kwargs.icon }}"></i>'
         '<div class="content">'
-        '<div class="title">{{ label }}</div>'
+        '<div class="title">{{ kwargs.label }}</div>'
         "<div>{{ content }}</div>"
         "</div></div>"
     ),

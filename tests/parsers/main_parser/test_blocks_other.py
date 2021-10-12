@@ -17,11 +17,8 @@ def test_admonition():
 
     expected = [
         {
-            "type": "admonition",
-            "class": "someclass",
-            "icon": "someicon",
-            "label": "somelabel",
-            "kwargs": {},
+            "type": "block",
+            "blocktype": "admonition",
             "content": [
                 {
                     "type": "paragraph",
@@ -33,39 +30,13 @@ def test_admonition():
                     },
                 }
             ],
-        },
-    ]
-
-    _test(source, expected)
-
-
-def test_admonition_ignores_title():
-    source = """
-            . Title
-            [admonition,someclass,someicon,somelabel]
-            ----
-            Content
-            ----
-            """
-
-    expected = [
-        {
-            "type": "admonition",
-            "class": "someclass",
-            "icon": "someicon",
-            "label": "somelabel",
-            "kwargs": {},
-            "content": [
-                {
-                    "type": "paragraph",
-                    "args": [],
-                    "kwargs": {},
-                    "content": {
-                        "content": [{"type": "text", "value": "Content"}],
-                        "type": "sentence",
-                    },
-                }
-            ],
+            "secondary_content": [],
+            "title": None,
+            "classes": [],
+            "engine": "default",
+            "preprocessor": "none",
+            "args": [],
+            "kwargs": {"class": "someclass", "icon": "someicon", "label": "somelabel"},
         },
     ]
 

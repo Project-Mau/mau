@@ -538,21 +538,16 @@ def test_command_defblock():
     p = init_parser("::defblock:alias, myblock, language=python, engine=source")
     p.parse()
 
-    assert p.block_aliases == {"alias": "myblock", "source": "source"}
-    assert p.block_arguments == {
-        "myblock": {"language": "python", "engine": "source"},
-        "source": {"language": "text", "engine": "source"},
-    }
+    assert p.block_aliases["alias"] == "myblock"
+    assert p.block_arguments["myblock"] == {"language": "python", "engine": "source"}
 
 
 def test_command_defblock_backward_compatible_source_can_be_overridden():
     p = init_parser("::defblock:source, source, language=python, engine=source")
     p.parse()
 
-    assert p.block_aliases == {"source": "source"}
-    assert p.block_arguments == {
-        "source": {"language": "python", "engine": "source"},
-    }
+    assert p.block_aliases["source"] == "source"
+    assert p.block_arguments["source"] == {"language": "python", "engine": "source"}
 
 
 def test_command_defblock_no_args():

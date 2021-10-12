@@ -203,7 +203,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.merge_unnamed_args(["target", "text"])
+        self.argsparser.apply_prototype(["target", "text"], {"text": None})
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Set the name of the first two unnamed arguments
@@ -224,7 +224,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.merge_unnamed_args(["email"])
+        self.argsparser.apply_prototype(["email"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         email = kwargs.get("email")
@@ -238,7 +238,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.merge_unnamed_args(["text", "classes"])
+        self.argsparser.apply_prototype(["text", "classes"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Parse the text
@@ -259,14 +259,17 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.merge_unnamed_args(["uri", "alt_text", "width", "height"])
+        self.argsparser.apply_prototype(
+            ["uri", "alt_text", "width", "height"],
+            {"alt_text": None, "width": None, "height": None},
+        )
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         return ImageNode(
             uri=kwargs.get("uri"),
-            alt_text=kwargs.get("alt_text", None),
-            width=kwargs.get("width", None),
-            height=kwargs.get("height", None),
+            alt_text=kwargs.get("alt_text"),
+            width=kwargs.get("width"),
+            height=kwargs.get("height"),
         )
 
     def parse_macro_footnote(self):
@@ -276,7 +279,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.merge_unnamed_args(["text"])
+        self.argsparser.apply_prototype(["text"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         refanchor, defanchor = footnote_anchors(kwargs["text"])

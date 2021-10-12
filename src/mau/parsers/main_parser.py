@@ -488,7 +488,7 @@ class MainParser(BaseParser):
         # ----
 
         # Assign names and consume the attributes
-        self.argsparser.merge_unnamed_args(["attribution"])
+        self.argsparser.apply_prototype(["attribution"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Parse the content
@@ -770,11 +770,13 @@ class MainParser(BaseParser):
         # and classes is a comma-separated list of classes
 
         # Assign names and consume the attributes
-        self.argsparser.merge_unnamed_args(["alt_text"])
+        self.argsparser.apply_prototype(
+            ["alt_text", "classes"], {"alt_text": None, "classes": None}
+        )
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
-        alt_text = kwargs.pop("alt_text", None)
-        classes = kwargs.pop("classes", None)
+        alt_text = kwargs.pop("alt_text")
+        classes = kwargs.pop("classes")
 
         if classes:
             classes = classes.split(",")

@@ -134,6 +134,10 @@ class MainParser(BaseParser):
             "header_anchor_function", header_anchor
         )
 
+        self.v1_backward_compatibility = self.variables["mau"].get(
+            "v1_backward_compatibility", False
+        )
+
     def _pop_title(self):
         # This return the title and resets the
         # cached one, so no other block will
@@ -188,7 +192,10 @@ class MainParser(BaseParser):
         text = p.nodes[0].value
 
         # Parse the text
-        p = TextParser(footnotes_start_with=len(self.footnote_defs) + 1).analyse(text)
+        p = TextParser(
+            footnotes_start_with=len(self.footnote_defs) + 1,
+            v1_backward_compatibility=self.v1_backward_compatibility,
+        ).analyse(text)
 
         # Text should return a single sentence node
         result = p.nodes[0]
@@ -335,7 +342,10 @@ class MainParser(BaseParser):
         self.get_token(TokenTypes.EOL)
 
         # Titles can contain Mau code
-        p = TextParser(footnotes_start_with=len(self.footnote_defs) + 1).analyse(text)
+        p = TextParser(
+            footnotes_start_with=len(self.footnote_defs) + 1,
+            v1_backward_compatibility=self.v1_backward_compatibility,
+        ).analyse(text)
         title = p.nodes[0]
 
         self._push_title(title)
@@ -494,7 +504,9 @@ class MainParser(BaseParser):
         # Parse the content
         p = MainParser().analyse("\n".join(content))
 
-        pa = TextParser().analyse(kwargs.pop("attribution"))
+        pa = TextParser(
+            v1_backward_compatibility=self.v1_backward_compatibility
+        ).analyse(kwargs.pop("attribution"))
         attribution = pa.nodes[0]
 
         self._save(

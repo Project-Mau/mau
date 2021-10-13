@@ -614,6 +614,126 @@ def test_parse_macro_footnote_includes_round_brakets(footnote_anchors_mock):
     ]
 
 
+@patch("mau.parsers.text_parser.footnote_anchors")
+def test_parse_macro_footnote_commas_mau_v1(
+    footnote_anchors_mock,
+):
+    footnote_anchors_mock.return_value = ("refXYZ", "defXYZ")
+
+    source = r"text[footnote](Some text, that should not, be split) other text"
+
+    _test = parser_test_factory(TextParser, v1_backward_compatibility=True)
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {"type": "text", "value": "text"},
+                {
+                    "type": "footnote_ref",
+                    "number": 1,
+                    "refanchor": "refXYZ",
+                    "defanchor": "defXYZ",
+                    "content": [
+                        {
+                            "type": "sentence",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "value": "Some text, that should not, be split",
+                                },
+                            ],
+                        }
+                    ],
+                },
+                {"type": "text", "value": " other text"},
+            ],
+        }
+    ]
+
+    p = _test(source, expected)
+
+    assert listasdict(p.footnote_defs) == [
+        {
+            "type": "footnote_def",
+            "number": 1,
+            "refanchor": "refXYZ",
+            "defanchor": "defXYZ",
+            "content": [
+                {
+                    "type": "sentence",
+                    "content": [
+                        {
+                            "type": "text",
+                            "value": "Some text, that should not, be split",
+                        },
+                    ],
+                }
+            ],
+        }
+    ]
+
+
+@patch("mau.parsers.text_parser.footnote_anchors")
+def test_parse_macro_footnote_commas_mau_v2(
+    footnote_anchors_mock,
+):
+    footnote_anchors_mock.return_value = ("refXYZ", "defXYZ")
+
+    source = r'text[footnote]("Some text, that should not, be split") other text'
+
+    _test = parser_test_factory(TextParser)
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {"type": "text", "value": "text"},
+                {
+                    "type": "footnote_ref",
+                    "number": 1,
+                    "refanchor": "refXYZ",
+                    "defanchor": "defXYZ",
+                    "content": [
+                        {
+                            "type": "sentence",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "value": "Some text, that should not, be split",
+                                },
+                            ],
+                        }
+                    ],
+                },
+                {"type": "text", "value": " other text"},
+            ],
+        }
+    ]
+
+    p = _test(source, expected)
+
+    assert listasdict(p.footnote_defs) == [
+        {
+            "type": "footnote_def",
+            "number": 1,
+            "refanchor": "refXYZ",
+            "defanchor": "defXYZ",
+            "content": [
+                {
+                    "type": "sentence",
+                    "content": [
+                        {
+                            "type": "text",
+                            "value": "Some text, that should not, be split",
+                        },
+                    ],
+                }
+            ],
+        }
+    ]
+
+
 def test_parse_macro_mailto():
     source = "[mailto](info@projectmau.org)"
 

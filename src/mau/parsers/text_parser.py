@@ -35,7 +35,7 @@ def footnote_anchors(content):
 # The parsing always starts with parse_sentence
 # and from there all components of the text are explored
 class TextParser(BaseParser):
-    def __init__(self, footnotes_start_with=1):
+    def __init__(self, footnotes_start_with=1, v1_backward_compatibility=False):
         super().__init__()
 
         self.lexer = TextLexer()
@@ -48,6 +48,13 @@ class TextParser(BaseParser):
 
         # These are the footnotes found in this text
         self.footnote_defs = []
+
+        # This enables backward compatibility with Mau 1.x
+        # Footnotes didn't require quotes if they
+        # contain commas. In Mau 2.x footnotes accept
+        # arguments as the other macros so the text
+        # should be wrapped in quotes.
+        self.v1_backward_compatibility = v1_backward_compatibility
 
         # These are the nodes created by the parsing.
         self.nodes = []
@@ -272,20 +279,25 @@ class TextParser(BaseParser):
             height=kwargs.get("height"),
         )
 
-    def parse_macro_footnote(self):
+    def parse_macro_footnote(self, arguments):
         """
         Parse a footnote macro in the form
         [footnote](content).
         """
 
-        # Assign names and get the arguments
-        self.argsparser.set_names_and_defaults(["text"])
-        args, kwargs = self.argsparser.get_arguments_and_reset()
+        if self.v1_backward_compatibility:
+            self.argsparser.get_arguments_and_reset()
+            footnote_text = arguments
+        else:
+            # Assign names and get the arguments
+            self.argsparser.set_names_and_defaults(["text"])
+            args, kwargs = self.argsparser.get_arguments_and_reset()
+            footnote_text = kwargs["text"]
 
-        refanchor, defanchor = footnote_anchors(kwargs["text"])
+        refanchor, defanchor = footnote_anchors(footnote_text)
         number = self.footnotes_start_with + len(self.footnote_defs)
 
-        p = TextParser().analyse(kwargs["text"])
+        p = TextParser().analyse(footnote_text)
 
         self.footnote_defs.append(
             FootnoteDefNode(
@@ -348,7 +360,7 @@ class TextParser(BaseParser):
         elif macro_name == "image":
             return self.parse_macro_image()
         elif macro_name == "footnote":
-            return self.parse_macro_footnote()
+            return self.parse_macro_footnote(arguments)
 
         # Get the arguments
         args, kwargs = self.argsparser.get_arguments_and_reset()

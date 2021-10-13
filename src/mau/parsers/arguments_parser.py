@@ -35,7 +35,9 @@ class ArgumentsParser(BaseParser):
         # values than required is checked later when named
         # arguments are merged.
         if len(self.args) > len(positional_names):
-            raise ParseError
+            raise ParseError(
+                f"Error while parsing arguments {self.args} through names {positional_names}"
+            )
 
         positional_arguments = dict(zip(positional_names, self.args))
 

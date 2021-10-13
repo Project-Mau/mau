@@ -488,7 +488,7 @@ class MainParser(BaseParser):
         # ----
 
         # Assign names and consume the attributes
-        self.argsparser.apply_prototype(["attribution"])
+        self.argsparser.set_names_and_defaults(["attribution"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Parse the content
@@ -517,7 +517,7 @@ class MainParser(BaseParser):
 
         # Assign names
 
-        self.argsparser.apply_prototype(
+        self.argsparser.set_names_and_defaults(
             self.block_names.get(blocktype, []), self.block_arguments.get(blocktype, {})
         )
 
@@ -770,7 +770,7 @@ class MainParser(BaseParser):
         # and classes is a comma-separated list of classes
 
         # Assign names and consume the attributes
-        self.argsparser.apply_prototype(
+        self.argsparser.set_names_and_defaults(
             ["alt_text", "classes"], {"alt_text": None, "classes": None}
         )
         args, kwargs = self.argsparser.get_arguments_and_reset()

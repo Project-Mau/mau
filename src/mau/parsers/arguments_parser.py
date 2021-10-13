@@ -21,21 +21,33 @@ class ArgumentsParser(BaseParser):
         self.kwargs = {}
         self.args = []
 
-    def apply_prototype(self, positional_names, default_values=None):
+    def set_names_and_defaults(self, positional_names, default_values=None):
+        """
+        Gives names to positional arguments and assigns
+        default values to the ones that have not been
+        initialised.
+        """
+
+        _default_values = default_values or {}
+
         # This happens if we passed too many positional
         # values. The case where we pass less positional
         # values than required is checked later when named
         # arguments are merged.
-        _default_values = default_values or {}
-
         if len(self.args) > len(positional_names):
             raise ParseError
 
         positional_arguments = dict(zip(positional_names, self.args))
+
+        # Named arguments win over the defaults
         _default_values.update(self.kwargs)
+
+        # Positional arguments with win over all the rest
         _default_values.update(positional_arguments)
 
         # Positional arguments are mandatory and strict
+        # so all the names have to be present in the
+        # final dictionary.
         if not set(positional_names).issubset(set(_default_values.keys())):
             raise ParseError
 

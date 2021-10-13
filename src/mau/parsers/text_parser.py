@@ -203,7 +203,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.apply_prototype(["target", "text"], {"text": None})
+        self.argsparser.set_names_and_defaults(["target", "text"], {"text": None})
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Set the name of the first two unnamed arguments
@@ -224,7 +224,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.apply_prototype(["email"])
+        self.argsparser.set_names_and_defaults(["email"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         email = kwargs.get("email")
@@ -238,7 +238,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.apply_prototype(["text", "classes"])
+        self.argsparser.set_names_and_defaults(["text", "classes"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Parse the text
@@ -259,7 +259,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.apply_prototype(
+        self.argsparser.set_names_and_defaults(
             ["uri", "alt_text", "width", "height"],
             {"alt_text": None, "width": None, "height": None},
         )
@@ -279,7 +279,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.apply_prototype(["text"])
+        self.argsparser.set_names_and_defaults(["text"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         refanchor, defanchor = footnote_anchors(kwargs["text"])

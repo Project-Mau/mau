@@ -3,13 +3,13 @@ import pytest
 from mau.lexers.base_lexer import (
     Token,
     TokenTypes,
-    TokenError,
     EOL,
     EOF,
     Text,
     Literal,
 )
-from mau.parsers.base_parser import BaseParser, ExpectedError
+from mau.parsers.base_parser import BaseParser, ExpectedError, TokenError
+
 
 from tests.helpers import init_parser_factory
 

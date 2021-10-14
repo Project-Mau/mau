@@ -1,13 +1,9 @@
-import textwrap
-
 from unittest.mock import patch, mock_open
+
+from tests.helpers import dedent
 
 from mau.lexers.base_lexer import Text, Literal, EOL, EOF, WS
 from mau.lexers.main_lexer import MainLexer
-
-
-def dedent(text):
-    return textwrap.dedent(text).strip()
 
 
 def test_empty_text():

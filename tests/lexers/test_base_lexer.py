@@ -1,5 +1,7 @@
 import pytest
 
+from tests.helpers import dedent
+
 from mau import text_buffer
 from mau.lexers.base_lexer import BaseLexer, LexerError, EOL, EOF, Text, WS
 

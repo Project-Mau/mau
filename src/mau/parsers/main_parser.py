@@ -1,9 +1,15 @@
 import re
 import copy
 
-from mau.lexers.base_lexer import TokenTypes, Token, TokenError
+from mau.lexers.base_lexer import TokenTypes, Token
 from mau.lexers.main_lexer import MainLexer
-from mau.parsers.base_parser import BaseParser, ParseError, ConfigurationError, parser
+from mau.parsers.base_parser import (
+    BaseParser,
+    TokenError,
+    ParseError,
+    ConfigurationError,
+    parser,
+)
 from mau.parsers.text_parser import TextParser
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser

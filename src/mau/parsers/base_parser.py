@@ -2,7 +2,11 @@
 
 import functools
 
-from mau.lexers.base_lexer import BaseLexer, Token, TokenTypes, TokenError, Literal
+from mau.lexers.base_lexer import BaseLexer, Token, TokenTypes, Literal
+
+
+class TokenError(ValueError):
+    """This is used by the parser to exit the context."""
 
 
 class ConfigurationError(ValueError):

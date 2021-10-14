@@ -18,10 +18,6 @@ class LexerError(ValueError):
     pass
 
 
-class TokenError(ValueError):
-    pass
-
-
 class Token:
     """
     This represents a token.

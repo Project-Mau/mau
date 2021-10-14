@@ -2,11 +2,9 @@ import textwrap
 
 import pytest
 
+from tests.helpers import dedent
+
 from mau import text_buffer
-
-
-def dedent(text):
-    return textwrap.dedent(text).strip()
 
 
 def test_text_buffer_init_empty():
@@ -130,7 +128,7 @@ def test_text_buffer_goto_default_column():
 
 def test_context():
     tb = text_buffer.TextBuffer(
-        textwrap.dedent(
+        dedent(
             """
             Some text
             on multiple lines
@@ -140,108 +138,71 @@ def test_context():
         )
     )
 
-    context = dedent(
-        """
-        2: on multiple lines
-        3: that I will use
-                  ^
-        """
-    )
+    assert tb.context(2, 7) == {
+        "text": [
+            "2: that I will use",
+            "          ^",
+        ],
+        "line": 2,
+        "column": 7,
+    }
 
-    assert tb.context(3, 7) == context.split("\n")
 
-
-def test_context_pair_line_numbers():
+def test_context_long_line_center():
     tb = text_buffer.TextBuffer(
-        textwrap.dedent(
+        dedent(
             """
-            Some text
-            on multiple lines
-            that I will use
-            to check the context()
-            and to text that
-            the whole thing
-            works with bigger
-            line numbers
-            in front of the lines
-            I need to add
-            more text
+            Some text on a very long line that I will use to check the context() and to test that the whole thing works
             """
         )
     )
 
-    context = dedent(
-        """
-        09: in front of the lines
-        10: I need to add
-                   ^
-        """
-    )
+    assert tb.context(0, 50) == {
+        "text": [
+            "0: [...]y long line that I will use to check the context() and to test th[...]",
+            "                                        ^",
+        ],
+        "line": 0,
+        "column": 50,
+    }
 
-    assert tb.context(10, 7) == context.split("\n")
 
-
-def test_context_long_lines():
+def test_context_long_line_beginning():
     tb = text_buffer.TextBuffer(
-        textwrap.dedent(
+        dedent(
             """
-            Some text on multiple lines that I will use to check the context() and to text that the whole thing
-            works with bigger line numbers in front of the lines I need to add more text
+            Some text on a very long line that I will use to check the context() and to test that the whole thing works
             """
         )
     )
 
-    context = dedent(
-        """
-        1: [...] e lines that I will use to check the cont [...]
-        2: [...] ne numbers in front of the lines I need t [...]
-                                     ^
-        """
-    )
+    assert tb.context(0, 30) == {
+        "text": [
+            "0: Some text on a very long line that I will use to check the cont[...]",
+            "                                 ^",
+        ],
+        "line": 0,
+        "column": 30,
+    }
 
-    assert tb.context(2, 40) == context.split("\n")
 
-
-def test_context_long_lines_beginning():
+def test_context_long_line_end():
     tb = text_buffer.TextBuffer(
-        textwrap.dedent(
+        dedent(
             """
-            Some text on multiple lines that I will use to check the context() and to text that the whole thing
-            works with bigger line numbers in front of the lines I need to add more text
+            Some text on a very long line that I will use to check the context() and to test that the whole thing works
             """
         )
     )
 
-    context = dedent(
-        """
-        1: Some text on multiple lines that I will [...]
-        2: works with bigger line numbers in front [...]
-                             ^
-        """
-    )
-
-    assert tb.context(2, 18) == context.split("\n")
-
-
-def test_context_long_lines_end():
-    tb = text_buffer.TextBuffer(
-        textwrap.dedent(
-            """
-            Some text on multiple lines that I will use to check the context() and to text that the whole thing
-            works with bigger line numbers in front of the lines I need to add more text
-            """
-        )
-    )
-
-    context = dedent(
-        """
-        1: [...] use to check the context() and to text th [...]
-        2: [...] of the lines I need to add more text
-                                     ^
-        """
-    )
-
-    assert tb.context(2, 60) == context.split("\n")
+    assert tb.context(0, 100) == {
+        "text": [
+            "0: [...] and to test that the whole thing works",
+            "                                        ^",
+        ],
+        "line": 0,
+        "column": 100,
+    }
 
 
 def test_text_buffer_insert():

@@ -109,46 +109,32 @@ class TextBuffer:
     def goto(self, line, column=0):
         self.line, self.column = line, column
 
-    def context(self, ctxline, ctxcolumn):
-        CONTEXT_CHARACTERS = 20
-        ctx = []
+    def context(self, line_number, column_number):
+        text_line = self.lines[line_number]
 
-        last_line_len = len(f"{ctxline}")
-        additional = last_line_len
-        marker_position = ctxcolumn
+        prefix = f"{line_number}: "
+        suffix = ""
 
-        lines = [ctxline - 1, ctxline]
+        HALF_SIZE = 32
+        min_column = max(0, column_number - HALF_SIZE)
+        max_column = min(len(text_line), column_number + HALF_SIZE + 1)
 
-        lower_flag = False
-        lower = max(ctxcolumn - CONTEXT_CHARACTERS, 0)
-        if lower > 0:
-            lower_flag = True
-            additional += 6
+        if min_column > 0:
+            prefix = f"{prefix}[...]"
 
-        for i in lines:
-            line_num = str(i).rjust(last_line_len, "0")
-            line = self.lines[i]
+        if max_column < len(text_line):
+            suffix = "[...]"
 
-            higher_flag = False
-            higher = min(ctxcolumn + CONTEXT_CHARACTERS + 1, len(line))
-            if higher < len(line):
-                higher_flag = True
+        text_line = text_line[min_column:max_column]
 
-            line = line[lower:higher]
+        # Create the caret line
+        caret_line = " " * (column_number - min_column + len(prefix)) + "^"
 
-            if lower_flag:
-                line = "[...] " + line
-
-            if higher_flag:
-                line = line + " [...]"
-
-            ctx.append(f"{line_num}: {line}")
-
-        additional += 2  # because of ": "
-        marker_line = " " * (marker_position - lower + additional) + "^"
-
-        ctx.append(marker_line)
-        return ctx
+        return {
+            "text": [f"{prefix}{text_line}{suffix}", caret_line],
+            "line": line_number,
+            "column": column_number,
+        }
 
     def insert(self, text):
         """

@@ -1,7 +1,7 @@
 import pytest
 
 from mau.parsers import nodes
-from mau.parsers.main_parser import MainParser, ParseError, EngineError
+from mau.parsers.main_parser import MainParser, ParserError, EngineError
 
 from tests.helpers import init_parser_factory, parser_test_factory
 
@@ -530,7 +530,7 @@ def test_block_condition_raises_exception():
 
     expected = []
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         _test(source, expected)
 
 
@@ -553,14 +553,14 @@ def test_command_defblock_backward_compatible_source_can_be_overridden():
 def test_command_defblock_no_args():
     p = init_parser("::defblock:")
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         p.parse()
 
 
 def test_command_defblock_single_arg():
     p = init_parser("::defblock:source")
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         p.parse()
 
 
@@ -642,7 +642,7 @@ def test_block_definitions_local_args_are_used():
         },
     ]
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         _test(source, expected)
 
 
@@ -782,7 +782,7 @@ def test_block_definitions_no_values_for_unnamed_args():
         },
     ]
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         _test(source, expected)
 
 
@@ -810,5 +810,5 @@ def test_block_definitions_values_without_unnamed_args():
         },
     ]
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         _test(source, expected)

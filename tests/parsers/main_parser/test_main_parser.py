@@ -1,6 +1,6 @@
 import pytest
 
-from mau.parsers.base_parser import ParseError
+from mau.parsers.base_parser import ParserError
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import listasdict, init_parser_factory, parser_test_factory, dedent
@@ -64,7 +64,7 @@ def test_parse_open_multi_line_comments():
         )
     )
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         p.parse()
 
 

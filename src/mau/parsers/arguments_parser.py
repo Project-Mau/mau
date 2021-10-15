@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.arguments_lexer import ArgumentsLexer
-from mau.parsers.base_parser import BaseParser, ParseError
+from mau.parsers.base_parser import BaseParser, ParserError
 
 
 # The ArgumentsParser is used to parse
@@ -35,7 +35,7 @@ class ArgumentsParser(BaseParser):
         # values than required is checked later when named
         # arguments are merged.
         if len(self.args) > len(positional_names):
-            raise ParseError(
+            self.error(
                 f"Error while parsing arguments {self.args} through names {positional_names}"
             )
 
@@ -51,7 +51,7 @@ class ArgumentsParser(BaseParser):
         # so all the names have to be present in the
         # final dictionary.
         if not set(positional_names).issubset(set(_default_values.keys())):
-            raise ParseError
+            self.error()
 
         self.kwargs = _default_values
         self.args = []
@@ -126,7 +126,7 @@ class ArgumentsParser(BaseParser):
             value = self._parse_unnamed_argument()
 
             if self._named_arguments:
-                raise ParseError(
+                raise ParserError(
                     "Unnamed arguments after named arguments are forbidden"
                 )
 

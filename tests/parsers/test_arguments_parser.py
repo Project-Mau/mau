@@ -1,6 +1,6 @@
 import pytest
 
-from mau.parsers.base_parser import ParseError
+from mau.parsers.base_parser import ParserError
 from mau.parsers.arguments_parser import ArgumentsParser
 
 from tests.helpers import init_parser_factory
@@ -269,7 +269,7 @@ def test_apply_prototype_positional_values_not_provided():
     p = init_parser("value1")
     p.parse()
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         p.set_names_and_defaults(["attr1", "attr2"], {"attr3": "value3"})
 
 
@@ -277,7 +277,7 @@ def test_apply_prototype_too_many_positional_values():
     p = init_parser("value1, value2")
     p.parse()
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         p.set_names_and_defaults(["attr1"], {"attr3": "value3"})
 
 

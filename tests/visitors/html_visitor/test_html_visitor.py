@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import patch
 
 from mau.parsers.nodes import DocumentNode, ContainerNode
-from mau.parsers.base_parser import ParseError
+from mau.parsers.base_parser import ParserError
 from mau.parsers.main_parser import MainParser
 from mau.visitors.html_visitor import HTMLVisitor
 
@@ -674,7 +674,7 @@ def test_block_does_not_support_args():
     v.default_templates["block.html"] = "whatever"
     v.default_templates["block-unknown.html"] = ""
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         ast = init_ast(
             dedent(
                 """

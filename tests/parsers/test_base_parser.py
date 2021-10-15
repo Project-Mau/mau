@@ -1,5 +1,7 @@
 import pytest
 
+from unittest.mock import patch
+
 from mau.lexers.base_lexer import (
     Token,
     TokenTypes,
@@ -8,7 +10,8 @@ from mau.lexers.base_lexer import (
     Text,
     Literal,
 )
-from mau.parsers.base_parser import BaseParser, ExpectedError, TokenError
+from mau.lexers.base_lexer import BaseLexer
+from mau.parsers.base_parser import BaseParser, ParserError, ExpectedError, TokenError
 
 
 from tests.helpers import init_parser_factory
@@ -393,3 +396,25 @@ def test_collect_join_with_different_joiner():
     expected = "De-do-do-do"
 
     assert p.collect_join([EOF], "-") == expected
+
+
+@patch.object(BaseLexer, "context")
+def test_error(mock_context):
+    p = init_parser("Some text")
+
+    with pytest.raises(ParserError):
+        p.error()
+
+    assert mock_context.called
+
+
+@patch.object(BaseLexer, "context")
+def test_error_with_message(mock_context):
+    p = init_parser("Some text")
+
+    with pytest.raises(ParserError) as e:
+        p.error("Just a message")
+
+    assert mock_context.called
+    assert str(e.value) == "Just a message"
+    assert e.value.context == mock_context.return_value

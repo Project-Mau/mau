@@ -6,7 +6,7 @@ from mau.lexers.main_lexer import MainLexer
 from mau.parsers.base_parser import (
     BaseParser,
     TokenError,
-    ParseError,
+    ParserError,
     ConfigurationError,
     parser,
 )
@@ -313,8 +313,8 @@ class MainParser(BaseParser):
             # Block definitions must have at least 2 arguments,
             # the alias and the block type.
             if len(args) < 2:
-                raise ParseError(
-                    f"Block definitions require at least two unnamed arguments: ALIAS and BLOCKTYPE"
+                self.error(
+                    "Block definitions require at least two unnamed arguments: ALIAS and BLOCKTYPE"
                 )
 
             block_alias = args.pop(0)
@@ -554,7 +554,7 @@ class MainParser(BaseParser):
                 # The condition should be either test:variable:value or test:variable:
                 test, variable, value = condition.split(":")
             except ValueError:
-                raise ParseError(
+                self.error(
                     f'Condition {condition} is not in the form "test:variable:value" or "test:variable:'
                 )
 
@@ -721,16 +721,14 @@ class MainParser(BaseParser):
         # callout text.
         for line in secondary_content:
             if ":" not in line:
-                raise ParseError(
+                self.error(
                     f"Callout description should be written as 'name: text'. Missing ':' in '{line}'"
                 )
 
             name, text = line.split(":")
 
             if name not in callout_markers.values():
-                raise ParseError(
-                    f"Callout {name} has not been created in the source code"
-                )
+                self.error(f"Callout {name} has not been created in the source code")
 
             text = text.strip()
 

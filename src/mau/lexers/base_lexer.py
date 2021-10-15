@@ -105,6 +105,10 @@ class BaseLexer:
         # not be (0,0)
         return tuple(map(sum, zip(self._text_buffer.position, self._initial_position)))
 
+    def context(self, token):
+        """Returns the context of a token for error reporting purposes"""
+        return self._text_buffer.context(*token.position)
+
     def process(self, text):
         # Reset the lexer
         self.tokens = []

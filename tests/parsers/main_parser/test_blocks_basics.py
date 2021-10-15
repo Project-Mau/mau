@@ -1,6 +1,6 @@
 import pytest
 
-from mau.parsers.main_parser import MainParser, ParseError
+from mau.parsers.main_parser import MainParser, ParserError
 
 from tests.helpers import init_parser_factory, parser_test_factory
 
@@ -158,7 +158,7 @@ def test_parse_block_content_external_variables():
 def test_block_without_closing_fences():
     p = init_parser("----")
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         p.parse()
 
 

@@ -13,11 +13,16 @@ class ConfigurationError(ValueError):
     """This is a configuration error."""
 
 
-class ParseError(ValueError):
-    """This is a generic parsing error."""
+class ParserError(ValueError):
+    """This is a detailed parser error"""
+
+    def __init__(self, message=None, context=None):
+        super().__init__(message)
+
+        self.context = context
 
 
-class ExpectedError(ParseError):
+class ExpectedError(ParserError):
     """This exception signals that we were expecting a different token."""
 
 
@@ -133,6 +138,9 @@ class BaseParser:
     def _parse_functions(self):
         # The parse functions available in this parser
         return []
+
+    def error(self, message=None):
+        raise ParserError(message, context=self.lexer.context(self.current_token))
 
     def put_token(self, token):
         self.tokens.insert(self.index + 1, token)
@@ -279,7 +287,7 @@ class BaseParser:
             # we didn't find any function to parse the
             # current token.
             if result is False:
-                raise ParseError(f"Cannot parse token {self.peek_token()}")
+                self.error("Cannot parse token")
 
     def analyse(self, text):
         self.load(text)

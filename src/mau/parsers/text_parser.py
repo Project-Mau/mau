@@ -2,7 +2,7 @@ import itertools
 
 from mau.lexers.base_lexer import Token, TokenTypes, Literal
 from mau.lexers.text_lexer import TextLexer
-from mau.parsers.base_parser import BaseParser
+from mau.parsers.base_parser import BaseParser, ParserError
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.nodes import (
     WordNode,
@@ -61,6 +61,20 @@ class TextParser(BaseParser):
 
         # This is used as a storage for macro arguments.
         self.argsparser = ArgumentsParser()
+
+    def set_names_and_defaults(self, positional_names, default_values=None):
+        """
+        A wrapper for the method set_names_and_defaults() of ArgumentParser
+        that raises a ParserError with a broader context.
+        The argument parser is applied on the arguments only, so the error
+        reporting is limited to that string, while the TextParser has knowledge
+        of the whole line.
+        """
+
+        try:
+            self.argsparser.set_names_and_defaults(positional_names, default_values)
+        except ParserError as e:
+            self.error(str(e))
 
     def parse_word(self):
         """
@@ -210,7 +224,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.set_names_and_defaults(["target", "text"], {"text": None})
+        self.set_names_and_defaults(["target", "text"], {"text": None})
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Set the name of the first two unnamed arguments
@@ -231,7 +245,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.set_names_and_defaults(["email"])
+        self.set_names_and_defaults(["email"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         email = kwargs.get("email")
@@ -245,7 +259,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.set_names_and_defaults(["text", "classes"])
+        self.set_names_and_defaults(["text", "classes"])
         args, kwargs = self.argsparser.get_arguments_and_reset()
 
         # Parse the text
@@ -266,7 +280,7 @@ class TextParser(BaseParser):
         """
 
         # Assign names and get the arguments
-        self.argsparser.set_names_and_defaults(
+        self.set_names_and_defaults(
             ["uri", "alt_text", "width", "height"],
             {"alt_text": None, "width": None, "height": None},
         )
@@ -290,7 +304,7 @@ class TextParser(BaseParser):
             footnote_text = arguments
         else:
             # Assign names and get the arguments
-            self.argsparser.set_names_and_defaults(["text"])
+            self.set_names_and_defaults(["text"])
             args, kwargs = self.argsparser.get_arguments_and_reset()
             footnote_text = kwargs["text"]
 

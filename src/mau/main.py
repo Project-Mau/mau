@@ -6,7 +6,7 @@ import sys
 
 import yaml
 
-from mau import __version__, Mau, ConfigurationError
+from mau import __version__, Mau, ConfigurationError, ParserError
 
 __author__ = "Leonardo Giordani"
 __copyright__ = "Leonardo Giordani"
@@ -126,6 +126,13 @@ def main(args):
         output = mau.process(text)
     except ConfigurationError as e:
         print(f"Configuration error: {e}")
+        sys.exit(1)
+    except ParserError as e:
+        print(str(e))
+        print()
+        print(f"Line {e.context['line']}, column {e.context['column']}")
+        for i in e.context["text"]:
+            print(i)
         sys.exit(1)
 
     # Find out the name of the output file

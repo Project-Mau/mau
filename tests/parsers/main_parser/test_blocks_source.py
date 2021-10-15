@@ -1,6 +1,6 @@
 import pytest
 
-from mau.parsers.main_parser import MainParser, ParseError
+from mau.parsers.main_parser import MainParser, ParserError
 
 from tests.helpers import init_parser_factory, parser_test_factory, dedent
 
@@ -388,7 +388,7 @@ def test_source_callout_cannot_be_found():
         )
     )
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         p.parse()
 
 
@@ -455,7 +455,7 @@ def test_source_callout_wrong_format():
         )
     )
 
-    with pytest.raises(ParseError):
+    with pytest.raises(ParserError):
         p.parse()
 
 

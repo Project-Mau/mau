@@ -23,14 +23,16 @@ def test_initial_state():
     p = BaseParser()
 
     assert p.index == -1
-    assert p.current_token == EOF
+    with pytest.raises(ValueError):
+        p.current_token
 
 
 def test_load():
     p = init_parser("\n")
 
     assert p.index == -1
-    assert p.current_token == EOF
+    with pytest.raises(ValueError):
+        p.current_token
 
 
 def test_get_token_without_load():
@@ -90,11 +92,11 @@ def test_get_token_after_eof():
 def test_get_token_sets_current_token():
     p = init_parser("\n")
 
-    p.get_token()
+    assert p.get_token() == EOL
     assert p.current_token == EOL
 
-    p.get_token()
-    p.get_token()
+    assert p.get_token() == EOL
+    assert p.get_token() == EOF
     assert p.current_token == EOF
 
 
@@ -401,6 +403,7 @@ def test_collect_join_with_different_joiner():
 @patch.object(BaseLexer, "context")
 def test_error(mock_context):
     p = init_parser("Some text")
+    p.get_token()
 
     with pytest.raises(ParserError):
         p.error()
@@ -411,6 +414,7 @@ def test_error(mock_context):
 @patch.object(BaseLexer, "context")
 def test_error_with_message(mock_context):
     p = init_parser("Some text")
+    p.get_token()
 
     with pytest.raises(ParserError) as e:
         p.error("Just a message")

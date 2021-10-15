@@ -67,6 +67,9 @@ class BaseParser:
         of them, so this convenience method wraps the
         possible index error.
         """
+        if self.index < 0:
+            raise ValueError("The parser has no current token")
+
         try:
             return self.tokens[self.index]
         except IndexError:

@@ -1,5 +1,4 @@
 from mau.lexers.base_lexer import BaseLexer, TokenTypes
-from mau.lexers.arguments_lexer import ArgumentsLexer
 
 
 class MainLexer(BaseLexer):

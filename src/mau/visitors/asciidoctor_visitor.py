@@ -122,8 +122,6 @@ class AsciidoctorVisitor(Visitor):
         return node
 
     def _visit_footnote_ref(self, node):
-        footnote = [i for i in self.footnotes.entries if i.number == node["number"]][0]
-
         node["node_types"] = (["footnote_ref"],)
         self._reducelist(node, ["content"], join_with="")
         return node

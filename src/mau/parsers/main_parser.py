@@ -6,7 +6,6 @@ from mau.lexers.main_lexer import MainLexer
 from mau.parsers.base_parser import (
     BaseParser,
     TokenError,
-    ParserError,
     ConfigurationError,
     parser,
 )
@@ -17,11 +16,6 @@ from mau.parsers.nodes import (
     HorizontalRuleNode,
     TextNode,
     BlockNode,
-    SourceNode,
-    RawNode,
-    CodeNode,
-    AdmonitionNode,
-    QuoteNode,
     ContentNode,
     ContentImageNode,
     CommandNode,
@@ -308,7 +302,7 @@ class MainParser(BaseParser):
         # Commands can have arguments
         with self:
             arguments = self.get_token(TokenTypes.TEXT).value
-            p = self.argsparser.analyse(arguments)
+            self.argsparser.analyse(arguments)
 
             # Consume the attributes
             args, kwargs = self.argsparser.get_arguments_and_reset()

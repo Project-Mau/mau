@@ -1,5 +1,3 @@
-import re
-
 from mau import text_buffer
 from mau.lexers.base_lexer import BaseLexer, Token, TokenTypes
 

@@ -110,6 +110,10 @@ class MainParser(BaseParser):
         self.block_aliases["admonition"] = "admonition"
         self.block_names["admonition"] = ["class", "icon", "label"]
 
+        self.block_aliases["quote"] = "quote"
+        self.block_arguments["quote"] = {"attribution": None}
+        self.block_names["quote"] = ["attribution"]
+
         # Iterate through block definitions passed as variables
         for alias, block_definition in (
             self.variables["mau"].get("block_definitions", {}).items()
@@ -461,67 +465,7 @@ class MainParser(BaseParser):
         # otherwise use the blocktype we already have
         blocktype = self.block_aliases.get(blocktype, blocktype)
 
-        # Parse the content according to the block type
-        # if blocktype == "admonition":
-        #     return self._parse_admonition_block(content)
-        if blocktype == "quote":
-            return self._parse_quote_block(content, title)
-
         return self._parse_standard_block(blocktype, content, secondary_content, title)
-
-    # def _parse_admonition_block(self, content):
-    #     # Parse an admonition in the form
-    #     #
-    #     # [admonition, class, icon, label]
-    #     # ----
-    #     # content
-    #     # ----
-
-    #     # Assign names and consume the attributes
-    #     self.argsparser.merge_unnamed_args(["class", "icon", "label"])
-    #     args, kwargs = self.argsparser.get_arguments_and_reset()
-
-    #     # Parse the content and record footnotes
-    #     p = MainParser(variables=self.variables).analyse("\n".join(content))
-    #     self.footnote_defs.extend(p.footnote_defs)
-
-    #     self._save(
-    #         AdmonitionNode(
-    #             admclass=kwargs.pop("class"),
-    #             icon=kwargs.pop("icon"),
-    #             label=kwargs.pop("label"),
-    #             content=p.nodes,
-    #             kwargs=kwargs,
-    #         )
-    #     )
-
-    def _parse_quote_block(self, content, title):
-        # Parse a quote block in the form
-        #
-        # [quote, attribution]
-        # ----
-        # content
-        # ----
-
-        # Assign names and consume the attributes
-        self.argsparser.set_names_and_defaults(["attribution"])
-        args, kwargs = self.argsparser.get_arguments_and_reset()
-
-        # Parse the content
-        p = MainParser().analyse("\n".join(content))
-
-        pa = TextParser(
-            v1_backward_compatibility=self.v1_backward_compatibility
-        ).analyse(kwargs.pop("attribution"))
-        attribution = pa.nodes[0]
-
-        self._save(
-            QuoteNode(
-                attribution=attribution,
-                content=p.nodes,
-                kwargs=kwargs,
-            )
-        )
 
     def _parse_standard_block(self, blocktype, content, secondary_content, title):
         # Parse a standard block in the form

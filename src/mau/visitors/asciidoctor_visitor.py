@@ -16,7 +16,7 @@ DEFAULT_TEMPLATES = {
     "list.adoc": "{{ items }}{% if main_node %}\n{% endif %}",
     "list_item.adoc": "{% if not main_node %}\n{% endif %}{% if prefix %}{{ prefix }} {% endif %}{{ content }}",
     "paragraph.adoc": "{{ content }}\n",
-    "quote.adoc": '[quote, "{{ attribution }}"]\n____\n{{ content }}____\n',
+    "block-quote.adoc": '[quote, "{% if kwargs.attribution %}{{ kwargs.attribution }}{% else %}{{ secondary_content }}{% endif %}"]\n____\n{{ content }}____\n',
     "sentence.adoc": "{{ content }}",
     "star.adoc": "*{{ content }}*",
     "text.adoc": "{{ value }}",

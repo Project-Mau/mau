@@ -75,8 +75,11 @@ DEFAULT_TEMPLATES = {
     "list_item.html": "<li>{{ content }}</li>",
     "macro.html": "",
     "paragraph.html": "<p>{{ content }}</p>",
-    "quote.html": (
-        "<blockquote>" "{{ content }}" "<cite>{{ attribution }}</cite>" "</blockquote>"
+    "block-quote.html": (
+        "<blockquote>"
+        "{{ content }}"
+        "<cite>{% if kwargs.attribution %}{{ kwargs.attribution }}{% else %}{{ secondary_content }}{% endif %}</cite>"
+        "</blockquote>"
     ),
     "raw.html": "{{ content }}",
     "sentence.html": "{{ content }}",

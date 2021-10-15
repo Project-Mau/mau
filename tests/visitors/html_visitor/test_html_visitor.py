@@ -155,13 +155,14 @@ def test_quote():
     _test(source, expected)
 
 
-def test_quote_attribution_supports_styles():
+def test_quote_attribution_in_secondary_content_supports_styles():
     source = dedent(
         """
-        [quote,"_Star Wars_, 1977"]
+        [quote]
         ----
         Learn about the Force, Luke.
         ----
+        _Star Wars_, 1977
         """
     )
 
@@ -170,7 +171,7 @@ def test_quote_attribution_supports_styles():
             """
             <blockquote>
               <p>Learn about the Force, Luke.</p>
-              <cite><em>Star Wars</em>, 1977</cite>
+              <cite><p><em>Star Wars</em>, 1977</p></cite>
             </blockquote>
             """
         )

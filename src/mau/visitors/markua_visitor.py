@@ -19,7 +19,7 @@ DEFAULT_TEMPLATES = {
     "list.md": "{{ items }}{% if main_node %}\n{% endif %}",
     "list_item.md": "{% if not main_node %}\n{% endif %}{% if prefix %}{{ prefix }} {% endif %}{{ content }}",
     "paragraph.md": "{{ content }}\n",
-    "quote.md": "{blurb, icon: quote-right}\n{{ content }}\n{{ attribution }}\n{/blurb}\n\n",
+    "block-quote.md": "{blurb, icon: quote-right}\n{{ content }}\n{% if kwargs.attribution %}{{ kwargs.attribution }}{% else %}{{ secondary_content }}{% endif %}\n{/blurb}\n\n",
     "sentence.md": "{{ content }}",
     "star.md": "**{{ content }}**",
     "text.md": "{{ value }}",

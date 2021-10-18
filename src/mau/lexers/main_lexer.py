@@ -157,20 +157,26 @@ class MainLexer(BaseLexer):
         if not self._current_line.startswith("::"):
             return None
 
-        match = self._rematch(r"::([a-z0-9_#]+):(.*)?")
+        match = self._rematch(r"::([a-z0-9_#\\]+):(.*)?")
 
         if not match:  # pragma: no cover
             return None
 
-        if match.group(1).startswith("#"):
+        value = match.group(1)
+
+        if value.startswith("#"):
             # This is a directive
             self._nextline()
 
             return self._process_directive(match.group(1)[1:], match.group(2))
+        elif value.startswith("\\#"):
+            # This is an escaped directive,
+            # remove the escape and do not process the directive
+            value = value[1:]
 
         tokens = [
             self._create_token_and_skip(TokenTypes.LITERAL, "::"),
-            self._create_token_and_skip(TokenTypes.TEXT, match.group(1)),
+            self._create_token_and_skip(TokenTypes.TEXT, value),
             self._create_token_and_skip(TokenTypes.LITERAL, ":"),
         ]
 

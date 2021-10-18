@@ -112,10 +112,15 @@ def main(args):
     if args.format is not None:
         config["target_format"] = args.format
 
+    # This extracts the custom templates defined
+    # in the config file
+    custom_templates = config.get("custom_templates", None)
+
     # The Mau object configured with what we figured out above.
     mau = Mau(
         config,
         None,
+        custom_templates=custom_templates,
         templates_directory=templates_directory,
         full_document=True,
     )

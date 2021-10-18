@@ -40,7 +40,21 @@ You can see the plugin in action at https://www.thedigitalcatonline.com/blog/202
 
 ## Incompatibility between Mau 2.x and Mau 1.x
 
+Changes to they Mau syntax:
+
 * The macro `[footnote]()` requires now a strict attributes syntax, so you need to put between quotes any text that contains commas. In Mau 1.x footnotes use the text between round brackets directly, so there was no need for quotes. The old behaviour can be still turned on setting the configuration value `v1_backward_compatibility` to `True`. The old syntax is however considered deprecated, so my advice is to change the source as soon as possible. Example `[footnote](A footnote, with a comma)` should become `[footnote]("A footnote, with a comma")`.
+* Raw blocks have been removed, you should use the attribute `engine=raw` instead. See the documentation for details about engines.
+* Conditional blocks have been removed, you should use the attribute `condition="if:VARIABLE:VALUE"`. See the documentation for details about conditions.
+* Quote blocks now accept the attribution as secondary content, which accepts Mau syntax. The attribute `attribution` is still supported but has been deprecated.
+
+Changes to templates:
+
+* Block template now correctly provides `blocktype` instead of `type`.
+* Admonition block template name changed from `admonition` to `block-admonition`. Attributes `class`, `icon`, and `label` are now respectively `kwargs.class`, `kwargs.icon`, and `kwargs.label`.
+* Source block template name changed from `source` to `block-source`. The default CSS class in HTML is `source` instead of `code`. The content is provided by the key `content` instead of `code`.
+* Quote block template name changed from `quote` to `block-quote`. The attribute `attribution` has been renamed `kwargs.attribution` and is still supported but deprecated. The attribution is now provided by `secondary_content`. The Mau syntax for quote blocks also changed accordingly. You can now specify the attribution in the secondary content and use Mau syntax to format it.
+* Footnote definition template now provides the content as `content` instead of `text`.
+* TOC entry template receives header objects, so `anchor` becomes `header.anchor` and `text` becomes `header.value`.
 
 ## Support
 

@@ -11,6 +11,7 @@ This version contains a huge amount of internal changes, and a good amount of ne
 - [fix] Fixed management of configuration errors
 - [fix] Fixed failing tests of Markua visitor
 - [fix] Header anchors preserve dots
+- [fix] Image template now properly closes the `img` tag.
 - [enhancement] Added support for lexer directives and directive `::#include:` to include files.
 - [enhancement] Headers support tags that can be filtered in the TOC.
 - [enhancement] Added new macro `[class]`, old syntax `[CLASS]#text#` is still supported but considered deprecated.
@@ -20,7 +21,8 @@ This version contains a huge amount of internal changes, and a good amount of ne
 - [enhancement] Moved custom block types (`quote`, `admonition`, and `source`) to block definitions.
 - [enhancement] Blocks are now rendered using a set of possible templates, according to the block type and the engine.
 - [enhancement] Read custom templates from the configuration file
-
+- [enhancement] Conditional rendering is now a property of blocks.
+  
 Version 1.4.1
 =============
 

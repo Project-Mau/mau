@@ -581,3 +581,52 @@ def test_source_highlights_custom_marker():
     ]
 
     _test(source, expected)
+
+
+def test_engine_source_language_is_reset():
+    source = """
+    [source, python]
+    ----
+    ----
+
+    [source]
+    ----
+    ----
+    """
+
+    expected = [
+        {
+            "type": "block",
+            "blocktype": "source",
+            "args": [],
+            "kwargs": {
+                "highlights": [],
+                "language": "python",
+                "callouts": {"markers": {}, "contents": {}},
+            },
+            "secondary_content": [],
+            "title": None,
+            "content": [],
+            "classes": [],
+            "engine": "source",
+            "preprocessor": "none",
+        },
+        {
+            "type": "block",
+            "blocktype": "source",
+            "args": [],
+            "kwargs": {
+                "highlights": [],
+                "language": "text",
+                "callouts": {"markers": {}, "contents": {}},
+            },
+            "secondary_content": [],
+            "title": None,
+            "content": [],
+            "classes": [],
+            "engine": "source",
+            "preprocessor": "none",
+        },
+    ]
+
+    _test(source, expected)

@@ -28,7 +28,10 @@ class ArgumentsParser(BaseParser):
         initialised.
         """
 
-        _default_values = default_values or {}
+        if default_values:
+            _default_values = default_values.copy()
+        else:
+            _default_values = {}
 
         # This happens if we passed too many positional
         # values. The case where we pass less positional

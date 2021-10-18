@@ -103,9 +103,8 @@ def main(args):
         with open(args.config_file, "r") as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
 
-    # Theming is pretty simple. If the config file contains the variable "theme"
-    # that is the directory that shall contain all templates.
-    templates_directory = f'{config["theme"]}/templates' if "theme" in config else None
+    # The directory that contains custom templates.
+    templates_directory = config.get("templates_directory", None)
 
     # If a target format is specified on the command line
     # override the one already set in the config file

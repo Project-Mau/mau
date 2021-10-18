@@ -96,10 +96,18 @@ def test_style_verbatim():
     _test(source, expected)
 
 
-def test_class():
+def test_class_old_style():
     source = "[classname]#text with that class#"
 
     expected = ['<p><span class="classname">text with that class</span></p>']
+
+    _test(source, expected)
+
+
+def test_class_new_style():
+    source = '[class]("text with classes", "class1,class2")'
+
+    expected = ['<p><span class="class1 class2">text with classes</span></p>']
 
     _test(source, expected)
 

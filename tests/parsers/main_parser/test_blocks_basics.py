@@ -1,6 +1,7 @@
 import pytest
 
-from mau.parsers.main_parser import MainParser, ParserError
+from mau.parsers.base_parser import ParserError
+from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_test_factory
 

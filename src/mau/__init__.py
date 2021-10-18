@@ -10,6 +10,8 @@ except DistributionNotFound:
 finally:
     del get_distribution, DistributionNotFound
 
+# This is not used here but exported to __init__.py
+from mau.parsers.base_parser import ParserError
 from mau.parsers.main_parser import MainParser
 from mau.parsers.nodes import DocumentNode, ContainerNode
 from mau.visitors.html_visitor import HTMLVisitor

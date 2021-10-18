@@ -459,18 +459,6 @@ class MainParser(BaseParser):
         # otherwise use the blocktype we already have
         blocktype = self.block_aliases.get(blocktype, blocktype)
 
-        return self._parse_standard_block(blocktype, content, secondary_content, title)
-
-    def _parse_standard_block(self, blocktype, content, secondary_content, title):
-        # Parse a standard block in the form
-        #
-        # [blocktype, attributes...]
-        # ----
-        # content
-        # ----
-        # secondary_content
-        #
-
         # Assign names
 
         self.argsparser.set_names_and_defaults(

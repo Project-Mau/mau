@@ -54,7 +54,9 @@ class ArgumentsParser(BaseParser):
         # so all the names have to be present in the
         # final dictionary.
         if not set(positional_names).issubset(set(_default_values.keys())):
-            self.error()
+            self.error(
+                f"The following attributes need to be specified: {positional_names}"
+            )
 
         self.kwargs = _default_values
         self.args = []

@@ -22,7 +22,6 @@ class Node:
         return self.asdict() == other.asdict()
 
 
-#############################################################
 # Inline elements
 
 
@@ -263,7 +262,6 @@ class FootnoteRefNode(Node):
         }
 
 
-#############################################################
 # Block elements
 
 
@@ -495,104 +493,6 @@ class SourceNode(Node):
         }
 
 
-class RawNode(Node):
-    """A block of raw content.
-
-    The content of this node will be inserted exactly as it is.
-
-    Arguments:
-        content: the content of the block
-        args: unnamed arguments
-        kwargs: named arguments
-    """
-
-    node_type = "raw"
-
-    def __init__(self, content, args=None, kwargs=None):
-        self.content = content
-        self.args = args or []
-        self.kwargs = kwargs or {}
-
-    def asdict(self):
-        return {
-            "type": self.node_type,
-            "content": [i.asdict() for i in self.content],
-            "args": self.args,
-            "kwargs": self.kwargs,
-        }
-
-
-class CodeNode(Node):
-    """A block of code that will be executed at render time.
-
-    The content of this node is code that will
-    be executed at render time.
-    This might contain for example raw code
-    that has just to be injected in the render,
-    Mau code that has to be processed and rendered
-    by a subparser, Python code, etc.
-
-    Arguments:
-        engine: the engine used to run the code
-        content: the content of the block
-        title: caption of the image
-        args: unnamed arguments
-        kwargs: named arguments
-    """
-
-    node_type = "code"
-
-    def __init__(self, engine, content, title, args=None, kwargs=None):
-        self.engine = engine
-        self.content = content
-        self.title = title
-        self.args = args or []
-        self.kwargs = kwargs or {}
-
-    def asdict(self):
-        return {
-            "type": self.node_type,
-            "engine": self.engine,
-            "title": self.title,
-            "content": [i.asdict() for i in self.content],
-            "args": self.args,
-            "kwargs": self.kwargs,
-        }
-
-
-class AdmonitionNode(Node):
-    """An admonition.
-
-    An admonition node that has a class, an icon, a label, and content.
-
-    Arguments:
-        admclass: the class of the admonition
-        icon: the icon assigned to this admonition
-        label: a label that acts as a title for the admonition
-        content: the content of the admonition
-        kwargs: named arguments
-    """
-
-    node_type = "admonition"
-
-    def __init__(self, admclass, icon, label, content, kwargs=None):
-        self.admclass = admclass
-        self.icon = icon
-        self.label = label
-        self.content = content
-        self.kwargs = kwargs or {}
-
-    def asdict(self):
-        return {
-            "type": self.node_type,
-            "class": self.admclass,
-            "icon": self.icon,
-            "label": self.label,
-            "content": [i.asdict() for i in self.content],
-            "kwargs": self.kwargs,
-        }
-
-
 class CommandNode(Node):
     """A Mau command.
 
@@ -616,33 +516,6 @@ class CommandNode(Node):
             "type": self.node_type,
             "name": self.name,
             "args": self.args,
-            "kwargs": self.kwargs,
-        }
-
-
-class QuoteNode(Node):
-    """A quote.
-
-    This node contains a quote with text and an attribution.
-
-    Arguments:
-        attribution: the attribution for this quote
-        content: the quote itself
-        kwargs: named arguments
-    """
-
-    node_type = "quote"
-
-    def __init__(self, attribution, content, kwargs=None):
-        self.attribution = attribution
-        self.content = content
-        self.kwargs = kwargs or {}
-
-    def asdict(self):
-        return {
-            "type": self.node_type,
-            "attribution": self.attribution.asdict(),
-            "content": [i.asdict() for i in self.content],
             "kwargs": self.kwargs,
         }
 

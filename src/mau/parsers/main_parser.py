@@ -82,7 +82,7 @@ class MainParser(BaseParser):
 
         # Each block we define can have default values
         # {actual_block_name:kwargs}
-        self.block_arguments = {}
+        self.block_defaults = {}
 
         # Each block we define can have names for unnamed arguments
         # {actual_block_name:kwargs}
@@ -98,14 +98,14 @@ class MainParser(BaseParser):
         # must be renamed.
         # This definition can be overridden by custom block definitions
         self.block_aliases["source"] = "source"
-        self.block_arguments["source"] = {"engine": "source", "language": "text"}
+        self.block_defaults["source"] = {"engine": "source", "language": "text"}
         self.block_names["source"] = ["language"]
 
         self.block_aliases["admonition"] = "admonition"
         self.block_names["admonition"] = ["class", "icon", "label"]
 
         self.block_aliases["quote"] = "quote"
-        self.block_arguments["quote"] = {"attribution": None}
+        self.block_defaults["quote"] = {"attribution": None}
         self.block_names["quote"] = ["attribution"]
 
         # Iterate through block definitions passed as variables
@@ -121,7 +121,7 @@ class MainParser(BaseParser):
                 )
 
             try:
-                self.block_arguments[blocktype] = block_definition["kwargs"]
+                self.block_defaults[blocktype] = block_definition["kwargs"]
             except KeyError:
                 raise ConfigurationError(
                     f"Block definition '{alias}' is missing key 'kwargs'"
@@ -319,7 +319,7 @@ class MainParser(BaseParser):
             block_type = args.pop(0)
 
             self.block_aliases[block_alias] = block_type
-            self.block_arguments[block_type] = kwargs
+            self.block_defaults[block_type] = kwargs
             self.block_names[block_type] = args
 
             return None
@@ -462,7 +462,7 @@ class MainParser(BaseParser):
         # Assign names
 
         self.argsparser.set_names_and_defaults(
-            self.block_names.get(blocktype, []), self.block_arguments.get(blocktype, {})
+            self.block_names.get(blocktype, []), self.block_defaults.get(blocktype, {})
         )
 
         # Consume the attributes

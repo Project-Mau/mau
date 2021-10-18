@@ -18,7 +18,7 @@ DEFAULT_TEMPLATES = {
         "</div></div>"
     ),
     "block.html": (
-        '<div{% if blocktype %} class="{{ blocktype }}"{% endif %}>'
+        '<div class="{{ blocktype }}{% if classes %} {{ classes }}{% endif %}">'
         '{% if title %}<div class="title">{{ title }}</div>{% endif %}'
         '<div class="content">{{ content }}</div>'
         "</div>"

@@ -574,7 +574,7 @@ def test_import_directive(mock_file):
 def test_directive_escape(mock_process_directive):
     lex = MainLexer()
 
-    lex.process("::\#name:/path/to/file")
+    lex.process("::\\#name:/path/to/file")
 
     assert not mock_process_directive.called
 

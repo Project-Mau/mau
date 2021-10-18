@@ -2,10 +2,9 @@
 Mau
 ===
 
-This is the documentation of **Mau**, a lightweight a lightweight markup language heavily inspired by AsciiDoc_, Asciidoctor_ and Markdown_.
+**Mau** is a lightweight a lightweight markup language heavily inspired by AsciiDoc_, Asciidoctor_ and Markdown_.
 
-Please refer to the README.md file for now to get a quick intro to the tool command line.
-
+The documentation is hosted at TDCB_.
    
 Contents
 ========
@@ -13,8 +12,6 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   Quick reference <quick_reference>
-   CLI and API <cli_api.rst>
    License <license>
    Authors <authors>
    Changelog <changelog>
@@ -28,21 +25,7 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. _toctree: http://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html
-.. _reStructuredText: http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
-.. _references: http://www.sphinx-doc.org/en/stable/markup/inline.html
-.. _Python domain syntax: http://sphinx-doc.org/domains.html#the-python-domain
-.. _Sphinx: http://www.sphinx-doc.org/
-.. _Python: http://docs.python.org/
-.. _Numpy: http://docs.scipy.org/doc/numpy
-.. _SciPy: http://docs.scipy.org/doc/scipy/reference/
-.. _matplotlib: https://matplotlib.org/contents.html#
-.. _Pandas: http://pandas.pydata.org/pandas-docs/stable
-.. _Scikit-Learn: http://scikit-learn.org/stable
-.. _autodoc: http://www.sphinx-doc.org/en/stable/ext/autodoc.html
-.. _Google style: https://github.com/google/styleguide/blob/gh-pages/pyguide.md#38-comments-and-docstrings
-.. _NumPy style: https://numpydoc.readthedocs.io/en/latest/format.html
-.. _classical style: http://www.sphinx-doc.org/en/stable/domains.html#info-field-lists
 .. _AsciiDoc: https://asciidoctor.org/docs/what-is-asciidoc
 .. _Asciidoctor: https://asciidoctor.org/
 .. _Markdown: https://daringfireball.net/projects/markdown/
+.. _TDCB: htts://www.thedigitalcatbooks.com

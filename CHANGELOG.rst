@@ -2,6 +2,25 @@
 Changelog
 =========
 
+Version 2.0.0
+=============
+
+This version contains a huge amount of internal changes, and a good amount of new features. This list shows the most important ones, see the Git history for full details.
+
+- [fix] Fixed automatic links ending with period or comma
+- [fix] Fixed management of configuration errors
+- [fix] Fixed failing tests of Markua visitor
+- [fix] Header anchors preserve dots
+- [enhancement] Added support for lexer directives and directive `::#include:` to include files.
+- [enhancement] Headers support tags that can be filtered in the TOC.
+- [enhancement] Added new macro `[class]`, old syntax `[CLASS]#text#` is still supported but considered deprecated.
+- [enhancement] Added the concept of engine, and implemented `raw`, `source`, and `mau` engines porting the code from the relative block types.
+- [enhancement] Added initial support for preprocessors.
+- [enhancement] Added support for block definitions through `defblock`.
+- [enhancement] Moved custom block types (`quote`, `admonition`, and `source`) to block definitions.
+- [enhancement] Blocks are now rendered using a set of possible templates, according to the block type and the engine.
+- [enhancement] Read custom templates from the configuration file
+
 Version 1.4.1
 =============
 

@@ -233,10 +233,10 @@ class ImageNode(Node):
         }
 
 
-class FootnoteRefNode(Node):
-    """Footnote reference.
+class FootnoteNode(Node):
+    """Footnote definition/reference.
 
-    This node contains a footnote reference.
+    This node contains a footnote definition or reference.
 
     Attributes:
        number: number of this footnote
@@ -244,7 +244,7 @@ class FootnoteRefNode(Node):
        defanchor: anchor ID of the definition
     """
 
-    node_type = "footnote_ref"
+    node_type = "footnote"
 
     def __init__(self, number, refanchor, defanchor, content):
         self.number = number
@@ -260,6 +260,14 @@ class FootnoteRefNode(Node):
             "number": self.number,
             "content": [i.asdict() for i in self.content],
         }
+
+
+class FootnoteRefNode(FootnoteNode):
+    node_type = "footnote_ref"
+
+
+class FootnoteDefNode(FootnoteNode):
+    node_type = "footnote_def"
 
 
 # Block elements
@@ -536,36 +544,6 @@ class FootnotesNode(Node):
 
     def asdict(self):
         return {"type": self.node_type, "entries": [i.asdict() for i in self.entries]}
-
-
-class FootnoteDefNode(Node):
-    """A footnote definition.
-
-    This node contains the definition of a footnote(i.e. the full text)
-
-    Arguments:
-        number: number of this footnote
-        refanchor: the ID of the reference of this footnote
-        defanchor: the ID of this definition
-        content: the full text of the footnote
-    """
-
-    node_type = "footnote_def"
-
-    def __init__(self, number, refanchor, defanchor, content):
-        self.number = number
-        self.refanchor = refanchor
-        self.defanchor = defanchor
-        self.content = content
-
-    def asdict(self):
-        return {
-            "type": self.node_type,
-            "refanchor": self.refanchor,
-            "defanchor": self.defanchor,
-            "number": self.number,
-            "content": [i.asdict() for i in self.content],
-        }
 
 
 class TocNode(Node):

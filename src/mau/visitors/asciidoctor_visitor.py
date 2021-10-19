@@ -1,3 +1,5 @@
+import copy
+
 from mau.visitors.visitor import Visitor
 
 DEFAULT_TEMPLATES = {
@@ -6,6 +8,7 @@ DEFAULT_TEMPLATES = {
     "block-source.adoc": "{% if title %}.{{ title }}\n{% endif %}[source{% if kwargs.language %},{{ kwargs.language }}{% endif %}]\n----\n{{ content }}\n----\n{% if kwargs.callouts %}{% for callout in kwargs.callouts %}{{ callout[0] }} {{ callout[1] }}{% endfor %}\n{% endif %}",
     "callout.adoc": "<{{ name }}>",
     "class.adoc": """[{{ classes }}]#{{ content }}#""",
+    "command.adoc": "{{ content }}",
     "document.adoc": "{{ content }}",
     "footnote_ref.adoc": "footnote:[{{ content }}]",
     "header.adoc": "{{ header }} {{ value }}\n",
@@ -32,13 +35,21 @@ class AsciidoctorVisitor(Visitor):
     def __init__(
         self,
         default_templates=DEFAULT_TEMPLATES,
+        custom_templates=None,
         templates_directory=None,
         config=None,
         toc=None,
         footnotes=None,
     ):
+        default_templates = (
+            copy.deepcopy(default_templates)
+            if default_templates is not None
+            else copy.deepcopy(DEFAULT_TEMPLATES)
+        )
+
         super().__init__(
             default_templates=default_templates,
+            custom_templates=custom_templates,
             templates_directory=templates_directory,
             config=config,
             toc=toc,

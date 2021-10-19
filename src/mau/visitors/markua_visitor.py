@@ -1,3 +1,5 @@
+import copy
+
 from mau.visitors.visitor import Visitor
 
 DEFAULT_TEMPLATES = {
@@ -35,13 +37,21 @@ class MarkuaVisitor(Visitor):
     def __init__(
         self,
         default_templates=None,
+        custom_templates=None,
         templates_directory=None,
         config=None,
         toc=None,
         footnotes=None,
     ):
+        default_templates = (
+            copy.deepcopy(default_templates)
+            if default_templates is not None
+            else copy.deepcopy(DEFAULT_TEMPLATES)
+        )
+
         super().__init__(
-            default_templates=DEFAULT_TEMPLATES,
+            default_templates=default_templates,
+            custom_templates=custom_templates,
             templates_directory=templates_directory,
             config=config,
             toc=toc,

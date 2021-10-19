@@ -140,7 +140,6 @@ class ArgumentsParser(BaseParser):
 
     def _parse_arguments(self):
         # Just run until you can't find any more commas
-
         while True:
             self._parse_single_argument()
 

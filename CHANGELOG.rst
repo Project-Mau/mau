@@ -2,6 +2,12 @@
 Changelog
 =========
 
+Version 2.0.1
+=============
+
+- [fix] Fixed a bug in the Markua and AsciiDoctor visitors.
+- [fix] Fixed the documentation source code
+
 Version 2.0.0
 =============
 

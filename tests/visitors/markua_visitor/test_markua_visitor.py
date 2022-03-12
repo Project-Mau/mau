@@ -245,7 +245,7 @@ def test_footnote_def(footnote_anchors_mock):
 
     assert result == [
         "This is a sentence[^footnote_fr-XXXXXX_1]\n",
-        "[^footnote_fr-XXXXXX_1]: with a note",
+        "[^footnote_fr-XXXXXX_1]: with a note\n",
     ]
 
 

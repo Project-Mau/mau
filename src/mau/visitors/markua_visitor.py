@@ -10,7 +10,7 @@ DEFAULT_TEMPLATES = {
     "class.md": "{{ content }}",
     "command.md": "{{ content }}",
     "document.md": "{{ content }}",
-    "footnote_def.md": "[^footnote_{{ refanchor }}_{{ number }}]: {{ content }}",
+    "footnote_def.md": "[^footnote_{{ refanchor }}_{{ number }}]: {{ content }}\n",
     "footnote_ref.md": "[^footnote_{{ refanchor }}_{{ number }}]",
     "footnotes.md": "{{ entries }}",
     "header.md": "{{ header }} {{ value }}\n",

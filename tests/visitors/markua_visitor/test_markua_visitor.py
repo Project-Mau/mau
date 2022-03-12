@@ -207,7 +207,10 @@ def test_block(header_anchor_mock):
     _test(source, expected)
 
 
-def test_footnote_ref():
+@patch("mau.parsers.text_parser.footnote_anchors")
+def test_footnote_ref(footnote_anchors_mock):
+    footnote_anchors_mock.return_value = "fr-XXXXXX", "UNUSED"
+
     p = init_parser(
         dedent(
             """
@@ -220,10 +223,12 @@ def test_footnote_ref():
     ast = listasdict(p.nodes)
     result = visitlist(ast, footnotes=p.footnotes)
 
-    assert result == ["This is a sentence[^footnote1]\n"]
+    assert result == ["This is a sentence[^footnote_fr-XXXXXX_1]\n"]
 
 
-def test_footnote_def():
+@patch("mau.parsers.text_parser.footnote_anchors")
+def test_footnote_def(footnote_anchors_mock):
+    footnote_anchors_mock.return_value = "fr-XXXXXX", "UNUSED"
     p = init_parser(
         dedent(
             """
@@ -238,7 +243,10 @@ def test_footnote_def():
     ast = listasdict(p.nodes)
     result = visitlist(ast, footnotes=p.footnotes)
 
-    assert result == ["This is a sentence[^footnote1]\n", "[^footnote1]: with a note"]
+    assert result == [
+        "This is a sentence[^footnote_fr-XXXXXX_1]\n",
+        "[^footnote_fr-XXXXXX_1]: with a note",
+    ]
 
 
 def test_unordered_list():

@@ -25,7 +25,7 @@ To use Mau in your tool you can run it programmatically
 ``` python
 from mau import Mau
 
-mau = Mau(target_format="html")
+mau = Mau({}, "html")
 
 mau.process(text)
 ```

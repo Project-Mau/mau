@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 2.0.2
+=============
+
+- [fix] Markua footnotes contain an hash that avoids clashes.
+- [fix] Markus footnotes end with a newline so they are not rendered on the same line.
+- [fix] Resolved issue #4: README updated to reflect the current API.
+- [fix] HTML visitor escapes special characters like `&`, `>`, and `<` in verbatim and links.
+
 Version 2.0.1
 =============
 

@@ -1,4 +1,5 @@
 import copy
+import html
 
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
@@ -124,6 +125,11 @@ class HTMLVisitor(Visitor):
             footnotes=footnotes,
         )
 
+    def _visit_link(self, node):
+        node["target"] = html.escape(node["target"])
+        node["text"] = html.escape(node["text"])
+        return node
+
     def _visit_class(self, node):
         node["classes"] = " ".join(node["classes"])
         return super()._visit_class(node)
@@ -226,3 +232,7 @@ class HTMLVisitor(Visitor):
         self._reducelist(footnotes_node, ["entries"], join_with="")
 
         return footnotes_node
+
+    def _visit_verbatim(self, node):
+        node["content"] = html.escape(node["value"])
+        return node

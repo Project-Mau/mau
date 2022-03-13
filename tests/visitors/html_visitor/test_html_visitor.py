@@ -96,6 +96,14 @@ def test_style_verbatim():
     _test(source, expected)
 
 
+def test_style_verbatim_with_angle_brackets():
+    source = "`This is <a placeholder>`"
+
+    expected = ["<p><code>This is &lt;a placeholder&gt;</code></p>"]
+
+    _test(source, expected)
+
+
 def test_class_old_style():
     source = "[classname]#text with that class#"
 
@@ -116,6 +124,16 @@ def test_link():
     source = '[link](https://somedomain.org/the/path,"link text")'
 
     expected = ['<p><a href="https://somedomain.org/the/path">link text</a></p>']
+
+    _test(source, expected)
+
+
+def test_link_with_ampersand():
+    source = '[link]("https://s3.console.aws.amazon.com/s3/home?region=eu-west-1&region=eu-west-1")'
+
+    expected = [
+        '<p><a href="https://s3.console.aws.amazon.com/s3/home?region=eu-west-1&amp;region=eu-west-1">https://s3.console.aws.amazon.com/s3/home?region=eu-west-1&amp;region=eu-west-1</a></p>'
+    ]
 
     _test(source, expected)
 

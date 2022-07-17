@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 2.0.3
+=============
+
+- [enhancement] Added two new styles: `^caret^` and `~tilde~`. Since in both Markua and AsciiDoctor these are connected with superscript and subscript this has been implemented as the default behaviour of the HTML visitor.
+
 Version 2.0.2
 =============
 

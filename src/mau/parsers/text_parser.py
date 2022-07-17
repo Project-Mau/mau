@@ -20,7 +20,7 @@ from mau.parsers.nodes import (
 
 # This is a simple map to keep track of the official
 # name of styles introduced by special characters
-MAP_STYLES = {"_": "underscore", "*": "star"}
+MAP_STYLES = {"_": "underscore", "*": "star", "^": "caret", "~": "tilde"}
 
 
 def footnote_anchors(content):
@@ -88,7 +88,9 @@ class TextParser(BaseParser):
         """
 
         # Get the style marker
-        style = self.get_token(TokenTypes.LITERAL, check=lambda x: x in "*_").value
+        style = self.get_token(
+            TokenTypes.LITERAL, check=lambda x: x in MAP_STYLES.keys()
+        ).value
 
         # Get everything until the next marker
         content = self.parse_sentence(stop_tokens={Token(TokenTypes.LITERAL, style)})

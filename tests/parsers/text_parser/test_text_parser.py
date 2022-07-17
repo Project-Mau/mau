@@ -79,6 +79,50 @@ def test_star():
     _test(source, expected)
 
 
+def test_caret():
+    source = "^Some text^"
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {
+                    "type": "style",
+                    "value": "caret",
+                    "content": {
+                        "type": "sentence",
+                        "content": [{"type": "text", "value": "Some text"}],
+                    },
+                }
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
+def test_tilde():
+    source = "~Some text~"
+
+    expected = [
+        {
+            "type": "sentence",
+            "content": [
+                {
+                    "type": "style",
+                    "value": "tilde",
+                    "content": {
+                        "type": "sentence",
+                        "content": [{"type": "text", "value": "Some text"}],
+                    },
+                }
+            ],
+        }
+    ]
+
+    _test(source, expected)
+
+
 def test_style_within_style():
     source = "_*Words with two styles*_"
 

@@ -44,6 +44,34 @@ def test_star():
     ]
 
 
+def test_caret():
+    lex = TextLexer()
+
+    lex.process("^caret^")
+
+    assert lex.tokens == [
+        Literal("^"),
+        Text("caret"),
+        Literal("^"),
+        EOL,
+        EOF,
+    ]
+
+
+def test_tilde():
+    lex = TextLexer()
+
+    lex.process("~tilde~")
+
+    assert lex.tokens == [
+        Literal("~"),
+        Text("tilde"),
+        Literal("~"),
+        EOL,
+        EOF,
+    ]
+
+
 def test_backtick():
     lex = TextLexer()
 

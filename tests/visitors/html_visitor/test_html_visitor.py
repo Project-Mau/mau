@@ -88,6 +88,22 @@ def test_style_star():
     _test(source, expected)
 
 
+def test_style_caret():
+    source = "^This is text^"
+
+    expected = ["<p><sup>This is text</sup></p>"]
+
+    _test(source, expected)
+
+
+def test_style_tilde():
+    source = "~This is text~"
+
+    expected = ["<p><sub>This is text</sub></p>"]
+
+    _test(source, expected)
+
+
 def test_style_verbatim():
     source = "`This is text`"
 

@@ -7,6 +7,7 @@ DEFAULT_TEMPLATES = {
     "block.md": "{{ content }}",
     "block-source.md": '{% if title %}{caption: "{{ title }}"}\n{% endif %}``` {% if kwargs.language %}{{ kwargs.language }}{% endif %}\n{{ content }}\n```',
     "callout.md": "",
+    "caret.md": "^{{ content }}^",
     "class.md": "{{ content }}",
     "command.md": "{{ content }}",
     "document.md": "{{ content }}",
@@ -25,6 +26,7 @@ DEFAULT_TEMPLATES = {
     "sentence.md": "{{ content }}",
     "star.md": "**{{ content }}**",
     "text.md": "{{ value }}",
+    "tilde.md": "~{{ content }}~",
     "underscore.md": "*{{ content }}*",
     "verbatim.md": "`{{ content }}`",
 }

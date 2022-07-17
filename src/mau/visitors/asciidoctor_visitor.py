@@ -7,6 +7,7 @@ DEFAULT_TEMPLATES = {
     "block.adoc": "--\n{{ content }}\n--",
     "block-source.adoc": "{% if title %}.{{ title }}\n{% endif %}[source{% if kwargs.language %},{{ kwargs.language }}{% endif %}]\n----\n{{ content }}\n----\n{% if kwargs.callouts %}{% for callout in kwargs.callouts %}{{ callout[0] }} {{ callout[1] }}{% endfor %}\n{% endif %}",
     "callout.adoc": "<{{ name }}>",
+    "caret.adoc": "^{{ content }}^",
     "class.adoc": """[{{ classes }}]#{{ content }}#""",
     "command.adoc": "{{ content }}",
     "document.adoc": "{{ content }}",
@@ -23,6 +24,7 @@ DEFAULT_TEMPLATES = {
     "sentence.adoc": "{{ content }}",
     "star.adoc": "*{{ content }}*",
     "text.adoc": "{{ value }}",
+    "tilde.adoc": "~{{ content }}~",
     "underscore.adoc": "_{{ content }}_",
     "verbatim.adoc": "`{{ content }}`",
 }

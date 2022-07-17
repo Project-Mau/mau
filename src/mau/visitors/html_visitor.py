@@ -39,6 +39,7 @@ DEFAULT_TEMPLATES = {
         "</div>"
     ),
     "callout.html": '<span class="callout">{{ name }}</span>',
+    "caret.html": "<sup>{{ content }}</sup>",
     "class.html": '<span class="{{ classes }}">{{ content }}</span>',
     "command.html": "{{ content }}",
     "container.html": "{{ content }}",
@@ -86,6 +87,7 @@ DEFAULT_TEMPLATES = {
     "sentence.html": "{{ content }}",
     "star.html": "<strong>{{ content }}</strong>",
     "text.html": "{{ value }}",
+    "tilde.html": "<sub>{{ content }}</sub>",
     "toc.html": "<div>{% if entries%}<ul>{{ entries }}</ul>{% endif %}</div>",
     "toc_entry.html": (
         "<li>"

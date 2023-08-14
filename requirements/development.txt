@@ -1,2 +1,0 @@
--e .[testing]
--e .[development]

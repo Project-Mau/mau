@@ -27,6 +27,7 @@ dependencies = [
 "pyyaml",
 "tabulate",
 ]
+readme = "README.md"
 
 [project.urls]
 Home = "https://github.com/Project-Mau/mau"

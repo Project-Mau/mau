@@ -1,0 +1,5 @@
+= Test directives
+
+This file tests Mau directives
+
+::#include:source/test_inline_nodes.mau

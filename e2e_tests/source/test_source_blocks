@@ -1,0 +1,188 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: test-source-code-blocks-acb6
+      args: []
+      kwargs: {}
+      level: 1
+      tags: []
+      type: header
+      value: Test source code blocks
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This file tests source code blocks.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      blocktype: default
+      callouts: []
+      classes: []
+      code:
+      - data:
+          type: text
+          value: This is all literal.
+      - data:
+          type: text
+          value: ''
+      - data:
+          type: text
+          value: == This is not a header
+      - data:
+          type: text
+          value: ''
+      - data:
+          type: text
+          value: '[These are not attributes]'
+      - data:
+          type: text
+          value: ''
+      - data:
+          type: text
+          value: Some quotes ""
+      highlights: []
+      kwargs: {}
+      language: text
+      lines: 7
+      markers: []
+      preprocessor: null
+      tags: []
+      title:
+        data:
+          content:
+          - data:
+              type: text
+              value: Source code
+          type: sentence
+      type: source
+  - data:
+      args: []
+      kwargs: {}
+      tags: []
+      type: horizontal_rule
+  - data:
+      args: []
+      blocktype: default
+      callouts: []
+      classes: []
+      code:
+      - data:
+          type: text
+          value: 'def header_anchor(text, level):'
+      - data:
+          type: text
+          value: '    """'
+      - data:
+          type: text
+          value: '    Return a sanitised anchor for a header.'
+      - data:
+          type: text
+          value: '    """'
+      - data:
+          type: text
+          value: ''
+      - data:
+          type: text
+          value: '    # Everything lowercase'
+      - data:
+          type: text
+          value: '    sanitised_text = text.lower()'
+      - data:
+          type: text
+          value: ''
+      - data:
+          type: text
+          value: '    # Get only letters, numbers, dashes, spaces, and dots'
+      - data:
+          type: text
+          value: '    sanitised_text = "".join(re.findall("[a-z0-9-\\. ]+", sanitised_text))'
+      - data:
+          type: text
+          value: ''
+      - data:
+          type: text
+          value: '    # Remove multiple spaces'
+      - data:
+          type: text
+          value: '    sanitised_text = "-".join(sanitised_text.split())'
+      - data:
+          type: text
+          value: ''
+      - data:
+          type: text
+          value: '    return sanitised_text'
+      highlights: []
+      kwargs: {}
+      language: python
+      lines: 15
+      markers: []
+      preprocessor: null
+      tags: []
+      title:
+        data:
+          content:
+          - data:
+              type: text
+              value: Python code
+          type: sentence
+      type: source
+  - data:
+      args: []
+      kwargs: {}
+      tags: []
+      type: horizontal_rule
+  - data:
+      args: []
+      blocktype: default
+      callouts:
+      - data:
+          marker: '1'
+          type: callouts_entry
+          value: The name of the function
+      - data:
+          marker: '2'
+          type: callouts_entry
+          value: Some memory-related wizardry
+      classes: []
+      code:
+      - data:
+          type: text
+          value: 'def header_anchor(text, level):'
+      - data:
+          type: text
+          value: '    return "h{}-{}-{}".format('
+      - data:
+          type: text
+          value: '        level, quote(text.lower())[:20], str(id(text))[:8]'
+      - data:
+          type: text
+          value: '    )  # pragma: no cover'
+      highlights: []
+      kwargs: {}
+      language: python
+      lines: 4
+      markers:
+      - data:
+          line: 0
+          marker: '1'
+          type: callout
+      - data:
+          line: 2
+          marker: '2'
+          type: callout
+      preprocessor: null
+      tags: []
+      title: {}
+      type: source
+  kwargs: {}
+  tags: []
+  type: document
+

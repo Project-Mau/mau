@@ -1,0 +1,390 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: test-blocks-1011
+      args: []
+      kwargs: {}
+      level: 1
+      tags: []
+      type: header
+      value: Test blocks
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This file tests the basic blocks.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      blocktype: default
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+            data:
+              content:
+              - data:
+                  type: text
+                  value: This is a block without attributes. It should be rendered
+                    as a div, however.
+              type: sentence
+          kwargs: {}
+          tags: []
+          type: paragraph
+      engine: default
+      kwargs: {}
+      preprocessor: none
+      secondary_content: []
+      tags: []
+      title: {}
+      type: block
+  - data:
+      args: []
+      blocktype: default
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+            data:
+              content:
+              - data:
+                  type: text
+                  value: 'This is another block between two markers '
+              - data:
+                  type: verbatim
+                  value: ++++
+              - data:
+                  type: text
+                  value: .
+              type: sentence
+          kwargs: {}
+          tags: []
+          type: paragraph
+      engine: default
+      kwargs: {}
+      preprocessor: none
+      secondary_content: []
+      tags: []
+      title: {}
+      type: block
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: The four characters can be escaped
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: '----'
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      blocktype: someclass
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+            data:
+              content:
+              - data:
+                  type: text
+                  value: 'This instead is a block with a specific type, you can customise
+                    this with the template '
+              - data:
+                  type: verbatim
+                  value: block-someclass.html
+              type: sentence
+          kwargs: {}
+          tags: []
+          type: paragraph
+      engine: default
+      kwargs: {}
+      preprocessor: none
+      secondary_content: []
+      tags: []
+      title: {}
+      type: block
+  - data:
+      args: []
+      kwargs: {}
+      tags: []
+      type: horizontal_rule
+  - data:
+      args: []
+      blocktype: admonition
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+            data:
+              content:
+              - data:
+                  type: text
+                  value: 'This is an admonition, which is a specific type of block
+                    with a '
+              - data:
+                  type: verbatim
+                  value: class
+              - data:
+                  type: text
+                  value: ', and '
+              - data:
+                  type: verbatim
+                  value: icon
+              - data:
+                  type: text
+                  value: ', and a '
+              - data:
+                  type: verbatim
+                  value: label
+              - data:
+                  type: text
+                  value: ' that work as a title. This block is implemented purely
+                    through Jinja templates.'
+              type: sentence
+          kwargs: {}
+          tags: []
+          type: paragraph
+      engine: default
+      kwargs:
+        class: warning
+        icon: someicon
+        label: somelabel
+      preprocessor: none
+      secondary_content: []
+      tags: []
+      title: {}
+      type: block
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'The following is a quote from a book. Quotes are not special
+                in Mau, they are standard blocks rendered through the template '
+          - data:
+              type: verbatim
+              value: block-quote
+          - data:
+              type: text
+              value: . You can use secondary content to include the source.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      kwargs: {}
+      tags: []
+      type: horizontal_rule
+  - data:
+      args: []
+      blocktype: quote
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+            data:
+              content:
+              - data:
+                  type: text
+                  value: "Some of the newer ones are having trouble because they never\
+                    \ really mastered some basic techniques, but they\u2019re working\
+                    \ hard and improving."
+              type: sentence
+          kwargs: {}
+          tags: []
+          type: paragraph
+      engine: default
+      kwargs: {}
+      preprocessor: none
+      secondary_content:
+      - data:
+          args: []
+          content:
+            data:
+              content:
+              - data:
+                  type: text
+                  value: 'Orson Scott Card, '
+              - data:
+                  content:
+                    data:
+                      content:
+                      - data:
+                          type: text
+                          value: Ender's Game
+                      type: sentence
+                  type: style
+                  value: underscore
+              - data:
+                  type: text
+                  value: ' (1985)'
+              type: sentence
+          kwargs: {}
+          tags: []
+          type: paragraph
+      tags: []
+      title: {}
+      type: block
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: Of course you can use attributes to specify the attribution,
+                but this way you cannot use Mau code. Remember to change the template
+                if you want to go down that route.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      blocktype: quote
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+            data:
+              content:
+              - data:
+                  type: text
+                  value: "Some of the newer ones are having trouble because they never\
+                    \ really mastered some basic techniques, but they\u2019re working\
+                    \ hard and improving."
+              type: sentence
+          kwargs: {}
+          tags: []
+          type: paragraph
+      engine: default
+      kwargs:
+        attribution: Orson Scott Card, Ender's Game (1985)
+      preprocessor: none
+      secondary_content: []
+      tags: []
+      title: {}
+      type: block
+  - data:
+      args: []
+      kwargs: {}
+      tags: []
+      type: horizontal_rule
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: Blocks can have titles
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      blocktype: default
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+            data:
+              content:
+              - data:
+                  type: text
+                  value: This is a block
+              type: sentence
+          kwargs: {}
+          tags: []
+          type: paragraph
+      engine: default
+      kwargs: {}
+      preprocessor: none
+      secondary_content: []
+      tags: []
+      title:
+        data:
+          content:
+          - data:
+              type: text
+              value: The title
+          type: sentence
+      type: block
+  - data:
+      args: []
+      kwargs: {}
+      tags: []
+      type: horizontal_rule
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: Blocks can be rendered conditionally
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      blocktype: aside
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+            data:
+              content:
+              - data:
+                  type: text
+                  value: This will be rendered
+              type: sentence
+          kwargs: {}
+          tags: []
+          type: paragraph
+      engine: default
+      kwargs: {}
+      preprocessor: none
+      secondary_content: []
+      tags: []
+      title: {}
+      type: block
+  kwargs: {}
+  tags: []
+  type: document
+

@@ -1,0 +1,27 @@
+@BEGIN
+This is text
+split into multiple lines
+
+with an empty line
+---
+[attributes]
+----
+This is a block
+####
+That contains another block
+####
+----
+@@@
+main|0|0|TEXT|This is text
+main|1|0|TEXT|split into multiple lines
+main|2|0|EOL|
+main|3|0|TEXT|with an empty line
+main|4|0|HORIZONTAL_RULE|
+main|5|0|ATTRIBUTES|[attributes]
+main|6|0|BLOCK|----
+main|7|0|TEXT|This is a block
+main|8|0|BLOCK|####
+main|9|0|TEXT|That contains another block
+main|10|0|BLOCK|####
+main|11|0|BLOCK|----
+@END

@@ -1,0 +1,153 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: test-toc-4aa7
+      args: []
+      kwargs: {}
+      level: 1
+      tags: []
+      type: header
+      value: Test ToC
+  - data:
+      anchor: works-as-intended-2f4d
+      args: []
+      kwargs: {}
+      level: 2
+      tags: []
+      type: header
+      value: Works as intended
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This file tests that headers work as intended.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      anchor: more-on-the-toc-709a
+      args: []
+      kwargs: {}
+      level: 3
+      tags: []
+      type: header
+      value: More on the ToC
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: The ToC is the list of all headers in the file, and it should
+                be possible to include it in any part of it. Like here
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: &id001 []
+      entries:
+      - data:
+          anchor: test-toc-4aa7
+          args: *id001
+          children:
+          - data:
+              anchor: works-as-intended-2f4d
+              args: *id001
+              children:
+              - data:
+                  anchor: more-on-the-toc-709a
+                  args: *id001
+                  children: []
+                  kwargs: &id002 {}
+                  tags: &id003 []
+                  type: toc_entry
+                  value: More on the ToC
+              kwargs: *id002
+              tags: *id003
+              type: toc_entry
+              value: Works as intended
+          - data:
+              anchor: conclusion-ec49
+              args: *id001
+              children: []
+              kwargs: *id002
+              tags: *id003
+              type: toc_entry
+              value: 'Conclusion '
+          kwargs: *id002
+          tags: *id003
+          type: toc_entry
+          value: Test ToC
+      kwargs: *id002
+      tags: *id003
+      type: command_toc
+  - data:
+      anchor: conclusion-ec49
+      args: []
+      kwargs: {}
+      level: 2
+      tags: []
+      type: header
+      value: 'Conclusion '
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This is another example, the ToC here should be the same as the
+                ToC above.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: *id001
+      entries:
+      - data:
+          anchor: test-toc-4aa7
+          args: *id001
+          children:
+          - data:
+              anchor: works-as-intended-2f4d
+              args: *id001
+              children:
+              - data:
+                  anchor: more-on-the-toc-709a
+                  args: *id001
+                  children: []
+                  kwargs: *id002
+                  tags: *id003
+                  type: toc_entry
+                  value: More on the ToC
+              kwargs: *id002
+              tags: *id003
+              type: toc_entry
+              value: Works as intended
+          - data:
+              anchor: conclusion-ec49
+              args: *id001
+              children: []
+              kwargs: *id002
+              tags: *id003
+              type: toc_entry
+              value: 'Conclusion '
+          kwargs: *id002
+          tags: *id003
+          type: toc_entry
+          value: Test ToC
+      kwargs: *id002
+      tags: *id003
+      type: command_toc
+  kwargs: {}
+  tags: []
+  type: document
+

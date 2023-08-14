@@ -1,0 +1,109 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: variables-6933
+      args: []
+      kwargs: {}
+      level: 1
+      tags: []
+      type: header
+      value: Variables
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'This file tests variables. Above there is a definition of the
+                variable '
+          - data:
+              type: verbatim
+              value: answer
+          - data:
+              type: text
+              value: ', which is used in the next sentence.'
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: The Answer to the Ultimate Question of Life, the Universe, and
+                Everything is 42.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'There is also a definition of a full link macro: '
+          - data:
+              target: https://en.wikipedia.org/wiki/42_(number)
+              text: https://en.wikipedia.org/wiki/42_(number)
+              type: link
+          - data:
+              type: text
+              value: .
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'Interpolation can be blocked escaping the curly braces: {answer}.
+                This happens automatically in verbatim: '
+          - data:
+              type: verbatim
+              value: '{answer}'
+          - data:
+              type: text
+              value: .
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'Mau supports booleans: True and False.'
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'You can also use namespaces with a dotted syntax: 5 and 6.'
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  kwargs: {}
+  tags: []
+  type: document
+

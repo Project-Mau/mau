@@ -1,0 +1,68 @@
+= Test page nodes
+
+= Header 1
+
+This file tests some of the page nodes like header.
+
+// This is a comment and will not appear in the output.
+
+== Header 2
+
+More headers.
+
+===== Header 5
+
+I'm skipping some steps here.
+
+////
+This is a multiline
+comment.
+All these lines will disappear.
+////
+
+---
+
+Just above this paragraph there should be a horizontal line.
+
+---
+
+A bit more fun with styles, just to check that everything is working.
+
+You can have _*strong and empashized*_ text.
+
+You can also apply styles to _*`verbatim`*_.
+
+But verbatim will `_*preserve*_` them.
+
+You can use _single *markers.
+
+But you \_need\_ to escape pairs.
+
+Even though you can escape \_only one_ of the two.
+
+If you have \_more than two\_ it's better to just \_escape\_ all of them.
+
+Oh, this is valid for `verbatim as well.
+
+---
+
+This is an unordered list
+
+* Item 1
+* Item 2
+** Item 2.1
+** Item 2.2
+* Item 3
+
+This is an ordered list
+
+# Item 1
+# Item 2
+## Item 2.1
+## Item 2.2
+# Item 3
+
+Finally, let's include an image.
+
+.A beautiful image
+<< image:"https://images.unsplash.com/photo-1534106474077-f9e9c6f5a47c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"

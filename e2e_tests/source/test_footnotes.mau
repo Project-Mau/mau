@@ -1,0 +1,32 @@
+= Test footnotes
+
+= Header 1
+
+[footnote, intended]
+----
+Which means that links work and that I can add the command `footnotes` anywhere in the text.
+----
+
+This file tests that footnotes work as intended[footnote](intended)
+
+== Header 2
+
+The list of footnotes should be computed while the parser works on the text, so I expect the command `footnotes` to contain all of them in any part of the text[footnote](hope)
+
+::footnotes:
+
+[footnote, hope]
+----
+This is my hope, at least.
+----
+
+=== Header 3
+
+This is here just to add another footnote[footnote](appear).
+
+[footnote, appear]
+----
+Which, as I said, should appear both in the list above and in the one below.
+----
+
+::footnotes:

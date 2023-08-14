@@ -1,0 +1,25 @@
+= Test references
+
+== Exercise 1
+
+This is the first exercise.
+
+The solution is [reference](solution, first).
+
+[reference, solution, first]
+----
+This is the first solution.
+----
+
+== Exercise 2
+
+This is the second exercise.
+
+The solution is [reference](solution, second).
+
+[reference, solution, second]
+----
+This is the second solution.
+----
+
+::references:solution

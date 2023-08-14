@@ -1,0 +1,49 @@
+= Test source code blocks
+
+This file tests source code blocks.
+
+. Source code
+[source]
+----
+This is all literal.
+
+== This is not a header
+
+[These are not attributes]
+
+Some quotes ""
+----
+
+---
+
+. Python code
+[source, python]
+----
+def header_anchor(text, level):
+    """
+    Return a sanitised anchor for a header.
+    """
+
+    # Everything lowercase
+    sanitised_text = text.lower()
+
+    # Get only letters, numbers, dashes, spaces, and dots
+    sanitised_text = "".join(re.findall("[a-z0-9-\\. ]+", sanitised_text))
+
+    # Remove multiple spaces
+    sanitised_text = "-".join(sanitised_text.split())
+
+    return sanitised_text
+----
+
+---
+
+[source,python]
+----
+def header_anchor(text, level)::1:
+    return "h{}-{}-{}".format(
+        level, quote(text.lower())[:20], str(id(text))[:8]:2:
+    )  # pragma: no cover
+----
+1: The name of the function
+2: Some memory-related wizardry

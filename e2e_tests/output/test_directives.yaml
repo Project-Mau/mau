@@ -1,0 +1,242 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: test-directives-93d4
+      args: []
+      kwargs: {}
+      level: 1
+      tags: []
+      type: header
+      value: Test directives
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This file tests Mau directives
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      anchor: test-inline-nodes-378b
+      args: []
+      kwargs: {}
+      level: 1
+      tags: []
+      type: header
+      value: Test inline nodes
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This document contains the standard inline nodes that can appear
+                in a paragraph.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This is a normal paragraph that is followed by an empty line.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This is a paragraph split in two lines. The missing empty line
+                makes the two line belong to the same paragraph.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'This paragraph contains '
+          - data:
+              type: verbatim
+              value: verbatim
+          - data:
+              type: text
+              value: ' text and the supported styles: '
+          - data:
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: underscore
+                  type: sentence
+              type: style
+              value: underscore
+          - data:
+              type: text
+              value: ', '
+          - data:
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: star
+                  type: sentence
+              type: style
+              value: star
+          - data:
+              type: text
+              value: ', '
+          - data:
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: tilde
+                  type: sentence
+              type: style
+              value: tilde
+          - data:
+              type: text
+              value: ' and '
+          - data:
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: caret
+                  type: sentence
+              type: style
+              value: caret
+          - data:
+              type: text
+              value: .
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'Here we use '
+          - data:
+              classes:
+              - class1
+              - class2
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: classes
+                  type: sentence
+              type: class
+          - data:
+              type: text
+              value: .
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'A paragraph with an inline image '
+          - data:
+              alt_text: null
+              height: null
+              type: image
+              uri: https://www.thedigitalcatonline.com/images/global/favicon.jpg
+              width: null
+          - data:
+              type: text
+              value: .
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'Links like there was no '
+          - data:
+              target: https://www.thedigitalcatonline.com
+              text: tomorrow
+              type: link
+          - data:
+              type: text
+              value: '. Also without text: '
+          - data:
+              target: https://www.thedigitalcatonline.com
+              text: https://www.thedigitalcatonline.com
+              type: link
+          - data:
+              type: text
+              value: .
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'You can use the macro '
+          - data:
+              type: verbatim
+              value: mailto
+          - data:
+              type: text
+              value: ' to format email links. If you need to know more write me at '
+          - data:
+              target: mailto:info@example.com
+              text: info@example.com
+              type: link
+          - data:
+              type: text
+              value: .
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  kwargs: {}
+  tags: []
+  type: document
+

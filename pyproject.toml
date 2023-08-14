@@ -1,0 +1,109 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "mau"
+version = "3.0.0"
+description = "A lightweight template-driven markup language"
+authors = [{name = "Leonardo Giordani", email = "giordani.leonardo@gmail.com"}]
+license = {file = "LICENSE"}
+classifiers = [
+"Development Status :: 5 - Production/Stable",
+"License :: OSI Approved :: MIT License",
+"Intended Audience :: Developers",
+"Operating System :: OS Independent",
+"Programming Language :: Python",
+"Programming Language :: Python :: 3",
+"Programming Language :: Python :: 3.7",
+"Programming Language :: Python :: 3.8",
+"Programming Language :: Python :: 3.9",
+"Programming Language :: Python :: 3.10",
+"Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.7"
+dependencies = [
+"Jinja2",
+"pyyaml",
+"tabulate",
+]
+
+[project.urls]
+Home = "https://github.com/Project-Mau/mau"
+
+[project.optional-dependencies]
+testing = [
+"coverage",
+"nox",
+"pytest",
+"pytest-cov",
+"pytest-icdiff",
+]
+development = [
+"mau[testing]",
+"black",
+"flake8",
+"flake8-pyproject",
+"flit",
+"isort",
+"pip",
+"pylint",
+"wheel",
+]
+
+[project.scripts]
+mau = "mau.main:main"
+
+[tool.black]
+target-version = ["py37", "py38", "py39", "py310"]
+include = '\.pyi?$'
+
+[tool.coverage.run]
+source = ["mau"]
+omit=["mau/main.py", "mau/__init__.py"]
+
+[tool.coverage.report]
+fail_under = 80
+include = ["mau/*"]
+exclude_lines = [
+'if TYPE_CHECKING:',
+'pragma: no cover'
+]
+exclude_also = [
+"def __hash__",
+"def __repr__",
+"def __str__",
+]
+
+# [tool.flake8]
+# ignore = ['E203', 'E231', 'E241']
+# max-line-length = 88
+# count = true
+
+[tool.pylint.main]
+disable = [
+"import-error",
+"missing-class-docstring",
+"missing-function-docstring",
+"missing-module-docstring",
+"protected-access",
+"too-few-public-methods",
+"too-many-arguments",
+"too-many-instance-attributes",
+"too-many-return-statements",
+"use-implicit-booleaness-not-comparison"
+]
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests"]
+
+[tool.pytest.ini_options]
+addopts = """\
+--cov mau \
+--cov tests \
+--cov-report term-missing \
+--no-cov-on-fail \
+"""
+
+

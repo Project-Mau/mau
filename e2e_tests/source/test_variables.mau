@@ -1,0 +1,22 @@
+= Variables
+
+:answer:42
+:wikipedia_link:[link]("https://en.wikipedia.org/wiki/42_(number)")
+
+This file tests variables. Above there is a definition of the variable `answer`, which is used in the next sentence.
+
+The Answer to the Ultimate Question of Life, the Universe, and Everything is {answer}.
+
+There is also a definition of a full link macro: {wikipedia_link}.
+
+Interpolation can be blocked escaping the curly braces: \{answer}. This happens automatically in verbatim: `{answer}`.
+
+:true:
+:!false:
+
+Mau supports booleans: {true} and {false}.
+
+:value:5
+:module.value:6
+
+You can also use namespaces with a dotted syntax: {value} and {module.value}.

@@ -1,0 +1,281 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: test-footnotes-1e66
+      args: []
+      kwargs: {}
+      level: 1
+      tags: []
+      type: header
+      value: Test footnotes
+  - data:
+      anchor: header-1-1aa5
+      args: []
+      kwargs: {}
+      level: 1
+      tags: []
+      type: header
+      value: Header 1
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This file tests that footnotes work as intended
+          - data:
+              content:
+              - data:
+                  args: &id001 []
+                  content:
+                    data:
+                      content:
+                      - data:
+                          type: text
+                          value: 'Which means that links work and that I can add the
+                            command '
+                      - data:
+                          type: verbatim
+                          value: footnotes
+                      - data:
+                          type: text
+                          value: ' anywhere in the text.'
+                      type: sentence
+                  kwargs: &id002 {}
+                  tags: &id003 []
+                  type: paragraph
+              content_anchor: fd-94831d44-1
+              number: 1
+              reference_anchor: fr-94831d44-1
+              type: footnote
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      anchor: header-2-871b
+      args: []
+      kwargs: {}
+      level: 2
+      tags: []
+      type: header
+      value: Header 2
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'The list of footnotes should be computed while the parser works
+                on the text, so I expect the command '
+          - data:
+              type: verbatim
+              value: footnotes
+          - data:
+              type: text
+              value: ' to contain all of them in any part of the text'
+          - data:
+              content:
+              - data:
+                  args: &id004 []
+                  content:
+                    data:
+                      content:
+                      - data:
+                          type: text
+                          value: This is my hope, at least.
+                      type: sentence
+                  kwargs: &id005 {}
+                  tags: &id006 []
+                  type: paragraph
+              content_anchor: fd-87d86875-2
+              number: 2
+              reference_anchor: fr-87d86875-2
+              type: footnote
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      entries:
+      - data:
+          content:
+          - data:
+              args: *id001
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: 'Which means that links work and that I can add the command '
+                  - data:
+                      type: verbatim
+                      value: footnotes
+                  - data:
+                      type: text
+                      value: ' anywhere in the text.'
+                  type: sentence
+              kwargs: *id002
+              tags: *id003
+              type: paragraph
+          content_anchor: fd-94831d44-1
+          number: 1
+          reference_anchor: fr-94831d44-1
+          type: footnotes_entry
+      - data:
+          content:
+          - data:
+              args: *id004
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: This is my hope, at least.
+                  type: sentence
+              kwargs: *id005
+              tags: *id006
+              type: paragraph
+          content_anchor: fd-87d86875-2
+          number: 2
+          reference_anchor: fr-87d86875-2
+          type: footnotes_entry
+      - data:
+          content:
+          - data:
+              args: &id007 []
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: Which, as I said, should appear both in the list above
+                        and in the one below.
+                  type: sentence
+              kwargs: &id008 {}
+              tags: &id009 []
+              type: paragraph
+          content_anchor: fd-f96d4fb1-3
+          number: 3
+          reference_anchor: fr-f96d4fb1-3
+          type: footnotes_entry
+      kwargs: {}
+      tags: []
+      type: command_footnotes
+  - data:
+      anchor: header-3-702d
+      args: []
+      kwargs: {}
+      level: 3
+      tags: []
+      type: header
+      value: Header 3
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This is here just to add another footnote
+          - data:
+              content:
+              - data:
+                  args: *id007
+                  content:
+                    data:
+                      content:
+                      - data:
+                          type: text
+                          value: Which, as I said, should appear both in the list
+                            above and in the one below.
+                      type: sentence
+                  kwargs: *id008
+                  tags: *id009
+                  type: paragraph
+              content_anchor: fd-f96d4fb1-3
+              number: 3
+              reference_anchor: fr-f96d4fb1-3
+              type: footnote
+          - data:
+              type: text
+              value: .
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      entries:
+      - data:
+          content:
+          - data:
+              args: *id001
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: 'Which means that links work and that I can add the command '
+                  - data:
+                      type: verbatim
+                      value: footnotes
+                  - data:
+                      type: text
+                      value: ' anywhere in the text.'
+                  type: sentence
+              kwargs: *id002
+              tags: *id003
+              type: paragraph
+          content_anchor: fd-94831d44-1
+          number: 1
+          reference_anchor: fr-94831d44-1
+          type: footnotes_entry
+      - data:
+          content:
+          - data:
+              args: *id004
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: This is my hope, at least.
+                  type: sentence
+              kwargs: *id005
+              tags: *id006
+              type: paragraph
+          content_anchor: fd-87d86875-2
+          number: 2
+          reference_anchor: fr-87d86875-2
+          type: footnotes_entry
+      - data:
+          content:
+          - data:
+              args: *id007
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: Which, as I said, should appear both in the list above
+                        and in the one below.
+                  type: sentence
+              kwargs: *id008
+              tags: *id009
+              type: paragraph
+          content_anchor: fd-f96d4fb1-3
+          number: 3
+          reference_anchor: fr-f96d4fb1-3
+          type: footnotes_entry
+      kwargs: {}
+      tags: []
+      type: command_footnotes
+  kwargs: {}
+  tags: []
+  type: document
+

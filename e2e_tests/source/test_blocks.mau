@@ -1,0 +1,69 @@
+= Test blocks
+
+This file tests the basic blocks.
+
+----
+This is a block without attributes. It should be rendered as a div, however.
+----
+
+++++
+This is another block between two markers `++++`.
+++++
+
+The four characters can be escaped
+
+\----
+
+[someclass]
+----
+This instead is a block with a specific type, you can customise this with the template `block-someclass.html`
+----
+
+---
+
+[admonition, class="warning", icon="someicon", label="somelabel"]
+----
+This is an admonition, which is a specific type of block with a `class`, and `icon`, and a `label` that work as a title. This block is implemented purely through Jinja templates.
+----
+
+The following is a quote from a book. Quotes are not special in Mau, they are standard blocks rendered through the template `block-quote`. You can use secondary content to include the source.
+
+---
+
+[quote]
+----
+Some of the newer ones are having trouble because they never really mastered some basic techniques, but they’re working hard and improving.
+----
+Orson Scott Card, _Ender's Game_ (1985)
+
+Of course you can use attributes to specify the attribution, but this way you cannot use Mau code. Remember to change the template if you want to go down that route.
+
+[quote, attribution="Orson Scott Card, Ender's Game (1985)"]
+----
+Some of the newer ones are having trouble because they never really mastered some basic techniques, but they’re working hard and improving.
+----
+
+---
+
+Blocks can have titles
+
+. The title
+----
+This is a block
+----
+
+---
+
+Blocks can be rendered conditionally
+
+:render:yes
+
+[aside, condition="if:render:yes"]
+----
+This will be rendered
+----
+
+[aside, condition="if:render:no"]
+----
+This will not be rendered
+----

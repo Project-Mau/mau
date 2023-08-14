@@ -1,0 +1,182 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: test-references-01fc
+      args: []
+      kwargs: {}
+      level: 1
+      tags: []
+      type: header
+      value: Test references
+  - data:
+      anchor: exercise-1-87a5
+      args: []
+      kwargs: {}
+      level: 2
+      tags: []
+      type: header
+      value: Exercise 1
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This is the first exercise.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'The solution is '
+          - data:
+              category: null
+              content:
+              - data:
+                  args: &id001 []
+                  content:
+                    data:
+                      content:
+                      - data:
+                          type: text
+                          value: This is the first solution.
+                      type: sentence
+                  kwargs: &id002 {}
+                  tags: &id003 []
+                  type: paragraph
+              content_anchor: cnt-solution-1-89134d2a
+              content_type: solution
+              name: first
+              number: 1
+              reference_anchor: ref-solution-1-89134d2a
+              title: {}
+              type: reference
+          - data:
+              type: text
+              value: .
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      anchor: exercise-2-fbbe
+      args: []
+      kwargs: {}
+      level: 2
+      tags: []
+      type: header
+      value: Exercise 2
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: This is the second exercise.
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      content:
+        data:
+          content:
+          - data:
+              type: text
+              value: 'The solution is '
+          - data:
+              category: null
+              content:
+              - data:
+                  args: &id004 []
+                  content:
+                    data:
+                      content:
+                      - data:
+                          type: text
+                          value: This is the second solution.
+                      type: sentence
+                  kwargs: &id005 {}
+                  tags: &id006 []
+                  type: paragraph
+              content_anchor: cnt-solution-2-c75e90a1
+              content_type: solution
+              name: second
+              number: 2
+              reference_anchor: ref-solution-2-c75e90a1
+              title: {}
+              type: reference
+          - data:
+              type: text
+              value: .
+          type: sentence
+      kwargs: {}
+      tags: []
+      type: paragraph
+  - data:
+      args: []
+      category: null
+      content_type: solution
+      entries:
+      - data:
+          category: null
+          content:
+          - data:
+              args: *id001
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: This is the first solution.
+                  type: sentence
+              kwargs: *id002
+              tags: *id003
+              type: paragraph
+          content_anchor: cnt-solution-1-89134d2a
+          content_type: solution
+          name: first
+          number: 1
+          reference_anchor: ref-solution-1-89134d2a
+          title: {}
+          type: references_entry
+      - data:
+          category: null
+          content:
+          - data:
+              args: *id004
+              content:
+                data:
+                  content:
+                  - data:
+                      type: text
+                      value: This is the second solution.
+                  type: sentence
+              kwargs: *id005
+              tags: *id006
+              type: paragraph
+          content_anchor: cnt-solution-2-c75e90a1
+          content_type: solution
+          name: second
+          number: 2
+          reference_anchor: ref-solution-2-c75e90a1
+          title: {}
+          type: references_entry
+      kwargs: {}
+      name: null
+      tags: []
+      type: command_references
+  kwargs: {}
+  tags: []
+  type: document
+

@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 3.0.1
+=============
+
+- [fix] Fixed type hints to keep compatibility with Python 3.8
+
 Version 3.0.0
 =============
 

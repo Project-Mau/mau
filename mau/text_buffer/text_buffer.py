@@ -1,8 +1,8 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from mau.text_buffer.context import Context
 
-Position = tuple[int, int]
+Position = Tuple[int, int]
 
 # The TextBuffer is an object used to interact with a text file.
 #

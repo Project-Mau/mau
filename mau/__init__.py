@@ -121,8 +121,5 @@ class Mau:
             config=environment.asdict(),
         )
 
-        # Replace variables with the ones processed by the parser
-        # self.variables = parser.variables
-
         # Visit the document AST
         return visitor.visit(output)

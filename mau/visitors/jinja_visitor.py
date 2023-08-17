@@ -1,4 +1,3 @@
-import copy
 import logging
 
 import jinja2
@@ -29,10 +28,9 @@ class JinjaVisitor(BaseVisitor):
         config=None,
         **kwds,
     ):
-        super().__init__()
+        super().__init__(config=config)
 
         self.templates_directory = templates_directory
-        self.config = copy.deepcopy(config) if config else {}
 
         self.templates = {}
         self.templates.update(self.default_templates)
@@ -147,7 +145,7 @@ class JinjaVisitor(BaseVisitor):
 
     def _visit_macro(self, node, *args, **kwargs):
         base = super()._visit_macro(node)
-        base["templates"] = [f"macro-{node.name}", "macro"]
+        base["templates"] = [f"macro-{node.name}"]
 
         return base
 

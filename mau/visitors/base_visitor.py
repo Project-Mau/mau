@@ -1,3 +1,4 @@
+import copy
 import yaml
 
 import logging
@@ -28,9 +29,10 @@ class BaseVisitor:
     transform = yaml.dump
 
     # pylint: disable=unused-argument
-    def __init__(self, *args, **kwds):
+    def __init__(self, *args, config=None, **kwds):
         self.toc = None
         self.footnotes = None
+        self.config = copy.deepcopy(config) if config else {}
 
         self._join_with = {}
 

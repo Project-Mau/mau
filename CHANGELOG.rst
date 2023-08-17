@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 3.0.2
+=============
+
+- [fix] Fixed missing transfer of args and kwargs through visitor functions
+- [fix] Added the missing macro node visitor function
+- [fix] Tidy up configuration of development tools
+- [enhancement] Management of visitor configuration (variables) moved to the class BaseVisitor
+
 Version 3.0.1
 =============
 

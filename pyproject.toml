@@ -76,11 +76,6 @@ exclude_also = [
 "def __str__",
 ]
 
-# [tool.flake8]
-# ignore = ['E203', 'E231', 'E241']
-# max-line-length = 88
-# count = true
-
 [tool.pylint.main]
 disable = [
 "import-error",

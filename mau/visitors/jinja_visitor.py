@@ -139,36 +139,19 @@ class JinjaVisitor(BaseVisitor):
 
         return None  # pragma: no cover
 
-    def _visit_style(self, node):
+    def _visit_style(self, node, *args, **kwargs):
         base = super()._visit_style(node)
         base["templates"] = [node.value]
 
         return base
 
-    #     def _visit_macro(self, node):
-    #         return {
-    #             "data": {
-    #                 "name": node.name,
-    #                 "args": node.args,
-    #                 "kwargs": node.kwargs,
-    #             },
-    #             "templates": [f"macro-{node.name}", "macro"],
-    #         }
+    def _visit_macro(self, node, *args, **kwargs):
+        base = super()._visit_macro(node)
+        base["templates"] = [f"macro-{node.name}", "macro"]
 
-    #     def _visit_header(self, node):
-    #         return {
-    #             "data": {
-    #                 "value": node.value,
-    #                 "level": int(node.level),
-    #                 "anchor": node.anchor,
-    #                 "args": node.args,
-    #                 "kwargs": node.kwargs,
-    #                 "tags": node.tags,
-    #             },
-    #             "templates": [f"header{node.level}", "header"],
-    #         }
+        return base
 
-    def _visit_content(self, node):
+    def _visit_content(self, node, *args, **kwargs):
         base = super()._visit_content(node)
         base["templates"] = [
             f"content-{node.content_type}",
@@ -177,7 +160,7 @@ class JinjaVisitor(BaseVisitor):
 
         return base
 
-    def _visit_block(self, node):
+    def _visit_block(self, node, *args, **kwargs):
         base = super()._visit_block(node)
         base["templates"] = [
             f"block-{node.engine}-{node.blocktype}",
@@ -188,19 +171,19 @@ class JinjaVisitor(BaseVisitor):
 
         return base
 
-    def _visit_command_toc(self, node):
+    def _visit_command_toc(self, node, *args, **kwargs):
         base = super()._visit_command_toc(node)
         base["templates"] = ["toc"]
 
         return base
 
-    def _visit_command_footnotes(self, node):
+    def _visit_command_footnotes(self, node, *args, **kwargs):
         base = super()._visit_command_footnotes(node)
         base["templates"] = ["footnotes"]
 
         return base
 
-    def _visit_source(self, node):
+    def _visit_source(self, node, *args, **kwargs):
         base = super()._visit_source(node)
         base["templates"] = [
             f"source-{node.blocktype}-{node.language}",
@@ -211,7 +194,7 @@ class JinjaVisitor(BaseVisitor):
 
         return base
 
-    def _visit_reference(self, node):
+    def _visit_reference(self, node, *args, **kwargs):
         base = super()._visit_reference(node)
         base["templates"] = [
             f"reference-{node.content_type}-{node.category}",
@@ -221,7 +204,7 @@ class JinjaVisitor(BaseVisitor):
 
         return base
 
-    def _visit_command_references(self, node):
+    def _visit_command_references(self, node, *args, **kwargs):
         base = super()._visit_command_references(node)
         base["templates"] = [
             f"references-{node.content_type}",
@@ -230,7 +213,7 @@ class JinjaVisitor(BaseVisitor):
 
         return base
 
-    def _visit_references_entry(self, node):
+    def _visit_references_entry(self, node, *args, **kwargs):
         base = super()._visit_references_entry(node)
         base["templates"] = [
             f"references_entry-{node.content_type}-{node.category}",

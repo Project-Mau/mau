@@ -1,7 +1,8 @@
 from unittest.mock import Mock, patch
 
 import pytest
-from mau.lexers.base_lexer import BaseLexer, LexerError, TokenTypes
+from mau.errors import MauErrorException
+from mau.lexers.base_lexer import BaseLexer, TokenTypes
 from mau.text_buffer.context import Context
 from mau.text_buffer.text_buffer import TextBuffer
 from mau.tokens.tokens import Token
@@ -63,7 +64,7 @@ def test_error():
     mock_text_buffer = Mock()
     lex = BaseLexer(mock_text_buffer)
 
-    with pytest.raises(LexerError):
+    with pytest.raises(MauErrorException):
         lex._process_error()
 
 

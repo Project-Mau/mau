@@ -1,24 +1,18 @@
-from mau.nodes.inline import (
-    TextNode,
-    SentenceNode,
-    ListItemNode,
-)
-
-from mau.nodes.source import SourceNode, CalloutNode, CalloutsEntryNode
+from mau.nodes.footnotes import CommandFootnotesNode, FootnotesEntryNode
+from mau.nodes.inline import ListItemNode, SentenceNode, TextNode
 from mau.nodes.page import (
-    HorizontalRuleNode,
-    ParagraphNode,
-    HeaderNode,
-    ListNode,
-    ContentNode,
-    ContentImageNode,
     BlockNode,
     CommandTocNode,
+    ContentImageNode,
+    ContentNode,
+    HeaderNode,
+    HorizontalRuleNode,
+    ListNode,
+    ParagraphNode,
 )
-
+from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
+from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.visitors.jinja_visitor import JinjaVisitor
-from mau.nodes.footnotes import FootnotesEntryNode, CommandFootnotesNode
-from mau.nodes.references import ReferencesEntryNode, CommandReferencesNode
 
 
 def test_page_horizontal_rule_node():

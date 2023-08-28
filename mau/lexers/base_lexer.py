@@ -1,14 +1,17 @@
+from mau.errors import MauError, MauErrorException
 from mau.helpers import rematch
+from mau.text_buffer.context import print_context
 from mau.tokens.tokens import Token
 
 
-class LexerError(ValueError):
-    """This is a detailed lexer error"""
+class MauLexerError(MauError):
+    source = "lexer"
 
-    def __init__(self, context, message=None):
-        super().__init__(message)
+    def print_details(self):  # pragma: no cover
+        super().print_details()
 
-        self.context = context
+        context = self.details["context"]
+        print_context(context)
 
 
 class TokenTypes:
@@ -82,7 +85,14 @@ class BaseLexer:
             self._text_buffer.skip(len(value))
 
     def _error(self, message=None):
-        raise LexerError(context=self._context, message=message)
+        error = MauLexerError(
+            message=message,
+            details={
+                "context": self._context,
+            },
+        )
+
+        raise MauErrorException(error)
 
     def _process(self):
         # This should not be touched by child classes

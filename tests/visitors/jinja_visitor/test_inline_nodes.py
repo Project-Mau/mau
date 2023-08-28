@@ -1,21 +1,19 @@
 import pytest
-
+from mau.errors import MauErrorException
+from mau.nodes.footnotes import FootnoteNode
 from mau.nodes.inline import (
-    TextNode,
-    VerbatimNode,
+    ClassNode,
+    ImageNode,
+    LinkNode,
+    ListItemNode,
+    MacroNode,
     SentenceNode,
     StyleNode,
-    MacroNode,
-    ClassNode,
-    LinkNode,
-    ImageNode,
-    ListItemNode,
+    TextNode,
+    VerbatimNode,
 )
-
-from mau.visitors.base_visitor import VisitorError
-from mau.visitors.jinja_visitor import JinjaVisitor
-from mau.nodes.footnotes import FootnoteNode
 from mau.nodes.references import ReferenceNode
+from mau.visitors.jinja_visitor import JinjaVisitor
 
 
 def test_default_values():
@@ -58,7 +56,7 @@ def test_no_templates():
 
     node = TextNode("Just some text.")
 
-    with pytest.raises(VisitorError):
+    with pytest.raises(MauErrorException):
         visitor.visit(node)
 
 

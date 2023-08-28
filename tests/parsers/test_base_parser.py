@@ -1,8 +1,9 @@
 from unittest.mock import Mock
 
 import pytest
+from mau.errors import MauErrorException
 from mau.lexers.base_lexer import BaseLexer, TokenTypes
-from mau.parsers.base_parser import BaseParser, ParserError, TokenError
+from mau.parsers.base_parser import BaseParser, TokenError
 from mau.tokens.tokens import Token
 
 from tests.helpers import init_parser_factory
@@ -300,7 +301,7 @@ def test_force_token():
         TokenTypes.TEXT, "Some other text"
     )
 
-    with pytest.raises(ParserError):
+    with pytest.raises(MauErrorException):
         parser._force_token(TokenTypes.TEXT)
 
 
@@ -394,10 +395,8 @@ def test_error():
     parser._get_token()
     parser._get_token()
 
-    with pytest.raises(ParserError) as exception:
+    with pytest.raises(MauErrorException) as exception:
         parser._error()
-
-    assert exception.value.token == Token(TokenTypes.EOF)
 
 
 def test_error_with_message():
@@ -405,18 +404,17 @@ def test_error_with_message():
     parser._get_token()
     parser._get_token()
 
-    with pytest.raises(ParserError) as exception:
+    with pytest.raises(MauErrorException) as exception:
         parser._error("Some message")
 
-    assert exception.value.args == ("Some message",)
-    assert exception.value.token == Token(TokenTypes.EOF)
+    assert exception.value.error.message == "Some message"
 
 
 def test_unknown_token():
     unknown = Token("UNKNOWN")
     parser = BaseParser(tokens=[unknown])
 
-    with pytest.raises(ParserError) as exception:
+    with pytest.raises(MauErrorException) as exception:
         parser.parse()
 
-    assert exception.value.token == unknown
+    assert exception.value.error.message == "Cannot parse token"

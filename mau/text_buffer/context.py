@@ -26,29 +26,20 @@ class Context:
         return f"Context({self.line},{self.column},{self.source})"
 
 
-def print_context(context, error_message=None):  # pragma: no cover
+def print_context(context):  # pragma: no cover
     # This is a function used to print out the context of a token
     # when an error occurs in Mau. It's a typical graphical
     # error-reporting function: a mess.
 
-    len_bar = len(error_message) if error_message is not None else 0
-    title = " Mau Error "
-
-    # This takes into account the title and the spaces
-    half_bar = "=" * ((len_bar - len(title)) // 2 + 1)
-    full_bar = half_bar + "=" * len(title) + half_bar
-
-    print(f"{half_bar}{title}{half_bar}")
-
-    if error_message is not None:
-        print(error_message)
-        print()
+    # Usually lines start from 1 and columns from 0
+    line = context.line + 1
+    column = context.column
 
     if context.source is not None:
         print(f"Source: {context.source}")
-    print(f"Line: {context.line} - Column: {context.column}")
+
+    print(f"Line: {line} - Column: {column}")
     print()
 
-    print(f"{context.line}: {context.text}")
-    print(" " * (len(str(context.line)) + 2) + "^")
-    print(f"{full_bar}")
+    print(f"{line}: {context.text}")
+    print(" " * (len(str(line)) + 2) + "^")

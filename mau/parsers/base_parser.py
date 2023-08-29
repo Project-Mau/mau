@@ -229,7 +229,10 @@ class BaseParser:
         try:
             token = self._get_token(ttype, tvalue)
         except TokenError:
-            self._error(f"Expected token of type {ttype} with value '{tvalue}'")
+            if tvalue is not None:
+                self._error(f"Expected token of type {ttype} with value '{tvalue}'")
+            else:
+                self._error(f"Expected token of type {ttype}")
 
         return token
 

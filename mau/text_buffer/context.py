@@ -31,8 +31,7 @@ def print_context(context):  # pragma: no cover
     # when an error occurs in Mau. It's a typical graphical
     # error-reporting function: a mess.
 
-    # Usually lines start from 1 and columns from 0
-    line = context.line + 1
+    line = context.line
     column = context.column
 
     if context.source is not None:

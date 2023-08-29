@@ -61,12 +61,12 @@ class BaseParser:
         possible index error.
         """
         if self.index < 0:
-            return Token(TokenTypes.EOF)
+            return self.tokens[-1]
 
         try:
             return self.tokens[self.index]
         except IndexError:
-            return Token(TokenTypes.EOF)
+            return self.tokens[-1]
 
     def _advance(self):
         if self.index != len(self.tokens):
@@ -202,7 +202,7 @@ class BaseParser:
         try:
             token = self.tokens[self.index + 1]
         except IndexError:
-            token = Token(TokenTypes.EOF)
+            token = self.tokens[-1]
 
         return self._check_token(token, ttype, tvalue, check)
 

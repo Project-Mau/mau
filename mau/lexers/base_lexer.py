@@ -50,8 +50,8 @@ class BaseLexer:
 
             self._process()
 
-        if Token(TokenTypes.EOF) in self.tokens:
-            self.tokens.remove(Token(TokenTypes.EOF))
+        # if Token(TokenTypes.EOF) in self.tokens:
+        #     self.tokens.remove(Token(TokenTypes.EOF))
 
     @property
     def _current_char(self):

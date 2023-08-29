@@ -12,7 +12,7 @@ init_parser = init_parser_factory(BaseLexer, BaseParser)
 
 
 def test_save():
-    parser = BaseParser(tokens=[])
+    parser = BaseParser(tokens=[Token(TokenTypes.EOF)])
     node = Mock()
     parser._save(node)
 
@@ -20,7 +20,7 @@ def test_save():
 
 
 def test_initial_state():
-    parser = BaseParser(tokens=[])
+    parser = BaseParser(tokens=[Token(TokenTypes.EOF)])
 
     assert parser.index == -1
     assert parser._current_token == Token(TokenTypes.EOF)
@@ -34,7 +34,7 @@ def test_load():
 
 
 def test_get_token_without_load():
-    parser = BaseParser(tokens=[])
+    parser = BaseParser(tokens=[Token(TokenTypes.EOF)])
 
     assert parser._get_token() == Token(TokenTypes.EOF)
 
@@ -62,7 +62,10 @@ def test_get_token_after_eof():
     assert parser.index == 0
 
     assert parser._get_token() == Token(TokenTypes.EOF)
-    assert parser.index == 0
+    assert parser.index == 1
+
+    assert parser._get_token() == Token(TokenTypes.EOF)
+    assert parser.index == 1
 
 
 def test_get_token_sets_current_token():
@@ -344,6 +347,7 @@ def test_collect_escapes_are_kept():
         Token(TokenTypes.TEXT, "Some text"),
         Token(TokenTypes.LITERAL, "\\"),
         Token(TokenTypes.TEXT, "Some other text"),
+        Token(TokenTypes.EOF),
     ]
 
     tokens = parser._collect([Token(TokenTypes.EOF)])

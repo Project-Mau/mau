@@ -13,6 +13,7 @@ def test_single_unnamed_argument():
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "value1"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -26,6 +27,7 @@ def test_single_named_argument():
         Token(TokenTypes.LITERAL, "="),
         Token(TokenTypes.TEXT, "value1"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -40,6 +42,7 @@ def test_multiple_unnamed_arguments():
         Token(TokenTypes.WHITESPACE, " "),
         Token(TokenTypes.TEXT, "value2"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -58,6 +61,7 @@ def test_multiple_named_arguments():
         Token(TokenTypes.LITERAL, "="),
         Token(TokenTypes.TEXT, "value2"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -81,6 +85,7 @@ def test_mixed_arguments():
         Token(TokenTypes.LITERAL, "="),
         Token(TokenTypes.TEXT, "value2"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -98,6 +103,7 @@ def test_quotes():
         Token(TokenTypes.TEXT, "value2"),
         Token(TokenTypes.LITERAL, '"'),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -113,6 +119,7 @@ def test_spaces():
         Token(TokenTypes.WHITESPACE, " "),
         Token(TokenTypes.TEXT, "value2"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -132,6 +139,7 @@ def test_escaped_quotes():
         Token(TokenTypes.WHITESPACE, " "),
         Token(TokenTypes.TEXT, "quotes"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -145,6 +153,7 @@ def test_context():
         Token(TokenTypes.LITERAL, "="),
         Token(TokenTypes.TEXT, "value1"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
     assert [t.context for t in lex.tokens] == [
@@ -152,4 +161,5 @@ def test_context():
         Context(line=0, column=9, source=None, text="argument1=value1"),
         Context(line=0, column=10, source=None, text="argument1=value1"),
         Context(line=0, column=16, source=None, text="argument1=value1"),
+        Context(line=1, column=0, source=None),
     ]

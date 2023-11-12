@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pytest
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import SentenceNode, TextNode, RawNode
 from mau.nodes.page import BlockNode, HeaderNode, ParagraphNode
 from mau.parsers.main_parser import MainParser
 
@@ -254,12 +254,12 @@ def test_block_raw_engine():
         BlockNode(
             blocktype="block",
             content=[
-                TextNode("Raw content"),
-                TextNode("on multiple lines"),
+                RawNode("Raw content"),
+                RawNode("on multiple lines"),
             ],
             secondary_content=[
-                TextNode("Secondary content"),
-                TextNode("on multiple lines as well"),
+                RawNode("Secondary content"),
+                RawNode("on multiple lines as well"),
             ],
             classes=[],
             title=None,

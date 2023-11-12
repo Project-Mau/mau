@@ -68,6 +68,14 @@ class BaseVisitor:
 
     # Inline nodes
 
+    def _visit_raw(self, node, *args, **kwargs):
+        return {
+            "data": {
+                "type": node.node_type,
+                "value": node.value,
+            },
+        }
+
     def _visit_text(self, node, *args, **kwargs):
         return {
             "data": {

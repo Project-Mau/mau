@@ -9,6 +9,7 @@ from mau.nodes.inline import (
     MacroNode,
     SentenceNode,
     StyleNode,
+    RawNode,
     TextNode,
     VerbatimNode,
 )
@@ -32,6 +33,21 @@ def test_unknown_node():
 
     with pytest.raises(MauErrorException):
         visitor.visit(node)
+
+
+def test_raw_node():
+    visitor = BaseVisitor()
+
+    node = RawNode("Just some text.")
+
+    result = visitor.visit(node)
+
+    assert result == {
+        "data": {
+            "type": "raw",
+            "value": "Just some text.",
+        }
+    }
 
 
 def test_text_node():

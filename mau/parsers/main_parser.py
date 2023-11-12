@@ -7,7 +7,7 @@ from mau.lexers.base_lexer import TokenTypes as BLTokenTypes
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
 from mau.nodes.footnotes import CommandFootnotesNode, FootnotesEntryNode
-from mau.nodes.inline import ListItemNode, TextNode
+from mau.nodes.inline import ListItemNode, RawNode, TextNode
 from mau.nodes.page import (
     BlockNode,
     CommandTocNode,
@@ -780,9 +780,9 @@ class MainParser(BaseParser):
         if engine == "raw":
             # Engine "raw" doesn't process the content,
             # so we just pass it untouched in the form of
-            # a TextNode per line.
-            content = [TextNode(line) for line in content]
-            secondary_content = [TextNode(line) for line in secondary_content]
+            # a RawNode per line.
+            content = [RawNode(line) for line in content]
+            secondary_content = [RawNode(line) for line in secondary_content]
         elif engine in ["default", "mau"]:
             # Both engines parse content and secondary content
             # using a new parser but the default one should merge
@@ -957,7 +957,7 @@ class MainParser(BaseParser):
             if line.startswith(r"\::#"):
                 line = line[1:]
 
-            textlines.append(TextNode(line))
+            textlines.append(RawNode(line))
 
         self._save(
             SourceNode(

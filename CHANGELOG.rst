@@ -2,6 +2,12 @@
 Changelog
 =========
 
+Version 3.0.3
+=============
+
+- [enhancement] Better error reporting
+- [fix] Fixed incorrect context passed to sub parsers
+
 Version 3.0.2
 =============
 

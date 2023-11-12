@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 3.1.0
+=============
+
+- [fix] Added RawNode node and make source blocks emit lists of RawNode instead of TextNode. This prevents escaping characters in formats like HTML. Raw blocks now use a list of RawNode as well.
+
 Version 3.0.2
 =============
 

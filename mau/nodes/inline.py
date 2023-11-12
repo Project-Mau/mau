@@ -20,6 +20,15 @@ class TextNode(ValueNode):
     node_type = "text"
 
 
+class RawNode(ValueNode):
+    """This contains plain text but the content
+    should be treated as raw data and left untouched.
+    E.g. it shouldn't be escaped.
+    """
+
+    node_type = "raw"
+
+
 class VerbatimNode(ValueNode):
     """This node contains verbatim text."""
 

@@ -1,6 +1,6 @@
 import pytest
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import SentenceNode, TextNode, RawNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.parsers.base_parser import ParserError
 from mau.parsers.main_parser import MainParser
@@ -51,8 +51,8 @@ def test_source_contains_mau():
     assert runner(source).nodes == [
         SourceNode(
             code=[
-                TextNode("// A comment"),
-                TextNode("::toc:"),
+                RawNode("// A comment"),
+                RawNode("::toc:"),
             ],
         ),
     ]
@@ -69,7 +69,7 @@ def test_source_removes_escape_from_directive_like_text():
     assert runner(source).nodes == [
         SourceNode(
             code=[
-                TextNode("::#looks like a directive"),
+                RawNode("::#looks like a directive"),
             ],
         ),
     ]
@@ -88,9 +88,9 @@ def test_source_with_code():
     assert runner(source).nodes == [
         SourceNode(
             code=[
-                TextNode("import os"),
-                TextNode(""),
-                TextNode('print(os.environ["HOME"])'),
+                RawNode("import os"),
+                RawNode(""),
+                RawNode('print(os.environ["HOME"])'),
             ],
         ),
     ]
@@ -111,9 +111,9 @@ def test_source_explicit_engine():
             blocktype="myblock",
             language="somelang",
             code=[
-                TextNode("import os"),
-                TextNode(""),
-                TextNode('print(os.environ["HOME"])'),
+                RawNode("import os"),
+                RawNode(""),
+                RawNode('print(os.environ["HOME"])'),
             ],
         ),
     ]
@@ -134,9 +134,9 @@ def test_source_with_title():
         SourceNode(
             language="somelang",
             code=[
-                TextNode("import os"),
-                TextNode(""),
-                TextNode('print(os.environ["HOME"])'),
+                RawNode("import os"),
+                RawNode(""),
+                RawNode('print(os.environ["HOME"])'),
             ],
             title=SentenceNode([TextNode("Title")]),
         ),
@@ -155,8 +155,8 @@ def test_source_ignores_mau_syntax():
     assert runner(source).nodes == [
         SourceNode(
             code=[
-                TextNode(":answer:42"),
-                TextNode("The answer is {answer}"),
+                RawNode(":answer:42"),
+                RawNode("The answer is {answer}"),
             ],
         ),
     ]
@@ -173,7 +173,7 @@ def test_source_respects_spaces_and_indentation():
     assert runner(source).nodes == [
         SourceNode(
             code=[
-                TextNode("  //    This is a comment"),
+                RawNode("  //    This is a comment"),
             ],
         ),
     ]
@@ -196,10 +196,10 @@ def test_source_callouts():
         SourceNode(
             language="somelang",
             code=[
-                TextNode("import sys"),
-                TextNode("import os"),
-                TextNode(""),
-                TextNode('print(os.environ["HOME"])'),
+                RawNode("import sys"),
+                RawNode("import os"),
+                RawNode(""),
+                RawNode('print(os.environ["HOME"])'),
             ],
             markers=[CalloutNode(1, "imp"), CalloutNode(3, "env")],
             callouts=[
@@ -227,10 +227,10 @@ def test_source_callouts_possible_clash():
         SourceNode(
             language="somelang",
             code=[
-                TextNode("import sys"),
-                TextNode("import: os"),
-                TextNode(""),
-                TextNode('print(os.environ["HOME"])'),
+                RawNode("import sys"),
+                RawNode("import: os"),
+                RawNode(""),
+                RawNode('print(os.environ["HOME"])'),
             ],
             markers=[CalloutNode(1, "imp"), CalloutNode(3, "env")],
             callouts=[
@@ -254,8 +254,8 @@ def test_source_callouts_one_single_marker_is_skipped():
         SourceNode(
             language="somelang",
             code=[
-                TextNode("def something:"),
-                TextNode('    print("AAA")'),
+                RawNode("def something:"),
+                RawNode('    print("AAA")'),
             ],
             markers=[],
             callouts=[],
@@ -278,10 +278,10 @@ def test_source_callouts_custom_delimiter():
         SourceNode(
             language="somelang",
             code=[
-                TextNode("import sys"),
-                TextNode("import os"),
-                TextNode(""),
-                TextNode('print(os.environ["HOME"])'),
+                RawNode("import sys"),
+                RawNode("import os"),
+                RawNode(""),
+                RawNode('print(os.environ["HOME"])'),
             ],
             markers=[CalloutNode(1, "imp"), CalloutNode(3, "env")],
         ),
@@ -323,10 +323,10 @@ def test_source_highlights():
         SourceNode(
             language="somelang",
             code=[
-                TextNode("import sys"),
-                TextNode("import os"),
-                TextNode(""),
-                TextNode('print(os.environ["HOME"])'),
+                RawNode("import sys"),
+                RawNode("import os"),
+                RawNode(""),
+                RawNode('print(os.environ["HOME"])'),
             ],
             highlights=[1, 3],
         ),
@@ -348,10 +348,10 @@ def test_source_highlights_custom_marker():
         SourceNode(
             language="somelang",
             code=[
-                TextNode("import sys"),
-                TextNode("import os"),
-                TextNode(""),
-                TextNode('print(os.environ["HOME"])'),
+                RawNode("import sys"),
+                RawNode("import os"),
+                RawNode(""),
+                RawNode('print(os.environ["HOME"])'),
             ],
             highlights=[1, 3],
         ),

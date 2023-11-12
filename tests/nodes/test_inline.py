@@ -7,6 +7,7 @@ from mau.nodes.inline import (
     SentenceNode,
     StyleNode,
     TextNode,
+    RawNode,
     VerbatimNode,
     WordNode,
 )
@@ -26,6 +27,14 @@ def test_text_node():
     assert node.value == "somevalue"
     assert node.node_type == "text"
     assert node == TextNode("somevalue")
+
+
+def test_raw_node():
+    node = RawNode("somevalue")
+
+    assert node.value == "somevalue"
+    assert node.node_type == "raw"
+    assert node == RawNode("somevalue")
 
 
 def test_verbatim_node():

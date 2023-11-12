@@ -5,10 +5,7 @@ from importlib import metadata
 
 import yaml
 from mau import ConfigurationError, Mau, load_visitors
-from mau.lexers.base_lexer import LexerError
-from mau.parsers.base_parser import ParserError
-from mau.visitors.base_visitor import BaseVisitor, VisitorError
-from mau.text_buffer.context import print_context
+from mau.errors import MauErrorException, print_error
 from tabulate import tabulate
 
 __version__ = metadata.version("mau")
@@ -158,46 +155,34 @@ def main():
     # Run the lexer on the input data
     try:
         lexer = mau.run_lexer(text)
-    except LexerError as exception:
-        print_context(exception.context, f"Lexer error - {str(exception)}")
-        sys.exit(1)
-    except Exception as exception:  # pylint: disable=broad-exception-caught
-        print(f"Unhandled exception: {exception}")
-        sys.exit(1)
 
-    if args.lexonly:
-        write_output(
-            tabulate(
-                [(t.type, t.value, t.context) for t in lexer.tokens],
-                maxcolwidths=[10, 60, 30],
-            ),
-            output_file,
-        )
+        if args.lexonly:
+            write_output(
+                tabulate(
+                    [(t.type, t.value, t.context) for t in lexer.tokens],
+                    maxcolwidths=[10, 60, 30],
+                ),
+                output_file,
+            )
 
-        sys.exit(1)
+            sys.exit(1)
 
-    # Run the parser on the tokens
-    try:
         parser = mau.run_parser(lexer.tokens)
-    except ParserError as exception:
-        print_context(exception.token.context, f"Parser error - {str(exception)}")
-        sys.exit(1)
 
-    if args.parseonly:
-        write_output(parser.nodes, output_file)
-        sys.exit(1)
+        if args.parseonly:
+            write_output(parser.nodes, output_file)
 
-    # Run the visitor on the AST
-    try:
+            sys.exit(1)
+
         output = mau.process(parser.nodes, parser.environment)
+
     except ConfigurationError as exception:
         print(f"Configuration error: {exception}")
         sys.exit(1)
-    except ParserError as exception:
-        print_context(exception.token.context, f"Parser error - {str(exception)}")
+    except MauErrorException as exception:
+        print_error(exception.error)
         sys.exit(1)
-    except VisitorError as exception:
-        print(exception)
-        sys.exit(1)
+    except Exception as exception:  # pylint: disable=broad-exception-caught
+        raise
 
     write_output(output, output_file, transform=visitor_class.transform)

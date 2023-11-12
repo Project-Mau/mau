@@ -1,9 +1,9 @@
 import pytest
+from mau.errors import MauErrorException
 from mau.lexers.arguments_lexer import ArgumentsLexer
 from mau.nodes.arguments import NamedArgumentNode, UnnamedArgumentNode
 from mau.parsers.arguments import set_names_and_defaults
 from mau.parsers.arguments_parser import ArgumentsParser
-from mau.parsers.base_parser import ParserError
 
 from tests.helpers import parser_runner_factory
 
@@ -220,7 +220,7 @@ def test_unnamed_and_named_arguments():
 def test_named_arguments_followed_by_unnamed():
     source = "name=value2, value1"
 
-    with pytest.raises(ParserError):
+    with pytest.raises(MauErrorException):
         runner(source)
 
 

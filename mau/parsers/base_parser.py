@@ -1,7 +1,9 @@
 # This is a base class for parsers that collects common methods
 
+from mau.errors import MauError, MauErrorException
 from mau.lexers.base_lexer import BaseLexer, TokenTypes
 from mau.parsers.arguments import set_names_and_defaults
+from mau.text_buffer.context import print_context
 from mau.text_buffer.text_buffer import TextBuffer
 from mau.tokens.tokens import Token
 
@@ -17,19 +19,14 @@ class TokenError(ValueError):
     """
 
 
-class ParserError(ValueError):
-    """This is a detailed parser error"""
+class MauParserError(MauError):
+    source = "parser"
 
-    def __init__(self, token, message=None):
-        super().__init__(message)
+    def print_details(self):  # pragma: no cover
+        super().print_details()
 
-        self.token = token
-
-    def __repr__(self):
-        return f"{super().__str__()} - ({self.token.type}, {self.token.value})"
-
-    def __str__(self):
-        return self.__repr__()
+        context = self.details["context"]
+        print_context(context)
 
 
 class BaseParser:
@@ -64,12 +61,12 @@ class BaseParser:
         possible index error.
         """
         if self.index < 0:
-            return Token(TokenTypes.EOF)
+            return self.tokens[-1]
 
         try:
             return self.tokens[self.index]
         except IndexError:
-            return Token(TokenTypes.EOF)
+            return self.tokens[-1]
 
     def _advance(self):
         if self.index != len(self.tokens):
@@ -166,7 +163,14 @@ class BaseParser:
         return []
 
     def _error(self, message=None):
-        raise ParserError(self._peek_token(), message)
+        error = MauParserError(
+            message=message,
+            details={
+                "context": self._current_token.context,
+            },
+        )
+
+        raise MauErrorException(error)
 
     def _put_token(self, token):
         self.tokens.insert(self.index + 1, token)
@@ -198,7 +202,7 @@ class BaseParser:
         try:
             token = self.tokens[self.index + 1]
         except IndexError:
-            token = Token(TokenTypes.EOF)
+            token = self.tokens[-1]
 
         return self._check_token(token, ttype, tvalue, check)
 
@@ -225,7 +229,10 @@ class BaseParser:
         try:
             token = self._get_token(ttype, tvalue)
         except TokenError:
-            self._error(f"Expected token {Token(ttype, tvalue)}")
+            if tvalue is not None:
+                self._error(f"Expected token of type {ttype} with value '{tvalue}'")
+            else:
+                self._error(f"Expected token of type {ttype}")
 
         return token
 

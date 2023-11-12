@@ -1,4 +1,5 @@
 import pytest
+from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
 from mau.nodes.inline import (
     ClassNode,
@@ -13,7 +14,7 @@ from mau.nodes.inline import (
     VerbatimNode,
 )
 from mau.nodes.references import ReferenceNode
-from mau.visitors.base_visitor import BaseVisitor, VisitorError
+from mau.visitors.base_visitor import BaseVisitor
 
 
 def test_no_node():
@@ -30,7 +31,7 @@ def test_unknown_node():
     node = TextNode("Just some text.")
     node.node_type = "unknown"
 
-    with pytest.raises(VisitorError):
+    with pytest.raises(MauErrorException):
         visitor.visit(node)
 
 

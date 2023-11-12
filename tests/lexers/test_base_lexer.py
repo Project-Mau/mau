@@ -1,7 +1,8 @@
 from unittest.mock import Mock, patch
 
 import pytest
-from mau.lexers.base_lexer import BaseLexer, LexerError, TokenTypes
+from mau.errors import MauErrorException
+from mau.lexers.base_lexer import BaseLexer, TokenTypes
 from mau.text_buffer.context import Context
 from mau.text_buffer.text_buffer import TextBuffer
 from mau.tokens.tokens import Token
@@ -63,7 +64,7 @@ def test_error():
     mock_text_buffer = Mock()
     lex = BaseLexer(mock_text_buffer)
 
-    with pytest.raises(LexerError):
+    with pytest.raises(MauErrorException):
         lex._process_error()
 
 
@@ -72,7 +73,9 @@ def test_empty_text():
     lex = BaseLexer(mock_text_buffer)
     lex.process()
 
-    assert lex.tokens == []
+    assert lex.tokens == [
+        Token(TokenTypes.EOF),
+    ]
 
 
 def test_just_empty_lines():
@@ -80,7 +83,11 @@ def test_just_empty_lines():
     lex = BaseLexer(text_buffer)
     lex.process()
 
-    assert lex.tokens == [Token(TokenTypes.EOL), Token(TokenTypes.EOL)]
+    assert lex.tokens == [
+        Token(TokenTypes.EOL),
+        Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
+    ]
 
 
 def test_lines_with_only_spaces():
@@ -88,7 +95,11 @@ def test_lines_with_only_spaces():
     lex = BaseLexer(text_buffer)
     lex.process()
 
-    assert lex.tokens == [Token(TokenTypes.EOL), Token(TokenTypes.EOL)]
+    assert lex.tokens == [
+        Token(TokenTypes.EOL),
+        Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
+    ]
 
 
 def test_text():
@@ -97,7 +108,11 @@ def test_text():
     lex = BaseLexer(text_buffer)
     lex.process()
 
-    assert lex.tokens == [Token(TokenTypes.TEXT, text), Token(TokenTypes.EOL)]
+    assert lex.tokens == [
+        Token(TokenTypes.TEXT, text),
+        Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
+    ]
 
 
 def test_multiple_lines():
@@ -121,6 +136,7 @@ def test_multiple_lines():
         Token(TokenTypes.EOL),
         Token(TokenTypes.TEXT, "with an empty line"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -157,6 +173,12 @@ def test_positions_default_context():
             "source": None,
             "text": "This is another line of text",
         },
+        {
+            "column": 0,
+            "line": 5,
+            "source": None,
+            "text": "",
+        },
     ]
 
 
@@ -192,5 +214,11 @@ def test_positions():
             "line": 46,
             "source": "main",
             "text": "This is another line of text",
+        },
+        {
+            "column": 123,
+            "line": 47,
+            "source": "main",
+            "text": "",
         },
     ]

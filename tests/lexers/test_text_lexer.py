@@ -14,6 +14,7 @@ def test_normal_text():
         Token(TokenTypes.TEXT, " "),
         Token(TokenTypes.TEXT, "text"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -27,6 +28,7 @@ def test_underscore():
         Token(TokenTypes.TEXT, "underscore"),
         Token(TokenTypes.LITERAL, "_"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -40,6 +42,7 @@ def test_star():
         Token(TokenTypes.TEXT, "star"),
         Token(TokenTypes.LITERAL, "*"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -53,6 +56,7 @@ def test_caret():
         Token(TokenTypes.TEXT, "caret"),
         Token(TokenTypes.LITERAL, "^"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -66,6 +70,7 @@ def test_tilde():
         Token(TokenTypes.TEXT, "tilde"),
         Token(TokenTypes.LITERAL, "~"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -79,6 +84,7 @@ def test_backtick():
         Token(TokenTypes.TEXT, "backtick"),
         Token(TokenTypes.LITERAL, "`"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -92,6 +98,7 @@ def test_curly_braces():
         Token(TokenTypes.TEXT, "curly"),
         Token(TokenTypes.LITERAL, "}"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -105,6 +112,7 @@ def test_round_brackets():
         Token(TokenTypes.TEXT, "round"),
         Token(TokenTypes.LITERAL, ")"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -118,6 +126,7 @@ def test_square_brackets():
         Token(TokenTypes.TEXT, "square"),
         Token(TokenTypes.LITERAL, "]"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -134,6 +143,7 @@ def test_macro():
         Token(TokenTypes.TEXT, "value1,value2"),
         Token(TokenTypes.LITERAL, ")"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -150,6 +160,7 @@ def test_macro_named_attributes():
         Token(TokenTypes.TEXT, "attr1=value1,attr2=value2"),
         Token(TokenTypes.LITERAL, ")"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -165,6 +176,7 @@ def test_escaped_underscore():
         Token(TokenTypes.LITERAL, "\\"),
         Token(TokenTypes.LITERAL, "_"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -180,6 +192,7 @@ def test_escaped_square_brackets():
         Token(TokenTypes.LITERAL, "\\"),
         Token(TokenTypes.LITERAL, "]"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -195,6 +208,7 @@ def test_escaped_round_brackets():
         Token(TokenTypes.LITERAL, "\\"),
         Token(TokenTypes.LITERAL, ")"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -210,6 +224,7 @@ def test_escaped_curly_braces():
         Token(TokenTypes.LITERAL, "\\"),
         Token(TokenTypes.LITERAL, "}"),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]
 
 
@@ -225,4 +240,5 @@ def test_escaped_quotes():
         Token(TokenTypes.LITERAL, "\\"),
         Token(TokenTypes.LITERAL, '"'),
         Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
     ]

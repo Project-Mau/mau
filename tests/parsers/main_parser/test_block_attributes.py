@@ -1,10 +1,10 @@
 from unittest.mock import patch
 
 import pytest
+from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.inline import SentenceNode, TextNode, RawNode
 from mau.nodes.page import BlockNode, HeaderNode, ParagraphNode
-from mau.parsers.base_parser import ParserError
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory
@@ -222,7 +222,7 @@ def test_block_engine():
     ----
     """
 
-    with pytest.raises(ParserError):
+    with pytest.raises(MauErrorException):
         runner(source)
 
 
@@ -235,7 +235,7 @@ def test_block_mau_has_no_external_variables():
     ----
     """
 
-    with pytest.raises(ParserError):
+    with pytest.raises(MauErrorException):
         assert runner(source)
 
 
@@ -422,7 +422,7 @@ def test_block_condition_raises_exception():
     ----
     """
 
-    with pytest.raises(ParserError):
+    with pytest.raises(MauErrorException):
         runner(source)
 
 
@@ -496,7 +496,7 @@ def test_command_defblock_no_args():
     ::defblock:
     """
 
-    with pytest.raises(ParserError):
+    with pytest.raises(MauErrorException):
         runner(source)
 
 
@@ -505,7 +505,7 @@ def test_command_defblock_single_arg():
     ::defblock:source
     """
 
-    with pytest.raises(ParserError):
+    with pytest.raises(MauErrorException):
         runner(source)
 
 

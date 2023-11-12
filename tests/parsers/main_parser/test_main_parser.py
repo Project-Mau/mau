@@ -1,15 +1,12 @@
 import pytest
+from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.footnotes import CommandFootnotesNode
 from mau.nodes.inline import LinkNode, SentenceNode, StyleNode, TextNode
 from mau.nodes.page import CommandTocNode, HorizontalRuleNode, ParagraphNode
-from mau.parsers.base_parser import ParserError
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory
-
-# from mau.parsers.base_parser import ParserError
-
 
 init_parser = init_parser_factory(MainLexer, MainParser)
 
@@ -83,7 +80,7 @@ def test_parse_open_multi_line_comments():
     comment
     """
 
-    with pytest.raises(ParserError):
+    with pytest.raises(MauErrorException):
         runner(source)
 
 

@@ -298,10 +298,10 @@ class MainParser(BaseParser):
 
         return " ".join(values)
 
-    def _parse_text_content(self, text):
+    def _parse_text_content(self, text, context=None):
         # Parse a piece of text using the TextParser.
 
-        current_context = self._current_token.context
+        current_context = context or self._current_token.context
 
         # Replace variables
         preprocess_parser = PreprocessVariablesParser.analyse(
@@ -363,7 +363,7 @@ class MainParser(BaseParser):
 
         self._get_token(MLTokenTypes.MULTILINE_COMMENT)
         self._collect([Token(MLTokenTypes.MULTILINE_COMMENT, "////")])
-        self._force_token(MLTokenTypes.MULTILINE_COMMENT)
+        self._force_token(MLTokenTypes.MULTILINE_COMMENT, "////")
 
         return True
 
@@ -1125,9 +1125,12 @@ class MainParser(BaseParser):
         header = self._get_token(MLTokenTypes.LIST).value
         self._get_token(BLTokenTypes.WHITESPACE)
 
+        # Get the context of the first text token
+        context = self._peek_token().context
+
         # Collect and parse the text of the item
         text = self._collect_text_content()
-        content = self._parse_text_content(text)
+        content = self._parse_text_content(text, context)
 
         # Compute the level of the item
         level = len(header)
@@ -1156,9 +1159,12 @@ class MainParser(BaseParser):
                 # Ignore white spaces
                 self._get_token(BLTokenTypes.WHITESPACE)
 
+                # Get the context of the first text token
+                context = self._peek_token().context
+
                 # Collect and parse the text of the item
                 text = self._collect_text_content()
-                content = self._parse_text_content(text)
+                content = self._parse_text_content(text, context)
 
                 nodes.append(ListItemNode(str(len(header)), content))
             elif len(self._peek_token().value) > level:
@@ -1178,6 +1184,9 @@ class MainParser(BaseParser):
         # This parses a paragraph.
         # Paragraphs can be written on multiple lines and
         # end with an empty line.
+
+        # Get the context of the first token we are going to process
+        context = self._peek_token().context
 
         # Each line ends with EOL. This collects everything
         # until the EOL, then removes it. If the next token
@@ -1199,7 +1208,7 @@ class MainParser(BaseParser):
             self._get_token(BLTokenTypes.EOL)
 
         text = " ".join(lines)
-        sentence = self._parse_text_content(text)
+        sentence = self._parse_text_content(text, context)
 
         # Consume the arguments
         args, kwargs, tags = self._pop_arguments()

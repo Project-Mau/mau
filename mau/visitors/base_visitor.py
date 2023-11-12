@@ -1,26 +1,21 @@
 import copy
-import yaml
-
 import logging
 
+import yaml
+from mau.errors import MauError, MauErrorException
 from mau.parsers.toc import create_toc
 
 _logger = logging.getLogger(__name__)
 
 
-class VisitorError(ValueError):
-    """This is a detailed visitor error"""
+class MauVisitorError(MauError):
+    source = "visitor"
 
-    def __init__(self, message, node=None):
-        super().__init__(message)
+    def print_details(self):  # pragma: no cover
+        super().print_details()
 
-        self.node = node
-
-    def __repr__(self):
-        return f"{super().__str__()} - Node: {self.node}"
-
-    def __str__(self):
-        return self.__repr__()
+        print("Node:")
+        print(self.details["node"])
 
 
 class BaseVisitor:
@@ -59,7 +54,14 @@ class BaseVisitor:
         return visited_nodes
 
     def _error(self, message, node=None):
-        raise VisitorError(message, node)
+        error = MauVisitorError(
+            message=message,
+            details={
+                "node": node,
+            },
+        )
+
+        raise MauErrorException(error)
 
     def _visit_default(self, node, *args, **kwargs):
         self._error("Cannot find visit function", node)

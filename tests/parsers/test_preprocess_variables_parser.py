@@ -1,7 +1,7 @@
 import pytest
+from mau.errors import MauErrorException
 from mau.lexers.preprocess_variables_lexer import PreprocessVariablesLexer
 from mau.nodes.inline import TextNode
-from mau.parsers.base_parser import ParserError
 from mau.parsers.environment import Environment
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
 
@@ -99,7 +99,7 @@ def test_curly_braces_in_escaped_verbatim():
 def test_variable_not_existing():
     source = "This is number {attr}"
 
-    with pytest.raises(ParserError):
+    with pytest.raises(MauErrorException):
         runner(source, environment={})
 
 

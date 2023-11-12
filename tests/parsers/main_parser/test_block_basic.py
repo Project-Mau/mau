@@ -1,8 +1,8 @@
 import pytest
+from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.page import BlockNode, ParagraphNode
-from mau.parsers.base_parser import ParserError
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory
@@ -128,7 +128,7 @@ def test_parse_block_content_external_variables():
 def test_block_without_closing_fences():
     parser = init_parser("----")
 
-    with pytest.raises(ParserError):
+    with pytest.raises(MauErrorException):
         parser.parse()
 
 

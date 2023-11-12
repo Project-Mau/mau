@@ -3,7 +3,6 @@
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.page import ContainerNode, DocumentNode
-from mau.parsers.base_parser import ParserError
 from mau.parsers.environment import Environment
 from mau.parsers.main_parser import MainParser
 from mau.text_buffer.context import Context

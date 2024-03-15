@@ -437,7 +437,6 @@ def test_page_command_references_multiple_nodes():
         entries={
             ("content_type1", "value1"): ReferencesEntryNode(
                 "content_type1",
-                "value1",
                 content=[
                     ParagraphNode(
                         SentenceNode(
@@ -454,7 +453,6 @@ def test_page_command_references_multiple_nodes():
             ),
             ("content_type1", "value2"): ReferencesEntryNode(
                 "content_type1",
-                "value2",
                 content=[
                     ParagraphNode(
                         SentenceNode(
@@ -471,7 +469,6 @@ def test_page_command_references_multiple_nodes():
             ),
             ("content_type2", "value1"): ReferencesEntryNode(
                 "content_type2",
-                "value1",
                 content=[
                     ParagraphNode(
                         SentenceNode(

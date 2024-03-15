@@ -10,7 +10,6 @@ class ReferenceNode(Node):
     def __init__(
         self,
         content_type,
-        category=None,
         content=None,
         number=None,
         title=None,
@@ -19,7 +18,6 @@ class ReferenceNode(Node):
     ):
         super().__init__()
         self.content_type = content_type
-        self.category = category
         self.content = content or []
         self.number = number
         self.title = title
@@ -31,7 +29,6 @@ class ReferenceNode(Node):
         return {
             "type": self.node_type,
             "content_type": self.content_type,
-            "category": self.category,
             "content": self.content,
             "number": self.number,
             "title": self.title,
@@ -42,7 +39,6 @@ class ReferenceNode(Node):
     def to_entry(self):
         return ReferencesEntryNode(
             self.content_type,
-            self.category,
             self.content,
             self.number,
             self.title,
@@ -66,14 +62,12 @@ class CommandReferencesNode(PageNode):
         self,
         entries,
         content_type=None,
-        category=None,
         args=None,
         kwargs=None,
         tags=None,
     ):
         super().__init__(args, kwargs, tags)
         self.content_type = content_type
-        self.category = category
         self.entries = entries
 
     @property
@@ -81,7 +75,6 @@ class CommandReferencesNode(PageNode):
         return {
             "type": self.node_type,
             "content_type": self.content_type,
-            "category": self.category,
             "entries": self.entries,
             "args": self.args,
             "kwargs": self.kwargs,

@@ -233,7 +233,7 @@ def test_multiple_content_types(mock_reference_anchor):
 
 
 def test_command_references_parse_args():
-    source = "::references:content_type, category, arg1, #tag1, kwarg1=kwvalue1, kwarg2=kwvalue2"
+    source = "::references:content_type, arg1, #tag1, kwarg1=kwvalue1, kwarg2=kwvalue2"
 
     parser = init_parser(source)
     parser.parse()
@@ -241,7 +241,6 @@ def test_command_references_parse_args():
     assert parser.nodes == [
         CommandReferencesNode(
             content_type="content_type",
-            category="category",
             entries={},
             args=["arg1"],
             kwargs={"kwarg1": "kwvalue1", "kwarg2": "kwvalue2"},
@@ -328,7 +327,7 @@ def test_command_references_only_content_type(mock_reference_anchor):
         ),
         CommandReferencesNode(
             content_type="content_type1",
-            entries=parser.reference_entries,
+            entries=parser.references,
             args=[],
             kwargs={},
             tags=[],

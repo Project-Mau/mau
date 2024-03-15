@@ -215,7 +215,7 @@ def test_inline_reference_node():
         "text.j2": "{{ value }}",
         "sentence.j2": "{{ content }}",
         "reference-somecontent.j2": (
-            "{{ content_type }} - {{category}} - {{ content }} - "
+            "{{ content_type }} - {{ content }} - "
             "{{ number }} - {{ title }} - {{ reference_anchor }} - {{ content_anchor }}"
         ),
     }
@@ -224,7 +224,6 @@ def test_inline_reference_node():
 
     node = ReferenceNode(
         "somecontent",
-        "somecategory",
         [TextNode("Just some text.")],
         "5",
         SentenceNode([TextNode("Some title")]),
@@ -235,7 +234,7 @@ def test_inline_reference_node():
     result = visitor.visit(node)
 
     assert result == (
-        "somecontent - somecategory - Just some text. "
+        "somecontent - Just some text. "
         "- 5 - Some title - someanchor - someanchor-def"
     )
 

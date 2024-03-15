@@ -419,7 +419,6 @@ def test_command_references():
 
     node = CommandReferencesNode(
         content_type="content_type1",
-        category=None,
         entries={
             ("content_type1", "value1"): ReferencesEntryNode(
                 "content_type1",
@@ -463,11 +462,9 @@ def test_command_references():
         "data": {
             "args": ["arg1", "arg2"],
             "content_type": "content_type1",
-            "category": None,
             "entries": [
                 {
                     "data": {
-                        "category": None,
                         "content": [
                             {
                                 "data": {
@@ -495,151 +492,6 @@ def test_command_references():
                         "content_type": "content_type1",
                         "number": 1,
                         "reference_anchor": "ref-content_type1-1-XXYY",
-                        "title": {},
-                        "type": "references_entry",
-                    }
-                },
-            ],
-            "kwargs": {"key1": "value1"},
-            "tags": ["tag1", "tag2"],
-            "type": "command_references",
-        }
-    }
-
-
-def test_command_references_category():
-    visitor = BaseVisitor()
-
-    node = CommandReferencesNode(
-        content_type="content_type1",
-        category="cat1",
-        entries={
-            ("content_type1", "value1"): ReferencesEntryNode(
-                "content_type1",
-                category="cat1",
-                content=[
-                    ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 1, value 1"),
-                            ]
-                        )
-                    ),
-                ],
-                number=1,
-                reference_anchor="ref-content_type1-1-XXYY",
-                content_anchor="cnt-content_type1-1-XXYY",
-            ),
-            ("content_type1", "value2"): ReferencesEntryNode(
-                "content_type1",
-                category="cat2",
-                content=[
-                    ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 1, value 2"),
-                            ]
-                        )
-                    ),
-                ],
-                number=2,
-                reference_anchor="ref-content_type1-2-XXYY",
-                content_anchor="cnt-content_type1-2-XXYY",
-            ),
-            ("content_type1", "value3"): ReferencesEntryNode(
-                "content_type1",
-                category="cat1",
-                content=[
-                    ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 1, value 3"),
-                            ]
-                        )
-                    ),
-                ],
-                number=1,
-                reference_anchor="ref-content_type1-3-XXYY",
-                content_anchor="cnt-content_type1-3-XXYY",
-            ),
-        },
-        args=["arg1", "arg2"],
-        kwargs={"key1": "value1"},
-        tags=["tag1", "tag2"],
-    )
-
-    result = visitor.visit(node)
-
-    assert result == {
-        "data": {
-            "args": ["arg1", "arg2"],
-            "content_type": "content_type1",
-            "category": "cat1",
-            "entries": [
-                {
-                    "data": {
-                        "category": "cat1",
-                        "content": [
-                            {
-                                "data": {
-                                    "args": [],
-                                    "content": {
-                                        "data": {
-                                            "content": [
-                                                {
-                                                    "data": {
-                                                        "type": "text",
-                                                        "value": "Content type 1, value 1",
-                                                    }
-                                                },
-                                            ],
-                                            "type": "sentence",
-                                        }
-                                    },
-                                    "kwargs": {},
-                                    "tags": [],
-                                    "type": "paragraph",
-                                }
-                            },
-                        ],
-                        "content_anchor": "cnt-content_type1-1-XXYY",
-                        "content_type": "content_type1",
-                        "number": 1,
-                        "reference_anchor": "ref-content_type1-1-XXYY",
-                        "title": {},
-                        "type": "references_entry",
-                    }
-                },
-                {
-                    "data": {
-                        "category": "cat1",
-                        "content": [
-                            {
-                                "data": {
-                                    "args": [],
-                                    "content": {
-                                        "data": {
-                                            "content": [
-                                                {
-                                                    "data": {
-                                                        "type": "text",
-                                                        "value": "Content type 1, value 3",
-                                                    }
-                                                },
-                                            ],
-                                            "type": "sentence",
-                                        }
-                                    },
-                                    "kwargs": {},
-                                    "tags": [],
-                                    "type": "paragraph",
-                                }
-                            },
-                        ],
-                        "content_anchor": "cnt-content_type1-3-XXYY",
-                        "content_type": "content_type1",
-                        "number": 1,
-                        "reference_anchor": "ref-content_type1-3-XXYY",
                         "title": {},
                         "type": "references_entry",
                     }

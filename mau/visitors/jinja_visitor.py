@@ -195,7 +195,6 @@ class JinjaVisitor(BaseVisitor):
     def _visit_reference(self, node, *args, **kwargs):
         base = super()._visit_reference(node)
         base["templates"] = [
-            f"reference-{node.content_type}-{node.category}",
             f"reference-{node.content_type}",
             "reference",
         ]
@@ -214,7 +213,6 @@ class JinjaVisitor(BaseVisitor):
     def _visit_references_entry(self, node, *args, **kwargs):
         base = super()._visit_references_entry(node)
         base["templates"] = [
-            f"references_entry-{node.content_type}-{node.category}",
             f"references_entry-{node.content_type}",
             "references_entry",
         ]

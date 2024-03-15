@@ -264,21 +264,15 @@ class TextParser(BaseParser):
     def _parse_macro_reference(self, args, kwargs):
         """
         Parse a reference macro in the form
-        [reference](type, name, category).
+        [reference](type, name).
         """
 
-        args, kwargs = set_names_and_defaults(
-            args,
-            kwargs,
-            ["type", "name", "category"],
-            {"category": None},
-        )
+        args, kwargs = set_names_and_defaults(args, kwargs, ["type", "name"])
 
         content_type = kwargs["type"]
         name = kwargs["name"]
-        category = kwargs["category"]
 
-        node = ReferenceNode(content_type, category=category)
+        node = ReferenceNode(content_type)
 
         self.references[(content_type, name)] = node
 

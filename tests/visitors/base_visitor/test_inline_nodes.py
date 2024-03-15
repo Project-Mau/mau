@@ -272,7 +272,6 @@ def test_reference_node():
 
     node = ReferenceNode(
         content_type="somecontent",
-        category="somecategory",
         content=[TextNode("Just some text.")],
         number="5",
         title=SentenceNode([TextNode("Some title")]),
@@ -285,7 +284,6 @@ def test_reference_node():
     assert result == {
         "data": {
             "type": "reference",
-            "category": "somecategory",
             "content_type": "somecontent",
             "number": "5",
             "reference_anchor": "someanchor",

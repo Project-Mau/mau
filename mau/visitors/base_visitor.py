@@ -440,7 +440,6 @@ class BaseVisitor:
             "data": {
                 "type": node.node_type,
                 "content_type": node.content_type,
-                "category": node.category,
                 "content": self.visitlist(
                     node.content, *args, join_with=join_with, **kwargs
                 ),
@@ -458,14 +457,10 @@ class BaseVisitor:
             i for i in node.entries.values() if i.content_type == node.content_type
         ]
 
-        if node.category is not None:
-            entries = [i for i in entries if i.category == node.category]
-
         return {
             "data": {
                 "type": node.node_type,
                 "content_type": node.content_type,
-                "category": node.category,
                 "entries": self.visitlist(
                     entries, *args, join_with=join_with, **kwargs
                 ),
@@ -482,7 +477,6 @@ class BaseVisitor:
             "data": {
                 "type": node.node_type,
                 "content_type": node.content_type,
-                "category": node.category,
                 "content": self.visitlist(
                     node.content, *args, join_with=join_with, **kwargs
                 ),

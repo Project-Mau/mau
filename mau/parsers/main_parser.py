@@ -96,13 +96,6 @@ class MainParser(BaseParser):
         # {content_type:[references]}.
         self.references = {}
 
-        # This list contains all the reference entries
-        # that will be shown by a references command in the form
-        # {content_type:[references]}.
-        # This is a copy of self.references that however
-        # contains ReferencesEntryNode nodes.
-        self.reference_entries = {}
-
         # When we define a block we establish an alias
         # {alias:actual_block_name}.
         self.block_aliases = {}
@@ -211,7 +204,6 @@ class MainParser(BaseParser):
 
             self.references[key] = ReferencesEntryNode(
                 content_type=reference.content_type,
-                category=reference.category,
                 content=reference.content,
                 number=reference.number,
                 title=reference.title,
@@ -442,21 +434,14 @@ class MainParser(BaseParser):
 
         elif name == "references":
             # Assign names
-            args, kwargs = self._set_names_and_defaults(
-                args,
-                kwargs,
-                ["content_type", "category"],
-                {"category": None},
-            )
+            args, kwargs = self._set_names_and_defaults(args, kwargs, ["content_type"])
 
             content_type = kwargs.pop("content_type")
-            category = kwargs.pop("category")
 
             self._save(
                 CommandReferencesNode(
-                    entries=self.reference_entries,
+                    entries=self.references,
                     content_type=content_type,
-                    category=category,
                     args=args,
                     kwargs=kwargs,
                     tags=tags,

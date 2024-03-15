@@ -38,24 +38,6 @@ class FootnotesEntryNode(FootnoteNode):
     node_type = "footnotes_entry"
 
 
-#     def __init__(self, footnote):
-#         super().__init__()
-#         self.footnote = footnote
-
-#     def __getattr__(self, attr):
-#         return getattr(self.footnote, attr)
-
-#     @property
-#     def _content(self):
-#         return {
-#             "type": self.node_type,
-#             "content": self.footnote.content,
-#             "number": self.footnote.number,
-#             "reference_anchor": self.footnote.reference_anchor,
-#             "content_anchor": self.footnote.content_anchor,
-#         }
-
-
 class CommandFootnotesNode(PageNode):
     """This instructs Mau to insert the list of footnotes."""
 

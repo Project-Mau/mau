@@ -6,6 +6,7 @@ from mau.parsers.arguments import set_names_and_defaults
 from mau.text_buffer.context import print_context
 from mau.text_buffer.text_buffer import TextBuffer
 from mau.tokens.tokens import Token
+from mau.parsers.environment import Environment
 
 
 class TokenError(ValueError):
@@ -33,7 +34,7 @@ class BaseParser:
     text_buffer_class = TextBuffer
     lexer_class = BaseLexer
 
-    def __init__(self, tokens):
+    def __init__(self, tokens, environment=None):
         # This is the position of the current token.
         self.index = -1
 
@@ -50,6 +51,9 @@ class BaseParser:
 
         # The last processed token. Used to detect loops.
         self.last_processed_token = Token(TokenTypes.EOF)
+
+        # The configuration environment
+        self.environment = environment or Environment()
 
     @property
     def _current_token(self):

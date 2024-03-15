@@ -10,9 +10,7 @@ class PreprocessVariablesParser(BaseParser):
     lexer_class = PreprocessVariablesLexer
 
     def __init__(self, tokens, environment=None):
-        super().__init__(tokens)
-
-        self.environment = environment or Environment()
+        super().__init__(tokens, environment)
 
     def _process_verbatim(self):
         self._get_token(TokenTypes.LITERAL, "`")

@@ -17,7 +17,7 @@ from mau.nodes.page import (
     ListNode,
     ParagraphNode,
 )
-from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
+from mau.nodes.references import CommandReferencesNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.nodes.toc import CommandTocNode
 from mau.parsers.arguments_parser import ArgumentsParser
@@ -29,6 +29,7 @@ from mau.parsers.references import create_references
 from mau.parsers.text_parser import TextParser
 from mau.parsers.toc import create_toc
 from mau.tokens.tokens import Token
+from mau.nodes.page import ContainerNode
 
 
 def header_anchor(text, level):
@@ -58,9 +59,7 @@ class MainParser(BaseParser):
     lexer_class = MainLexer
 
     def __init__(self, tokens, environment=None):
-        super().__init__(tokens)
-
-        self.environment = environment or Environment()
+        super().__init__(tokens, environment)
 
         self.headers = []
 
@@ -72,6 +71,9 @@ class MainParser(BaseParser):
         # that need to be updated once the toc
         # has been processed
         self.toc_command_nodes = []
+
+        # This is the full ToC
+        self.toc = None
 
         # This dictionary containes the footnotes created
         # in the text through a macro.
@@ -169,6 +171,9 @@ class MainParser(BaseParser):
         # The tuple represents (args, kwargs, tags)
         self.arguments = ([], {}, [])
 
+        # This is the final output of the parser
+        self.output = {}
+
     def process_footnotes(self):
         self.footnotes = create_footnotes(
             self.footnote_mentions,
@@ -190,6 +195,8 @@ class MainParser(BaseParser):
             ]
 
     def process_toc(self):
+        self.toc = CommandTocNode(create_toc(self.headers))
+
         for node in self.toc_command_nodes:
             node.entries = create_toc(
                 self.headers, exclude_tag=node.kwargs.get("exclude_tag")
@@ -1171,3 +1178,12 @@ class MainParser(BaseParser):
 
         # Process ToC
         self.process_toc()
+
+        self.output.update(
+            {
+                "content": self.nodes,
+                "toc": self.toc,
+                "references": self.references,
+                "footnotes": self.footnotes,
+            }
+        )

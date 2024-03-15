@@ -10,12 +10,20 @@ from mau.nodes.references import (
     ReferencesEntryNode,
 )
 from mau.parsers.main_parser import MainParser
+from mau.parsers.references import reference_anchor
 
 from tests.helpers import init_parser_factory, parser_runner_factory
 
 init_parser = init_parser_factory(MainLexer, MainParser)
 
 runner = parser_runner_factory(MainLexer, MainParser)
+
+
+@patch("mau.parsers.references.hashlib.md5")
+def test_default_reference_anchor_function(mock_md5):
+    mock_md5().hexdigest.return_value = "XXYYXXYYZZZ"
+
+    assert reference_anchor("Some Words 1234 56") == "XXYYXXYY"
 
 
 def test_document_with_reference():
@@ -49,7 +57,7 @@ def test_document_with_reference():
     }
 
 
-@patch("mau.parsers.main_parser.reference_anchor")
+@patch("mau.parsers.references.reference_anchor")
 def test_simple_reference(mock_reference_anchor):
     source = """
     This is a paragraph with a [reference](content_type, value)
@@ -83,7 +91,7 @@ def test_simple_reference(mock_reference_anchor):
     }
 
 
-@patch("mau.parsers.main_parser.reference_anchor")
+@patch("mau.parsers.references.reference_anchor")
 def test_reference_data_inside_block(mock_reference_anchor):
     source = """
     This is a paragraph with a [reference](content_type, value)
@@ -120,7 +128,7 @@ def test_reference_data_inside_block(mock_reference_anchor):
     }
 
 
-@patch("mau.parsers.main_parser.reference_anchor")
+@patch("mau.parsers.references.reference_anchor")
 def test_reference_mention_and_data_inside_block(mock_reference_anchor):
     source = """
     [someblock]
@@ -157,7 +165,7 @@ def test_reference_mention_and_data_inside_block(mock_reference_anchor):
     }
 
 
-@patch("mau.parsers.main_parser.reference_anchor")
+@patch("mau.parsers.references.reference_anchor")
 def test_multiple_content_types(mock_reference_anchor):
     mock_reference_anchor.return_value = "XXYY"
 
@@ -249,7 +257,7 @@ def test_command_references_parse_args():
     ]
 
 
-@patch("mau.parsers.main_parser.reference_anchor")
+@patch("mau.parsers.references.reference_anchor")
 def test_command_references_filter_content_type(mock_reference_anchor):
     mock_reference_anchor.return_value = "XXYY"
 

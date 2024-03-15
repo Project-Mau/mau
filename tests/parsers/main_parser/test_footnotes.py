@@ -5,7 +5,8 @@ from mau.lexers.main_lexer import MainLexer
 from mau.nodes.footnotes import FootnoteNode
 from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.page import ParagraphNode
-from mau.parsers.main_parser import MainParser, footnote_anchor, reference_anchor
+from mau.parsers.footnotes import footnote_anchor
+from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory
 
@@ -14,18 +15,11 @@ init_parser = init_parser_factory(MainLexer, MainParser)
 runner = parser_runner_factory(MainLexer, MainParser)
 
 
-@patch("mau.parsers.main_parser.hashlib.md5")
+@patch("mau.parsers.footnotes.hashlib.md5")
 def test_default_footnote_anchor_function(mock_md5):
     mock_md5().hexdigest.return_value = "XXYYXXYYZZZ"
 
     assert footnote_anchor("Some Words 1234 56") == "XXYYXXYY"
-
-
-@patch("mau.parsers.main_parser.hashlib.md5")
-def test_default_reference_anchor_function(mock_md5):
-    mock_md5().hexdigest.return_value = "XXYYXXYYZZZ"
-
-    assert reference_anchor("Some Words 1234 56") == "XXYYXXYY"
 
 
 def test_footnote_empty_block():
@@ -44,7 +38,7 @@ def test_footnote_empty_block():
     assert parser.nodes == []
 
 
-@patch("mau.parsers.main_parser.footnote_anchor")
+@patch("mau.parsers.footnotes.footnote_anchor")
 def test_footnote_content(mock_footnote_anchor):
     mock_footnote_anchor.return_value = "XXYY"
 
@@ -100,7 +94,7 @@ def test_footnote_content(mock_footnote_anchor):
     }
 
 
-@patch("mau.parsers.main_parser.footnote_anchor")
+@patch("mau.parsers.footnotes.footnote_anchor")
 def test_footnote_mention_and_content(mock_footnote_anchor):
     mock_footnote_anchor.return_value = "XXYY"
 

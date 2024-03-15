@@ -19,11 +19,13 @@ from mau.nodes.page import (
 )
 from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
-from mau.nodes.toc import CommandTocNode, TocEntryNode
+from mau.nodes.toc import CommandTocNode
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.base_parser import BaseParser
 from mau.parsers.environment import Environment
+from mau.parsers.footnotes import create_footnotes
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
+from mau.parsers.references import create_references
 from mau.parsers.text_parser import TextParser
 from mau.parsers.toc import create_toc
 from mau.tokens.tokens import Token
@@ -46,14 +48,6 @@ def header_anchor(text, level):
     hashed_value = hashlib.md5(f"{level} {text}".encode("utf-8")).hexdigest()[:4]
 
     return f"{sanitised_text}-{hashed_value}"
-
-
-def footnote_anchor(content):
-    return hashlib.md5(str(content).encode("utf-8")).hexdigest()[:8]
-
-
-def reference_anchor(content):
-    return hashlib.md5(str(content).encode("utf-8")).hexdigest()[:8]
 
 
 # The MainParser is in charge of parsing
@@ -176,73 +170,30 @@ class MainParser(BaseParser):
         self.arguments = ([], {}, [])
 
     def process_footnotes(self):
-        for num, footnote in enumerate(self.footnote_mentions.values(), start=1):
-            footnote.number = num
-
-        for key, footnote in self.footnote_mentions.items():
-            data = self.footnote_data[key]
-            footnote.content = data["content"]
-            anchor = footnote_anchor(footnote.content)
-
-            footnote.reference_anchor = f"ref-footnote-{footnote.number}-{anchor}"
-            footnote.content_anchor = f"cnt-footnote-{footnote.number}-{anchor}"
-
-            self.footnotes.append(footnote.to_entry())
+        self.footnotes = create_footnotes(
+            self.footnote_mentions,
+            self.footnote_data,
+        )
 
     def process_references(self):
-        # Example of stored content
-        # self.reference_mentions = {
-        #  (type1, name1) = node1
-        #  (type1, name2) = node2
-        #  (type2, name3) = node3
-        # }
-        #
-        # self.reference_data = {
-        #  (type1, name1) = content
-        #  (type1, name2) = content
-        #  (type2, name3) = content
-        # }
+        self.references = create_references(
+            self.reference_mentions,
+            self.reference_data,
+        )
 
-        for num, reference in enumerate(self.reference_mentions.values(), start=1):
-            reference.number = num
-
-        for key, reference in self.reference_mentions.items():
-            data = self.reference_data[key]
-            reference.content = data["content"]
-            anchor = reference_anchor(reference.content)
-            content_type = reference.content_type
-
-            reference.reference_anchor = (
-                f"ref-{content_type}-{reference.number}-{anchor}"
-            )
-            reference.content_anchor = f"cnt-{content_type}-{reference.number}-{anchor}"
-
-            self.references[key] = ReferencesEntryNode(
-                content_type=reference.content_type,
-                content=reference.content,
-                number=reference.number,
-                title=reference.title,
-                reference_anchor=reference.reference_anchor,
-                content_anchor=reference.content_anchor,
-            )
-
+        # Filter references according to the node parameters
         for node in self.reference_command_nodes:
-            # Filter references according to the node parameters
-            entries = [
+            node.entries = [
                 i
                 for i in self.references.values()
                 if i.content_type == node.content_type
             ]
 
-            node.entries = entries
-
     def process_toc(self):
         for node in self.toc_command_nodes:
-            entries = create_toc(
+            node.entries = create_toc(
                 self.headers, exclude_tag=node.kwargs.get("exclude_tag")
             )
-
-            node.entries = entries
 
     def _pop_arguments(self):
         # This return the arguments and resets the

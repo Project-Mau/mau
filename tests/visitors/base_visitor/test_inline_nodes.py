@@ -7,9 +7,9 @@ from mau.nodes.inline import (
     LinkNode,
     ListItemNode,
     MacroNode,
+    RawNode,
     SentenceNode,
     StyleNode,
-    RawNode,
     TextNode,
     VerbatimNode,
 )

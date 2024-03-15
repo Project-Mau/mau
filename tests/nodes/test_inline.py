@@ -4,10 +4,10 @@ from mau.nodes.inline import (
     LinkNode,
     ListItemNode,
     MacroNode,
+    RawNode,
     SentenceNode,
     StyleNode,
     TextNode,
-    RawNode,
     VerbatimNode,
     WordNode,
 )

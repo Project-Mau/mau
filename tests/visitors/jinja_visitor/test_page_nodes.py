@@ -421,7 +421,7 @@ def test_page_command_references_multiple_nodes():
         "paragraph.j2": "{{ content }}",
         "text.j2": "{{ value }}",
         "references.j2": "{{ entries }}",
-        "references_entry-content_type1.j2": (
+        "references_entry.j2": (
             "{{ content_type }}:{{ content }}:{{ number }}:"
             "{{ title }}:{{ content_anchor }}:{{ reference_anchor }}::"
         ),
@@ -433,9 +433,9 @@ def test_page_command_references_multiple_nodes():
     kwargs = {"key1": "value1"}
     tags = ["tag1", "tag2"]
     node = CommandReferencesNode(
-        content_type="content_type1",
-        entries={
-            ("content_type1", "value1"): ReferencesEntryNode(
+        content_type=None,
+        entries=[
+            ReferencesEntryNode(
                 "content_type1",
                 content=[
                     ParagraphNode(
@@ -451,7 +451,7 @@ def test_page_command_references_multiple_nodes():
                 reference_anchor="ref-content_type1-1-XXYY",
                 content_anchor="cnt-content_type1-1-XXYY",
             ),
-            ("content_type1", "value2"): ReferencesEntryNode(
+            ReferencesEntryNode(
                 "content_type1",
                 content=[
                     ParagraphNode(
@@ -467,7 +467,7 @@ def test_page_command_references_multiple_nodes():
                 reference_anchor="ref-content_type1-2-XXYY",
                 content_anchor="cnt-content_type1-2-XXYY",
             ),
-            ("content_type2", "value1"): ReferencesEntryNode(
+            ReferencesEntryNode(
                 "content_type2",
                 content=[
                     ParagraphNode(
@@ -478,12 +478,12 @@ def test_page_command_references_multiple_nodes():
                         )
                     ),
                 ],
-                number=1,
+                number=3,
                 title=SentenceNode([TextNode("Some title 2.1")]),
-                reference_anchor="ref-content_type2-1-XXYY",
-                content_anchor="cnt-content_type2-1-XXYY",
+                reference_anchor="ref-content_type2-3-XXYY",
+                content_anchor="cnt-content_type2-3-XXYY",
             ),
-        },
+        ],
         args=args,
         kwargs=kwargs,
         tags=tags,
@@ -493,9 +493,11 @@ def test_page_command_references_multiple_nodes():
 
     assert result == (
         "content_type1:Content type 1, value 1:1:Some title 1.1:"
-        "cnt-content_type1-1-XXYY:ref-content_type1-1-XXYY::content_type1:"
-        "Content type 1, value 2:2:Some title 1.2:"
+        "cnt-content_type1-1-XXYY:ref-content_type1-1-XXYY::"
+        "content_type1:Content type 1, value 2:2:Some title 1.2:"
         "cnt-content_type1-2-XXYY:ref-content_type1-2-XXYY::"
+        "content_type2:Content type 2, value 1:3:Some title 2.1:"
+        "cnt-content_type2-3-XXYY:ref-content_type2-3-XXYY::"
     )
 
 

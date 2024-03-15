@@ -453,16 +453,12 @@ class BaseVisitor:
     def _visit_command_references(self, node, *args, **kwargs):
         join_with = self._join_with.get(node.node_type, None)
 
-        entries = [
-            i for i in node.entries.values() if i.content_type == node.content_type
-        ]
-
         return {
             "data": {
                 "type": node.node_type,
                 "content_type": node.content_type,
                 "entries": self.visitlist(
-                    entries, *args, join_with=join_with, **kwargs
+                    node.entries, *args, join_with=join_with, **kwargs
                 ),
                 "args": node.args,
                 "kwargs": node.kwargs,

@@ -241,7 +241,7 @@ def test_command_references_parse_args():
     assert parser.nodes == [
         CommandReferencesNode(
             content_type="content_type",
-            entries={},
+            entries=[],
             args=["arg1"],
             kwargs={"kwarg1": "kwvalue1", "kwarg2": "kwvalue2"},
             tags=["tag1"],
@@ -250,7 +250,7 @@ def test_command_references_parse_args():
 
 
 @patch("mau.parsers.main_parser.reference_anchor")
-def test_command_references_only_content_type(mock_reference_anchor):
+def test_command_references_filter_content_type(mock_reference_anchor):
     mock_reference_anchor.return_value = "XXYY"
 
     source = """
@@ -327,7 +327,30 @@ def test_command_references_only_content_type(mock_reference_anchor):
         ),
         CommandReferencesNode(
             content_type="content_type1",
-            entries=parser.references,
+            entries=[
+                ReferencesEntryNode(
+                    "content_type1",
+                    content=[
+                        ParagraphNode(
+                            SentenceNode([TextNode("Content type 1, value 1")])
+                        ),
+                    ],
+                    number=1,
+                    reference_anchor="ref-content_type1-1-XXYY",
+                    content_anchor="cnt-content_type1-1-XXYY",
+                ),
+                ReferencesEntryNode(
+                    "content_type1",
+                    content=[
+                        ParagraphNode(
+                            SentenceNode([TextNode("Content type 1, value 2")])
+                        ),
+                    ],
+                    number=2,
+                    reference_anchor="ref-content_type1-2-XXYY",
+                    content_anchor="cnt-content_type1-2-XXYY",
+                ),
+            ],
             args=[],
             kwargs={},
             tags=[],

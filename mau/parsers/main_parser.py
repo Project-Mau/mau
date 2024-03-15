@@ -96,6 +96,11 @@ class MainParser(BaseParser):
         # {content_type:[references]}.
         self.references = {}
 
+        # This is the list of ::references commands
+        # that need to be updated once references
+        # have been processed
+        self.reference_command_nodes = []
+
         # When we define a block we establish an alias
         # {alias:actual_block_name}.
         self.block_aliases = {}
@@ -210,6 +215,16 @@ class MainParser(BaseParser):
                 reference_anchor=reference.reference_anchor,
                 content_anchor=reference.content_anchor,
             )
+
+        for node in self.reference_command_nodes:
+            # Filter references according to the node parameters
+            entries = [
+                i
+                for i in self.references.values()
+                if i.content_type == node.content_type
+            ]
+
+            node.entries = entries
 
     def _pop_arguments(self):
         # This return the arguments and resets the
@@ -438,15 +453,16 @@ class MainParser(BaseParser):
 
             content_type = kwargs.pop("content_type")
 
-            self._save(
-                CommandReferencesNode(
-                    entries=self.references,
-                    content_type=content_type,
-                    args=args,
-                    kwargs=kwargs,
-                    tags=tags,
-                )
+            node = CommandReferencesNode(
+                entries=[],
+                content_type=content_type,
+                args=args,
+                kwargs=kwargs,
+                tags=tags,
             )
+
+            self.reference_command_nodes.append(node)
+            self._save(node)
 
         return True
 

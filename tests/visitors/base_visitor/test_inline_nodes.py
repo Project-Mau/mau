@@ -272,7 +272,6 @@ def test_reference_node():
 
     node = ReferenceNode(
         content_type="somecontent",
-        name="somename",
         category="somecategory",
         content=[TextNode("Just some text.")],
         number="5",
@@ -288,7 +287,6 @@ def test_reference_node():
             "type": "reference",
             "category": "somecategory",
             "content_type": "somecontent",
-            "name": "somename",
             "number": "5",
             "reference_anchor": "someanchor",
             "content_anchor": "someanchor-def",

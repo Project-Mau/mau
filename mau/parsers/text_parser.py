@@ -278,7 +278,7 @@ class TextParser(BaseParser):
         name = kwargs["name"]
         category = kwargs["category"]
 
-        node = ReferenceNode(content_type, name, category=category)
+        node = ReferenceNode(content_type, category=category)
 
         self.references[(content_type, name)] = node
 

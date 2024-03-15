@@ -533,15 +533,15 @@ def test_macro_footnote():
 
 
 def test_macro_reference():
-    source = "[reference](solution, value)"
+    source = "[reference](ctype, name)"
 
-    reference_node = ReferenceNode("solution", "value")
+    reference_node = ReferenceNode("ctype")
     expected = [SentenceNode([reference_node])]
 
     parser = runner(source)
     assert parser.nodes == expected
     assert parser.references == {
-        ("solution", "value"): reference_node,
+        ("ctype", "name"): reference_node,
     }
 
 

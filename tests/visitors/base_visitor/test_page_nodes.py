@@ -419,12 +419,10 @@ def test_command_references():
 
     node = CommandReferencesNode(
         content_type="content_type1",
-        name="value1",
         category=None,
         entries={
             ("content_type1", "value1"): ReferencesEntryNode(
                 "content_type1",
-                "value1",
                 content=[
                     ParagraphNode(
                         SentenceNode(
@@ -438,25 +436,8 @@ def test_command_references():
                 reference_anchor="ref-content_type1-1-XXYY",
                 content_anchor="cnt-content_type1-1-XXYY",
             ),
-            ("content_type1", "value2"): ReferencesEntryNode(
-                "content_type1",
-                "value2",
-                content=[
-                    ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 1, value 2"),
-                            ]
-                        )
-                    ),
-                ],
-                number=2,
-                reference_anchor="ref-content_type1-2-XXYY",
-                content_anchor="cnt-content_type1-2-XXYY",
-            ),
             ("content_type2", "value1"): ReferencesEntryNode(
                 "content_type2",
-                "value1",
                 content=[
                     ParagraphNode(
                         SentenceNode(
@@ -512,7 +493,6 @@ def test_command_references():
                         ],
                         "content_anchor": "cnt-content_type1-1-XXYY",
                         "content_type": "content_type1",
-                        "name": "value1",
                         "number": 1,
                         "reference_anchor": "ref-content_type1-1-XXYY",
                         "title": {},
@@ -521,7 +501,6 @@ def test_command_references():
                 },
             ],
             "kwargs": {"key1": "value1"},
-            "name": "value1",
             "tags": ["tag1", "tag2"],
             "type": "command_references",
         }
@@ -533,12 +512,10 @@ def test_command_references_category():
 
     node = CommandReferencesNode(
         content_type="content_type1",
-        name=None,
         category="cat1",
         entries={
             ("content_type1", "value1"): ReferencesEntryNode(
                 "content_type1",
-                "value1",
                 category="cat1",
                 content=[
                     ParagraphNode(
@@ -555,7 +532,6 @@ def test_command_references_category():
             ),
             ("content_type1", "value2"): ReferencesEntryNode(
                 "content_type1",
-                "value2",
                 category="cat2",
                 content=[
                     ParagraphNode(
@@ -572,7 +548,6 @@ def test_command_references_category():
             ),
             ("content_type1", "value3"): ReferencesEntryNode(
                 "content_type1",
-                "value3",
                 category="cat1",
                 content=[
                     ParagraphNode(
@@ -629,7 +604,6 @@ def test_command_references_category():
                         ],
                         "content_anchor": "cnt-content_type1-1-XXYY",
                         "content_type": "content_type1",
-                        "name": "value1",
                         "number": 1,
                         "reference_anchor": "ref-content_type1-1-XXYY",
                         "title": {},
@@ -664,7 +638,6 @@ def test_command_references_category():
                         ],
                         "content_anchor": "cnt-content_type1-3-XXYY",
                         "content_type": "content_type1",
-                        "name": "value3",
                         "number": 1,
                         "reference_anchor": "ref-content_type1-3-XXYY",
                         "title": {},
@@ -673,7 +646,6 @@ def test_command_references_category():
                 },
             ],
             "kwargs": {"key1": "value1"},
-            "name": None,
             "tags": ["tag1", "tag2"],
             "type": "command_references",
         }

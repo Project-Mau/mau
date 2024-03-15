@@ -67,7 +67,6 @@ def test_simple_reference(mock_reference_anchor):
     assert parser.references == {
         ("content_type", "value"): ReferenceNode(
             "content_type",
-            "value",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -105,7 +104,6 @@ def test_reference_data_inside_block(mock_reference_anchor):
     assert parser.references == {
         ("content_type", "value"): ReferenceNode(
             "content_type",
-            "value",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -143,7 +141,6 @@ def test_reference_mention_and_data_inside_block(mock_reference_anchor):
     assert parser.references == {
         ("content_type", "value"): ReferenceNode(
             "content_type",
-            "value",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -165,31 +162,30 @@ def test_multiple_content_types(mock_reference_anchor):
     mock_reference_anchor.return_value = "XXYY"
 
     source = """
-    [reference, content_type1, value1]
+    [reference, content_type1, name1]
     ----
     Content type 1, value 1
     ----
 
-    [reference, content_type1, value2]
+    [reference, content_type1, name2]
     ----
     Content type 1, value 2
     ----
 
-    [reference, content_type2, value1]
+    [reference, content_type2, name1]
     ----
     Content type 2, value 1
     ----
 
     This is a paragraph with references of different types:
-    [reference](content_type1, value1), [reference](content_type1, value2), [reference](content_type2, value1)
+    [reference](content_type1, name1), [reference](content_type1, name2), [reference](content_type2, name1)
     """
 
     parser = runner(source)
 
     assert parser.references == {
-        ("content_type1", "value1"): ReferenceNode(
+        ("content_type1", "name1"): ReferenceNode(
             "content_type1",
-            "value1",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -203,9 +199,8 @@ def test_multiple_content_types(mock_reference_anchor):
             reference_anchor="ref-content_type1-1-XXYY",
             content_anchor="cnt-content_type1-1-XXYY",
         ),
-        ("content_type1", "value2"): ReferenceNode(
+        ("content_type1", "name2"): ReferenceNode(
             "content_type1",
-            "value2",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -219,9 +214,8 @@ def test_multiple_content_types(mock_reference_anchor):
             reference_anchor="ref-content_type1-2-XXYY",
             content_anchor="cnt-content_type1-2-XXYY",
         ),
-        ("content_type2", "value1"): ReferenceNode(
+        ("content_type2", "name1"): ReferenceNode(
             "content_type2",
-            "value1",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -238,9 +232,8 @@ def test_multiple_content_types(mock_reference_anchor):
     }
 
     assert parser.reference_entries == {
-        ("content_type1", "value1"): ReferencesEntryNode(
+        ("content_type1", "name1"): ReferencesEntryNode(
             "content_type1",
-            "value1",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -254,9 +247,8 @@ def test_multiple_content_types(mock_reference_anchor):
             reference_anchor="ref-content_type1-1-XXYY",
             content_anchor="cnt-content_type1-1-XXYY",
         ),
-        ("content_type1", "value2"): ReferencesEntryNode(
+        ("content_type1", "name2"): ReferencesEntryNode(
             "content_type1",
-            "value2",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -270,9 +262,8 @@ def test_multiple_content_types(mock_reference_anchor):
             reference_anchor="ref-content_type1-2-XXYY",
             content_anchor="cnt-content_type1-2-XXYY",
         ),
-        ("content_type2", "value1"): ReferencesEntryNode(
+        ("content_type2", "name1"): ReferencesEntryNode(
             "content_type2",
-            "value1",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -290,7 +281,7 @@ def test_multiple_content_types(mock_reference_anchor):
 
 
 def test_command_references_parse_args():
-    source = "::references:content_type, category, value, arg1, #tag1, name1=value1, name2=value2"
+    source = "::references:content_type, category, arg1, #tag1, kwarg1=kwvalue1, kwarg2=kwvalue2"
 
     parser = init_parser(source)
     parser.parse()
@@ -299,10 +290,9 @@ def test_command_references_parse_args():
         CommandReferencesNode(
             content_type="content_type",
             category="category",
-            name="value",
             entries={},
             args=["arg1"],
-            kwargs={"name1": "value1", "name2": "value2"},
+            kwargs={"kwarg1": "kwvalue1", "kwarg2": "kwvalue2"},
             tags=["tag1"],
         ),
     ]
@@ -313,23 +303,23 @@ def test_command_references_only_content_type(mock_reference_anchor):
     mock_reference_anchor.return_value = "XXYY"
 
     source = """
-    [reference, content_type1, value1]
+    [reference, content_type1, name1]
     ----
     Content type 1, value 1
     ----
 
-    [reference, content_type1, value2]
+    [reference, content_type1, name2]
     ----
     Content type 1, value 2
     ----
 
-    [reference, content_type2, value1]
+    [reference, content_type2, name1]
     ----
     Content type 2, value 1
     ----
 
     This is a paragraph with references of different types:
-    [reference](content_type1, value1), [reference](content_type1, value2), [reference](content_type2, value1)
+    [reference](content_type1, name1), [reference](content_type1, name2), [reference](content_type2, name1)
 
     ::references:content_type1
     """
@@ -346,7 +336,6 @@ def test_command_references_only_content_type(mock_reference_anchor):
                     ),
                     ReferenceNode(
                         "content_type1",
-                        "value1",
                         content=[
                             ParagraphNode(
                                 SentenceNode([TextNode("Content type 1, value 1")])
@@ -359,7 +348,6 @@ def test_command_references_only_content_type(mock_reference_anchor):
                     TextNode(", "),
                     ReferenceNode(
                         "content_type1",
-                        "value2",
                         content=[
                             ParagraphNode(
                                 SentenceNode([TextNode("Content type 1, value 2")])
@@ -372,7 +360,6 @@ def test_command_references_only_content_type(mock_reference_anchor):
                     TextNode(", "),
                     ReferenceNode(
                         "content_type2",
-                        "value1",
                         content=[
                             ParagraphNode(
                                 SentenceNode([TextNode("Content type 2, value 1")])

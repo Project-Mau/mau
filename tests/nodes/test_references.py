@@ -9,12 +9,10 @@ from mau.nodes.references import (
 def test_reference_node():
     node = ReferenceNode(
         "somecontent",
-        "somevalue",
         content=[VerbatimNode("somevalue"), TextNode("othervalue")],
     )
 
     assert node.content_type == "somecontent"
-    assert node.name == "somevalue"
     assert node.category is None
     assert node.content == [VerbatimNode("somevalue"), TextNode("othervalue")]
     assert node.number is None
@@ -24,7 +22,6 @@ def test_reference_node():
     assert node.node_type == "reference"
     assert node == ReferenceNode(
         "somecontent",
-        "somevalue",
         content=[VerbatimNode("somevalue"), TextNode("othervalue")],
     )
 
@@ -32,7 +29,6 @@ def test_reference_node():
 def test_reference_node_with_number_and_anchor():
     node = ReferenceNode(
         "somecontent",
-        "somevalue",
         "somecategory",
         [VerbatimNode("somevalue"), TextNode("othervalue")],
         number="3",
@@ -42,7 +38,6 @@ def test_reference_node_with_number_and_anchor():
     )
 
     assert node.content_type == "somecontent"
-    assert node.name == "somevalue"
     assert node.category == "somecategory"
     assert node.content == [VerbatimNode("somevalue"), TextNode("othervalue")]
     assert node.number == "3"
@@ -52,7 +47,6 @@ def test_reference_node_with_number_and_anchor():
     assert node.node_type == "reference"
     assert node == ReferenceNode(
         "somecontent",
-        "somevalue",
         "somecategory",
         [VerbatimNode("somevalue"), TextNode("othervalue")],
         number="3",
@@ -65,7 +59,6 @@ def test_reference_node_with_number_and_anchor():
 def test_references_entry_node():
     node = ReferencesEntryNode(
         "somecontent",
-        "somevalue",
         "somecategory",
         content=TextNode("Some text"),
         number="1",
@@ -75,7 +68,6 @@ def test_references_entry_node():
     )
 
     assert node.content_type == "somecontent"
-    assert node.name == "somevalue"
     assert node.category == "somecategory"
     assert node.content == TextNode("Some text")
     assert node.number == "1"
@@ -85,7 +77,6 @@ def test_references_entry_node():
     assert node.node_type == "references_entry"
     assert node == ReferencesEntryNode(
         "somecontent",
-        "somevalue",
         "somecategory",
         content=TextNode("Some text"),
         number="1",
@@ -98,7 +89,6 @@ def test_references_entry_node():
 def test_command_references_node():
     node = CommandReferencesNode(
         content_type="somecontent",
-        name="somevalue",
         category="somecategory",
         entries=[TextNode("somevalue1"), TextNode("somevalue2")],
         args=["value1", "value2"],
@@ -108,7 +98,6 @@ def test_command_references_node():
 
     assert node.entries == [TextNode("somevalue1"), TextNode("somevalue2")]
     assert node.content_type == "somecontent"
-    assert node.name == "somevalue"
     assert node.category == "somecategory"
     assert node.args == ["value1", "value2"]
     assert node.tags == ["tag1", "tag2"]
@@ -116,7 +105,6 @@ def test_command_references_node():
     assert node.node_type == "command_references"
     assert node == CommandReferencesNode(
         content_type="somecontent",
-        name="somevalue",
         category="somecategory",
         entries=[TextNode("somevalue1"), TextNode("somevalue2")],
         args=["value1", "value2"],

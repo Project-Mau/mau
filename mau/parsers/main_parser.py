@@ -220,7 +220,6 @@ class MainParser(BaseParser):
             self.references[key] = reference
             self.reference_entries[key] = ReferencesEntryNode(
                 content_type=reference.content_type,
-                name=reference.name,
                 category=reference.category,
                 content=reference.content,
                 number=reference.number,
@@ -455,19 +454,17 @@ class MainParser(BaseParser):
             args, kwargs = self._set_names_and_defaults(
                 args,
                 kwargs,
-                ["content_type", "category", "name"],
-                {"category": None, "name": None},
+                ["content_type", "category"],
+                {"category": None},
             )
 
             content_type = kwargs.pop("content_type")
             category = kwargs.pop("category")
-            name = kwargs.pop("name")
 
             self._save(
                 CommandReferencesNode(
                     entries=self.reference_entries,
                     content_type=content_type,
-                    name=name,
                     category=category,
                     args=args,
                     kwargs=kwargs,

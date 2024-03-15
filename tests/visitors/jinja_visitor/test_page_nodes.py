@@ -415,89 +415,6 @@ def test_page_command_footnotes_node():
     )
 
 
-def test_page_command_references_single_node():
-    templates = {
-        "sentence.j2": "{{ content }}",
-        "paragraph.j2": "{{ content }}",
-        "text.j2": "{{ value }}",
-        "references.j2": "{{ entries }}",
-        "references_entry-content_type1.j2": (
-            "{{ content_type }}:{{ name }}:{{ content }}:"
-            "{{ number }}:{{ content_anchor }}:{{ reference_anchor }}"
-        ),
-    }
-
-    visitor = JinjaVisitor(custom_templates=templates)
-
-    args = ["arg1", "arg2"]
-    kwargs = {"key1": "value1"}
-    tags = ["tag1", "tag2"]
-    node = CommandReferencesNode(
-        content_type="content_type1",
-        name="value1",
-        entries={
-            ("content_type1", "value1"): ReferencesEntryNode(
-                "content_type1",
-                "value1",
-                content=[
-                    ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 1, value 1"),
-                            ]
-                        )
-                    ),
-                ],
-                number=1,
-                reference_anchor="ref-content_type1-1-XXYY",
-                content_anchor="cnt-content_type1-1-XXYY",
-            ),
-            ("content_type1", "value2"): ReferencesEntryNode(
-                "content_type1",
-                "value2",
-                content=[
-                    ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 1, value 2"),
-                            ]
-                        )
-                    ),
-                ],
-                number=2,
-                reference_anchor="ref-content_type1-2-XXYY",
-                content_anchor="cnt-content_type1-2-XXYY",
-            ),
-            ("content_type2", "value1"): ReferencesEntryNode(
-                "content_type2",
-                "value1",
-                content=[
-                    ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 2, value 1"),
-                            ]
-                        )
-                    ),
-                ],
-                number=1,
-                reference_anchor="ref-content_type2-1-XXYY",
-                content_anchor="cnt-content_type2-1-XXYY",
-            ),
-        },
-        args=args,
-        kwargs=kwargs,
-        tags=tags,
-    )
-
-    result = visitor.visit(node)
-
-    assert result == (
-        "content_type1:value1:Content type 1, value 1:1:"
-        "cnt-content_type1-1-XXYY:ref-content_type1-1-XXYY"
-    )
-
-
 def test_page_command_references_multiple_nodes():
     templates = {
         "sentence.j2": "{{ content }}",
@@ -505,7 +422,7 @@ def test_page_command_references_multiple_nodes():
         "text.j2": "{{ value }}",
         "references.j2": "{{ entries }}",
         "references_entry-content_type1.j2": (
-            "{{ content_type }}:{{ name }}:{{ content }}:{{ number }}:"
+            "{{ content_type }}:{{ content }}:{{ number }}:"
             "{{ title }}:{{ content_anchor }}:{{ reference_anchor }}::"
         ),
     }
@@ -517,7 +434,6 @@ def test_page_command_references_multiple_nodes():
     tags = ["tag1", "tag2"]
     node = CommandReferencesNode(
         content_type="content_type1",
-        name=None,
         entries={
             ("content_type1", "value1"): ReferencesEntryNode(
                 "content_type1",
@@ -579,9 +495,9 @@ def test_page_command_references_multiple_nodes():
     result = visitor.visit(node)
 
     assert result == (
-        "content_type1:value1:Content type 1, value 1:1:Some title 1.1:"
+        "content_type1:Content type 1, value 1:1:Some title 1.1:"
         "cnt-content_type1-1-XXYY:ref-content_type1-1-XXYY::content_type1:"
-        "value2:Content type 1, value 2:2:Some title 1.2:"
+        "Content type 1, value 2:2:Some title 1.2:"
         "cnt-content_type1-2-XXYY:ref-content_type1-2-XXYY::"
     )
 

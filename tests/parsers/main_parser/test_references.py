@@ -18,27 +18,7 @@ init_parser = init_parser_factory(MainLexer, MainParser)
 runner = parser_runner_factory(MainLexer, MainParser)
 
 
-@patch("mau.parsers.text_parser.ReferenceNode")
-def test_parse_paragraph_with_reference(mock_reference_node):
-    source = """
-    This is a paragraph with a [reference](content_type, value)
-    """
-
-    parser = runner(source)
-    reference_node = mock_reference_node()
-
-    assert parser.nodes == [
-        ParagraphNode(
-            SentenceNode([TextNode("This is a paragraph with a "), reference_node]),
-            args=[],
-            kwargs={},
-        )
-    ]
-    assert parser.reference_mentions == {("content_type", "value"): reference_node}
-    assert parser.reference_data == {}
-
-
-def test_parse_document_with_reference():
+def test_document_with_reference():
     source = """
     . Some title
     [reference, content_type, value]
@@ -70,7 +50,7 @@ def test_parse_document_with_reference():
 
 
 @patch("mau.parsers.main_parser.reference_anchor")
-def test_parse_reference(mock_reference_anchor):
+def test_simple_reference(mock_reference_anchor):
     source = """
     This is a paragraph with a [reference](content_type, value)
 
@@ -83,7 +63,6 @@ def test_parse_reference(mock_reference_anchor):
     mock_reference_anchor.return_value = "XXYY"
 
     parser = runner(source)
-    parser.process_references()
 
     assert parser.references == {
         ("content_type", "value"): ReferenceNode(
@@ -106,7 +85,83 @@ def test_parse_reference(mock_reference_anchor):
 
 
 @patch("mau.parsers.main_parser.reference_anchor")
-def test_parse_stored_content_multiple_content(mock_reference_anchor):
+def test_reference_data_inside_block(mock_reference_anchor):
+    source = """
+    This is a paragraph with a [reference](content_type, value)
+
+    [someblock]
+    ====
+    [reference, content_type, value]
+    ----
+    This is a paragraph.
+    ----
+    ====
+    """
+
+    mock_reference_anchor.return_value = "XXYY"
+
+    parser = runner(source)
+
+    assert parser.references == {
+        ("content_type", "value"): ReferenceNode(
+            "content_type",
+            "value",
+            content=[
+                ParagraphNode(
+                    SentenceNode(
+                        [
+                            TextNode("This is a paragraph."),
+                        ]
+                    )
+                ),
+            ],
+            number=1,
+            reference_anchor="ref-content_type-1-XXYY",
+            content_anchor="cnt-content_type-1-XXYY",
+        ),
+    }
+
+
+@patch("mau.parsers.main_parser.reference_anchor")
+def test_reference_mention_and_data_inside_block(mock_reference_anchor):
+    source = """
+    [someblock]
+    ====
+    This is a paragraph with a [reference](content_type, value)
+
+    [reference, content_type, value]
+    ----
+    This is a paragraph.
+    ----
+    ====
+    """
+
+    mock_reference_anchor.return_value = "XXYY"
+
+    parser = runner(source)
+
+    assert parser.references == {
+        ("content_type", "value"): ReferenceNode(
+            "content_type",
+            "value",
+            content=[
+                ParagraphNode(
+                    SentenceNode(
+                        [
+                            TextNode("This is a paragraph."),
+                        ]
+                    )
+                ),
+            ],
+            number=1,
+            reference_anchor="ref-content_type-1-XXYY",
+            content_anchor="cnt-content_type-1-XXYY",
+        ),
+    }
+
+
+@patch("mau.parsers.main_parser.reference_anchor")
+def test_multiple_content_types(mock_reference_anchor):
     mock_reference_anchor.return_value = "XXYY"
 
     source = """
@@ -130,7 +185,6 @@ def test_parse_stored_content_multiple_content(mock_reference_anchor):
     """
 
     parser = runner(source)
-    parser.process_references()
 
     assert parser.references == {
         ("content_type1", "value1"): ReferenceNode(
@@ -282,7 +336,6 @@ def test_command_references_only_content_type(mock_reference_anchor):
 
     parser = runner(source)
     parser.parse()
-    parser.process_references()
 
     assert parser.nodes == [
         ParagraphNode(

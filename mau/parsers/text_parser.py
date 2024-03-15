@@ -34,6 +34,8 @@ class TextParser(BaseParser):
         super().__init__(tokens)
 
         # These are the footnotes found in this text
+        # The format of this dictionary is
+        # {"name": node}
         self.footnotes = {}
 
         # These are the references found in this text

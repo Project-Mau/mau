@@ -1,4 +1,4 @@
-from mau.nodes.footnotes import CommandFootnotesNode, FootnotesEntryNode
+from mau.nodes.footnotes import CommandFootnotesNode, FootnoteNode
 from mau.nodes.inline import ListItemNode, SentenceNode, TextNode
 from mau.nodes.page import (
     BlockNode,
@@ -396,12 +396,12 @@ def test_page_command_footnotes_node():
     tags = ["tag1", "tag2"]
     node = CommandFootnotesNode(
         entries=[
-            FootnotesEntryNode(
+            FootnoteNode(
                 [TextNode("Footnote 1")], "1", "anchor-1", "anchor-1-def"
-            ),
-            FootnotesEntryNode(
+            ).to_entry(),
+            FootnoteNode(
                 [TextNode("Footnote 2")], "2", "anchor-2", "anchor-2-def"
-            ),
+            ).to_entry(),
         ],
         args=args,
         kwargs=kwargs,

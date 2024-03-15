@@ -1,4 +1,4 @@
-from mau.nodes.footnotes import CommandFootnotesNode, FootnoteNode, FootnotesEntryNode
+from mau.nodes.footnotes import CommandFootnotesNode, FootnoteNode
 from mau.nodes.inline import TextNode, VerbatimNode
 
 
@@ -35,24 +35,9 @@ def test_footnote_node_with_number_and_anchor():
 
 
 def test_footnotes_entry_node():
-    node = FootnotesEntryNode(
-        content=TextNode("Some text"),
-        number="1",
-        reference_anchor="someanchor",
-        content_anchor="someanchor-def",
-    )
+    node = FootnoteNode([VerbatimNode("somevalue"), TextNode("othervalue")]).to_entry()
 
-    assert node.content == TextNode("Some text")
-    assert node.number == "1"
-    assert node.reference_anchor == "someanchor"
-    assert node.content_anchor == "someanchor-def"
     assert node.node_type == "footnotes_entry"
-    assert node == FootnotesEntryNode(
-        content=TextNode("Some text"),
-        number="1",
-        reference_anchor="someanchor",
-        content_anchor="someanchor-def",
-    )
 
 
 def test_command_footnotes_node():

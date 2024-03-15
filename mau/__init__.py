@@ -94,12 +94,6 @@ class Mau:
         parser = MainParser(tokens, environment=self.environment)
         parser.parse()
 
-        # Create the footnotes
-        parser.create_footnotes()
-
-        # Process references
-        parser.process_references()
-
         return parser
 
     def process(self, nodes, environment):

@@ -38,7 +38,6 @@ def test_footnote_empty_block():
     parser = init_parser(textwrap.dedent(source))
     parser.footnotes = {
         "note1": FootnoteNode(number=1),
-        "note2": FootnoteNode(number=2),
     }
     parser.parse()
 
@@ -62,15 +61,14 @@ def test_footnote_content(mock_footnote_anchor):
     """
 
     parser = init_parser(textwrap.dedent(source))
-    parser.footnotes = {
+    parser.footnote_mentions = {
         "note1": FootnoteNode(number=1),
         "note2": FootnoteNode(number=2),
     }
     parser.parse()
-    parser.create_footnotes()
 
     assert parser.nodes == []
-    assert parser.footnotes == {
+    assert parser.footnote_mentions == {
         "note1": FootnoteNode(
             number=1,
             content=[
@@ -82,8 +80,8 @@ def test_footnote_content(mock_footnote_anchor):
                     )
                 ),
             ],
-            reference_anchor="fr-XXYY-1",
-            content_anchor="fd-XXYY-1",
+            reference_anchor="ref-footnote-1-XXYY",
+            content_anchor="cnt-footnote-1-XXYY",
         ),
         "note2": FootnoteNode(
             number=2,
@@ -96,7 +94,58 @@ def test_footnote_content(mock_footnote_anchor):
                     )
                 ),
             ],
-            reference_anchor="fr-XXYY-2",
-            content_anchor="fd-XXYY-2",
+            reference_anchor="ref-footnote-2-XXYY",
+            content_anchor="cnt-footnote-2-XXYY",
         ),
     }
+
+
+@patch("mau.parsers.main_parser.footnote_anchor")
+def test_footnote_mention_and_content(mock_footnote_anchor):
+    mock_footnote_anchor.return_value = "XXYY"
+
+    source = """
+    This is a paragraph with a footnote[footnote](note1).
+    
+    [footnote, note1]
+    ----
+    This is the content of the footnote
+    ----
+    """
+
+    parser = init_parser(textwrap.dedent(source))
+    parser.parse()
+
+    assert parser.footnote_mentions == {
+        "note1": FootnoteNode(
+            number=1,
+            content=[
+                ParagraphNode(
+                    SentenceNode(
+                        [
+                            TextNode("This is the content of the footnote"),
+                        ]
+                    )
+                ),
+            ],
+            reference_anchor="ref-footnote-1-XXYY",
+            content_anchor="cnt-footnote-1-XXYY",
+        )
+    }
+    assert parser.footnote_data == {
+        "note1": {
+            "content": [
+                ParagraphNode(
+                    SentenceNode(
+                        [
+                            TextNode("This is the content of the footnote"),
+                        ]
+                    )
+                )
+            ],
+        }
+    }
+
+    footnote_mention = parser.footnote_mentions["note1"]
+
+    assert parser.footnotes == [footnote_mention.to_entry()]

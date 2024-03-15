@@ -6,8 +6,8 @@ import re
 from mau.lexers.base_lexer import TokenTypes as BLTokenTypes
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
-from mau.nodes.footnotes import CommandFootnotesNode, FootnotesEntryNode
-from mau.nodes.inline import ListItemNode, RawNode, TextNode
+from mau.nodes.footnotes import CommandFootnotesNode
+from mau.nodes.inline import ListItemNode, RawNode
 from mau.nodes.page import (
     BlockNode,
     CommandTocNode,
@@ -62,9 +62,7 @@ def reference_anchor(content):
 class MainParser(BaseParser):
     lexer_class = MainLexer
 
-    def __init__(
-        self, tokens, environment=None, references=None, reference_entries=None
-    ):
+    def __init__(self, tokens, environment=None):
         super().__init__(tokens)
 
         self.environment = environment or Environment()
@@ -73,17 +71,17 @@ class MainParser(BaseParser):
 
         # This dictionary containes the footnotes created
         # in the text through a macro.
-        self.footnotes = {}
+        self.footnote_mentions = {}
 
         # This dictionary contains the content of each
         # footnote created through blocks.
         # This is a helper dictionary that will be merged
         # with self.footnotes once the parsing is completed.
-        self.footnotes_data = {}
+        self.footnote_data = {}
 
         # This list contains all the footnote entries
         # that will be shown by a footnotes command.
-        self.footnote_entries = []
+        self.footnotes = []
 
         # This dictionary containes the references created
         # in the text through a macro.
@@ -96,16 +94,14 @@ class MainParser(BaseParser):
         # This list contains all the references contained
         # in this parser in the form
         # {content_type:[references]}.
-        self.references = references if references is not None else {}
+        self.references = {}
 
         # This list contains all the reference entries
         # that will be shown by a references command in the form
         # {content_type:[references]}.
         # This is a copy of self.references that however
         # contains ReferencesEntryNode nodes.
-        self.reference_entries = (
-            reference_entries if reference_entries is not None else {}
-        )
+        self.reference_entries = {}
 
         # When we define a block we establish an alias
         # {alias:actual_block_name}.
@@ -171,26 +167,19 @@ class MainParser(BaseParser):
         # The tuple represents (args, kwargs, tags)
         self.arguments = ([], {}, [])
 
-    def create_footnotes(self):
-        for num, footnote in enumerate(self.footnotes.values(), start=1):
+    def process_footnotes(self):
+        for num, footnote in enumerate(self.footnote_mentions.values(), start=1):
             footnote.number = num
 
-        for key, footnote in self.footnotes.items():
-            data = self.footnotes_data[key]
+        for key, footnote in self.footnote_mentions.items():
+            data = self.footnote_data[key]
             footnote.content = data["content"]
             anchor = footnote_anchor(footnote.content)
 
-            footnote.reference_anchor = f"fr-{anchor}-{footnote.number}"
-            footnote.content_anchor = f"fd-{anchor}-{footnote.number}"
+            footnote.reference_anchor = f"ref-footnote-{footnote.number}-{anchor}"
+            footnote.content_anchor = f"cnt-footnote-{footnote.number}-{anchor}"
 
-            self.footnote_entries.append(
-                FootnotesEntryNode(
-                    content=footnote.content,
-                    number=footnote.number,
-                    reference_anchor=footnote.reference_anchor,
-                    content_anchor=footnote.content_anchor,
-                )
-            )
+            self.footnotes.append(footnote.to_entry())
 
     def process_references(self):
         # Example of stored content
@@ -212,30 +201,32 @@ class MainParser(BaseParser):
         for content_type in content_types:
             content_types_num[content_type] = 1
 
-        for key, value in self.reference_mentions.items():
+        for key, reference in self.reference_mentions.items():
             data = self.reference_data[key]
-            content_type = value.content_type
+            content_type = reference.content_type
 
-            value.content = data["content"]
-            value.title = data["title"]
-            anchor = reference_anchor(value.content)
+            reference.content = data["content"]
+            reference.title = data["title"]
+            anchor = reference_anchor(reference.content)
 
-            value.number = content_types_num[content_type]
+            reference.number = content_types_num[content_type]
             content_types_num[content_type] += 1
 
-            value.reference_anchor = f"ref-{content_type}-{value.number}-{anchor}"
-            value.content_anchor = f"cnt-{content_type}-{value.number}-{anchor}"
+            reference.reference_anchor = (
+                f"ref-{content_type}-{reference.number}-{anchor}"
+            )
+            reference.content_anchor = f"cnt-{content_type}-{reference.number}-{anchor}"
 
-            self.references[key] = value
+            self.references[key] = reference
             self.reference_entries[key] = ReferencesEntryNode(
-                content_type=value.content_type,
-                name=value.name,
-                category=value.category,
-                content=value.content,
-                number=value.number,
-                title=value.title,
-                reference_anchor=value.reference_anchor,
-                content_anchor=value.content_anchor,
+                content_type=reference.content_type,
+                name=reference.name,
+                category=reference.category,
+                content=reference.content,
+                number=reference.number,
+                title=reference.title,
+                reference_anchor=reference.reference_anchor,
+                content_anchor=reference.content_anchor,
             )
 
     def _pop_arguments(self):
@@ -320,10 +311,13 @@ class MainParser(BaseParser):
         # A text parser returns a single sentence node
         result = text_parser.nodes[0]
 
-        # Store the footnotes
-        self.footnotes.update(text_parser.footnotes)
+        # Retrieve the footnotes
+        # The format of this dictionary is
+        # {"name": node}
+        self.footnote_mentions.update(text_parser.footnotes)
 
-        # The format of the stored content dictionary is
+        # Retrieve the references
+        # The format of this dictionary is
         # {(content_type,name): node}
         self.reference_mentions.update(text_parser.references)
 
@@ -452,7 +446,7 @@ class MainParser(BaseParser):
         elif name == "footnotes":
             self._save(
                 CommandFootnotesNode(
-                    entries=self.footnote_entries, args=args, kwargs=kwargs, tags=tags
+                    entries=self.footnotes, args=args, kwargs=kwargs, tags=tags
                 )
             )
 
@@ -739,13 +733,11 @@ class MainParser(BaseParser):
                 "\n".join(content),
                 current_context,
                 environment=environment,
-                references=self.references,
-                reference_entries=self.reference_entries,
             )
 
             content = content_parser.nodes
 
-            self.footnotes_data[name] = {
+            self.footnote_data[name] = {
                 "content": content,
             }
 
@@ -763,8 +755,6 @@ class MainParser(BaseParser):
                 "\n".join(content),
                 current_context,
                 environment=environment,
-                references=self.references,
-                reference_entries=self.reference_entries,
             )
 
             content = content_parser.nodes
@@ -799,8 +789,6 @@ class MainParser(BaseParser):
                 "\n".join(content),
                 current_context,
                 environment=environment,
-                references=self.references,
-                reference_entries=self.reference_entries,
             )
 
             secondary_content_parser = MainParser.analyse(
@@ -813,14 +801,11 @@ class MainParser(BaseParser):
             secondary_content = secondary_content_parser.nodes
 
             if engine == "default":
-                self.footnotes.update(content_parser.footnotes)
-                self.footnotes_data.update(content_parser.footnotes_data)
+                self.footnote_mentions.update(content_parser.footnote_mentions)
+                self.footnote_data.update(content_parser.footnote_data)
                 self.headers.extend(content_parser.headers)
                 self.reference_mentions.update(content_parser.reference_mentions)
                 self.reference_data.update(content_parser.reference_data)
-            else:
-                content_parser.create_footnotes()
-                content_parser.process_references()
         else:
             self._error(f"Engine {engine} is not available")
 
@@ -1216,3 +1201,12 @@ class MainParser(BaseParser):
         self._save(ParagraphNode(sentence, args=args, kwargs=kwargs, tags=tags))
 
         return True
+
+    def parse(self):
+        super().parse()
+
+        # Create the footnotes
+        self.process_footnotes()
+
+        # Process references
+        self.process_references()

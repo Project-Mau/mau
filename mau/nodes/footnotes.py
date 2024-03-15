@@ -26,11 +26,34 @@ class FootnoteNode(Node):
             "content_anchor": self.content_anchor,
         }
 
+    def to_entry(self):
+        return FootnotesEntryNode(
+            self.content, self.number, self.reference_anchor, self.content_anchor
+        )
+
 
 class FootnotesEntryNode(FootnoteNode):
     """An entry of the list of footnotes."""
 
     node_type = "footnotes_entry"
+
+
+#     def __init__(self, footnote):
+#         super().__init__()
+#         self.footnote = footnote
+
+#     def __getattr__(self, attr):
+#         return getattr(self.footnote, attr)
+
+#     @property
+#     def _content(self):
+#         return {
+#             "type": self.node_type,
+#             "content": self.footnote.content,
+#             "number": self.footnote.number,
+#             "reference_anchor": self.footnote.reference_anchor,
+#             "content_anchor": self.footnote.content_anchor,
+#         }
 
 
 class CommandFootnotesNode(PageNode):

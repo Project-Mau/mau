@@ -10,7 +10,6 @@ from mau.nodes.footnotes import CommandFootnotesNode
 from mau.nodes.inline import ListItemNode, RawNode
 from mau.nodes.page import (
     BlockNode,
-    CommandTocNode,
     ContentImageNode,
     ContentNode,
     HeaderNode,
@@ -20,11 +19,13 @@ from mau.nodes.page import (
 )
 from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
+from mau.nodes.toc import CommandTocNode, TocEntryNode
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.base_parser import BaseParser
 from mau.parsers.environment import Environment
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
 from mau.parsers.text_parser import TextParser
+from mau.parsers.toc import create_toc
 from mau.tokens.tokens import Token
 
 
@@ -68,6 +69,15 @@ class MainParser(BaseParser):
         self.environment = environment or Environment()
 
         self.headers = []
+
+        # This list contains all the ToC entries
+        # that will be shown by a toc command.
+        self.tocnodes = []
+
+        # This is the list of ::toc commands
+        # that need to be updated once the toc
+        # has been processed
+        self.toc_command_nodes = []
 
         # This dictionary containes the footnotes created
         # in the text through a macro.
@@ -223,6 +233,14 @@ class MainParser(BaseParser):
                 for i in self.references.values()
                 if i.content_type == node.content_type
             ]
+
+            node.entries = entries
+
+    def process_toc(self):
+        for node in self.toc_command_nodes:
+            entries = create_toc(
+                self.headers, exclude_tag=node.kwargs.get("exclude_tag")
+            )
 
             node.entries = entries
 
@@ -434,11 +452,11 @@ class MainParser(BaseParser):
             self.block_names[block_alias] = args
 
         elif name == "toc":
-            self._save(
-                CommandTocNode(
-                    entries=self.headers, args=args, kwargs=kwargs, tags=tags
-                )
+            node = CommandTocNode(
+                entries=self.headers, args=args, kwargs=kwargs, tags=tags
             )
+            self.toc_command_nodes.append(node)
+            self._save(node)
 
         elif name == "footnotes":
             self._save(
@@ -1199,3 +1217,6 @@ class MainParser(BaseParser):
 
         # Process references
         self.process_references()
+
+        # Process ToC
+        self.process_toc()

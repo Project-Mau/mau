@@ -1,29 +1,6 @@
 from mau.nodes.page import PageNode
 
 
-class TocNode(PageNode):
-    """A Table of Contents.
-
-    This node contains the entries of the Table of Contents.
-    """
-
-    node_type = "toc"
-
-    def __init__(self, entries, args=None, kwargs=None, tags=None):
-        super().__init__(args, kwargs, tags)
-        self.entries = entries
-
-    @property
-    def _content(self):
-        return {
-            "type": self.node_type,
-            "entries": self.entries,
-            "args": self.args,
-            "kwargs": self.kwargs,
-            "tags": self.tags,
-        }
-
-
 class TocEntryNode(PageNode):
     """An entry of the Table of Contents.
 
@@ -45,6 +22,29 @@ class TocEntryNode(PageNode):
             "value": self.value,
             "anchor": self.anchor,
             "children": self.children,
+            "args": self.args,
+            "kwargs": self.kwargs,
+            "tags": self.tags,
+        }
+
+
+class CommandTocNode(PageNode):
+    """A Table of Contents command.
+
+    This node contains the headers that go into the ToC.
+    """
+
+    node_type = "command_toc"
+
+    def __init__(self, entries, args=None, kwargs=None, tags=None):
+        super().__init__(args, kwargs, tags)
+        self.entries = entries
+
+    @property
+    def _content(self):
+        return {
+            "type": self.node_type,
+            "entries": self.entries,
             "args": self.args,
             "kwargs": self.kwargs,
             "tags": self.tags,

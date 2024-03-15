@@ -1,7 +1,8 @@
 from unittest.mock import patch
 
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.page import BlockNode, CommandTocNode, HeaderNode
+from mau.nodes.page import BlockNode, HeaderNode
+from mau.nodes.toc import CommandTocNode, TocEntryNode
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory
@@ -153,8 +154,8 @@ def test_engine_mau_toc(mock_header_anchor):
                 HeaderNode("Header 4", "1", "XXYY"),
                 CommandTocNode(
                     [
-                        HeaderNode("Header 3", "1", "XXYY"),
-                        HeaderNode("Header 4", "1", "XXYY"),
+                        TocEntryNode("Header 3", anchor="XXYY"),
+                        TocEntryNode("Header 4", anchor="XXYY"),
                     ]
                 ),
             ],
@@ -168,8 +169,8 @@ def test_engine_mau_toc(mock_header_anchor):
         ),
         CommandTocNode(
             [
-                HeaderNode("Header 1", "1", "XXYY"),
-                HeaderNode("Header 2", "1", "XXYY"),
+                TocEntryNode("Header 1", anchor="XXYY"),
+                TocEntryNode("Header 2", anchor="XXYY"),
             ]
         ),
     ]

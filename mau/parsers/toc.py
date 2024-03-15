@@ -1,7 +1,7 @@
-from mau.nodes.toc import TocEntryNode, TocNode
+from mau.nodes.toc import TocEntryNode
 
 
-def create_toc(headers, *args, **kwargs):
+def create_toc(headers, exclude_tag=None):
     # Create the TOC from the list of headers.
 
     nodes = []
@@ -35,4 +35,16 @@ def create_toc(headers, *args, **kwargs):
             # Get the nearest one and append to that
             children[-1].append(node)
 
-    return TocNode(entries=nodes, *args, **kwargs)
+    if exclude_tag:
+        nodes = exclude_entries(nodes, exclude_tag)
+
+    return nodes
+
+
+def exclude_entries(entries, exclude_tag):
+    valid_entries = [i for i in entries if exclude_tag not in i.tags]
+
+    for entry in valid_entries:
+        entry.children = exclude_entries(entry.children, exclude_tag)
+
+    return valid_entries

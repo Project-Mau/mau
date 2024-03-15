@@ -338,10 +338,8 @@ class BaseVisitor:
             },
         }
 
-    def _visit_toc_entry(self, node, *args, exclude_tag=None, **kwargs):
+    def _visit_toc_entry(self, node, *args, **kwargs):
         join_with = self._join_with.get(node.node_type, None)
-
-        children = [i for i in node.children if exclude_tag not in i.tags]
 
         return {
             "data": {
@@ -349,39 +347,29 @@ class BaseVisitor:
                 "value": node.value,
                 "anchor": node.anchor,
                 "children": self.visitlist(
-                    children, *args, join_with=join_with, **kwargs
+                    node.children, *args, join_with=join_with, **kwargs
                 ),
-                "args": self.toc.args,
-                "kwargs": self.toc.kwargs,
-                "tags": self.toc.tags,
+                "args": node.args,
+                "kwargs": node.kwargs,
+                "tags": node.tags,
             },
         }
 
     def _visit_command_toc(self, node, *args, **kwargs):
         join_with = self._join_with.get(node.node_type, None)
 
-        if self.toc is None:
-            self.toc = create_toc(
-                node.entries, args=node.args, kwargs=node.kwargs, tags=node.tags
-            )
-
-        entries = [
-            i for i in self.toc.entries if node.kwargs.get("exclude_tag") not in i.tags
-        ]
-
         return {
             "data": {
                 "type": node.node_type,
                 "entries": self.visitlist(
-                    entries,
-                    exclude_tag=self.toc.kwargs.get("exclude_tag"),
+                    node.entries,
                     join_with=join_with,
                     *args,
                     **kwargs,
                 ),
-                "args": self.toc.args,
-                "kwargs": self.toc.kwargs,
-                "tags": self.toc.tags,
+                "args": node.args,
+                "kwargs": node.kwargs,
+                "tags": node.tags,
             },
         }
 

@@ -2,7 +2,6 @@ from mau.nodes.footnotes import CommandFootnotesNode, FootnoteNode
 from mau.nodes.inline import ListItemNode, SentenceNode, TextNode
 from mau.nodes.page import (
     BlockNode,
-    CommandTocNode,
     ContentImageNode,
     ContentNode,
     DocumentNode,
@@ -13,6 +12,7 @@ from mau.nodes.page import (
 )
 from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
+from mau.nodes.toc import CommandTocNode, TocEntryNode
 from mau.visitors.base_visitor import BaseVisitor
 
 
@@ -255,9 +255,14 @@ def test_command_toc_node():
 
     node = CommandTocNode(
         entries=[
-            HeaderNode("Header 1", "1", "header-1"),
-            HeaderNode("Header 1.1", "2", "header-1-1"),
-            HeaderNode("Header 2", "1", "header-2"),
+            TocEntryNode(
+                "Header 1",
+                "header-1",
+                children=[
+                    TocEntryNode("Header 1.1", "header-1-1"),
+                ],
+            ),
+            TocEntryNode("Header 2", "header-2"),
         ],
         args=["arg1", "arg2"],
         kwargs={"key1": "value1"},
@@ -273,22 +278,22 @@ def test_command_toc_node():
                 {
                     "data": {
                         "anchor": "header-1",
-                        "args": ["arg1", "arg2"],
+                        "args": [],
                         "children": [
                             {
                                 "data": {
                                     "anchor": "header-1-1",
-                                    "args": ["arg1", "arg2"],
+                                    "args": [],
                                     "children": [],
-                                    "kwargs": {"key1": "value1"},
-                                    "tags": ["tag1", "tag2"],
+                                    "kwargs": {},
+                                    "tags": [],
                                     "type": "toc_entry",
                                     "value": "Header 1.1",
                                 }
                             },
                         ],
-                        "kwargs": {"key1": "value1"},
-                        "tags": ["tag1", "tag2"],
+                        "kwargs": {},
+                        "tags": [],
                         "type": "toc_entry",
                         "value": "Header 1",
                     }
@@ -297,55 +302,16 @@ def test_command_toc_node():
                     "data": {
                         "type": "toc_entry",
                         "anchor": "header-2",
-                        "args": ["arg1", "arg2"],
+                        "args": [],
                         "children": [],
-                        "kwargs": {"key1": "value1"},
-                        "tags": ["tag1", "tag2"],
+                        "kwargs": {},
+                        "tags": [],
                         "value": "Header 2",
                     }
                 },
             ],
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
-            "tags": ["tag1", "tag2"],
-        }
-    }
-
-
-def test_command_toc_node_exclude():
-    visitor = BaseVisitor()
-
-    node = CommandTocNode(
-        entries=[
-            HeaderNode("Header 1", "1", "header-1", tags=["notoc"]),
-            HeaderNode("Header 1.1", "2", "header-1-1"),
-            HeaderNode("Header 2", "1", "header-2"),
-        ],
-        args=["arg1", "arg2"],
-        kwargs={"exclude_tag": "notoc"},
-        tags=["tag1", "tag2"],
-    )
-
-    result = visitor.visit(node)
-
-    assert result == {
-        "data": {
-            "type": "command_toc",
-            "entries": [
-                {
-                    "data": {
-                        "type": "toc_entry",
-                        "anchor": "header-2",
-                        "args": ["arg1", "arg2"],
-                        "children": [],
-                        "kwargs": {"exclude_tag": "notoc"},
-                        "tags": ["tag1", "tag2"],
-                        "value": "Header 2",
-                    }
-                },
-            ],
-            "args": ["arg1", "arg2"],
-            "kwargs": {"exclude_tag": "notoc"},
             "tags": ["tag1", "tag2"],
         }
     }

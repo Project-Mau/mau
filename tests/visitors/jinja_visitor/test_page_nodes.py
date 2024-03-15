@@ -2,7 +2,6 @@ from mau.nodes.footnotes import CommandFootnotesNode, FootnoteNode
 from mau.nodes.inline import ListItemNode, SentenceNode, TextNode
 from mau.nodes.page import (
     BlockNode,
-    CommandTocNode,
     ContentImageNode,
     ContentNode,
     HeaderNode,
@@ -12,6 +11,7 @@ from mau.nodes.page import (
 )
 from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
+from mau.nodes.toc import CommandTocNode, TocEntryNode
 from mau.visitors.jinja_visitor import JinjaVisitor
 
 
@@ -329,9 +329,14 @@ def test_page_command_toc_node():
     tags = ["tag1", "tag2"]
     node = CommandTocNode(
         entries=[
-            HeaderNode("Header 1", "1", "header-1"),
-            HeaderNode("Header 1.1", "2", "header-1-1"),
-            HeaderNode("Header 2", "1", "header-2"),
+            TocEntryNode(
+                "Header 1",
+                "header-1",
+                children=[
+                    TocEntryNode("Header 1.1", "header-1-1"),
+                ],
+            ),
+            TocEntryNode("Header 2", "header-2"),
         ],
         args=args,
         kwargs=kwargs,
@@ -344,40 +349,6 @@ def test_page_command_toc_node():
         "header-1:Header 1 - header-1-1:Header 1.1header-2:Header 2 - "
         "arg1,arg2 - key1:value1 - tag1,tag2"
     )
-
-
-def test_page_command_toc_node_exclude():
-    templates = {
-        "text.j2": "{{ value }}",
-        "toc.j2": (
-            "{{ entries }} - {{ args | join(',') }} - "
-            "{% for key, value in kwargs|items %}{{ key }}:{{ value }}{% endfor %} - "
-            "{{ tags | join(',') }}"
-        ),
-        "toc_entry.j2": (
-            "{{ anchor }}:{{ value }}{% if children %} - " "{{ children }}{% endif %}"
-        ),
-    }
-
-    visitor = JinjaVisitor(custom_templates=templates)
-
-    args = ["arg1", "arg2"]
-    kwargs = {"exclude_tag": "notoc"}
-    tags = ["tag1", "tag2"]
-    node = CommandTocNode(
-        entries=[
-            HeaderNode("Header 1", "1", "header-1", tags=["notoc"]),
-            HeaderNode("Header 1.1", "2", "header-1-1"),
-            HeaderNode("Header 2", "1", "header-2"),
-        ],
-        args=args,
-        kwargs=kwargs,
-        tags=tags,
-    )
-
-    result = visitor.visit(node)
-
-    assert result == "header-2:Header 2 - arg1,arg2 - exclude_tag:notoc - tag1,tag2"
 
 
 def test_page_command_footnotes_node():

@@ -3,7 +3,8 @@ from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.footnotes import CommandFootnotesNode
 from mau.nodes.inline import LinkNode, SentenceNode, StyleNode, TextNode
-from mau.nodes.page import CommandTocNode, HorizontalRuleNode, ParagraphNode
+from mau.nodes.page import HorizontalRuleNode, ParagraphNode
+from mau.nodes.toc import CommandTocNode
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory

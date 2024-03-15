@@ -59,29 +59,6 @@ class ParagraphNode(PageNode):
         }
 
 
-class CommandTocNode(PageNode):
-    """A Table of Contents command.
-
-    This node contains the headers that go into the ToC.
-    """
-
-    node_type = "command_toc"
-
-    def __init__(self, entries, args=None, kwargs=None, tags=None):
-        super().__init__(args, kwargs, tags)
-        self.entries = entries
-
-    @property
-    def _content(self):
-        return {
-            "type": self.node_type,
-            "entries": self.entries,
-            "args": self.args,
-            "kwargs": self.kwargs,
-            "tags": self.tags,
-        }
-
-
 class HeaderNode(PageNode):
     """A header."""
 

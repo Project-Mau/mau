@@ -39,6 +39,17 @@ class ReferenceNode(Node):
             "content_anchor": self.content_anchor,
         }
 
+    def to_entry(self):
+        return ReferencesEntryNode(
+            self.content_type,
+            self.category,
+            self.content,
+            self.number,
+            self.title,
+            self.reference_anchor,
+            self.content_anchor,
+        )
+
 
 class ReferencesEntryNode(ReferenceNode):
     """An entry of the list of references."""

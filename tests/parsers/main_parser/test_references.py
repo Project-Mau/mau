@@ -65,7 +65,7 @@ def test_simple_reference(mock_reference_anchor):
     parser = runner(source)
 
     assert parser.references == {
-        ("content_type", "value"): ReferenceNode(
+        ("content_type", "value"): ReferencesEntryNode(
             "content_type",
             content=[
                 ParagraphNode(
@@ -102,7 +102,7 @@ def test_reference_data_inside_block(mock_reference_anchor):
     parser = runner(source)
 
     assert parser.references == {
-        ("content_type", "value"): ReferenceNode(
+        ("content_type", "value"): ReferencesEntryNode(
             "content_type",
             content=[
                 ParagraphNode(
@@ -139,7 +139,7 @@ def test_reference_mention_and_data_inside_block(mock_reference_anchor):
     parser = runner(source)
 
     assert parser.references == {
-        ("content_type", "value"): ReferenceNode(
+        ("content_type", "value"): ReferencesEntryNode(
             "content_type",
             content=[
                 ParagraphNode(
@@ -198,7 +198,7 @@ def test_multiple_content_types(mock_reference_anchor):
             number=1,
             reference_anchor="ref-content_type1-1-XXYY",
             content_anchor="cnt-content_type1-1-XXYY",
-        ),
+        ).to_entry(),
         ("content_type1", "name2"): ReferenceNode(
             "content_type1",
             content=[
@@ -213,7 +213,7 @@ def test_multiple_content_types(mock_reference_anchor):
             number=2,
             reference_anchor="ref-content_type1-2-XXYY",
             content_anchor="cnt-content_type1-2-XXYY",
-        ),
+        ).to_entry(),
         ("content_type2", "name1"): ReferenceNode(
             "content_type2",
             content=[
@@ -225,58 +225,10 @@ def test_multiple_content_types(mock_reference_anchor):
                     )
                 ),
             ],
-            number=1,
-            reference_anchor="ref-content_type2-1-XXYY",
-            content_anchor="cnt-content_type2-1-XXYY",
-        ),
-    }
-
-    assert parser.reference_entries == {
-        ("content_type1", "name1"): ReferencesEntryNode(
-            "content_type1",
-            content=[
-                ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("Content type 1, value 1"),
-                        ]
-                    )
-                ),
-            ],
-            number=1,
-            reference_anchor="ref-content_type1-1-XXYY",
-            content_anchor="cnt-content_type1-1-XXYY",
-        ),
-        ("content_type1", "name2"): ReferencesEntryNode(
-            "content_type1",
-            content=[
-                ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("Content type 1, value 2"),
-                        ]
-                    )
-                ),
-            ],
-            number=2,
-            reference_anchor="ref-content_type1-2-XXYY",
-            content_anchor="cnt-content_type1-2-XXYY",
-        ),
-        ("content_type2", "name1"): ReferencesEntryNode(
-            "content_type2",
-            content=[
-                ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("Content type 2, value 1"),
-                        ]
-                    )
-                ),
-            ],
-            number=1,
-            reference_anchor="ref-content_type2-1-XXYY",
-            content_anchor="cnt-content_type2-1-XXYY",
-        ),
+            number=3,
+            reference_anchor="ref-content_type2-3-XXYY",
+            content_anchor="cnt-content_type2-3-XXYY",
+        ).to_entry(),
     }
 
 
@@ -365,9 +317,9 @@ def test_command_references_only_content_type(mock_reference_anchor):
                                 SentenceNode([TextNode("Content type 2, value 1")])
                             ),
                         ],
-                        number=1,
-                        reference_anchor="ref-content_type2-1-XXYY",
-                        content_anchor="cnt-content_type2-1-XXYY",
+                        number=3,
+                        reference_anchor="ref-content_type2-3-XXYY",
+                        content_anchor="cnt-content_type2-3-XXYY",
                     ),
                 ]
             ),

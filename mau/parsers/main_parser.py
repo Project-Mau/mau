@@ -183,7 +183,7 @@ class MainParser(BaseParser):
 
     def process_references(self):
         # Example of stored content
-        # self.references = {
+        # self.reference_mentions = {
         #  (type1, name1) = node1
         #  (type1, name2) = node2
         #  (type2, name3) = node3
@@ -195,30 +195,21 @@ class MainParser(BaseParser):
         #  (type2, name3) = content
         # }
 
-        content_types = {i[0] for i in self.reference_data}
-        content_types_num = {}
-
-        for content_type in content_types:
-            content_types_num[content_type] = 1
+        for num, reference in enumerate(self.reference_mentions.values(), start=1):
+            reference.number = num
 
         for key, reference in self.reference_mentions.items():
             data = self.reference_data[key]
-            content_type = reference.content_type
-
             reference.content = data["content"]
-            reference.title = data["title"]
             anchor = reference_anchor(reference.content)
-
-            reference.number = content_types_num[content_type]
-            content_types_num[content_type] += 1
+            content_type = reference.content_type
 
             reference.reference_anchor = (
                 f"ref-{content_type}-{reference.number}-{anchor}"
             )
             reference.content_anchor = f"cnt-{content_type}-{reference.number}-{anchor}"
 
-            self.references[key] = reference
-            self.reference_entries[key] = ReferencesEntryNode(
+            self.references[key] = ReferencesEntryNode(
                 content_type=reference.content_type,
                 category=reference.category,
                 content=reference.content,

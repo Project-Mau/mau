@@ -2,7 +2,6 @@
 
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.text_lexer import TextLexer
-from mau.nodes.page import ContainerNode, DocumentNode
 from mau.parsers.environment import Environment
 from mau.parsers.main_parser import MainParser
 from mau.text_buffer.context import Context
@@ -66,30 +65,20 @@ class Mau:
         return lexer
 
     def run_parser(self, tokens):
-        # Parse the source text using the given configuration
         parser = MainParser(tokens, environment=self.environment)
         parser.parse()
 
         return parser
 
-    def process(self, nodes):
-        full_document = self.environment.getvar("mau.full_document", True)
+    def create_visitor(self):
         visitor_class = self.environment.getvar("mau.visitor_class")
 
-        wrapper_node_class = ContainerNode
-        if full_document:
-            wrapper_node_class = DocumentNode
-
-        # Wrap the whole output
-        output = wrapper_node_class(nodes)
-
-        # Initialise the visitor
-        # Use the parser variables so that the visitor
-        # has both the configuration values and the
-        # variables defined inside the text
-        visitor = visitor_class(
+        return visitor_class(
             environment=self.environment,
         )
 
+    def run_visitor(self, node):
+        visitor = self.create_visitor(node)
+
         # Visit the document AST
-        return visitor.visit(output)
+        return visitor.visit(node)

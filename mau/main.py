@@ -8,6 +8,7 @@ from mau import ConfigurationError, Mau, load_visitors
 from mau.errors import MauErrorException, print_error
 from mau.parsers.environment import Environment
 from tabulate import tabulate
+from mau.nodes.page import DocumentNode
 
 __version__ = metadata.version("mau")
 _logger = logging.getLogger(__name__)
@@ -141,6 +142,11 @@ def main():
         ".mau", visitor_class.extension
     )
 
+    # Wrap the content with a DocumentNode
+    # so that the output can be rendered as
+    # a stand-alone document
+    environment.setvar("mau.content_wrapper_node_class", DocumentNode)
+
     # The Mau object configured with what we figured out above.
     mau = Mau(
         args.input_file,
@@ -169,7 +175,7 @@ def main():
 
             sys.exit(1)
 
-        output = mau.process(parser.nodes)
+        output = mau.run_visitor(parser.output["content"])
 
     except ConfigurationError as exception:
         print(f"Configuration error: {exception}")

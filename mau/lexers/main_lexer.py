@@ -81,10 +81,10 @@ class MainLexer(BaseLexer):
         if name == "include":
             with open(value, encoding="utf-8") as included_file:
                 text = included_file.read()
-                text_buffer = self._text_buffer.__class__(text, Context(source=value))
+                text_buffer = self.text_buffer.__class__(text, Context(source=value))
 
-                lexer = MainLexer(text_buffer)
-                lexer.process()
+                lexer = MainLexer()
+                lexer.process(text_buffer)
 
                 self.tokens.extend(lexer.tokens)
 

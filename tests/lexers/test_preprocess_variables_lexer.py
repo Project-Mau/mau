@@ -6,8 +6,8 @@ from mau.tokens.tokens import Token
 
 def test_normal_text():
     text_buffer = TextBuffer("Some text")
-    lex = PreprocessVariablesLexer(text_buffer)
-    lex.process()
+    lex = PreprocessVariablesLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "S"),
@@ -26,8 +26,8 @@ def test_normal_text():
 
 def test_match_only_backticks_and_curly_braces():
     text_buffer = TextBuffer("Normal text `{curly}` _other_ *text*")
-    lex = PreprocessVariablesLexer(text_buffer)
-    lex.process()
+    lex = PreprocessVariablesLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "N"),
@@ -73,8 +73,8 @@ def test_match_only_backticks_and_curly_braces():
 
 def test_escape_curly_braces():
     text_buffer = TextBuffer(r"Normal text \{curly\} _other_ *text*")
-    lex = PreprocessVariablesLexer(text_buffer)
-    lex.process()
+    lex = PreprocessVariablesLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "N"),
@@ -120,8 +120,8 @@ def test_escape_curly_braces():
 
 def test_preserve_escapes():
     text_buffer = TextBuffer(r"Normal \text \_other\_")
-    lex = PreprocessVariablesLexer(text_buffer)
-    lex.process()
+    lex = PreprocessVariablesLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "N"),

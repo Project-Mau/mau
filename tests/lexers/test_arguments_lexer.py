@@ -7,8 +7,8 @@ from mau.tokens.tokens import Token
 
 def test_single_unnamed_argument():
     text_buffer = TextBuffer("value1")
-    lex = ArgumentsLexer(text_buffer)
-    lex.process()
+    lex = ArgumentsLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "value1"),
@@ -19,8 +19,8 @@ def test_single_unnamed_argument():
 
 def test_single_named_argument():
     text_buffer = TextBuffer("argument1=value1")
-    lex = ArgumentsLexer(text_buffer)
-    lex.process()
+    lex = ArgumentsLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "argument1"),
@@ -33,8 +33,8 @@ def test_single_named_argument():
 
 def test_multiple_unnamed_arguments():
     text_buffer = TextBuffer("value1, value2")
-    lex = ArgumentsLexer(text_buffer)
-    lex.process()
+    lex = ArgumentsLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "value1"),
@@ -48,8 +48,8 @@ def test_multiple_unnamed_arguments():
 
 def test_multiple_named_arguments():
     text_buffer = TextBuffer("argument1=value1, argument2=value2")
-    lex = ArgumentsLexer(text_buffer)
-    lex.process()
+    lex = ArgumentsLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "argument1"),
@@ -67,8 +67,8 @@ def test_multiple_named_arguments():
 
 def test_mixed_arguments():
     text_buffer = TextBuffer("value1, value2,argument1=value1, argument2=value2")
-    lex = ArgumentsLexer(text_buffer)
-    lex.process()
+    lex = ArgumentsLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "value1"),
@@ -91,8 +91,8 @@ def test_mixed_arguments():
 
 def test_quotes():
     text_buffer = TextBuffer('argument1="value1,value2"')
-    lex = ArgumentsLexer(text_buffer)
-    lex.process()
+    lex = ArgumentsLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "argument1"),
@@ -109,8 +109,8 @@ def test_quotes():
 
 def test_spaces():
     text_buffer = TextBuffer("argument1=value1 value2")
-    lex = ArgumentsLexer(text_buffer)
-    lex.process()
+    lex = ArgumentsLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "argument1"),
@@ -125,8 +125,8 @@ def test_spaces():
 
 def test_escaped_quotes():
     text_buffer = TextBuffer(r"Argument \"with\" quotes")
-    lex = ArgumentsLexer(text_buffer)
-    lex.process()
+    lex = ArgumentsLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "Argument"),
@@ -145,8 +145,8 @@ def test_escaped_quotes():
 
 def test_context():
     text_buffer = TextBuffer("argument1=value1")
-    lex = ArgumentsLexer(text_buffer)
-    lex.process()
+    lex = ArgumentsLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "argument1"),

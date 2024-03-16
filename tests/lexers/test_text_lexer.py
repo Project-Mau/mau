@@ -6,8 +6,8 @@ from mau.tokens.tokens import Token
 
 def test_normal_text():
     text_buffer = TextBuffer("Normal text")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "Normal"),
@@ -20,8 +20,8 @@ def test_normal_text():
 
 def test_underscore():
     text_buffer = TextBuffer("_underscore_")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "_"),
@@ -34,8 +34,8 @@ def test_underscore():
 
 def test_star():
     text_buffer = TextBuffer("*star*")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "*"),
@@ -48,8 +48,8 @@ def test_star():
 
 def test_caret():
     text_buffer = TextBuffer("^caret^")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "^"),
@@ -62,8 +62,8 @@ def test_caret():
 
 def test_tilde():
     text_buffer = TextBuffer("~tilde~")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "~"),
@@ -76,8 +76,8 @@ def test_tilde():
 
 def test_backtick():
     text_buffer = TextBuffer("`backtick`")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "`"),
@@ -90,8 +90,8 @@ def test_backtick():
 
 def test_curly_braces():
     text_buffer = TextBuffer("{curly}")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "{"),
@@ -104,8 +104,8 @@ def test_curly_braces():
 
 def test_round_brackets():
     text_buffer = TextBuffer("(round)")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "("),
@@ -118,8 +118,8 @@ def test_round_brackets():
 
 def test_square_brackets():
     text_buffer = TextBuffer("[square]")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "["),
@@ -132,8 +132,8 @@ def test_square_brackets():
 
 def test_macro():
     text_buffer = TextBuffer("[macro](value1,value2)")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "["),
@@ -149,8 +149,8 @@ def test_macro():
 
 def test_macro_named_attributes():
     text_buffer = TextBuffer("[macro](attr1=value1,attr2=value2)")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "["),
@@ -166,8 +166,8 @@ def test_macro_named_attributes():
 
 def test_escaped_underscore():
     text_buffer = TextBuffer(r"\_underscore\_")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "\\"),
@@ -182,8 +182,8 @@ def test_escaped_underscore():
 
 def test_escaped_square_brackets():
     text_buffer = TextBuffer(r"\[square\]")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "\\"),
@@ -198,8 +198,8 @@ def test_escaped_square_brackets():
 
 def test_escaped_round_brackets():
     text_buffer = TextBuffer(r"\(round\)")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "\\"),
@@ -214,8 +214,8 @@ def test_escaped_round_brackets():
 
 def test_escaped_curly_braces():
     text_buffer = TextBuffer(r"\{curly\}")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "\\"),
@@ -230,8 +230,8 @@ def test_escaped_curly_braces():
 
 def test_escaped_quotes():
     text_buffer = TextBuffer(r"\"quotes\"")
-    lex = TextLexer(text_buffer)
-    lex.process()
+    lex = TextLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.LITERAL, "\\"),

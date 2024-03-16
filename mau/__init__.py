@@ -55,14 +55,13 @@ class Mau:
         # in the text and in the configuration
         self.environment = environment or Environment()
 
+        self.lexer = MainLexer()
+
     def run_lexer(self, text):
         context = Context(source=self.input_file_name)
         text_buffer = TextBuffer(text, context)
 
-        lexer = MainLexer(text_buffer)
-        lexer.process()
-
-        return lexer
+        self.lexer.process(text_buffer)
 
     def run_parser(self, tokens):
         parser = MainParser(tokens, environment=self.environment)

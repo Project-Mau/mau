@@ -352,8 +352,8 @@ class BaseParser:
     def analyse(cls, text, context, *args, **kwargs):
         text_buffer = cls.text_buffer_class(text, context)
 
-        lex = cls.lexer_class(text_buffer)
-        lex.process()
+        lex = cls.lexer_class()
+        lex.process(text_buffer)
 
         par = cls(lex.tokens, *args, **kwargs)
         par.parse()

@@ -18,8 +18,8 @@ def init_parser_factory(lexer_class, parser_class):
     def _init_parser(text, *args, **kwargs):
         text_buffer = TextBuffer(text, Context(source="main"))
 
-        lex = lexer_class(text_buffer)
-        lex.process()
+        lex = lexer_class()
+        lex.process(text_buffer)
 
         par = parser_class(lex.tokens, *args, **kwargs)
 

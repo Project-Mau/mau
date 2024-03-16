@@ -31,8 +31,8 @@ class BaseLexer:
     output results.
     """
 
-    def __init__(self, text_buffer):
-        self._text_buffer = text_buffer
+    def __init__(self):
+        self.text_buffer = None
 
         # These are the tokens identified so far
         self.tokens = []
@@ -40,7 +40,9 @@ class BaseLexer:
         # The last visited context. Used to detect loops.
         self.last_visited_context = None
 
-    def process(self):
+    def process(self, text_buffer):
+        self.text_buffer = text_buffer
+
         # Process tokens until we reach the end of file
         self._process()
         while True:
@@ -56,33 +58,33 @@ class BaseLexer:
     @property
     def _current_char(self):
         # Return the current character
-        return self._text_buffer.current_char
+        return self.text_buffer.current_char
 
     @property
     def _current_line(self):
         # Return the current line
-        return self._text_buffer.current_line
+        return self.text_buffer.current_line
 
     @property
     def _context(self):
         # Return the context
-        return self._text_buffer.context
+        return self.text_buffer.context
 
     @property
     def _tail(self):
         # A wrapper to return the rest of the line
-        return self._text_buffer.tail
+        return self.text_buffer.tail
 
     def _nextline(self):
         # Skip the whole line including the EOL
-        self._text_buffer.nextline()
+        self.text_buffer.nextline()
 
     def _skip(self, value):
         # Skip only the given amount of characters
         # This is very useful with regexp groups
         # that can be None.
         if value is not None:
-            self._text_buffer.skip(len(value))
+            self.text_buffer.skip(len(value))
 
     def _error(self, message=None):
         error = MauLexerError(
@@ -179,7 +181,7 @@ class BaseLexer:
         return tokens
 
     def _process_eof(self):
-        if self._text_buffer.eof:
+        if self.text_buffer.eof:
             return [self._create_token(TokenTypes.EOF)]
 
         return None

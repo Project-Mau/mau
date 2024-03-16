@@ -155,12 +155,12 @@ def main():
 
     # Run the lexer on the input data
     try:
-        lexer = mau.run_lexer(text)
+        mau.run_lexer(text)
 
         if args.lexonly:
             write_output(
                 tabulate(
-                    [(t.type, t.value, t.context) for t in lexer.tokens],
+                    [(t.type, t.value, t.context) for t in mau.lexer.tokens],
                     maxcolwidths=[10, 60, 30],
                 ),
                 output_file,
@@ -168,7 +168,7 @@ def main():
 
             sys.exit(1)
 
-        parser = mau.run_parser(lexer.tokens)
+        parser = mau.run_parser(mau.lexer.tokens)
 
         if args.parseonly:
             write_output(parser.nodes, output_file)

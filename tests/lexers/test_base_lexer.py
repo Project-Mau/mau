@@ -12,7 +12,8 @@ from tests.helpers import dedent
 
 def test_text_buffer_properties():
     mock_text_buffer = Mock()
-    lex = BaseLexer(text_buffer=mock_text_buffer)
+    lex = BaseLexer()
+    lex.text_buffer = mock_text_buffer
 
     assert lex._current_char == mock_text_buffer.current_char
 
@@ -29,17 +30,19 @@ def test_text_buffer_properties():
 
 def test_create_token():
     mock_text_buffer = Mock()
-    lex = BaseLexer(mock_text_buffer)
+    lex = BaseLexer()
+    lex.text_buffer = mock_text_buffer
 
     token = lex._create_token("sometype", "somevalue")
     assert token == Token("sometype", "somevalue")
-    assert token.context == lex._text_buffer.context
+    assert token.context == lex.text_buffer.context
 
 
 @patch("mau.lexers.base_lexer.BaseLexer._nextline")
 def test_create_tokens_from_line(mock_nextline):
     text_buffer = TextBuffer("Content")
-    lex = BaseLexer(text_buffer)
+    lex = BaseLexer()
+    lex.text_buffer = text_buffer
 
     tokens = lex._create_tokens_from_line(TokenTypes.TEXT)
 
@@ -52,7 +55,8 @@ def test_create_tokens_from_line(mock_nextline):
 
 def test_create_token_and_skip():
     mock_text_buffer = Mock()
-    lex = BaseLexer(mock_text_buffer)
+    lex = BaseLexer()
+    lex.text_buffer = mock_text_buffer
     lex._skip = Mock()
 
     token = lex._create_token_and_skip("sometype", "somevalue")
@@ -62,16 +66,16 @@ def test_create_token_and_skip():
 
 def test_error():
     mock_text_buffer = Mock()
-    lex = BaseLexer(mock_text_buffer)
+    lex = BaseLexer()
+    lex.text_buffer = mock_text_buffer
 
     with pytest.raises(MauErrorException):
         lex._process_error()
 
 
 def test_empty_text():
-    mock_text_buffer = Mock()
-    lex = BaseLexer(mock_text_buffer)
-    lex.process()
+    lex = BaseLexer()
+    lex.process(Mock())
 
     assert lex.tokens == [
         Token(TokenTypes.EOF),
@@ -80,8 +84,8 @@ def test_empty_text():
 
 def test_just_empty_lines():
     text_buffer = TextBuffer("\n")
-    lex = BaseLexer(text_buffer)
-    lex.process()
+    lex = BaseLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.EOL),
@@ -92,8 +96,8 @@ def test_just_empty_lines():
 
 def test_lines_with_only_spaces():
     text_buffer = TextBuffer("    \n    ")
-    lex = BaseLexer(text_buffer)
-    lex.process()
+    lex = BaseLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.EOL),
@@ -105,8 +109,8 @@ def test_lines_with_only_spaces():
 def test_text():
     text = "Just simple text"
     text_buffer = TextBuffer(text)
-    lex = BaseLexer(text_buffer)
-    lex.process()
+    lex = BaseLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, text),
@@ -125,8 +129,8 @@ def test_multiple_lines():
         """
     )
     text_buffer = TextBuffer(text)
-    lex = BaseLexer(text_buffer)
-    lex.process()
+    lex = BaseLexer()
+    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "This is text"),
@@ -151,8 +155,8 @@ def test_positions_default_context():
         """
     )
     text_buffer = TextBuffer(text)
-    lex = BaseLexer(text_buffer)
-    lex.process()
+    lex = BaseLexer()
+    lex.process(text_buffer)
 
     assert [i.context.asdict() for i in lex.tokens] == [
         {"column": 0, "line": 0, "source": None, "text": "This is a line of text"},
@@ -193,8 +197,8 @@ def test_positions():
         """
     )
     text_buffer = TextBuffer(text, Context(line=42, column=123, source="main"))
-    lex = BaseLexer(text_buffer)
-    lex.process()
+    lex = BaseLexer()
+    lex.process(text_buffer)
 
     assert [i.context.asdict() for i in lex.tokens] == [
         {"column": 123, "line": 42, "source": "main", "text": "This is a line of text"},

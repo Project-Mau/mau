@@ -34,12 +34,12 @@ class BaseParser:
     text_buffer_class = TextBuffer
     lexer_class = BaseLexer
 
-    def __init__(self, tokens, environment=None):
+    def __init__(self, environment, *args, **kwargs):
         # This is the position of the current token.
         self.index = -1
 
         # These are the tokens parsed by the parser.
-        self.tokens = tokens
+        self.tokens = None
 
         # A stack for the parser's state.
         # Currently the state is represented only
@@ -53,7 +53,7 @@ class BaseParser:
         self.last_processed_token = Token(TokenTypes.EOF)
 
         # The configuration environment
-        self.environment = environment or Environment()
+        self.environment = environment
 
     @property
     def _current_token(self):
@@ -304,10 +304,12 @@ class BaseParser:
         except ValueError as exception:
             self._error(str(exception))
 
-    def parse(self):
+    def parse(self, tokens):
         """
         Run the parser on the lexed tokens.
         """
+
+        self.tokens = tokens
 
         # A loop on all lexed tokens until we reach EOF
         while not self._peek_token_is(TokenTypes.EOF):
@@ -349,13 +351,13 @@ class BaseParser:
                 self._error("Cannot parse token")
 
     @classmethod
-    def analyse(cls, text, context, *args, **kwargs):
+    def analyse(cls, text, context, environment, *args, **kwargs):
         text_buffer = cls.text_buffer_class(text, context)
 
-        lex = cls.lexer_class()
+        lex = cls.lexer_class(environment)
         lex.process(text_buffer)
 
-        par = cls(lex.tokens, *args, **kwargs)
-        par.parse()
+        par = cls(environment, *args, **kwargs)
+        par.parse(lex.tokens)
 
         return par

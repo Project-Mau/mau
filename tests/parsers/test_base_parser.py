@@ -5,6 +5,7 @@ from mau.errors import MauErrorException
 from mau.lexers.base_lexer import BaseLexer, TokenTypes
 from mau.parsers.base_parser import BaseParser, TokenError
 from mau.tokens.tokens import Token
+from mau.parsers.environment import Environment
 
 from tests.helpers import init_parser_factory
 
@@ -12,7 +13,7 @@ init_parser = init_parser_factory(BaseLexer, BaseParser)
 
 
 def test_save():
-    parser = BaseParser(tokens=[Token(TokenTypes.EOF)])
+    parser = BaseParser(Environment())
     node = Mock()
     parser._save(node)
 
@@ -20,7 +21,8 @@ def test_save():
 
 
 def test_initial_state():
-    parser = BaseParser(tokens=[Token(TokenTypes.EOF)])
+    parser = BaseParser(Environment())
+    parser.tokens = [Token(TokenTypes.EOF)]
 
     assert parser.index == -1
     assert parser._current_token == Token(TokenTypes.EOF)
@@ -34,7 +36,8 @@ def test_load():
 
 
 def test_get_token_without_load():
-    parser = BaseParser(tokens=[Token(TokenTypes.EOF)])
+    parser = BaseParser(Environment())
+    parser.tokens = [Token(TokenTypes.EOF)]
 
     assert parser._get_token() == Token(TokenTypes.EOF)
 
@@ -118,6 +121,7 @@ def test_get_token_accepts_check_function():
 
 def test_check_current_token():
     parser = init_parser("Some text\nSome other text")
+
     parser._get_token()
 
     assert parser._check_current_token(TokenTypes.TEXT) == Token(
@@ -130,6 +134,7 @@ def test_check_current_token():
 
 def test_check_current_token_raises_exception():
     parser = init_parser("Some text\nSome other text")
+
     parser._get_token()
 
     with pytest.raises(TokenError):
@@ -138,6 +143,7 @@ def test_check_current_token_raises_exception():
 
 def test_check_current_token_value():
     parser = init_parser("Some text\nSome other text")
+
     parser._get_token()
 
     assert parser._check_current_token(TokenTypes.TEXT, "Some text") == Token(
@@ -147,6 +153,7 @@ def test_check_current_token_value():
 
 def test_check_current_token_with_function():
     parser = init_parser("Some text\nSome other text")
+
     parser._get_token()
 
     assert parser._check_current_token(
@@ -396,6 +403,7 @@ def test_collect_escape_stop_tokens_are_removed2():
 
 def test_error():
     parser = init_parser("Some text")
+
     parser._get_token()
     parser._get_token()
 
@@ -405,6 +413,7 @@ def test_error():
 
 def test_error_with_message():
     parser = init_parser("Some text")
+
     parser._get_token()
     parser._get_token()
 
@@ -415,10 +424,9 @@ def test_error_with_message():
 
 
 def test_unknown_token():
-    unknown = Token("UNKNOWN")
-    parser = BaseParser(tokens=[unknown])
+    parser = BaseParser(Environment())
 
     with pytest.raises(MauErrorException) as exception:
-        parser.parse()
+        parser.parse([Token("UNKNOWN")])
 
     assert exception.value.error.message == "Cannot parse token"

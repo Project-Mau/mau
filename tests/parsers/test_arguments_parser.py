@@ -4,6 +4,7 @@ from mau.lexers.arguments_lexer import ArgumentsLexer
 from mau.nodes.arguments import NamedArgumentNode, UnnamedArgumentNode
 from mau.parsers.arguments import set_names_and_defaults
 from mau.parsers.arguments_parser import ArgumentsParser
+from mau.parsers.environment import Environment
 
 from tests.helpers import parser_runner_factory
 
@@ -237,7 +238,7 @@ def test_apply_prototype_unnamed_arguments():
 
 
 def test_apply_prototype_unnamed_and_named_arguments():
-    parser = ArgumentsParser(tokens=[])
+    parser = ArgumentsParser(Environment())
 
     parser.nodes = [
         UnnamedArgumentNode("value1"),
@@ -262,7 +263,7 @@ def test_apply_prototype_unnamed_and_named_arguments():
 
 
 def test_apply_prototype_clash_between_default_value_and_named_value():
-    parser = ArgumentsParser(tokens=[])
+    parser = ArgumentsParser(Environment())
 
     parser.nodes = [
         UnnamedArgumentNode("value1"),
@@ -286,7 +287,7 @@ def test_apply_prototype_clash_between_default_value_and_named_value():
 
 
 def test_apply_prototype_clash_between_positional_value_and_named_value():
-    parser = ArgumentsParser(tokens=[])
+    parser = ArgumentsParser(Environment())
 
     parser.nodes = [
         UnnamedArgumentNode("value1"),
@@ -310,7 +311,7 @@ def test_apply_prototype_clash_between_positional_value_and_named_value():
 
 
 def test_apply_prototype_clash_in_prototype():
-    parser = ArgumentsParser(tokens=[])
+    parser = ArgumentsParser(Environment())
 
     parser.nodes = [
         UnnamedArgumentNode("value1"),
@@ -334,7 +335,7 @@ def test_apply_prototype_clash_in_prototype():
 
 
 def test_apply_prototype_positional_values_not_provided():
-    parser = ArgumentsParser(tokens=[])
+    parser = ArgumentsParser(Environment())
 
     parser.nodes = [UnnamedArgumentNode("value1")]
 
@@ -345,7 +346,7 @@ def test_apply_prototype_positional_values_not_provided():
 
 
 def test_apply_prototype_positional_values_without_name():
-    parser = ArgumentsParser(tokens=[])
+    parser = ArgumentsParser(Environment())
 
     parser.nodes = [UnnamedArgumentNode("value1"), UnnamedArgumentNode("value2")]
 
@@ -362,7 +363,7 @@ def test_apply_prototype_positional_values_without_name():
 
 
 def test_apply_prototype_missing_positional_with_default():
-    parser = ArgumentsParser(tokens=[])
+    parser = ArgumentsParser(Environment())
 
     parser.nodes = [
         NamedArgumentNode("attr1", "value5"),

@@ -31,7 +31,7 @@ class BaseLexer:
     output results.
     """
 
-    def __init__(self):
+    def __init__(self, environment):
         self.text_buffer = None
 
         # These are the tokens identified so far
@@ -39,6 +39,9 @@ class BaseLexer:
 
         # The last visited context. Used to detect loops.
         self.last_visited_context = None
+
+        # The configuration environment
+        self.environment = environment
 
     def process(self, text_buffer):
         self.text_buffer = text_buffer

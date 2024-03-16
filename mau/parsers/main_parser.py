@@ -58,8 +58,8 @@ def header_anchor(text, level):
 class MainParser(BaseParser):
     lexer_class = MainLexer
 
-    def __init__(self, tokens, environment=None):
-        super().__init__(tokens, environment)
+    def __init__(self, environment):
+        super().__init__(environment)
 
         self.headers = []
 
@@ -284,10 +284,7 @@ class MainParser(BaseParser):
         text = preprocess_parser.nodes[0].value
 
         # Parse the text
-        text_parser = TextParser.analyse(
-            text,
-            current_context,
-        )
+        text_parser = TextParser.analyse(text, current_context, self.environment)
 
         # A text parser returns a single sentence node
         result = text_parser.nodes[0]
@@ -396,8 +393,7 @@ class MainParser(BaseParser):
             current_context = self._current_token.context
 
             arguments_parser = ArgumentsParser.analyse(
-                arguments,
-                current_context,
+                arguments, current_context, self.environment
             )
 
             args, kwargs, tags = arguments_parser.process_arguments()
@@ -472,7 +468,7 @@ class MainParser(BaseParser):
         current_context = self._current_token.context
 
         # Titles can contain Mau code
-        text_parser = TextParser.analyse(text, current_context)
+        text_parser = TextParser.analyse(text, current_context, self.environment)
 
         title = text_parser.nodes[0]
 
@@ -493,14 +489,13 @@ class MainParser(BaseParser):
         preprocess_parser = PreprocessVariablesParser.analyse(
             text,
             current_context,
-            environment=self.environment,
+            self.environment,
         )
         text = preprocess_parser.nodes[0].value
 
         # Parse the text
         arguments_parser = ArgumentsParser.analyse(
-            text,
-            current_context,
+            text, current_context, self.environment
         )
 
         args, kwargs, tags = arguments_parser.process_arguments()
@@ -706,7 +701,7 @@ class MainParser(BaseParser):
             content_parser = MainParser.analyse(
                 "\n".join(content),
                 current_context,
-                environment=environment,
+                environment,
             )
 
             content = content_parser.nodes
@@ -728,7 +723,7 @@ class MainParser(BaseParser):
             content_parser = MainParser.analyse(
                 "\n".join(content),
                 current_context,
-                environment=environment,
+                environment,
             )
 
             content = content_parser.nodes
@@ -762,13 +757,13 @@ class MainParser(BaseParser):
             content_parser = MainParser.analyse(
                 "\n".join(content),
                 current_context,
-                environment=environment,
+                environment,
             )
 
             secondary_content_parser = MainParser.analyse(
                 "\n".join(secondary_content),
                 current_context,
-                environment=environment,
+                environment,
             )
 
             content = content_parser.nodes
@@ -959,8 +954,7 @@ class MainParser(BaseParser):
             current_context = self._current_token.context
 
             arguments_parser = ArgumentsParser.analyse(
-                arguments,
-                current_context,
+                arguments, current_context, self.environment
             )
 
             args, kwargs, tags = arguments_parser.process_arguments()
@@ -1176,8 +1170,8 @@ class MainParser(BaseParser):
 
         return True
 
-    def parse(self):
-        super().parse()
+    def parse(self, tokens):
+        super().parse(tokens)
 
         # Create the footnotes
         self.process_footnotes()

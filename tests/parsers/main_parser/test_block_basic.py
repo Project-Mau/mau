@@ -126,10 +126,8 @@ def test_parse_block_content_external_variables():
 
 
 def test_block_without_closing_fences():
-    parser = init_parser("----")
-
     with pytest.raises(MauErrorException):
-        parser.parse()
+        runner("----")
 
 
 def test_parse_block_secondary_content():

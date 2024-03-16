@@ -35,8 +35,7 @@ def test_document_with_reference():
     ----
     """
 
-    parser = init_parser(textwrap.dedent(source))
-    parser.parse()
+    parser = runner(textwrap.dedent(source))
 
     assert parser.nodes == []
     assert parser.reference_data[("content_type", "value")] == {
@@ -243,8 +242,7 @@ def test_multiple_content_types(mock_reference_anchor):
 def test_command_references_parse_args():
     source = "::references:content_type, arg1, #tag1, kwarg1=kwvalue1, kwarg2=kwvalue2"
 
-    parser = init_parser(source)
-    parser.parse()
+    parser = runner(source)
 
     assert parser.nodes == [
         CommandReferencesNode(
@@ -284,7 +282,6 @@ def test_command_references_filter_content_type(mock_reference_anchor):
     """
 
     parser = runner(source)
-    parser.parse()
 
     assert parser.nodes == [
         ParagraphNode(

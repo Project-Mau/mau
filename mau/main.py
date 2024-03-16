@@ -168,14 +168,14 @@ def main():
 
             sys.exit(1)
 
-        parser = mau.run_parser(mau.lexer.tokens)
+        mau.run_parser(mau.lexer.tokens)
 
         if args.parseonly:
-            write_output(parser.nodes, output_file)
+            write_output(mau.parser.nodes, output_file)
 
             sys.exit(1)
 
-        output = mau.run_visitor(parser.output["content"])
+        output = mau.run_visitor(mau.parser.output["content"])
 
     except ConfigurationError as exception:
         print(f"Configuration error: {exception}")

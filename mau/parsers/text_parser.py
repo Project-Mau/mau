@@ -30,8 +30,8 @@ MAP_STYLES = {"_": "underscore", "*": "star", "^": "caret", "~": "tilde"}
 class TextParser(BaseParser):
     lexer_class = TextLexer
 
-    def __init__(self, tokens, environment=None):
-        super().__init__(tokens, environment)
+    def __init__(self, environment):
+        super().__init__(environment)
 
         # These are the footnotes found in this text
         # The format of this dictionary is
@@ -214,7 +214,7 @@ class TextParser(BaseParser):
 
         text = kwargs.get("text")
 
-        par = self.analyse(text, current_context)
+        par = self.analyse(text, current_context, self.environment)
 
         # Text should return a single sentence node
         result = par.nodes[0]
@@ -324,7 +324,7 @@ class TextParser(BaseParser):
 
         current_context = self._peek_token().context
 
-        par = ArgumentsParser.analyse(arguments, current_context)
+        par = ArgumentsParser.analyse(arguments, current_context, self.environment)
 
         args, kwargs, _ = par.process_arguments()
 

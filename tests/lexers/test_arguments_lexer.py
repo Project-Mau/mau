@@ -3,11 +3,12 @@ from mau.lexers.base_lexer import TokenTypes
 from mau.text_buffer.context import Context
 from mau.text_buffer.text_buffer import TextBuffer
 from mau.tokens.tokens import Token
+from mau.parsers.environment import Environment
 
 
 def test_single_unnamed_argument():
     text_buffer = TextBuffer("value1")
-    lex = ArgumentsLexer()
+    lex = ArgumentsLexer(Environment())
     lex.process(text_buffer)
 
     assert lex.tokens == [
@@ -19,7 +20,7 @@ def test_single_unnamed_argument():
 
 def test_single_named_argument():
     text_buffer = TextBuffer("argument1=value1")
-    lex = ArgumentsLexer()
+    lex = ArgumentsLexer(Environment())
     lex.process(text_buffer)
 
     assert lex.tokens == [
@@ -33,7 +34,7 @@ def test_single_named_argument():
 
 def test_multiple_unnamed_arguments():
     text_buffer = TextBuffer("value1, value2")
-    lex = ArgumentsLexer()
+    lex = ArgumentsLexer(Environment())
     lex.process(text_buffer)
 
     assert lex.tokens == [
@@ -48,7 +49,7 @@ def test_multiple_unnamed_arguments():
 
 def test_multiple_named_arguments():
     text_buffer = TextBuffer("argument1=value1, argument2=value2")
-    lex = ArgumentsLexer()
+    lex = ArgumentsLexer(Environment())
     lex.process(text_buffer)
 
     assert lex.tokens == [
@@ -67,7 +68,7 @@ def test_multiple_named_arguments():
 
 def test_mixed_arguments():
     text_buffer = TextBuffer("value1, value2,argument1=value1, argument2=value2")
-    lex = ArgumentsLexer()
+    lex = ArgumentsLexer(Environment())
     lex.process(text_buffer)
 
     assert lex.tokens == [
@@ -91,7 +92,7 @@ def test_mixed_arguments():
 
 def test_quotes():
     text_buffer = TextBuffer('argument1="value1,value2"')
-    lex = ArgumentsLexer()
+    lex = ArgumentsLexer(Environment())
     lex.process(text_buffer)
 
     assert lex.tokens == [
@@ -109,7 +110,7 @@ def test_quotes():
 
 def test_spaces():
     text_buffer = TextBuffer("argument1=value1 value2")
-    lex = ArgumentsLexer()
+    lex = ArgumentsLexer(Environment())
     lex.process(text_buffer)
 
     assert lex.tokens == [
@@ -125,7 +126,7 @@ def test_spaces():
 
 def test_escaped_quotes():
     text_buffer = TextBuffer(r"Argument \"with\" quotes")
-    lex = ArgumentsLexer()
+    lex = ArgumentsLexer(Environment())
     lex.process(text_buffer)
 
     assert lex.tokens == [
@@ -145,7 +146,7 @@ def test_escaped_quotes():
 
 def test_context():
     text_buffer = TextBuffer("argument1=value1")
-    lex = ArgumentsLexer()
+    lex = ArgumentsLexer(Environment())
     lex.process(text_buffer)
 
     assert lex.tokens == [

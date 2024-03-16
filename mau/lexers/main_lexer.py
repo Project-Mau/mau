@@ -83,7 +83,7 @@ class MainLexer(BaseLexer):
                 text = included_file.read()
                 text_buffer = self.text_buffer.__class__(text, Context(source=value))
 
-                lexer = MainLexer()
+                lexer = MainLexer(self.environment)
                 lexer.process(text_buffer)
 
                 self.tokens.extend(lexer.tokens)

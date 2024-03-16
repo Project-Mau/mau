@@ -135,8 +135,7 @@ def test_parse_paragraph_starting_with_a_macro():
 def test_attributes():
     source = "[value1,someattr1=somevalue1,someattr2=somevalue2]"
 
-    parser = init_parser(source)
-    parser.parse()
+    parser = runner(source)
 
     assert parser.arguments == (
         ["value1"],
@@ -212,9 +211,8 @@ def test_command_toc():
 def test_command_footnotes():
     source = "::footnotes:arg1, arg2, #tag1, name1=value1, name2=value2"
 
-    parser = init_parser(source)
+    parser = runner(source)
     parser.footnote_entries = []
-    parser.parse()
 
     assert parser.nodes == [
         CommandFootnotesNode(

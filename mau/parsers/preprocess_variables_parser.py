@@ -8,8 +8,8 @@ from mau.tokens.tokens import Token
 class PreprocessVariablesParser(BaseParser):
     lexer_class = PreprocessVariablesLexer
 
-    def __init__(self, tokens, environment=None):
-        super().__init__(tokens, environment)
+    def __init__(self, environment):
+        super().__init__(environment)
 
     def _process_verbatim(self):
         self._get_token(TokenTypes.LITERAL, "`")
@@ -64,8 +64,8 @@ class PreprocessVariablesParser(BaseParser):
             self._process_pass,
         ]
 
-    def parse(self):
-        super().parse()
+    def parse(self, tokens):
+        super().parse(tokens)
 
         # After having parsed the text and replaced the
         # variables, this should return a piece of text again

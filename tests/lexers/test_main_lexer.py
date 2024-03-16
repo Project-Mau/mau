@@ -8,11 +8,15 @@ from mau.tokens.tokens import Token
 
 from tests.helpers import dedent
 
+from tests.helpers import init_lexer_factory, lexer_runner_factory
+
+init_lexer = init_lexer_factory(MainLexer)
+
+runner = lexer_runner_factory(MainLexer)
+
 
 def test_empty_text():
-    text_buffer = TextBuffer("")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("")
 
     assert lex.tokens == [
         Token(BLTokenTypes.EOF),
@@ -20,9 +24,7 @@ def test_empty_text():
 
 
 def test_empty_lines():
-    text_buffer = TextBuffer("\n")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("\n")
 
     assert lex.tokens == [
         Token(BLTokenTypes.EOL),
@@ -32,9 +34,7 @@ def test_empty_lines():
 
 
 def test_lines_with_only_spaces():
-    text_buffer = TextBuffer("      \n      ")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("      \n      ")
 
     assert lex.tokens == [
         Token(BLTokenTypes.EOL),
@@ -44,9 +44,7 @@ def test_lines_with_only_spaces():
 
 
 def test_horizontal_rule():
-    text_buffer = TextBuffer("---")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("---")
 
     assert lex.tokens == [
         Token(TokenTypes.HORIZONTAL_RULE, "---"),
@@ -56,9 +54,7 @@ def test_horizontal_rule():
 
 
 def test_escape_line():
-    text_buffer = TextBuffer(r"\[name]")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner(r"\[name]")
 
     assert lex.tokens == [
         Token(BLTokenTypes.TEXT, r"\[name]"),
@@ -68,9 +64,7 @@ def test_escape_line():
 
 
 def test_escape_line_beginning_with_backslash():
-    text_buffer = TextBuffer(r"\\[name]")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner(r"\\[name]")
 
     assert lex.tokens == [
         Token(BLTokenTypes.TEXT, r"\\[name]"),
@@ -80,9 +74,7 @@ def test_escape_line_beginning_with_backslash():
 
 
 def test_arguments():
-    text_buffer = TextBuffer("[name]")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("[name]")
 
     assert lex.tokens == [
         Token(TokenTypes.ARGUMENTS, "["),
@@ -94,9 +86,7 @@ def test_arguments():
 
 
 def test_attributes_no_closing_bracket():
-    text_buffer = TextBuffer("[name")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("[name")
 
     assert lex.tokens == [
         Token(BLTokenTypes.TEXT, "[name"),
@@ -106,9 +96,7 @@ def test_attributes_no_closing_bracket():
 
 
 def test_attributes_marker_in_text():
-    text_buffer = TextBuffer("Not [attributes]")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("Not [attributes]")
 
     assert lex.tokens == [
         Token(BLTokenTypes.TEXT, "Not [attributes]"),
@@ -124,9 +112,7 @@ def test_attributes_marker_in_text():
 
 
 def test_variable_definition():
-    text_buffer = TextBuffer(":variable:value123")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner(":variable:value123")
 
     assert lex.tokens == [
         Token(TokenTypes.VARIABLE, ":"),
@@ -148,9 +134,7 @@ def test_variable_definition():
 
 
 def test_variable_negation():
-    text_buffer = TextBuffer(":!variable:")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner(":!variable:")
 
     assert lex.tokens == [
         Token(TokenTypes.VARIABLE, ":"),
@@ -162,9 +146,7 @@ def test_variable_negation():
 
 
 def test_variable_marker_in_text():
-    text_buffer = TextBuffer("Not a :variable:")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("Not a :variable:")
 
     assert lex.tokens == [
         Token(BLTokenTypes.TEXT, "Not a :variable:"),
@@ -174,9 +156,7 @@ def test_variable_marker_in_text():
 
 
 def test_variable_definition_accepted_characters():
-    text_buffer = TextBuffer(":abcAB.C0123-_:value123")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner(":abcAB.C0123-_:value123")
 
     assert lex.tokens == [
         Token(TokenTypes.VARIABLE, ":"),
@@ -189,7 +169,7 @@ def test_variable_definition_accepted_characters():
 
 
 def test_multiple_lines():
-    text_buffer = TextBuffer(
+    lex = runner(
         dedent(
             """
             This is text
@@ -199,8 +179,6 @@ def test_multiple_lines():
             """
         )
     )
-    lex = MainLexer()
-    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(BLTokenTypes.TEXT, "This is text"),
@@ -226,9 +204,7 @@ def test_multiple_lines():
 
 
 def test_title():
-    text_buffer = TextBuffer(".A title")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner(".A title")
 
     assert lex.tokens == [
         Token(TokenTypes.TITLE, "."),
@@ -246,9 +222,7 @@ def test_title():
 
 
 def test_title_with_space():
-    text_buffer = TextBuffer(".      A title")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner(".      A title")
 
     assert lex.tokens == [
         Token(TokenTypes.TITLE, "."),
@@ -268,9 +242,7 @@ def test_title_with_space():
 
 
 def test_command():
-    text_buffer = TextBuffer("::command:arg0,arg1")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("::command:arg0,arg1")
 
     assert lex.tokens == [
         Token(TokenTypes.COMMAND, "::"),
@@ -292,9 +264,7 @@ def test_command():
 
 
 def test_command_without_arguments():
-    text_buffer = TextBuffer("::command:")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("::command:")
 
     assert lex.tokens == [
         Token(TokenTypes.COMMAND, "::"),
@@ -306,9 +276,7 @@ def test_command_without_arguments():
 
 
 def test_comment():
-    text_buffer = TextBuffer("// Some comment")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("// Some comment")
 
     assert lex.tokens == [
         Token(TokenTypes.COMMENT, "// Some comment"),
@@ -318,7 +286,7 @@ def test_comment():
 
 
 def test_multiline_comment():
-    text_buffer = TextBuffer(
+    lex = runner(
         dedent(
             """
             ////
@@ -329,8 +297,6 @@ def test_multiline_comment():
             """
         )
     )
-    lex = MainLexer()
-    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.MULTILINE_COMMENT, "////"),
@@ -360,9 +326,7 @@ def test_multiline_comment():
 
 
 def test_include_content():
-    text_buffer = TextBuffer("<<type:/path/to/it.jpg")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("<<type:/path/to/it.jpg")
 
     assert lex.tokens == [
         Token(TokenTypes.INCLUDE, "<<"),
@@ -384,9 +348,7 @@ def test_include_content():
 
 
 def test_include_content_with_space():
-    text_buffer = TextBuffer("<<      type:/path/to/it.jpg")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("<<      type:/path/to/it.jpg")
 
     assert lex.tokens == [
         Token(TokenTypes.INCLUDE, "<<"),
@@ -410,9 +372,7 @@ def test_include_content_with_space():
 
 
 def test_include_content_without_arguments():
-    text_buffer = TextBuffer("<<type:")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("<<type:")
 
     assert lex.tokens == [
         Token(TokenTypes.INCLUDE, "<<"),
@@ -432,9 +392,7 @@ def test_include_content_without_arguments():
 
 
 def test_unordered_list():
-    text_buffer = TextBuffer("* Item")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("* Item")
 
     assert lex.tokens == [
         Token(TokenTypes.LIST, "*"),
@@ -455,7 +413,7 @@ def test_unordered_list():
 
 def test_unordered_list_leading_space():
     text_buffer = TextBuffer("    * Item")
-    lex = MainLexer()
+    lex = init_lexer()
     lex.process(text_buffer)
 
     assert lex.tokens == [
@@ -469,9 +427,7 @@ def test_unordered_list_leading_space():
 
 
 def test_unordered_list_trailing_space():
-    text_buffer = TextBuffer("*       Item")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("*       Item")
 
     assert lex.tokens == [
         Token(TokenTypes.LIST, "*"),
@@ -483,9 +439,7 @@ def test_unordered_list_trailing_space():
 
 
 def test_unordered_list_multiple_stars():
-    text_buffer = TextBuffer("*** Item")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("*** Item")
 
     assert lex.tokens == [
         Token(TokenTypes.LIST, "***"),
@@ -497,9 +451,7 @@ def test_unordered_list_multiple_stars():
 
 
 def test_ordered_list():
-    text_buffer = TextBuffer("# Item")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("# Item")
 
     assert lex.tokens == [
         Token(TokenTypes.LIST, "#"),
@@ -511,9 +463,7 @@ def test_ordered_list():
 
 
 def test_ordered_list_multiple_stars():
-    text_buffer = TextBuffer("### Item")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("### Item")
 
     assert lex.tokens == [
         Token(TokenTypes.LIST, "###"),
@@ -525,9 +475,7 @@ def test_ordered_list_multiple_stars():
 
 
 def test_header():
-    text_buffer = TextBuffer("=Header")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("=Header")
 
     assert lex.tokens == [
         Token(TokenTypes.HEADER, "="),
@@ -545,9 +493,7 @@ def test_header():
 
 
 def test_header_with_space():
-    text_buffer = TextBuffer("=    Header")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("=    Header")
 
     assert lex.tokens == [
         Token(TokenTypes.HEADER, "="),
@@ -559,9 +505,7 @@ def test_header_with_space():
 
 
 def test_empty_header():
-    text_buffer = TextBuffer("=")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("=")
 
     assert lex.tokens == [
         Token(BLTokenTypes.TEXT, "="),
@@ -571,9 +515,7 @@ def test_empty_header():
 
 
 def test_multiple_header_markers():
-    text_buffer = TextBuffer("=== Header")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("=== Header")
 
     assert lex.tokens == [
         Token(TokenTypes.HEADER, "==="),
@@ -585,9 +527,7 @@ def test_multiple_header_markers():
 
 
 def test_header_marker_in_header_text():
-    text_buffer = TextBuffer("= a=b")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("= a=b")
 
     assert lex.tokens == [
         Token(TokenTypes.HEADER, "="),
@@ -599,9 +539,7 @@ def test_header_marker_in_header_text():
 
 
 def test_header_markers_in_text():
-    text_buffer = TextBuffer("Definitely not a === header")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("Definitely not a === header")
 
     assert lex.tokens == [
         Token(BLTokenTypes.TEXT, "Definitely not a === header"),
@@ -612,18 +550,14 @@ def test_header_markers_in_text():
 
 @patch("mau.lexers.main_lexer.MainLexer._run_directive")
 def test_directive(mock_run_directive):
-    text_buffer = TextBuffer("::#name:/path/to/file")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    runner("::#name:/path/to/file")
 
     assert mock_run_directive.called_with("name", "/path/to/file")
 
 
 @patch("builtins.open", new_callable=mock_open, read_data="just some data")
 def test_import_directive(mock_file):  # pylint: disable=unused-argument
-    text_buffer = TextBuffer("::#include:/path/to/file")
-    lex = MainLexer()
-    lex.process(text_buffer)
+    lex = runner("::#include:/path/to/file")
 
     assert lex.tokens == [
         Token(BLTokenTypes.TEXT, "just some data"),
@@ -639,7 +573,7 @@ def test_import_directive(mock_file):  # pylint: disable=unused-argument
 
 
 def test_block():
-    text_buffer = TextBuffer(
+    lex = runner(
         dedent(
             """
             ----
@@ -650,8 +584,6 @@ def test_block():
             """
         )
     )
-    lex = MainLexer()
-    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.BLOCK, "----"),
@@ -681,7 +613,7 @@ def test_block():
 
 
 def test_block_four_characters():
-    text_buffer = TextBuffer(
+    lex = runner(
         dedent(
             """
             ####
@@ -692,8 +624,6 @@ def test_block_four_characters():
             """
         )
     )
-    lex = MainLexer()
-    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.BLOCK, "####"),
@@ -723,7 +653,7 @@ def test_block_four_characters():
 
 
 def test_block_with_comment():
-    text_buffer = TextBuffer(
+    lex = runner(
         dedent(
             """
             ----
@@ -732,8 +662,6 @@ def test_block_with_comment():
             """
         )
     )
-    lex = MainLexer()
-    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(TokenTypes.BLOCK, "----"),
@@ -757,15 +685,13 @@ def test_block_with_comment():
 
 
 def test_block_has_to_begin_with_four_identical_characters():
-    text_buffer = TextBuffer(
+    lex = runner(
         dedent(
             """
             abcd
             """
         )
     )
-    lex = MainLexer()
-    lex.process(text_buffer)
 
     assert lex.tokens == [
         Token(BLTokenTypes.TEXT, "abcd"),

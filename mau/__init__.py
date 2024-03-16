@@ -55,7 +55,8 @@ class Mau:
         # in the text and in the configuration
         self.environment = environment or Environment()
 
-        self.lexer = MainLexer()
+        self.lexer = MainLexer(self.environment)
+        self.parser = MainParser(self.environment)
 
     def run_lexer(self, text):
         context = Context(source=self.input_file_name)
@@ -64,10 +65,7 @@ class Mau:
         self.lexer.process(text_buffer)
 
     def run_parser(self, tokens):
-        parser = MainParser(tokens, environment=self.environment)
-        parser.parse()
-
-        return parser
+        self.parser.parse(tokens)
 
     def create_visitor(self):
         visitor_class = self.environment.getvar("mau.visitor_class")
@@ -77,7 +75,7 @@ class Mau:
         )
 
     def run_visitor(self, node):
-        visitor = self.create_visitor(node)
+        visitor = self.create_visitor()
 
         # Visit the document AST
         return visitor.visit(node)

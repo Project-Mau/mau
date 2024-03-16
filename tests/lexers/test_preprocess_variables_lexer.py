@@ -1,13 +1,16 @@
 from mau.lexers.base_lexer import TokenTypes
 from mau.lexers.preprocess_variables_lexer import PreprocessVariablesLexer
-from mau.text_buffer.text_buffer import TextBuffer
 from mau.tokens.tokens import Token
+
+from tests.helpers import init_lexer_factory, lexer_runner_factory
+
+init_lexer = init_lexer_factory(PreprocessVariablesLexer)
+
+runner = lexer_runner_factory(PreprocessVariablesLexer)
 
 
 def test_normal_text():
-    text_buffer = TextBuffer("Some text")
-    lex = PreprocessVariablesLexer()
-    lex.process(text_buffer)
+    lex = runner("Some text")
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "S"),
@@ -25,9 +28,7 @@ def test_normal_text():
 
 
 def test_match_only_backticks_and_curly_braces():
-    text_buffer = TextBuffer("Normal text `{curly}` _other_ *text*")
-    lex = PreprocessVariablesLexer()
-    lex.process(text_buffer)
+    lex = runner("Normal text `{curly}` _other_ *text*")
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "N"),
@@ -72,9 +73,7 @@ def test_match_only_backticks_and_curly_braces():
 
 
 def test_escape_curly_braces():
-    text_buffer = TextBuffer(r"Normal text \{curly\} _other_ *text*")
-    lex = PreprocessVariablesLexer()
-    lex.process(text_buffer)
+    lex = runner(r"Normal text \{curly\} _other_ *text*")
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "N"),
@@ -119,9 +118,7 @@ def test_escape_curly_braces():
 
 
 def test_preserve_escapes():
-    text_buffer = TextBuffer(r"Normal \text \_other\_")
-    lex = PreprocessVariablesLexer()
-    lex.process(text_buffer)
+    lex = runner(r"Normal \text \_other\_")
 
     assert lex.tokens == [
         Token(TokenTypes.TEXT, "N"),

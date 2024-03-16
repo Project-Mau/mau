@@ -19,6 +19,7 @@ class MauVisitorError(MauError):
 
 
 class NoAliasDumper(yaml.SafeDumper):  # pragma: no cover
+    # pylint: disable=unused-argument
     def ignore_aliases(self, data):
         return True
 

@@ -29,11 +29,10 @@ def test_footnote_empty_block():
     ----
     """
 
-    parser = init_parser(textwrap.dedent(source))
+    parser = runner(textwrap.dedent(source))
     parser.footnotes = {
         "note1": FootnoteNode(number=1),
     }
-    parser.parse()
 
     assert parser.nodes == []
 
@@ -54,12 +53,12 @@ def test_footnote_content(mock_footnote_anchor):
     ----
     """
 
-    parser = init_parser(textwrap.dedent(source))
+    parser = runner(textwrap.dedent(source))
     parser.footnote_mentions = {
         "note1": FootnoteNode(number=1),
         "note2": FootnoteNode(number=2),
     }
-    parser.parse()
+    parser.parse(parser.tokens)
 
     assert parser.nodes == []
     assert parser.footnote_mentions == {
@@ -107,8 +106,7 @@ def test_footnote_mention_and_content(mock_footnote_anchor):
     ----
     """
 
-    parser = init_parser(textwrap.dedent(source))
-    parser.parse()
+    parser = runner(textwrap.dedent(source))
 
     assert parser.footnote_mentions == {
         "note1": FootnoteNode(

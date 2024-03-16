@@ -8,8 +8,8 @@ from mau.tokens.tokens import Token
 class ArgumentsParser(BaseParser):
     lexer_class = ArgumentsLexer
 
-    def __init__(self, tokens, environment=None):
-        super().__init__(tokens, environment)
+    def __init__(self, environment):
+        super().__init__(environment)
 
         # This flag is turned on as soon as
         # a named argument is parsed

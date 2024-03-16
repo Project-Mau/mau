@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SOURCE_DIR=source
-COMPARE_DIR=parser
+COMPARE_DIR=expected
 OUTPUT_DIR=output
 
 if [[ -d ${OUTPUT_DIR} ]]; then rm -fR ${OUTPUT_DIR}; fi

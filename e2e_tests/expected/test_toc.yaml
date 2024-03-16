@@ -51,42 +51,42 @@ data:
       tags: []
       type: paragraph
   - data:
-      args: &id001 []
+      args: []
       entries:
       - data:
           anchor: test-toc-4aa7
-          args: *id001
+          args: []
           children:
           - data:
               anchor: works-as-intended-2f4d
-              args: *id001
+              args: []
               children:
               - data:
                   anchor: more-on-the-toc-709a
-                  args: *id001
+                  args: []
                   children: []
-                  kwargs: &id002 {}
-                  tags: &id003 []
+                  kwargs: {}
+                  tags: []
                   type: toc_entry
                   value: More on the ToC
-              kwargs: *id002
-              tags: *id003
+              kwargs: {}
+              tags: []
               type: toc_entry
               value: Works as intended
           - data:
               anchor: conclusion-ec49
-              args: *id001
+              args: []
               children: []
-              kwargs: *id002
-              tags: *id003
+              kwargs: {}
+              tags: []
               type: toc_entry
               value: 'Conclusion '
-          kwargs: *id002
-          tags: *id003
+          kwargs: {}
+          tags: []
           type: toc_entry
           value: Test ToC
-      kwargs: *id002
-      tags: *id003
+      kwargs: {}
+      tags: []
       type: command_toc
   - data:
       anchor: conclusion-ec49
@@ -110,42 +110,42 @@ data:
       tags: []
       type: paragraph
   - data:
-      args: *id001
+      args: []
       entries:
       - data:
           anchor: test-toc-4aa7
-          args: *id001
+          args: []
           children:
           - data:
               anchor: works-as-intended-2f4d
-              args: *id001
+              args: []
               children:
               - data:
                   anchor: more-on-the-toc-709a
-                  args: *id001
+                  args: []
                   children: []
-                  kwargs: *id002
-                  tags: *id003
+                  kwargs: {}
+                  tags: []
                   type: toc_entry
                   value: More on the ToC
-              kwargs: *id002
-              tags: *id003
+              kwargs: {}
+              tags: []
               type: toc_entry
               value: Works as intended
           - data:
               anchor: conclusion-ec49
-              args: *id001
+              args: []
               children: []
-              kwargs: *id002
-              tags: *id003
+              kwargs: {}
+              tags: []
               type: toc_entry
               value: 'Conclusion '
-          kwargs: *id002
-          tags: *id003
+          kwargs: {}
+          tags: []
           type: toc_entry
           value: Test ToC
-      kwargs: *id002
-      tags: *id003
+      kwargs: {}
+      tags: []
       type: command_toc
   kwargs: {}
   tags: []

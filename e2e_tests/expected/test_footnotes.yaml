@@ -28,7 +28,7 @@ data:
           - data:
               content:
               - data:
-                  args: &id001 []
+                  args: []
                   content:
                     data:
                       content:
@@ -43,12 +43,12 @@ data:
                           type: text
                           value: ' anywhere in the text.'
                       type: sentence
-                  kwargs: &id002 {}
-                  tags: &id003 []
+                  kwargs: {}
+                  tags: []
                   type: paragraph
-              content_anchor: fd-94831d44-1
+              content_anchor: cnt-footnote-1-94831d44
               number: 1
-              reference_anchor: fr-94831d44-1
+              reference_anchor: ref-footnote-1-94831d44
               type: footnote
           type: sentence
       kwargs: {}
@@ -80,7 +80,7 @@ data:
           - data:
               content:
               - data:
-                  args: &id004 []
+                  args: []
                   content:
                     data:
                       content:
@@ -88,12 +88,12 @@ data:
                           type: text
                           value: This is my hope, at least.
                       type: sentence
-                  kwargs: &id005 {}
-                  tags: &id006 []
+                  kwargs: {}
+                  tags: []
                   type: paragraph
-              content_anchor: fd-87d86875-2
+              content_anchor: cnt-footnote-2-87d86875
               number: 2
-              reference_anchor: fr-87d86875-2
+              reference_anchor: ref-footnote-2-87d86875
               type: footnote
           type: sentence
       kwargs: {}
@@ -105,7 +105,7 @@ data:
       - data:
           content:
           - data:
-              args: *id001
+              args: []
               content:
                 data:
                   content:
@@ -119,17 +119,17 @@ data:
                       type: text
                       value: ' anywhere in the text.'
                   type: sentence
-              kwargs: *id002
-              tags: *id003
+              kwargs: {}
+              tags: []
               type: paragraph
-          content_anchor: fd-94831d44-1
+          content_anchor: cnt-footnote-1-94831d44
           number: 1
-          reference_anchor: fr-94831d44-1
+          reference_anchor: ref-footnote-1-94831d44
           type: footnotes_entry
       - data:
           content:
           - data:
-              args: *id004
+              args: []
               content:
                 data:
                   content:
@@ -137,17 +137,17 @@ data:
                       type: text
                       value: This is my hope, at least.
                   type: sentence
-              kwargs: *id005
-              tags: *id006
+              kwargs: {}
+              tags: []
               type: paragraph
-          content_anchor: fd-87d86875-2
+          content_anchor: cnt-footnote-2-87d86875
           number: 2
-          reference_anchor: fr-87d86875-2
+          reference_anchor: ref-footnote-2-87d86875
           type: footnotes_entry
       - data:
           content:
           - data:
-              args: &id007 []
+              args: []
               content:
                 data:
                   content:
@@ -156,12 +156,12 @@ data:
                       value: Which, as I said, should appear both in the list above
                         and in the one below.
                   type: sentence
-              kwargs: &id008 {}
-              tags: &id009 []
+              kwargs: {}
+              tags: []
               type: paragraph
-          content_anchor: fd-f96d4fb1-3
+          content_anchor: cnt-footnote-3-f96d4fb1
           number: 3
-          reference_anchor: fr-f96d4fb1-3
+          reference_anchor: ref-footnote-3-f96d4fb1
           type: footnotes_entry
       kwargs: {}
       tags: []
@@ -185,7 +185,7 @@ data:
           - data:
               content:
               - data:
-                  args: *id007
+                  args: []
                   content:
                     data:
                       content:
@@ -194,12 +194,12 @@ data:
                           value: Which, as I said, should appear both in the list
                             above and in the one below.
                       type: sentence
-                  kwargs: *id008
-                  tags: *id009
+                  kwargs: {}
+                  tags: []
                   type: paragraph
-              content_anchor: fd-f96d4fb1-3
+              content_anchor: cnt-footnote-3-f96d4fb1
               number: 3
-              reference_anchor: fr-f96d4fb1-3
+              reference_anchor: ref-footnote-3-f96d4fb1
               type: footnote
           - data:
               type: text
@@ -214,7 +214,7 @@ data:
       - data:
           content:
           - data:
-              args: *id001
+              args: []
               content:
                 data:
                   content:
@@ -228,17 +228,17 @@ data:
                       type: text
                       value: ' anywhere in the text.'
                   type: sentence
-              kwargs: *id002
-              tags: *id003
+              kwargs: {}
+              tags: []
               type: paragraph
-          content_anchor: fd-94831d44-1
+          content_anchor: cnt-footnote-1-94831d44
           number: 1
-          reference_anchor: fr-94831d44-1
+          reference_anchor: ref-footnote-1-94831d44
           type: footnotes_entry
       - data:
           content:
           - data:
-              args: *id004
+              args: []
               content:
                 data:
                   content:
@@ -246,17 +246,17 @@ data:
                       type: text
                       value: This is my hope, at least.
                   type: sentence
-              kwargs: *id005
-              tags: *id006
+              kwargs: {}
+              tags: []
               type: paragraph
-          content_anchor: fd-87d86875-2
+          content_anchor: cnt-footnote-2-87d86875
           number: 2
-          reference_anchor: fr-87d86875-2
+          reference_anchor: ref-footnote-2-87d86875
           type: footnotes_entry
       - data:
           content:
           - data:
-              args: *id007
+              args: []
               content:
                 data:
                   content:
@@ -265,12 +265,12 @@ data:
                       value: Which, as I said, should appear both in the list above
                         and in the one below.
                   type: sentence
-              kwargs: *id008
-              tags: *id009
+              kwargs: {}
+              tags: []
               type: paragraph
-          content_anchor: fd-f96d4fb1-3
+          content_anchor: cnt-footnote-3-f96d4fb1
           number: 3
-          reference_anchor: fr-f96d4fb1-3
+          reference_anchor: ref-footnote-3-f96d4fb1
           type: footnotes_entry
       kwargs: {}
       tags: []

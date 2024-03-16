@@ -1,6 +1,3 @@
-# This is a class to manage variable environments
-
-
 class Environment:
     def __init__(self, content=None, namespace=None):
         self._variables = {}

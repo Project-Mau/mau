@@ -6,6 +6,7 @@ from importlib import metadata
 import yaml
 from mau import ConfigurationError, Mau, load_visitors
 from mau.errors import MauErrorException, print_error
+from mau.parsers.environment import Environment
 from tabulate import tabulate
 
 __version__ = metadata.version("mau")
@@ -126,16 +127,14 @@ def main():
         with open(args.config_file, "r", encoding="utf-8") as config_file:
             config = yaml.load(config_file, Loader=yaml.FullLoader)
 
-    # The directory that contains custom templates.
-    templates_directory = config.get("templates_directory", None)
+    environment = Environment(config)
 
     # Select the visitor class according to the target
     # format specified on the command line
+    # This is always successful as the list of arguments
+    # is generated fromthe list of plugins
     visitor_class = visitors[args.format]
-
-    # This extracts the custom templates defined
-    # in the config file
-    custom_templates = config.get("custom_templates", None)
+    environment.setvar("mau.visitor_class", visitor_class)
 
     # Find out the name of the output file
     output_file = args.output_file or args.input_file.replace(
@@ -145,11 +144,7 @@ def main():
     # The Mau object configured with what we figured out above.
     mau = Mau(
         args.input_file,
-        visitor_class=visitor_class,
-        config=config,
-        custom_templates=custom_templates,
-        templates_directory=templates_directory,
-        full_document=True,
+        environment=environment,
     )
 
     # Run the lexer on the input data
@@ -174,7 +169,7 @@ def main():
 
             sys.exit(1)
 
-        output = mau.process(parser.nodes, parser.environment)
+        output = mau.process(parser.nodes)
 
     except ConfigurationError as exception:
         print(f"Configuration error: {exception}")

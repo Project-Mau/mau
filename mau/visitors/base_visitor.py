@@ -1,9 +1,9 @@
-import copy
+import functools
 import logging
 
 import yaml
 from mau.errors import MauError, MauErrorException
-from mau.parsers.toc import create_toc
+from mau.parsers.environment import Environment
 
 _logger = logging.getLogger(__name__)
 
@@ -18,16 +18,25 @@ class MauVisitorError(MauError):
         print(self.details["node"])
 
 
+class NoAliasDumper(yaml.SafeDumper):  # pragma: no cover
+    def ignore_aliases(self, data):
+        return True
+
+
+no_aliases_dump = functools.partial(yaml.dump, Dumper=NoAliasDumper)
+
+
 class BaseVisitor:
     format_code = "dump"
     extension = ""
-    transform = yaml.dump
+    transform = no_aliases_dump
 
     # pylint: disable=unused-argument
-    def __init__(self, *args, config=None, **kwds):
+    def __init__(self, *args, environment=None, **kwds):
         self.toc = None
         self.footnotes = None
-        self.config = copy.deepcopy(config) if config else {}
+
+        self.environment = environment or Environment()
 
         self._join_with = {}
 

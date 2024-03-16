@@ -40,10 +40,10 @@ def test_custom_header_anchor_function():
     = Title of the section
     """
 
-    config = {"header_anchor_function": lambda text, level: "XXXXXY"}
-    env_runner = parser_runner_factory(
-        MainLexer, MainParser, environment=Environment(config, "mau")
-    )
+    environment = Environment()
+    environment.setvar("mau.header_anchor_function", lambda text, level: "XXXXXY")
+
+    env_runner = parser_runner_factory(MainLexer, MainParser, environment=environment)
 
     assert env_runner(source).nodes == [
         HeaderNode("Title of the section", "1", "XXXXXY")

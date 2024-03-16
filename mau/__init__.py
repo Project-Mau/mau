@@ -47,35 +47,14 @@ class Mau:
     def __init__(
         self,
         input_file_name,
-        visitor_class,
-        config=None,
-        custom_templates=None,
-        templates_directory=None,
-        full_document=False,
+        environment=None,
     ):
         # This is needed to set up the initial context for the lexer
         self.input_file_name = input_file_name
 
-        # This is the class that implements the selected visitor
-        self.visitor_class = visitor_class
-
-        # This is a configuration dictionary that
-        # will be used here and also injected into the variables
-        self.config = config or {}
-
-        # A dictionary with the custom templates.
-        self.custom_templates = custom_templates
-
-        # A directory that contains the custom templates as files
-        self.templates_directory = templates_directory
-
-        # If this flag is True the output is wrapped in a DocumentNode,
-        # otherwise Mau will use a ContainerNode
-        self.full_document = full_document
-
         # This will contain all the variables declared
         # in the text and in the configuration
-        self.environment = Environment()
+        self.environment = environment or Environment()
 
     def run_lexer(self, text):
         context = Context(source=self.input_file_name)
@@ -87,18 +66,18 @@ class Mau:
         return lexer
 
     def run_parser(self, tokens):
-        # Create the Mau environment
-        self.environment.update(self.config, namespace="mau")
-
         # Parse the source text using the given configuration
         parser = MainParser(tokens, environment=self.environment)
         parser.parse()
 
         return parser
 
-    def process(self, nodes, environment):
+    def process(self, nodes):
+        full_document = self.environment.getvar("mau.full_document", True)
+        visitor_class = self.environment.getvar("mau.visitor_class")
+
         wrapper_node_class = ContainerNode
-        if self.full_document:
+        if full_document:
             wrapper_node_class = DocumentNode
 
         # Wrap the whole output
@@ -108,10 +87,8 @@ class Mau:
         # Use the parser variables so that the visitor
         # has both the configuration values and the
         # variables defined inside the text
-        visitor = self.visitor_class(
-            custom_templates=self.custom_templates,
-            templates_directory=self.templates_directory,
-            config=environment.asdict(),
+        visitor = visitor_class(
+            environment=self.environment,
         )
 
         # Visit the document AST

@@ -22,7 +22,6 @@ def test_default_values():
     assert visitor.default_templates == {}
     assert visitor.environment_options == {}
     assert visitor.templates_directory is None
-    assert visitor.config == {}
     assert visitor.extension == "j2"
     assert visitor.toc is None
     assert visitor.footnotes is None

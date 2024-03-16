@@ -25,10 +25,10 @@ class JinjaVisitor(BaseVisitor):
         *args,
         custom_templates=None,
         templates_directory=None,
-        config=None,
+        environment=None,
         **kwds,
     ):
-        super().__init__(config=config)
+        super().__init__(environment=environment)
 
         self.templates_directory = templates_directory
 
@@ -77,7 +77,7 @@ class JinjaVisitor(BaseVisitor):
             self._files_env = self._dict_env
 
     def _render(self, template_full_name, **kwargs):
-        # This renders a template using the current config and the given parameters
+        # This renders a template using the current environment and the given parameters
 
         try:
             template = self._files_env.get_template(template_full_name)
@@ -87,7 +87,7 @@ class JinjaVisitor(BaseVisitor):
             except jinja2.exceptions.TemplateNotFound as exception:
                 raise TemplateNotFound(exception) from exception
 
-        return template.render(config=self.config, **kwargs)
+        return template.render(config=self.environment.asdict(), **kwargs)
 
     def visit(self, node, *args, **kwargs):
         # The visitor has to define functions for each node type

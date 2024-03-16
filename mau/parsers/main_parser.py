@@ -10,6 +10,7 @@ from mau.nodes.footnotes import CommandFootnotesNode
 from mau.nodes.inline import ListItemNode, RawNode
 from mau.nodes.page import (
     BlockNode,
+    ContainerNode,
     ContentImageNode,
     ContentNode,
     HeaderNode,
@@ -29,7 +30,6 @@ from mau.parsers.references import create_references
 from mau.parsers.text_parser import TextParser
 from mau.parsers.toc import create_toc
 from mau.tokens.tokens import Token
-from mau.nodes.page import ContainerNode
 
 
 def header_anchor(text, level):
@@ -88,6 +88,11 @@ class MainParser(BaseParser):
         # This list contains all the footnote entries
         # that will be shown by a footnotes command.
         self.footnotes = []
+
+        # This is the list of ::footnotes commands
+        # that need to be updated once footnotes
+        # have been processed
+        self.footnote_command_nodes = []
 
         # This dictionary containes the references created
         # in the text through a macro.
@@ -179,6 +184,9 @@ class MainParser(BaseParser):
             self.footnote_mentions,
             self.footnote_data,
         )
+
+        for node in self.footnote_command_nodes:
+            node.entries = self.footnotes
 
     def process_references(self):
         self.references = create_references(
@@ -417,11 +425,12 @@ class MainParser(BaseParser):
             self._save(node)
 
         elif name == "footnotes":
-            self._save(
-                CommandFootnotesNode(
-                    entries=self.footnotes, args=args, kwargs=kwargs, tags=tags
-                )
+            node = CommandFootnotesNode(
+                entries=self.footnotes, args=args, kwargs=kwargs, tags=tags
             )
+
+            self.footnote_command_nodes.append(node)
+            self._save(node)
 
         elif name == "references":
             # Assign names
@@ -1179,9 +1188,13 @@ class MainParser(BaseParser):
         # Process ToC
         self.process_toc()
 
+        wrapper_node_class = self.environment.getvar(
+            "mau.content_wrapper_node_class", ContainerNode
+        )
+
         self.output.update(
             {
-                "content": self.nodes,
+                "content": wrapper_node_class(self.nodes),
                 "toc": self.toc,
                 "references": self.references,
                 "footnotes": self.footnotes,

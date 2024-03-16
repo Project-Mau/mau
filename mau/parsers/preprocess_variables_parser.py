@@ -2,7 +2,6 @@ from mau.lexers.base_lexer import TokenTypes
 from mau.lexers.preprocess_variables_lexer import PreprocessVariablesLexer
 from mau.nodes.inline import TextNode
 from mau.parsers.base_parser import BaseParser
-from mau.parsers.environment import Environment
 from mau.tokens.tokens import Token
 
 

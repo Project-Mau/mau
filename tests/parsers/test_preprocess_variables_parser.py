@@ -39,10 +39,10 @@ def test_manage_unclosed_curly_braces():
 
 
 def test_replace_variable_with_namespace():
-    source = "This is number {config.attr}"
+    source = "This is number {app.attr}"
     result = runner(
         source,
-        environment=Environment({"config": {"attr": "5"}}),
+        environment=Environment({"app": {"attr": "5"}}),
     )
 
     assert result.nodes == [TextNode("This is number 5")]

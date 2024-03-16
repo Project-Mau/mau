@@ -27,7 +27,7 @@ no_aliases_dump = functools.partial(yaml.dump, Dumper=NoAliasDumper)
 
 
 class BaseVisitor:
-    format_code = "dump"
+    format_code = "yaml"
     extension = ""
     transform = no_aliases_dump
 

@@ -70,6 +70,26 @@ def test_set_and_get_variables_no_default():
         environment.getvar("name.space.var2")
 
 
+def test_multiple_namespaces():
+    environment = Environment()
+    environment.setvar("top.middle.var1", 1)
+    environment.setvar("top.middle.var2", 2)
+
+    assert environment.asdict() == {"top": {"middle": {"var1": 1, "var2": 2}}}
+
+
+def test_get_namespace():
+    environment = Environment()
+    environment.setvar("top.middle.var1", 1)
+    environment.setvar("top.middle.var2", 2)
+
+    assert environment.getnamespace("top") == Environment(
+        {"middle": {"var1": 1, "var2": 2}}
+    )
+
+    assert environment.getnamespace("top.middle") == Environment({"var1": 1, "var2": 2})
+
+
 def test_update():
     environment = Environment()
 

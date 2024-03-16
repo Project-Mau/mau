@@ -5,14 +5,8 @@ class Environment:
         if content is not None:
             self.update(content, namespace)
 
-    def split_namespace(self, key):
-        if "." not in key:
-            return [key]
-
-        return key.split(".")
-
     def setvar(self, key, value):
-        path = self.split_namespace(key)
+        path = key.split(".")
 
         if len(path) == 1:
             self._variables[path[0]] = value
@@ -28,7 +22,7 @@ class Environment:
         namespace[path[-1]] = value
 
     def getvar(self, key, default=None):
-        path = self.split_namespace(key)
+        path = key.split(".")
 
         try:
             if len(path) == 1:
@@ -45,6 +39,9 @@ class Environment:
 
             return default
 
+    def getnamespace(self, namespace):
+        return Environment(self.getvar(namespace))
+
     def update(self, adict, namespace=None):
         if namespace is None:
             self._variables = adict
@@ -53,3 +50,9 @@ class Environment:
 
     def asdict(self):
         return self._variables
+
+    def __repr__(self):
+        return f"{self.asdict()}"
+
+    def __eq__(self, other):
+        return self._variables == other._variables

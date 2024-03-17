@@ -185,3 +185,103 @@ def test_parse_mixed_list_cannot_change_type():
     """
 
     assert runner(source1).nodes == runner(source2).nodes
+
+
+def test_parse_numbered_list_continue():
+    source = """
+    # Item 1
+    # Item 2
+
+    [start=auto]
+    # Item 3
+    # Item 4
+    """
+
+    assert runner(source).nodes == [
+        ListNode(
+            ordered=True,
+            items=[
+                ListItemNode(
+                    "1",
+                    SentenceNode(
+                        [TextNode("Item 1")],
+                    ),
+                ),
+                ListItemNode(
+                    "1",
+                    SentenceNode(
+                        [TextNode("Item 2")],
+                    ),
+                ),
+            ],
+            main_node=True,
+        ),
+        ListNode(
+            ordered=True,
+            items=[
+                ListItemNode(
+                    "1",
+                    SentenceNode(
+                        [TextNode("Item 3")],
+                    ),
+                ),
+                ListItemNode(
+                    "1",
+                    SentenceNode(
+                        [TextNode("Item 4")],
+                    ),
+                ),
+            ],
+            main_node=True,
+            kwargs={"start": "3"},
+        ),
+    ]
+
+
+def test_parse_numbered_list_do_not_continue():
+    source = """
+    # Item 1
+    # Item 2
+
+    # Item 3
+    # Item 4
+    """
+
+    assert runner(source).nodes == [
+        ListNode(
+            ordered=True,
+            items=[
+                ListItemNode(
+                    "1",
+                    SentenceNode(
+                        [TextNode("Item 1")],
+                    ),
+                ),
+                ListItemNode(
+                    "1",
+                    SentenceNode(
+                        [TextNode("Item 2")],
+                    ),
+                ),
+            ],
+            main_node=True,
+        ),
+        ListNode(
+            ordered=True,
+            items=[
+                ListItemNode(
+                    "1",
+                    SentenceNode(
+                        [TextNode("Item 3")],
+                    ),
+                ),
+                ListItemNode(
+                    "1",
+                    SentenceNode(
+                        [TextNode("Item 4")],
+                    ),
+                ),
+            ],
+            main_node=True,
+        ),
+    ]

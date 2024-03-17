@@ -183,7 +183,7 @@ def main():
     except MauErrorException as exception:
         print_error(exception.error)
         sys.exit(1)
-    except Exception as exception:  # pylint: disable=broad-exception-caught
+    except Exception:  # pylint: disable=broad-exception-caught,try-except-raise
         raise
 
     write_output(output, output_file, transform=visitor_class.transform)

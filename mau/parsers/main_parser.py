@@ -172,6 +172,11 @@ class MainParser(BaseParser):
             "mau.header_anchor_function", header_anchor
         )
 
+        # The number of nodes in the latest ordered list,
+        # used to calculate the beginning value of them
+        # next one when start=auto
+        self.latest_ordered_list_length = 0
+
         # A temporary space to store parsed arguments
         # The tuple represents (args, kwargs, tags)
         self.arguments = ([], {}, [])
@@ -1058,6 +1063,12 @@ class MainParser(BaseParser):
 
         # Parse all the following items
         nodes = self._process_list_nodes()
+
+        if kwargs.get("start") == "auto":
+            kwargs["start"] = str(self.latest_ordered_list_length + 1)
+            self.latest_ordered_list_length += len(nodes)
+        else:
+            self.latest_ordered_list_length = len(nodes)
 
         self._save(
             ListNode(

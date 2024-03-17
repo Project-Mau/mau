@@ -3,7 +3,7 @@
 from mau.errors import MauError, MauErrorException
 from mau.lexers.base_lexer import BaseLexer, TokenTypes
 from mau.parsers.arguments import set_names_and_defaults
-from mau.parsers.environment import Environment
+from mau.environment.environment import Environment
 from mau.text_buffer.context import print_context
 from mau.text_buffer.text_buffer import TextBuffer
 from mau.tokens.tokens import Token

@@ -23,7 +23,7 @@ from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.nodes.toc import CommandTocNode
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.base_parser import BaseParser
-from mau.parsers.environment import Environment
+from mau.environment.environment import Environment
 from mau.parsers.footnotes import create_footnotes
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
 from mau.parsers.references import create_references

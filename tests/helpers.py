@@ -2,7 +2,7 @@ import textwrap
 
 from mau.text_buffer.context import Context
 from mau.text_buffer.text_buffer import TextBuffer
-from mau.parsers.environment import Environment
+from mau.environment.environment import Environment
 
 
 def dedent(text):

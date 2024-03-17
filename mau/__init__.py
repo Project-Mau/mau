@@ -2,7 +2,7 @@
 
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.text_lexer import TextLexer
-from mau.parsers.environment import Environment
+from mau.environment.environment import Environment
 from mau.parsers.main_parser import MainParser
 from mau.text_buffer.context import Context
 from mau.text_buffer.text_buffer import TextBuffer

@@ -4,7 +4,7 @@ from mau.lexers.arguments_lexer import ArgumentsLexer
 from mau.nodes.arguments import NamedArgumentNode, UnnamedArgumentNode
 from mau.parsers.arguments import set_names_and_defaults
 from mau.parsers.arguments_parser import ArgumentsParser
-from mau.parsers.environment import Environment
+from mau.environment.environment import Environment
 
 from tests.helpers import parser_runner_factory
 

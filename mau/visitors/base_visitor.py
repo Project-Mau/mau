@@ -3,7 +3,7 @@ import logging
 
 import yaml
 from mau.errors import MauError, MauErrorException
-from mau.parsers.environment import Environment
+from mau.environment.environment import Environment
 
 _logger = logging.getLogger(__name__)
 

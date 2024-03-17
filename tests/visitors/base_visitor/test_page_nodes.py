@@ -14,7 +14,7 @@ from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.nodes.toc import CommandTocNode, TocEntryNode
 from mau.visitors.base_visitor import BaseVisitor
-from mau.parsers.environment import Environment
+from mau.environment.environment import Environment
 
 
 def test_horizontal_rule_node():

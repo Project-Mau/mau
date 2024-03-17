@@ -15,7 +15,7 @@ from mau.nodes.inline import (
 )
 from mau.nodes.references import ReferenceNode
 from mau.visitors.base_visitor import BaseVisitor
-from mau.parsers.environment import Environment
+from mau.environment.environment import Environment
 
 
 def test_no_node():

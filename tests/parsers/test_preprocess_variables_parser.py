@@ -2,7 +2,7 @@ import pytest
 from mau.errors import MauErrorException
 from mau.lexers.preprocess_variables_lexer import PreprocessVariablesLexer
 from mau.nodes.inline import TextNode
-from mau.parsers.environment import Environment
+from mau.environment.environment import Environment
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory

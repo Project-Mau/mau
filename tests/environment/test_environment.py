@@ -1,5 +1,5 @@
 import pytest
-from mau.parsers.environment import Environment
+from mau.environment.environment import Environment
 
 
 def test_init():

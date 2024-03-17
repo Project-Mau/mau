@@ -59,7 +59,7 @@ class JinjaVisitor(BaseVisitor):
 
         # This is the environment that uses the internal dict
         self._dict_env = jinja2.Environment(
-            loader=jinja2.DictLoader(self.templates._variables),
+            loader=jinja2.DictLoader(self.templates.asflatdict()),
             **self.environment_options,
         )
 
@@ -143,14 +143,14 @@ class JinjaVisitor(BaseVisitor):
 
     def _visit_macro(self, node, *args, **kwargs):
         base = super()._visit_macro(node)
-        base["templates"] = [f"macro-{node.name}"]
+        base["templates"] = [f"macro.{node.name}"]
 
         return base
 
     def _visit_content(self, node, *args, **kwargs):
         base = super()._visit_content(node)
         base["templates"] = [
-            f"content-{node.content_type}",
+            f"content.{node.content_type}",
             "content",
         ]
 
@@ -159,9 +159,9 @@ class JinjaVisitor(BaseVisitor):
     def _visit_block(self, node, *args, **kwargs):
         base = super()._visit_block(node)
         base["templates"] = [
-            f"block-{node.engine}-{node.blocktype}",
-            f"block-{node.engine}",
-            f"block-{node.blocktype}",
+            f"block.{node.engine}.{node.blocktype}",
+            f"block.{node.engine}",
+            f"block.{node.blocktype}",
             "block",
         ]
 
@@ -182,9 +182,9 @@ class JinjaVisitor(BaseVisitor):
     def _visit_source(self, node, *args, **kwargs):
         base = super()._visit_source(node)
         base["templates"] = [
-            f"source-{node.blocktype}-{node.language}",
-            f"source-{node.language}",
-            f"source-{node.blocktype}",
+            f"source.{node.blocktype}.{node.language}",
+            f"source.{node.language}",
+            f"source.{node.blocktype}",
             "source",
         ]
 
@@ -193,7 +193,7 @@ class JinjaVisitor(BaseVisitor):
     def _visit_reference(self, node, *args, **kwargs):
         base = super()._visit_reference(node)
         base["templates"] = [
-            f"reference-{node.content_type}",
+            f"reference.{node.content_type}",
             "reference",
         ]
 
@@ -202,7 +202,7 @@ class JinjaVisitor(BaseVisitor):
     def _visit_command_references(self, node, *args, **kwargs):
         base = super()._visit_command_references(node)
         base["templates"] = [
-            f"references-{node.content_type}",
+            f"references.{node.content_type}",
             "references",
         ]
 
@@ -211,7 +211,7 @@ class JinjaVisitor(BaseVisitor):
     def _visit_references_entry(self, node, *args, **kwargs):
         base = super()._visit_references_entry(node)
         base["templates"] = [
-            f"references_entry-{node.content_type}",
+            f"references_entry.{node.content_type}",
             "references_entry",
         ]
 

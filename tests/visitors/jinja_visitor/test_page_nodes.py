@@ -27,7 +27,7 @@ def test_page_horizontal_rule_node():
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
 
     visitor = JinjaVisitor(environment)
 
@@ -52,7 +52,7 @@ def test_page_paragraph_node():
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -78,7 +78,7 @@ def test_page_header_node():
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -108,7 +108,7 @@ def test_page_list_node():
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -134,7 +134,7 @@ def test_page_list_node():
 def test_page_content_node():
     templates = {
         "text.j2": "{{ value }}",
-        "content-sometype.j2": (
+        "content.sometype.j2": (
             "{{ title }} - {{ args | join(',') }} - "
             "{% for key, value in kwargs|items %}{{ key }}:{{ value }}{% endfor %} - "
             "{{ tags | join(',') }}"
@@ -142,7 +142,7 @@ def test_page_content_node():
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -169,7 +169,7 @@ def test_content_image_node():
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -205,7 +205,7 @@ def test_page_block_node_standard_block_template():
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -235,12 +235,12 @@ def test_page_block_node_standard_block_template():
 def test_page_block_node_blocktype_template_has_precedence():
     templates = {
         "text.j2": "{{ value }}",
-        "block-someblock.j2": "The blocktype template",
+        "block.someblock.j2": "The blocktype template",
         "block.j2": "The wrong template",
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -267,13 +267,13 @@ def test_page_block_node_blocktype_template_has_precedence():
 def test_page_block_node_engine_template_has_precedence():
     templates = {
         "text.j2": "{{ value }}",
-        "block-someengine.j2": "The engine template",
-        "block-someblock.j2": "The wrong template",
+        "block.someengine.j2": "The engine template",
+        "block.someblock.j2": "The wrong template",
         "block.j2": "The wrong template",
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -300,14 +300,14 @@ def test_page_block_node_engine_template_has_precedence():
 def test_page_block_node_engine_and_blocktype_template_has_precedence():
     templates = {
         "text.j2": "{{ value }}",
-        "block-someengine-someblock.j2": "The engine+block template",
-        "block-someengine.j2": "The wrong template",
-        "block-someblock.j2": "The wrong template",
+        "block.someengine.someblock.j2": "The engine+block template",
+        "block.someengine.j2": "The wrong template",
+        "block.someblock.j2": "The wrong template",
         "block.j2": "The wrong template",
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -345,7 +345,7 @@ def test_page_command_toc_node():
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -385,7 +385,7 @@ def test_page_command_footnotes_node():
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -425,7 +425,7 @@ def test_page_command_references_multiple_nodes():
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
@@ -505,13 +505,13 @@ def test_source_node():
         "text.j2": "{{ value }}",
         "callout.j2": "",
         "callouts_entry.j2": "{{ marker }} - {{ value }}",
-        "source-default-somelang.j2": "The blocktype+language template",
-        "source-somelang.j2": "The language template",
-        "source-default.j2": "The blocktype template",
+        "source.default.somelang.j2": "The blocktype+language template",
+        "source.somelang.j2": "The language template",
+        "source.default.j2": "The blocktype template",
     }
 
     environment = Environment()
-    environment.setvar("mau.visitor.custom_templates", templates)
+    environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
     node = SourceNode(

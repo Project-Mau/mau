@@ -74,6 +74,9 @@ class Environment:
     def asdict(self):
         return nest_flattened_dict(self._variables)
 
+    def asflatdict(self):
+        return self._variables
+
     def __repr__(self):  # pragma: no cover
         return f"{self.asdict()}"
 

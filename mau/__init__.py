@@ -8,10 +8,6 @@ from mau.text_buffer.context import Context
 from mau.text_buffer.text_buffer import TextBuffer
 from mau.visitors.base_visitor import BaseVisitor
 
-# from mau.visitors.html_visitor import HTMLVisitor
-# from mau.visitors.markua_visitor import MarkuaVisitor
-# from mau.visitors.latex_visitor import LatexVisitor
-
 
 # pylint: disable=import-outside-toplevel
 def load_visitors():

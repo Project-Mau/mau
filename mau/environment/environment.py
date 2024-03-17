@@ -43,10 +43,17 @@ class Environment:
         return Environment(self.getvar(namespace))
 
     def update(self, adict, namespace=None):
-        if namespace is None:
-            self._variables = adict
-        else:
-            self._variables[namespace] = adict
+        if not namespace:
+            self._variables.update(adict)
+            return
+
+        try:
+            nspc = self.getvar_nodefault(namespace)
+        except KeyError:
+            self.setvar(namespace, {})
+            nspc = self.getvar(namespace)
+
+        nspc.update(adict)
 
     def asdict(self):
         return self._variables

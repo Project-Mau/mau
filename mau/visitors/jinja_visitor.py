@@ -4,6 +4,7 @@ import jinja2
 
 # from mau.parsers.toc import create_toc
 from mau.visitors.base_visitor import BaseVisitor
+from mau.environment.environment import Environment
 
 _logger = logging.getLogger(__name__)
 
@@ -28,10 +29,11 @@ class JinjaVisitor(BaseVisitor):
     ):
         super().__init__(environment)
 
-        self.templates = {}
-        self.templates.update(self.default_templates)
+        self.templates = Environment(self.default_templates)
 
-        self.templates.update(environment.getvar("mau.visitor.custom_templates", {}))
+        self.templates.update(
+            environment.getnamespace("mau.visitor.custom_templates").asdict()
+        )
 
         self._join_with = {
             "block": "\n",
@@ -57,7 +59,7 @@ class JinjaVisitor(BaseVisitor):
 
         # This is the environment that uses the internal dict
         self._dict_env = jinja2.Environment(
-            loader=jinja2.DictLoader(self.templates),
+            loader=jinja2.DictLoader(self.templates._variables),
             **self.environment_options,
         )
 

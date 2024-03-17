@@ -1,5 +1,45 @@
 import pytest
-from mau.environment.environment import Environment
+from mau.environment.environment import (
+    Environment,
+    flatten_nested_dict,
+    nest_flattened_dict,
+)
+
+
+def test_flatten():
+    nested = {
+        "var1": {
+            "var2": "value2",
+            "var3": {
+                "var4": "value4",
+                "var5": "value5",
+            },
+        },
+    }
+
+    assert flatten_nested_dict(nested) == {
+        "var1.var2": "value2",
+        "var1.var3.var4": "value4",
+        "var1.var3.var5": "value5",
+    }
+
+
+def test_nest():
+    flat = {
+        "var1.var2": "value2",
+        "var1.var3.var4": "value4",
+        "var1.var3.var5": "value5",
+    }
+
+    assert nest_flattened_dict(flat) == {
+        "var1": {
+            "var2": "value2",
+            "var3": {
+                "var4": "value4",
+                "var5": "value5",
+            },
+        },
+    }
 
 
 def test_init():
@@ -20,16 +60,18 @@ def test_init_with_nested_content():
     assert environment.asdict() == {"var1": {"var2": "value2"}}
 
 
-def test_init_with_flat_content_and_namespace():
-    environment = Environment({"var1": "value1", "var2": "value2"}, "test")
-
-    assert environment.asdict() == {"test": {"var1": "value1", "var2": "value2"}}
-
-
-def test_init_with_nested_content_and_namespace():
-    environment = Environment({"var1": {"var2": "value2"}}, "test")
-
-    assert environment.asdict() == {"test": {"var1": {"var2": "value2"}}}
+def test_equality():
+    assert Environment(
+        {
+            "var1": "value1",
+            "var2": "value2",
+        }
+    ) == Environment(
+        {
+            "var1": "value1",
+            "var2": "value2",
+        }
+    )
 
 
 def test_update():
@@ -67,6 +109,23 @@ def test_update_with_namespace_does_not_replace():
 
     assert environment.asdict() == {
         "test": {"var1": "value1", "var2": "value2", "var3": "value3"}
+    }
+
+
+def test_update_deep():
+    environment = Environment({"mau": {"visitor": {"class": "someclass"}}})
+
+    environment.update(
+        {"visitor": {"custom_templates": {"template1": "value1"}}}, "mau"
+    )
+
+    assert environment.asdict() == {
+        "mau": {
+            "visitor": {
+                "class": "someclass",
+                "custom_templates": {"template1": "value1"},
+            },
+        },
     }
 
 
@@ -167,3 +226,5 @@ def test_get_namespace():
     }
 
     assert environment.getnamespace("notthere").asdict() == {}
+
+    assert environment.getnamespace("top.mid").asdict() == {}

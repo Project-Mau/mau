@@ -135,7 +135,7 @@ def main():
     # This is always successful as the list of arguments
     # is generated fromthe list of plugins
     visitor_class = visitors[args.format]
-    environment.setvar("mau.visitor_class", visitor_class)
+    environment.setvar("mau.visitor.class", visitor_class)
 
     # Find out the name of the output file
     output_file = args.output_file or args.input_file.replace(

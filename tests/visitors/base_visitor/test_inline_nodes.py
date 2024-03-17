@@ -15,10 +15,11 @@ from mau.nodes.inline import (
 )
 from mau.nodes.references import ReferenceNode
 from mau.visitors.base_visitor import BaseVisitor
+from mau.parsers.environment import Environment
 
 
 def test_no_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     result = visitor.visit(None)
 
@@ -26,7 +27,7 @@ def test_no_node():
 
 
 def test_unknown_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = TextNode("Just some text.")
     node.node_type = "unknown"
@@ -36,7 +37,7 @@ def test_unknown_node():
 
 
 def test_raw_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = RawNode("Just some text.")
 
@@ -51,7 +52,7 @@ def test_raw_node():
 
 
 def test_text_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = TextNode("Just some text.")
 
@@ -66,7 +67,7 @@ def test_text_node():
 
 
 def test_verbatim_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = VerbatimNode("Just some text.")
 
@@ -81,7 +82,7 @@ def test_verbatim_node():
 
 
 def test_sentence_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = SentenceNode(
         [
@@ -114,7 +115,7 @@ def test_sentence_node():
 
 
 def test_style_node_star():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = StyleNode("star", SentenceNode([TextNode("Just some text.")]))
 
@@ -142,7 +143,7 @@ def test_style_node_star():
 
 
 def test_style_node_underscore():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = StyleNode("underscore", SentenceNode([TextNode("Just some text.")]))
 
@@ -170,7 +171,7 @@ def test_style_node_underscore():
 
 
 def test_style_node_tilde():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = StyleNode("tilde", SentenceNode([TextNode("Just some text.")]))
 
@@ -198,7 +199,7 @@ def test_style_node_tilde():
 
 
 def test_style_node_caret():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = StyleNode("caret", SentenceNode([TextNode("Just some text.")]))
 
@@ -226,7 +227,7 @@ def test_style_node_caret():
 
 
 def test_macro_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = MacroNode("somename", ["arg1", "arg2"], {"key1": "value1"})
 
@@ -243,7 +244,7 @@ def test_macro_node():
 
 
 def test_footnote_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = FootnoteNode(
         content=[TextNode("Just some text.")],
@@ -268,7 +269,7 @@ def test_footnote_node():
 
 
 def test_reference_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = ReferenceNode(
         content_type="somecontent",
@@ -311,7 +312,7 @@ def test_reference_node():
 
 
 def test_class_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = ClassNode(["class1", "class2"], TextNode("Just some text."))
 
@@ -332,7 +333,7 @@ def test_class_node():
 
 
 def test_link_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = LinkNode(target="sometarget", text="sometext")
 
@@ -348,7 +349,7 @@ def test_link_node():
 
 
 def test_image_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = ImageNode(uri="someuri", alt_text="sometext", width="100", height="400")
 
@@ -366,7 +367,7 @@ def test_image_node():
 
 
 def test_list_item_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = ListItemNode("4", TextNode("Just some text."))
 

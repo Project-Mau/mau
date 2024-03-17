@@ -67,7 +67,7 @@ def test_set_and_get_variables_no_default():
     environment = Environment()
 
     with pytest.raises(KeyError):
-        environment.getvar("name.space.var2")
+        environment.getvar_nodefault("name.space.var2")
 
 
 def test_multiple_namespaces():

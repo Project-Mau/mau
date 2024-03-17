@@ -22,21 +22,16 @@ class JinjaVisitor(BaseVisitor):
 
     def __init__(
         self,
+        environment,
         *args,
-        custom_templates=None,
-        templates_directory=None,
-        environment=None,
         **kwds,
     ):
-        super().__init__(environment=environment)
-
-        self.templates_directory = templates_directory
+        super().__init__(environment)
 
         self.templates = {}
         self.templates.update(self.default_templates)
 
-        if custom_templates:
-            self.templates.update(custom_templates)
+        self.templates.update(environment.getvar("mau.visitor.custom_templates", {}))
 
         self._join_with = {
             "block": "\n",
@@ -68,9 +63,10 @@ class JinjaVisitor(BaseVisitor):
 
         # This is the environment that uses files
         # If the templates directory is not defined we fall back to the dict environment
-        if self.templates_directory:  # pragma: no cover
+        templates_directory = environment.getvar("mau.visitor.templates_directory")
+        if templates_directory:  # pragma: no cover
             self._files_env = jinja2.Environment(
-                loader=jinja2.FileSystemLoader(searchpath=self.templates_directory),
+                loader=jinja2.FileSystemLoader(searchpath=templates_directory),
                 **self.environment_options,
             )
         else:

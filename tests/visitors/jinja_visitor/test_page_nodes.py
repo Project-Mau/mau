@@ -13,6 +13,7 @@ from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.nodes.toc import CommandTocNode, TocEntryNode
 from mau.visitors.jinja_visitor import JinjaVisitor
+from mau.parsers.environment import Environment
 
 
 def test_page_horizontal_rule_node():
@@ -25,7 +26,10 @@ def test_page_horizontal_rule_node():
         ),
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -47,7 +51,9 @@ def test_page_paragraph_node():
         ),
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -71,7 +77,9 @@ def test_page_header_node():
         ),
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -99,7 +107,9 @@ def test_page_list_node():
         ),
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1", "start": 4}
@@ -131,7 +141,9 @@ def test_page_content_node():
         ),
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -156,7 +168,9 @@ def test_content_image_node():
         ),
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -190,7 +204,9 @@ def test_page_block_node_standard_block_template():
         ),
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -223,7 +239,9 @@ def test_page_block_node_blocktype_template_has_precedence():
         "block.j2": "The wrong template",
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -254,7 +272,9 @@ def test_page_block_node_engine_template_has_precedence():
         "block.j2": "The wrong template",
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -286,7 +306,9 @@ def test_page_block_node_engine_and_blocktype_template_has_precedence():
         "block.j2": "The wrong template",
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -322,7 +344,9 @@ def test_page_command_toc_node():
         ),
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -360,7 +384,9 @@ def test_page_command_footnotes_node():
         ),
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -398,7 +424,9 @@ def test_page_command_references_multiple_nodes():
         ),
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
@@ -482,7 +510,9 @@ def test_source_node():
         "source-default.j2": "The blocktype template",
     }
 
-    visitor = JinjaVisitor(custom_templates=templates)
+    environment = Environment()
+    environment.setvar("mau.visitor.custom_templates", templates)
+    visitor = JinjaVisitor(environment)
 
     node = SourceNode(
         language="somelang",

@@ -14,10 +14,11 @@ from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.nodes.toc import CommandTocNode, TocEntryNode
 from mau.visitors.base_visitor import BaseVisitor
+from mau.parsers.environment import Environment
 
 
 def test_horizontal_rule_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = HorizontalRuleNode(
         args=["arg1", "arg2"],
@@ -38,7 +39,7 @@ def test_horizontal_rule_node():
 
 
 def test_paragraph_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = ParagraphNode(
         TextNode("Just some text"),
@@ -66,7 +67,7 @@ def test_paragraph_node():
 
 
 def test_header_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = HeaderNode(
         value="Just some text",
@@ -93,7 +94,7 @@ def test_header_node():
 
 
 def test_list_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = ListNode(
         ordered=True,
@@ -133,7 +134,7 @@ def test_list_node():
 
 
 def test_content_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = ContentNode(
         content_type="sometype",
@@ -163,7 +164,7 @@ def test_content_node():
 
 
 def test_content_image_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = ContentImageNode(
         uri="someuri",
@@ -197,7 +198,7 @@ def test_content_image_node():
 
 
 def test_block_node_standard_block_template():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = BlockNode(
         blocktype="someblock",
@@ -251,7 +252,7 @@ def test_block_node_standard_block_template():
 
 
 def test_command_toc_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = CommandTocNode(
         entries=[
@@ -318,7 +319,7 @@ def test_command_toc_node():
 
 
 def test_command_footnotes_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = CommandFootnotesNode(
         entries=[
@@ -381,7 +382,7 @@ def test_command_footnotes_node():
 
 
 def test_command_references():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = CommandReferencesNode(
         content_type=None,
@@ -504,7 +505,7 @@ def test_command_references():
 
 
 def test_source_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = SourceNode(
         language="somelang",
@@ -577,7 +578,7 @@ def test_source_node():
 
 
 def test_document_node():
-    visitor = BaseVisitor()
+    visitor = BaseVisitor(Environment())
 
     node = DocumentNode(
         content=[

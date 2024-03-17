@@ -33,11 +33,11 @@ class BaseVisitor:
     transform = no_aliases_dump
 
     # pylint: disable=unused-argument
-    def __init__(self, *args, environment=None, **kwds):
+    def __init__(self, environment, *args, **kwds):
         self.toc = None
         self.footnotes = None
 
-        self.environment = environment or Environment()
+        self.environment = environment
 
         self._join_with = {}
 

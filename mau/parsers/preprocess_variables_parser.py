@@ -43,7 +43,7 @@ class PreprocessVariablesParser(BaseParser):
         self._get_token(TokenTypes.LITERAL, "}")
 
         try:
-            variable_value = self.environment.getvar(variable_name)
+            variable_value = self.environment.getvar_nodefault(variable_name)
 
             self._save(TextNode(variable_value))
         except KeyError:

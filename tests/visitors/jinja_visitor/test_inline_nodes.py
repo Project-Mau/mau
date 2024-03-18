@@ -20,7 +20,7 @@ from mau.environment.environment import Environment
 def test_default_values():
     visitor = JinjaVisitor(Environment())
 
-    assert visitor.default_templates == {}
+    assert visitor.default_templates == Environment()
     assert visitor.environment_options == {}
     assert visitor.extension == "j2"
     assert visitor.toc is None

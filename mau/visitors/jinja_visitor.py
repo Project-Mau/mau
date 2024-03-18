@@ -9,6 +9,20 @@ from mau.environment.environment import Environment
 _logger = logging.getLogger(__name__)
 
 
+def load_templates_from_path(path, output):
+    """
+    Loads templates fromt he given path into the dictionary `output`.
+    The path is expected to contain files named after the template
+    they contain and subdirectories with the same structure.
+    """
+    for obj in path.iterdir():
+        if obj.is_file():
+            output[obj.name] = obj.read_text()
+        else:
+            output[obj.name] = {}
+            load_templates_from_path(obj, output[obj.name])
+
+
 class TemplateNotFound(ValueError):
     pass
 
@@ -19,7 +33,7 @@ class JinjaVisitor(BaseVisitor):
     transform = None
 
     environment_options = {}
-    default_templates = {}
+    default_templates = Environment()
 
     def __init__(
         self,
@@ -32,7 +46,7 @@ class JinjaVisitor(BaseVisitor):
         self.templates = Environment(self.default_templates)
 
         self.templates.update(
-            environment.getnamespace("mau.visitor.custom_templates").asdict()
+            environment.getnamespace("mau.visitor.custom_templates"),
         )
 
         self._join_with = {

@@ -122,7 +122,7 @@ class MainLexer(BaseLexer):
         return tokens
 
     def _process_include(self):
-        match = rematch(r"^<<( *)([a-z0-9_#\\]+):(.*)?", self._current_line)
+        match = rematch(r"^<<( *)([a-z0-9_#\\\.]+):(.*)?", self._current_line)
 
         if not match:
             return None

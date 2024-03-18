@@ -1,4 +1,9 @@
 from collections.abc import MutableMapping
+from abc import ABC
+
+
+class EnvironmentABC(ABC):
+    pass
 
 
 def flatten_nested_dict(nested, parent_key=None, separator="."):
@@ -37,12 +42,12 @@ def nest_flattened_dict(flat, separator="."):
     return result
 
 
-class Environment:
-    def __init__(self, content=None):
+class Environment(EnvironmentABC):
+    def __init__(self, other=None):
         self._variables = {}
 
-        if content is not None:
-            self._variables = flatten_nested_dict(content)
+        if other is not None:
+            self.update(other)
 
     def setvar(self, key, value):
         self._variables[key] = value
@@ -64,12 +69,19 @@ class Environment:
             }
         )
 
-    def update(self, adict, namespace=None):
-        if not namespace:
-            self._variables.update(flatten_nested_dict(adict))
-            return
+    def update(self, other, namespace=None):
+        if isinstance(other, EnvironmentABC):
+            if not namespace:
+                self._variables.update(other._variables)
+                return
 
-        self._variables.update(flatten_nested_dict({namespace: adict}))
+            self._variables.update(flatten_nested_dict({namespace: other._variables}))
+        else:
+            if not namespace:
+                self._variables.update(flatten_nested_dict(other))
+                return
+
+            self._variables.update(flatten_nested_dict({namespace: other}))
 
     def asdict(self):
         return nest_flattened_dict(self._variables)

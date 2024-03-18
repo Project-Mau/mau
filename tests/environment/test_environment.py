@@ -112,6 +112,22 @@ def test_update_with_namespace_does_not_replace():
     }
 
 
+def test_update_from_other_environment():
+    environment = Environment()
+
+    environment.update(Environment({"var1": "value1", "var2": "value2"}))
+
+    assert environment.asdict() == {"var1": "value1", "var2": "value2"}
+
+
+def test_update_with_namespace_from_other_environment():
+    environment = Environment()
+
+    environment.update(Environment({"var1": "value1", "var2": "value2"}), "test")
+
+    assert environment.asdict() == {"test": {"var1": "value1", "var2": "value2"}}
+
+
 def test_update_deep():
     environment = Environment({"mau": {"visitor": {"class": "someclass"}}})
 

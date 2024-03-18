@@ -5,22 +5,27 @@ import jinja2
 # from mau.parsers.toc import create_toc
 from mau.visitors.base_visitor import BaseVisitor
 from mau.environment.environment import Environment
+from pathlib import Path
 
 _logger = logging.getLogger(__name__)
 
 
-def load_templates_from_path(path, output):
+def load_templates_from_path(path, filt=None):  # pragma: no cover
     """
     Loads templates fromt he given path into the dictionary `output`.
     The path is expected to contain files named after the template
     they contain and subdirectories with the same structure.
     """
+
+    result = {}
+
     for obj in path.iterdir():
         if obj.is_file():
-            output[obj.name] = obj.read_text()
+            result[obj.name] = filt(obj.read_text()) if filt else obj.read_text()
         else:
-            output[obj.name] = {}
-            load_templates_from_path(obj, output[obj.name])
+            result[obj.name] = load_templates_from_path(obj, filt=filt)
+
+    return result
 
 
 class TemplateNotFound(ValueError):
@@ -31,6 +36,7 @@ class JinjaVisitor(BaseVisitor):
     format_code = "jinja"
     extension = "j2"
     transform = None
+    templates_filter = None
 
     environment_options = {}
     default_templates = Environment()
@@ -44,6 +50,15 @@ class JinjaVisitor(BaseVisitor):
         super().__init__(environment)
 
         self.templates = Environment(self.default_templates)
+
+        templates_directory = environment.getvar("mau.visitor.templates_directory")
+        if templates_directory:  # pragma: no cover
+            self.templates.update(
+                load_templates_from_path(
+                    Path.cwd() / Path(templates_directory),
+                    filt=self.templates_filter,
+                )
+            )
 
         self.templates.update(
             environment.getnamespace("mau.visitor.custom_templates"),
@@ -77,27 +92,13 @@ class JinjaVisitor(BaseVisitor):
             **self.environment_options,
         )
 
-        # This is the environment that uses files
-        # If the templates directory is not defined we fall back to the dict environment
-        templates_directory = environment.getvar("mau.visitor.templates_directory")
-        if templates_directory:  # pragma: no cover
-            self._files_env = jinja2.Environment(
-                loader=jinja2.FileSystemLoader(searchpath=templates_directory),
-                **self.environment_options,
-            )
-        else:
-            self._files_env = self._dict_env
-
     def _render(self, template_full_name, **kwargs):
-        # This renders a template using the current environment and the given parameters
-
+        # This renders a template using the current
+        # environment and the given parameters
         try:
-            template = self._files_env.get_template(template_full_name)
-        except jinja2.exceptions.TemplateNotFound:
-            try:
-                template = self._dict_env.get_template(template_full_name)
-            except jinja2.exceptions.TemplateNotFound as exception:
-                raise TemplateNotFound(exception) from exception
+            template = self._dict_env.get_template(template_full_name)
+        except jinja2.exceptions.TemplateNotFound as exception:
+            raise TemplateNotFound(exception) from exception
 
         return template.render(config=self.environment.asdict(), **kwargs)
 

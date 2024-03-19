@@ -162,6 +162,16 @@ class JinjaVisitor(BaseVisitor):
         templates = result.get("templates", [])
         templates.append(node.node_type)
 
+        # Create prefixed templates
+        prefixed_templates = []
+        for prefix in self.environment.getvar("mau.visitor.prefixes", []):
+            prefixed_templates.extend(
+                [f"{prefix}.{template}" for template in templates]
+            )
+
+        # Preprend the prefixed templates
+        templates = prefixed_templates + templates
+
         # The template full name contains the extension
         # with the type of template, e.g. document.txt
         template_full_names = [f"{template}.{self.extension}" for template in templates]

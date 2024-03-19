@@ -49,6 +49,9 @@ class Environment(EnvironmentABC):
         if other is not None:
             self.update(other)
 
+    def clone(self):
+        return self.__class__(self._variables)
+
     def setvar(self, key, value):
         self._variables[key] = value
 

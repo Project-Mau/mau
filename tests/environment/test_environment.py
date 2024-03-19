@@ -145,6 +145,14 @@ def test_update_deep():
     }
 
 
+def test_clone():
+    environment = Environment({"var1": "value1", "var2": "value2"})
+    clone = environment.clone
+
+    assert not clone is environment
+    assert environment.clone().asdict() == {"var1": "value1", "var2": "value2"}
+
+
 def test_get_variable_flat():
     environment = Environment({"var1": "value1"})
 

@@ -3,6 +3,7 @@
 import hashlib
 import re
 
+from mau.environment.environment import Environment
 from mau.lexers.base_lexer import TokenTypes as BLTokenTypes
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
@@ -23,7 +24,6 @@ from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.nodes.toc import CommandTocNode
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.base_parser import BaseParser
-from mau.environment.environment import Environment
 from mau.parsers.footnotes import create_footnotes
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
 from mau.parsers.references import create_references

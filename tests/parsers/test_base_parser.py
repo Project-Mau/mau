@@ -1,11 +1,11 @@
 from unittest.mock import Mock
 
 import pytest
+from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.base_lexer import BaseLexer, TokenTypes
 from mau.parsers.base_parser import BaseParser, TokenError
 from mau.tokens.tokens import Token
-from mau.environment.environment import Environment
 
 from tests.helpers import init_parser_factory
 

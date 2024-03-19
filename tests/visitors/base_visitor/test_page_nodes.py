@@ -1,3 +1,4 @@
+from mau.environment.environment import Environment
 from mau.nodes.footnotes import CommandFootnotesNode, FootnoteNode
 from mau.nodes.inline import ListItemNode, SentenceNode, TextNode
 from mau.nodes.page import (
@@ -14,7 +15,6 @@ from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.nodes.toc import CommandTocNode, TocEntryNode
 from mau.visitors.base_visitor import BaseVisitor
-from mau.environment.environment import Environment
 
 
 def test_horizontal_rule_node():

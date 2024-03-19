@@ -6,9 +6,7 @@ from mau.text_buffer.context import Context
 from mau.text_buffer.text_buffer import TextBuffer
 from mau.tokens.tokens import Token
 
-from tests.helpers import dedent
-
-from tests.helpers import init_lexer_factory, lexer_runner_factory
+from tests.helpers import dedent, init_lexer_factory, lexer_runner_factory
 
 init_lexer = init_lexer_factory(MainLexer)
 

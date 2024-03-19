@@ -2,8 +2,8 @@ import functools
 import logging
 
 import yaml
-from mau.errors import MauError, MauErrorException
 from mau.environment.environment import Environment
+from mau.errors import MauError, MauErrorException
 
 _logger = logging.getLogger(__name__)
 

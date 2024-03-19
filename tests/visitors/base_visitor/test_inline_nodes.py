@@ -1,4 +1,5 @@
 import pytest
+from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
 from mau.nodes.inline import (
@@ -15,7 +16,6 @@ from mau.nodes.inline import (
 )
 from mau.nodes.references import ReferenceNode
 from mau.visitors.base_visitor import BaseVisitor
-from mau.environment.environment import Environment
 
 
 def test_no_node():

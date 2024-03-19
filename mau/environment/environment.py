@@ -1,5 +1,5 @@
-from collections.abc import MutableMapping
 from abc import ABC
+from collections.abc import MutableMapping
 
 
 class EnvironmentABC(ABC):

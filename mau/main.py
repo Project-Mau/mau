@@ -5,10 +5,10 @@ from importlib import metadata
 
 import yaml
 from mau import ConfigurationError, Mau, load_visitors
-from mau.errors import MauErrorException, print_error
 from mau.environment.environment import Environment
-from tabulate import tabulate
+from mau.errors import MauErrorException, print_error
 from mau.nodes.page import DocumentNode
+from tabulate import tabulate
 
 __version__ = metadata.version("mau")
 _logger = logging.getLogger(__name__)

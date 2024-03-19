@@ -1,13 +1,33 @@
 import logging
+from pathlib import Path
 
 import jinja2
+from mau.environment.environment import Environment
 
 # from mau.parsers.toc import create_toc
 from mau.visitors.base_visitor import BaseVisitor
-from mau.environment.environment import Environment
-from pathlib import Path
 
 _logger = logging.getLogger(__name__)
+
+
+# pylint: disable=import-outside-toplevel
+def load_template_providers():  # pragma: no cover
+    """
+    This function loads all the template providers belonging to
+    the group "mau.templates.jinja".
+    """
+
+    import sys
+
+    if sys.version_info < (3, 10):
+        from importlib_metadata import entry_points
+    else:
+        from importlib.metadata import entry_points
+
+    discovered_plugins = entry_points(group="mau.templates")
+
+    # Load the available plugins
+    return {i.name: i.load() for i in discovered_plugins}
 
 
 def load_templates_from_path(path, filt=None):  # pragma: no cover
@@ -49,8 +69,20 @@ class JinjaVisitor(BaseVisitor):
     ):
         super().__init__(environment)
 
+        # Load templates from the visitor plugin
         self.templates = Environment(self.default_templates)
 
+        # Load templates from template provider plugins
+        available_providers = load_template_providers()
+        requested_providers = environment.getvar("mau.visitor.template_providers", [])
+        for provider in requested_providers:  # pragma: no cover
+            if provider not in available_providers:
+                print(f"Template provider {provider} is not available")
+                continue
+
+            self.templates.update(available_providers[provider].templates)
+
+        # Load custom templates provided as files
         templates_directory = environment.getvar("mau.visitor.templates_directory")
         if templates_directory:  # pragma: no cover
             self.templates.update(
@@ -60,6 +92,7 @@ class JinjaVisitor(BaseVisitor):
                 )
             )
 
+        # Load custom templates provided as a dictionary
         self.templates.update(
             environment.getnamespace("mau.visitor.custom_templates"),
         )

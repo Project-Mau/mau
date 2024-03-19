@@ -1,4 +1,5 @@
 import pytest
+from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
 from mau.nodes.inline import (
@@ -14,7 +15,6 @@ from mau.nodes.inline import (
 )
 from mau.nodes.references import ReferenceNode
 from mau.visitors.jinja_visitor import JinjaVisitor
-from mau.environment.environment import Environment
 
 
 def test_default_values():

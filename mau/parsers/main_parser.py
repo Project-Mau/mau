@@ -902,7 +902,7 @@ class MainParser(BaseParser):
             if ":" not in line:
                 self._error(
                     (
-                        "Callout description should be written"
+                        "Callout description should be written "
                         f"as 'name: text'. Missing ':' in '{line}'"
                     )
                 )

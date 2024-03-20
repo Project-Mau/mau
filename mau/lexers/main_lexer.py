@@ -86,7 +86,8 @@ class MainLexer(BaseLexer):
                 lexer = MainLexer(self.environment)
                 lexer.process(text_buffer)
 
-                self.tokens.extend(lexer.tokens)
+                # Remove the last token as it is an EOF
+                self.tokens.extend(lexer.tokens[:-1])
 
     def _process_command_or_directive(self):
         match = rematch(r"::([a-z0-9_#]+):(.*)?", self._current_line)

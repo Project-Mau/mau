@@ -83,6 +83,13 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--profile",
+        dest="profile",
+        help="runs the profiler",
+        action="store_true",
+    )
+
+    parser.add_argument(
         "--version", action="version", version=f"Mau version {__version__}"
     )
 
@@ -153,6 +160,12 @@ def main():
         environment=environment,
     )
 
+    if args.profile:
+        import cProfile, pstats
+
+        profiler = cProfile.Profile()
+        profiler.enable()
+
     # Run the lexer on the input data
     try:
         mau.run_lexer(text)
@@ -188,3 +201,8 @@ def main():
         raise
 
     write_output(output, output_file, transform=visitor_class.transform)
+
+    if args.profile:
+        profiler.disable()
+        stats = pstats.Stats(profiler).sort_stats("cumtime")
+        stats.print_stats(0.1)

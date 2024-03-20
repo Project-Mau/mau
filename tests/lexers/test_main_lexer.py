@@ -566,7 +566,7 @@ def test_import_directive(mock_file):  # pylint: disable=unused-argument
     assert [i.context for i in lex.tokens] == [
         Context(0, 0, "/path/to/file", "just some data"),
         Context(0, 14, "/path/to/file", "just some data"),
-        Context(1, 0, "/path/to/file", ""),
+        Context(1, 0, None),
     ]
 
 

@@ -3,12 +3,13 @@ from unittest.mock import patch
 
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.inline import SentenceNode, TextNode
-from mau.nodes.page import ParagraphNode
+from mau.nodes.page import ContainerNode, ParagraphNode
 from mau.nodes.references import (
     CommandReferencesNode,
     ReferenceNode,
     ReferencesEntryNode,
 )
+from mau.nodes.toc import CommandTocNode
 from mau.parsers.main_parser import MainParser
 from mau.parsers.references import reference_anchor
 
@@ -361,3 +362,83 @@ def test_command_references_filter_content_type(mock_reference_anchor):
             tags=[],
         ),
     ]
+
+
+@patch("mau.parsers.references.reference_anchor")
+def test_references_output(mock_reference_anchor):
+    mock_reference_anchor.return_value = "XXYY"
+
+    source = """
+    [reference, content_type1, name1]
+    ----
+    Content type 1, value 1
+    ----
+
+    This is a paragraph with a reference [reference](content_type1, name1).
+
+    ::references:content_type1
+    """
+
+    parser = runner(source)
+
+    assert parser.output == {
+        "content": ContainerNode(
+            content=[
+                ParagraphNode(
+                    SentenceNode(
+                        [
+                            TextNode("This is a paragraph with a reference "),
+                            ReferenceNode(
+                                "content_type1",
+                                content=[
+                                    ParagraphNode(
+                                        SentenceNode(
+                                            [TextNode("Content type 1, value 1")]
+                                        )
+                                    ),
+                                ],
+                                number=1,
+                                reference_anchor="ref-content_type1-1-XXYY",
+                                content_anchor="cnt-content_type1-1-XXYY",
+                            ),
+                            TextNode("."),
+                        ]
+                    ),
+                    args=[],
+                    kwargs={},
+                ),
+                CommandReferencesNode(
+                    content_type="content_type1",
+                    entries=[
+                        ReferencesEntryNode(
+                            "content_type1",
+                            content=[
+                                ParagraphNode(
+                                    SentenceNode([TextNode("Content type 1, value 1")])
+                                ),
+                            ],
+                            number=1,
+                            reference_anchor="ref-content_type1-1-XXYY",
+                            content_anchor="cnt-content_type1-1-XXYY",
+                        ),
+                    ],
+                    args=[],
+                    kwargs={},
+                    tags=[],
+                ),
+            ]
+        ),
+        "footnotes": [],
+        "references": {
+            ("content_type1", "name1"): ReferencesEntryNode(
+                "content_type1",
+                content=[
+                    ParagraphNode(SentenceNode([TextNode("Content type 1, value 1")])),
+                ],
+                number=1,
+                reference_anchor="ref-content_type1-1-XXYY",
+                content_anchor="cnt-content_type1-1-XXYY",
+            )
+        },
+        "toc": CommandTocNode(entries=[]),
+    }

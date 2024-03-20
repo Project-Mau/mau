@@ -50,7 +50,7 @@ def test_custom_filter_no_filter():
         return nodes
 
     environment = Environment()
-    environment.setvar("mau.custom_filters", {"all_nodes": all_nodes})
+    environment.setvar("mau.parser.custom_filters", {"all_nodes": all_nodes})
 
     parser = runner(source, environment)
 
@@ -113,7 +113,9 @@ def test_custom_filter_extract_tags():
         return [n for n in nodes if "important" in n.tags]
 
     environment = Environment()
-    environment.setvar("mau.custom_filters", {"important_nodes": important_nodes})
+    environment.setvar(
+        "mau.parser.custom_filters", {"important_nodes": important_nodes}
+    )
 
     parser = runner(source, environment)
 

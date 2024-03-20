@@ -14,7 +14,7 @@ _logger = logging.getLogger(__name__)
 def load_template_providers():  # pragma: no cover
     """
     This function loads all the template providers belonging to
-    the group "mau.templates.jinja".
+    the group "mau.templates".
     """
 
     import sys

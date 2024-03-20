@@ -169,7 +169,7 @@ class MainParser(BaseParser):
         # mau.header_anchor_function to override
         # the default one.
         self.header_anchor = self.environment.getvar(
-            "mau.header_anchor_function", header_anchor
+            "mau.parser.header_anchor_function", header_anchor
         )
 
         # The number of nodes in the latest ordered list,
@@ -1195,11 +1195,13 @@ class MainParser(BaseParser):
 
         custom_filters = {}
 
-        for name, func in self.environment.getvar("mau.custom_filters", {}).items():
+        for name, func in self.environment.getvar(
+            "mau.parser.custom_filters", {}
+        ).items():
             custom_filters[name] = func(self.nodes)
 
         wrapper_node_class = self.environment.getvar(
-            "mau.content_wrapper_node_class", ContainerNode
+            "mau.parser.content_wrapper", ContainerNode
         )
 
         self.output.update(

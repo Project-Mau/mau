@@ -41,7 +41,9 @@ def test_custom_header_anchor_function():
     """
 
     environment = Environment()
-    environment.setvar("mau.header_anchor_function", lambda text, level: "XXXXXY")
+    environment.setvar(
+        "mau.parser.header_anchor_function", lambda text, level: "XXXXXY"
+    )
 
     env_runner = parser_runner_factory(MainLexer, MainParser)
 

@@ -145,7 +145,7 @@ def main():
     # Wrap the content with a DocumentNode
     # so that the output can be rendered as
     # a stand-alone document
-    environment.setvar("mau.content_wrapper_node_class", DocumentNode)
+    environment.setvar("mau.parser.content_wrapper", DocumentNode)
 
     # The Mau object configured with what we figured out above.
     mau = Mau(

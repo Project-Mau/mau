@@ -171,7 +171,8 @@ def main():
         mau.run_parser(mau.lexer.tokens)
 
         if args.parseonly:
-            write_output(mau.parser.nodes, output_file)
+            output = "\n".join([str(node) for node in mau.parser.nodes])
+            write_output(output, output_file)
 
             sys.exit(1)
 

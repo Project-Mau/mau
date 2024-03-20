@@ -297,6 +297,14 @@ class MainParser(BaseParser):
         # Retrieve the footnotes
         # The format of this dictionary is
         # {"name": node}
+        text_footnotes = set(text_parser.footnotes.keys())
+        existing_footnotes = set(self.footnote_mentions.keys())
+        duplicate_footnotes = set.intersection(existing_footnotes, text_footnotes)
+
+        if duplicate_footnotes:
+            duplicates_list = ", ".join(duplicate_footnotes)
+            self._error(f"Duplicate footnotes detected: {duplicates_list}")
+
         self.footnote_mentions.update(text_parser.footnotes)
 
         # Retrieve the references

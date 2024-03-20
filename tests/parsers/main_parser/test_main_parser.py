@@ -28,6 +28,7 @@ def test_parse_output():
         "footnotes": [],
         "references": {},
         "toc": CommandTocNode(entries=[]),
+        "custom_filters": {},
     }
 
 

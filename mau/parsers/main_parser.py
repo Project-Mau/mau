@@ -1193,6 +1193,11 @@ class MainParser(BaseParser):
         # Process ToC
         self.process_toc()
 
+        custom_filters = {}
+
+        for name, func in self.environment.getvar("mau.custom_filters", {}).items():
+            custom_filters[name] = func(self.nodes)
+
         wrapper_node_class = self.environment.getvar(
             "mau.content_wrapper_node_class", ContainerNode
         )
@@ -1203,5 +1208,6 @@ class MainParser(BaseParser):
                 "toc": self.toc,
                 "references": self.references,
                 "footnotes": self.footnotes,
+                "custom_filters": custom_filters,
             }
         )

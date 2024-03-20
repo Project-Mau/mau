@@ -441,4 +441,5 @@ def test_references_output(mock_reference_anchor):
             )
         },
         "toc": CommandTocNode(entries=[]),
+        "custom_filters": {},
     }

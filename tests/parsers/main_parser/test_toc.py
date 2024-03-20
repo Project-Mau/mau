@@ -79,4 +79,5 @@ def test_toc(header_anchor_mock):
                 ),
             ]
         ),
+        "custom_filters": {},
     }

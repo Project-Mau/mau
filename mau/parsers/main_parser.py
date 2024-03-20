@@ -623,7 +623,7 @@ class MainParser(BaseParser):
         title = self._pop_title()
 
         # Consume the arguments
-        args, kwargs, _ = self._pop_arguments()
+        args, kwargs, tags = self._pop_arguments()
 
         # The first unnamed argument is the block type
         try:
@@ -802,6 +802,7 @@ class MainParser(BaseParser):
                 preprocessor=preprocessor,
                 args=args,
                 kwargs=kwargs,
+                tags=tags,
             )
         )
 

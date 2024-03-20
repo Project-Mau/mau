@@ -133,6 +133,7 @@ class ContentNode(PageNode):
         title: caption of the image
         args: unnamed arguments
         kwargs: named arguments
+        tags: tags
     """
 
     node_type = "content"
@@ -211,6 +212,7 @@ class BlockNode(PageNode):
         preprocessor: the preprocessor used for this block
         args: unnamed arguments
         kwargs: named arguments
+        tags: tags
     """
 
     node_type = "block"

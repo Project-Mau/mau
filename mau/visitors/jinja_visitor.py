@@ -94,7 +94,7 @@ class JinjaVisitor(BaseVisitor):
 
         # Load custom templates provided as a dictionary
         self.templates.update(
-            environment.getnamespace("mau.visitor.custom_templates"),
+            environment.getvar("mau.visitor.custom_templates", Environment())
         )
 
         self._join_with = {

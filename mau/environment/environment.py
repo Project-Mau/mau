@@ -12,7 +12,7 @@ def flatten_nested_dict(nested, parent_key=None, separator="."):
     for key, value in nested.items():
         key = f"{parent_key}{separator}{key}" if parent_key else key
 
-        if isinstance(value, MutableMapping):
+        if isinstance(value, MutableMapping) and len(value) != 0:
             flat.update(flatten_nested_dict(value, key, separator=separator))
         else:
             flat[key] = value
@@ -53,24 +53,30 @@ class Environment(EnvironmentABC):
         return self.__class__(self._variables)
 
     def setvar(self, key, value):
-        self._variables[key] = value
+        self.update({key: value})
+        # self._variables[key] = value
 
     def getvar(self, key, default=None):
-        return self._variables.get(key, default)
+        try:
+            return self._variables[key]
+        except KeyError:
+            prefix = f"{key}."
+
+            keys = [k for k in self._variables if k.startswith(prefix)]
+
+            if len(keys) != 0:
+                return Environment(
+                    {
+                        k.removeprefix(prefix): v
+                        for k, v in self._variables.items()
+                        if k.startswith(prefix)
+                    }
+                )
+
+            return default
 
     def getvar_nodefault(self, key):
         return self._variables[key]
-
-    def getnamespace(self, namespace):
-        prefix = f"{namespace}."
-
-        return Environment(
-            {
-                k.removeprefix(prefix): v
-                for k, v in self._variables.items()
-                if k.startswith(prefix)
-            }
-        )
 
     def update(self, other, namespace=None):
         if isinstance(other, EnvironmentABC):

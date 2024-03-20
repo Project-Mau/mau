@@ -24,6 +24,18 @@ def test_flatten():
     }
 
 
+def test_flatten_empty():
+    nested = {
+        "var1": {
+            "var2": {},
+        },
+    }
+
+    assert flatten_nested_dict(nested) == {
+        "var1.var2": {},
+    }
+
+
 def test_nest():
     flat = {
         "var1.var2": "value2",
@@ -38,6 +50,18 @@ def test_nest():
                 "var4": "value4",
                 "var5": "value5",
             },
+        },
+    }
+
+
+def test_nest_empty():
+    flat = {
+        "var1.var2": {},
+    }
+
+    assert nest_flattened_dict(flat) == {
+        "var1": {
+            "var2": {},
         },
     }
 
@@ -165,6 +189,12 @@ def test_get_variable_nested():
     assert environment.getvar("var1.var2") == "value2"
 
 
+def test_get_variable_nested_empty():
+    environment = Environment({"var1": {"var2": {}}})
+
+    assert environment.getvar("var1.var2") == {}
+
+
 def test_get_variable_flat_default():
     environment = Environment({"var1": "value1"})
 
@@ -177,20 +207,42 @@ def test_get_variable_nested_default():
     assert environment.getvar("var1.var3", "def") == "def"
 
 
-def test_set_variables_flat():
+def test_set_variable_flat():
     environment = Environment()
 
     environment.setvar("var1", "value1")
 
-    assert environment.asdict() == {"var1": "value1"}
+    assert environment._variables == {"var1": "value1"}
 
 
-def test_set_variables_nested():
+def test_set_variable_nested():
     environment = Environment()
 
     environment.setvar("var1.var2", "value2")
 
-    assert environment.asdict() == {"var1": {"var2": "value2"}}
+    assert environment._variables == {"var1.var2": "value2"}
+
+
+def test_set_variable_dict():
+    environment = Environment()
+
+    environment.setvar("var1", {"var2": "value2"})
+
+    assert environment._variables == {"var1.var2": "value2"}
+
+
+def test_set_variable_empty_dict():
+    environment = Environment()
+
+    environment.setvar("var1", {})
+    environment.setvar("var2", {"var3": {}})
+
+    assert environment._variables == {
+        "var1": {},
+        "var2.var3": {},
+    }
+    assert environment.getvar("var1") == {}
+    assert environment.getvar("var2.var3") == {}
 
 
 def test_asdict():
@@ -225,30 +277,31 @@ def test_get_variable_nested_no_default():
         environment.getvar_nodefault("var1.var2")
 
 
-def test_get_namespace():
+def test_get_variable_is_a_namespace():
     environment = Environment(
         {
             "top": {
                 "middle": {
                     "var1": "value1",
                     "var2": "value2",
+                    "var3": {},
                 }
-            }
+            },
         }
     )
 
-    assert environment.getnamespace("top").asdict() == {
-        "middle": {
-            "var1": "value1",
-            "var2": "value2",
-        },
+    assert environment.getvar("top")._variables == {
+        "middle.var1": "value1",
+        "middle.var2": "value2",
+        "middle.var3": {},
     }
 
-    assert environment.getnamespace("top.middle").asdict() == {
+    assert environment.getvar("top.middle")._variables == {
         "var1": "value1",
         "var2": "value2",
+        "var3": {},
     }
 
-    assert environment.getnamespace("notthere").asdict() == {}
+    assert environment.getvar("notthere") is None
 
-    assert environment.getnamespace("top.mid").asdict() == {}
+    assert environment.getvar("top.mid") is None

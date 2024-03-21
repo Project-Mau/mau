@@ -25,7 +25,7 @@ class MacroNode(Node):
 class MacroClassNode(Node):
     """Text with one or more classes."""
 
-    node_type = "class"
+    node_type = "macro__class"
 
     def __init__(self, classes, content):
         super().__init__()
@@ -44,7 +44,7 @@ class MacroClassNode(Node):
 class MacroLinkNode(Node):
     """This node contains a link."""
 
-    node_type = "link"
+    node_type = "macro__link"
 
     def __init__(self, target, text=None):
         super().__init__()
@@ -63,7 +63,7 @@ class MacroLinkNode(Node):
 class MacroImageNode(Node):
     """This node contains an inline image."""
 
-    node_type = "image"
+    node_type = "macro__image"
 
     def __init__(self, uri, alt_text=None, width=None, height=None):
         super().__init__()

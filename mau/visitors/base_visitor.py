@@ -147,7 +147,7 @@ class BaseVisitor:
             },
         }
 
-    def _visit_class(self, node, *args, **kwargs):
+    def _visit_macro__class(self, node, *args, **kwargs):
         return {
             "data": {
                 "type": node.node_type,
@@ -156,7 +156,7 @@ class BaseVisitor:
             },
         }
 
-    def _visit_link(self, node, *args, **kwargs):
+    def _visit_macro__link(self, node, *args, **kwargs):
         return {
             "data": {
                 "type": node.node_type,
@@ -165,7 +165,7 @@ class BaseVisitor:
             },
         }
 
-    def _visit_image(self, node, *args, **kwargs):
+    def _visit_macro__image(self, node, *args, **kwargs):
         return {
             "data": {
                 "type": node.node_type,

@@ -326,7 +326,7 @@ def test_inline_reference_node():
 def test_inline_class_node():
     templates = {
         "text.j2": "{{ value }}",
-        "class.j2": "{{ classes | join(',') }} - {{ content }}",
+        "macro.class.j2": "{{ classes | join(',') }} - {{ content }}",
     }
 
     environment = Environment()
@@ -343,7 +343,7 @@ def test_inline_class_node():
 def test_inline_link_node():
     templates = {
         "text.j2": "{{ value }}",
-        "link.j2": "{{ target }} - {{ text }}",
+        "macro.link.j2": "{{ target }} - {{ text }}",
     }
 
     environment = Environment()
@@ -360,7 +360,7 @@ def test_inline_link_node():
 def test_inline_image_node():
     templates = {
         "text.j2": "{{ value }}",
-        "image.j2": "{{ uri }} - {{ alt_text }} - {{ width }}x{{ height }}",
+        "macro.image.j2": "{{ uri }} - {{ alt_text }} - {{ width }}x{{ height }}",
     }
 
     environment = Environment()

@@ -162,7 +162,7 @@ class JinjaVisitor(BaseVisitor):
         # as the last choice to allow specialised
         # templates to be applied first
         templates = result.get("templates", [])
-        templates.append(node.node_type)
+        templates.append(node.node_type.replace("__", "."))
 
         # Create prefixed templates
         prefixed_templates = []

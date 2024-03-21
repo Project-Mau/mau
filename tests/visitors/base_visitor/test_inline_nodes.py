@@ -322,7 +322,7 @@ def test_class_node():
 
     assert result == {
         "data": {
-            "type": "class",
+            "type": "macro__class",
             "content": {
                 "data": {
                     "type": "text",
@@ -343,7 +343,7 @@ def test_link_node():
 
     assert result == {
         "data": {
-            "type": "link",
+            "type": "macro__link",
             "text": "sometext",
             "target": "sometarget",
         }
@@ -359,7 +359,7 @@ def test_image_node():
 
     assert result == {
         "data": {
-            "type": "image",
+            "type": "macro__image",
             "uri": "someuri",
             "alt_text": "sometext",
             "width": "100",

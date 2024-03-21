@@ -1,12 +1,9 @@
-import textwrap
 from unittest.mock import patch
 
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import SentenceNode, TextNode
-from mau.nodes.page import ContainerNode, HeaderNode, ParagraphNode
-from mau.nodes.toc import CommandTocNode, TocEntryNode
+from mau.nodes.page import ContainerNode, HeaderNode
+from mau.nodes.toc import TocEntryNode, TocNode
 from mau.parsers.main_parser import MainParser
-from mau.parsers.references import reference_anchor
 
 from tests.helpers import init_parser_factory, parser_runner_factory
 
@@ -35,7 +32,7 @@ def test_toc(header_anchor_mock):
                 HeaderNode("Header 1", "1", "Header 1-XXXXXX"),
                 HeaderNode("Header 1.1", "2", "Header 1.1-XXXXXX"),
                 HeaderNode("Header 2", "1", "Header 2-XXXXXX"),
-                CommandTocNode(
+                TocNode(
                     entries=[
                         TocEntryNode(
                             value="Header 1",
@@ -59,7 +56,7 @@ def test_toc(header_anchor_mock):
         ),
         "footnotes": [],
         "references": {},
-        "toc": CommandTocNode(
+        "toc": TocNode(
             entries=[
                 TocEntryNode(
                     value="Header 1",

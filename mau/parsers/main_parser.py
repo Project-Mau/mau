@@ -7,7 +7,7 @@ from mau.environment.environment import Environment
 from mau.lexers.base_lexer import TokenTypes as BLTokenTypes
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
-from mau.nodes.footnotes import CommandFootnotesNode
+from mau.nodes.footnotes import FootnotesNode
 from mau.nodes.inline import ListItemNode, RawNode
 from mau.nodes.page import (
     BlockNode,
@@ -19,9 +19,9 @@ from mau.nodes.page import (
     ListNode,
     ParagraphNode,
 )
-from mau.nodes.references import CommandReferencesNode
+from mau.nodes.references import ReferencesNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
-from mau.nodes.toc import CommandTocNode
+from mau.nodes.toc import TocNode
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.base_parser import BaseParser
 from mau.parsers.footnotes import create_footnotes
@@ -208,7 +208,7 @@ class MainParser(BaseParser):
             ]
 
     def process_toc(self):
-        self.toc = CommandTocNode(create_toc(self.headers))
+        self.toc = TocNode(create_toc(self.headers))
 
         for node in self.toc_command_nodes:
             node.entries = create_toc(
@@ -427,14 +427,12 @@ class MainParser(BaseParser):
             self.block_names[block_alias] = args
 
         elif name == "toc":
-            node = CommandTocNode(
-                entries=self.headers, args=args, kwargs=kwargs, tags=tags
-            )
+            node = TocNode(entries=self.headers, args=args, kwargs=kwargs, tags=tags)
             self.toc_command_nodes.append(node)
             self._save(node)
 
         elif name == "footnotes":
-            node = CommandFootnotesNode(
+            node = FootnotesNode(
                 entries=self.footnotes, args=args, kwargs=kwargs, tags=tags
             )
 
@@ -447,7 +445,7 @@ class MainParser(BaseParser):
 
             content_type = kwargs.pop("content_type")
 
-            node = CommandReferencesNode(
+            node = ReferencesNode(
                 entries=[],
                 content_type=content_type,
                 args=args,

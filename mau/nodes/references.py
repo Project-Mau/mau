@@ -53,10 +53,10 @@ class ReferencesEntryNode(ReferenceNode):
     node_type = "references_entry"
 
 
-class CommandReferencesNode(PageNode):
+class ReferencesNode(PageNode):
     """This instructs Mau to insert the content of references."""
 
-    node_type = "command_references"
+    node_type = "references"
 
     def __init__(
         self,

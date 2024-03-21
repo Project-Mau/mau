@@ -1,5 +1,5 @@
 from mau.environment.environment import Environment
-from mau.nodes.footnotes import CommandFootnotesNode, FootnoteNode
+from mau.nodes.footnotes import FootnoteNode, FootnotesNode
 from mau.nodes.inline import ListItemNode, SentenceNode, TextNode
 from mau.nodes.page import (
     BlockNode,
@@ -10,9 +10,9 @@ from mau.nodes.page import (
     ListNode,
     ParagraphNode,
 )
-from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
+from mau.nodes.references import ReferencesEntryNode, ReferencesNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
-from mau.nodes.toc import CommandTocNode, TocEntryNode
+from mau.nodes.toc import TocEntryNode, TocNode
 from mau.visitors.jinja_visitor import JinjaVisitor
 
 
@@ -331,7 +331,7 @@ def test_page_block_node_engine_and_blocktype_template_has_precedence():
     assert result == "The engine+block template"
 
 
-def test_page_command_toc_node():
+def test_page_toc_node():
     templates = {
         "text.j2": "{{ value }}",
         "toc.j2": (
@@ -351,7 +351,7 @@ def test_page_command_toc_node():
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
     tags = ["tag1", "tag2"]
-    node = CommandTocNode(
+    node = TocNode(
         entries=[
             TocEntryNode(
                 "Header 1",
@@ -375,7 +375,7 @@ def test_page_command_toc_node():
     )
 
 
-def test_page_command_footnotes_node():
+def test_page_footnotes_node():
     templates = {
         "text.j2": "{{ value }}",
         "footnotes.j2": "{{ entries }}",
@@ -391,7 +391,7 @@ def test_page_command_footnotes_node():
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
     tags = ["tag1", "tag2"]
-    node = CommandFootnotesNode(
+    node = FootnotesNode(
         entries=[
             FootnoteNode(
                 [TextNode("Footnote 1")], "1", "anchor-1", "anchor-1-def"
@@ -412,7 +412,7 @@ def test_page_command_footnotes_node():
     )
 
 
-def test_page_command_references_multiple_nodes():
+def test_page_references_multiple_nodes():
     templates = {
         "sentence.j2": "{{ content }}",
         "paragraph.j2": "{{ content }}",
@@ -431,7 +431,7 @@ def test_page_command_references_multiple_nodes():
     args = ["arg1", "arg2"]
     kwargs = {"key1": "value1"}
     tags = ["tag1", "tag2"]
-    node = CommandReferencesNode(
+    node = ReferencesNode(
         content_type=None,
         entries=[
             ReferencesEntryNode(

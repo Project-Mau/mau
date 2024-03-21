@@ -161,7 +161,8 @@ def main():
     )
 
     if args.profile:
-        import cProfile, pstats
+        import cProfile
+        import pstats
 
         profiler = cProfile.Profile()
         profiler.enable()

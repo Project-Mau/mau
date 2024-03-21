@@ -2,7 +2,6 @@ import functools
 import logging
 
 import yaml
-from mau.environment.environment import Environment
 from mau.errors import MauError, MauErrorException
 
 _logger = logging.getLogger(__name__)
@@ -365,7 +364,7 @@ class BaseVisitor:
             },
         }
 
-    def _visit_command_toc(self, node, *args, **kwargs):
+    def _visit_toc(self, node, *args, **kwargs):
         join_with = self._join_with.get(node.node_type, None)
 
         return {
@@ -383,7 +382,7 @@ class BaseVisitor:
             },
         }
 
-    def _visit_command_footnotes(self, node, *args, **kwargs):
+    def _visit_footnotes(self, node, *args, **kwargs):
         join_with = self._join_with.get(node.node_type, None)
 
         return {
@@ -448,7 +447,7 @@ class BaseVisitor:
             },
         }
 
-    def _visit_command_references(self, node, *args, **kwargs):
+    def _visit_references(self, node, *args, **kwargs):
         join_with = self._join_with.get(node.node_type, None)
 
         return {

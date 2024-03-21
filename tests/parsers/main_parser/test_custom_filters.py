@@ -1,17 +1,17 @@
 # import textwrap
 # from unittest.mock import patch
 
-from mau.lexers.main_lexer import MainLexer
-
-from mau.nodes.inline import SentenceNode, TextNode
-from mau.nodes.page import ContainerNode, HeaderNode, ParagraphNode
-from mau.nodes.toc import CommandTocNode, TocEntryNode
-from mau.parsers.main_parser import MainParser
 from mau.environment.environment import Environment
+from mau.lexers.main_lexer import MainLexer
+from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.page import ContainerNode, ParagraphNode
+from mau.nodes.toc import TocNode
+from mau.parsers.main_parser import MainParser
+
+from tests.helpers import init_parser_factory, parser_runner_factory
 
 # from mau.parsers.references import reference_anchor
 
-from tests.helpers import init_parser_factory, parser_runner_factory
 
 init_parser = init_parser_factory(MainLexer, MainParser)
 
@@ -28,7 +28,7 @@ def test_custom_filters_is_empty_by_default():
         "content": ContainerNode([]),
         "footnotes": [],
         "references": {},
-        "toc": CommandTocNode(entries=[]),
+        "toc": TocNode(entries=[]),
         "custom_filters": {},
     }
 
@@ -91,7 +91,7 @@ def test_custom_filter_no_filter():
         "content": ContainerNode(content=nodes),
         "footnotes": [],
         "references": {},
-        "toc": CommandTocNode(entries=[]),
+        "toc": TocNode(entries=[]),
         "custom_filters": {"all_nodes": nodes},
     }
 
@@ -175,6 +175,6 @@ def test_custom_filter_extract_tags():
         "content": ContainerNode(content=nodes),
         "footnotes": [],
         "references": {},
-        "toc": CommandTocNode(entries=[]),
+        "toc": TocNode(entries=[]),
         "custom_filters": {"important_nodes": important_nodes},
     }

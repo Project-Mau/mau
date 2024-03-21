@@ -1,4 +1,4 @@
-from mau.nodes.footnotes import CommandFootnotesNode, FootnoteNode
+from mau.nodes.footnotes import FootnoteNode, FootnotesNode
 from mau.nodes.inline import TextNode, VerbatimNode
 
 
@@ -40,8 +40,8 @@ def test_footnotes_entry_node():
     assert node.node_type == "footnotes_entry"
 
 
-def test_command_footnotes_node():
-    node = CommandFootnotesNode(
+def test_footnotes_node():
+    node = FootnotesNode(
         entries=[TextNode("somevalue1"), TextNode("somevalue2")],
         args=["value1", "value2"],
         tags=["tag1", "tag2"],
@@ -52,8 +52,8 @@ def test_command_footnotes_node():
     assert node.args == ["value1", "value2"]
     assert node.tags == ["tag1", "tag2"]
     assert node.kwargs == {"key1": "text1", "key2": "text2"}
-    assert node.node_type == "command_footnotes"
-    assert node == CommandFootnotesNode(
+    assert node.node_type == "footnotes"
+    assert node == FootnotesNode(
         entries=[TextNode("somevalue1"), TextNode("somevalue2")],
         args=["value1", "value2"],
         tags=["tag1", "tag2"],

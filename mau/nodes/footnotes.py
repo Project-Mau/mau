@@ -38,10 +38,10 @@ class FootnotesEntryNode(FootnoteNode):
     node_type = "footnotes_entry"
 
 
-class CommandFootnotesNode(PageNode):
+class FootnotesNode(PageNode):
     """This instructs Mau to insert the list of footnotes."""
 
-    node_type = "command_footnotes"
+    node_type = "footnotes"
 
     def __init__(self, entries, args=None, kwargs=None, tags=None):
         super().__init__(args, kwargs, tags)

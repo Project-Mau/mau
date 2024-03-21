@@ -69,6 +69,8 @@ class JinjaVisitor(BaseVisitor):
     ):
         super().__init__(environment)
 
+        self.template_prefixes = self.environment.getvar("mau.visitor.prefixes", [])
+
         # Load templates from the visitor plugin
         self.templates = Environment(self.default_templates)
 
@@ -99,9 +101,9 @@ class JinjaVisitor(BaseVisitor):
 
         self._join_with = {
             "block": "\n",
-            "command_footnotes": "",
-            "command_references": "",
-            "command_toc": "",
+            "footnotes": "",
+            "references": "",
+            "toc": "",
             "container": "",
             "document": "",
             "footnote": "\n",
@@ -164,7 +166,7 @@ class JinjaVisitor(BaseVisitor):
 
         # Create prefixed templates
         prefixed_templates = []
-        for prefix in self.environment.getvar("mau.visitor.prefixes", []):
+        for prefix in self.template_prefixes:
             prefixed_templates.extend(
                 [f"{prefix}.{template}" for template in templates]
             )
@@ -209,7 +211,6 @@ class JinjaVisitor(BaseVisitor):
         base = super()._visit_content(node)
         base["templates"] = [
             f"content.{node.content_type}",
-            "content",
         ]
 
         return base
@@ -220,22 +221,21 @@ class JinjaVisitor(BaseVisitor):
             f"block.{node.engine}.{node.blocktype}",
             f"block.{node.engine}",
             f"block.{node.blocktype}",
-            "block",
         ]
 
         return base
 
-    def _visit_command_toc(self, node, *args, **kwargs):
-        base = super()._visit_command_toc(node)
-        base["templates"] = ["toc"]
+    # def _visit_toc(self, node, *args, **kwargs):
+    #     base = super()._visit_command_toc(node)
+    #     base["templates"] = ["toc"]
 
-        return base
+    #     return base
 
-    def _visit_command_footnotes(self, node, *args, **kwargs):
-        base = super()._visit_command_footnotes(node)
-        base["templates"] = ["footnotes"]
+    # def _visit_command_footnotes(self, node, *args, **kwargs):
+    #     base = super()._visit_command_footnotes(node)
+    #     base["templates"] = ["footnotes"]
 
-        return base
+    #     return base
 
     def _visit_source(self, node, *args, **kwargs):
         base = super()._visit_source(node)
@@ -243,7 +243,6 @@ class JinjaVisitor(BaseVisitor):
             f"source.{node.blocktype}.{node.language}",
             f"source.{node.language}",
             f"source.{node.blocktype}",
-            "source",
         ]
 
         return base
@@ -252,16 +251,14 @@ class JinjaVisitor(BaseVisitor):
         base = super()._visit_reference(node)
         base["templates"] = [
             f"reference.{node.content_type}",
-            "reference",
         ]
 
         return base
 
-    def _visit_command_references(self, node, *args, **kwargs):
-        base = super()._visit_command_references(node)
+    def _visit_references(self, node, *args, **kwargs):
+        base = super()._visit_references(node)
         base["templates"] = [
             f"references.{node.content_type}",
-            "references",
         ]
 
         return base

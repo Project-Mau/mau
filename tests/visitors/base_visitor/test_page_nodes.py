@@ -1,5 +1,5 @@
 from mau.environment.environment import Environment
-from mau.nodes.footnotes import CommandFootnotesNode, FootnoteNode
+from mau.nodes.footnotes import FootnoteNode, FootnotesNode
 from mau.nodes.inline import ListItemNode, SentenceNode, TextNode
 from mau.nodes.page import (
     BlockNode,
@@ -11,9 +11,9 @@ from mau.nodes.page import (
     ListNode,
     ParagraphNode,
 )
-from mau.nodes.references import CommandReferencesNode, ReferencesEntryNode
+from mau.nodes.references import ReferencesEntryNode, ReferencesNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
-from mau.nodes.toc import CommandTocNode, TocEntryNode
+from mau.nodes.toc import TocEntryNode, TocNode
 from mau.visitors.base_visitor import BaseVisitor
 
 
@@ -251,10 +251,10 @@ def test_block_node_standard_block_template():
     }
 
 
-def test_command_toc_node():
+def test_toc_node():
     visitor = BaseVisitor(Environment())
 
-    node = CommandTocNode(
+    node = TocNode(
         entries=[
             TocEntryNode(
                 "Header 1",
@@ -274,7 +274,7 @@ def test_command_toc_node():
 
     assert result == {
         "data": {
-            "type": "command_toc",
+            "type": "toc",
             "entries": [
                 {
                     "data": {
@@ -318,10 +318,10 @@ def test_command_toc_node():
     }
 
 
-def test_command_footnotes_node():
+def test_footnotes_node():
     visitor = BaseVisitor(Environment())
 
-    node = CommandFootnotesNode(
+    node = FootnotesNode(
         entries=[
             FootnoteNode(
                 [TextNode("Footnote 1")], "1", "anchor-1", "anchor-1-def"
@@ -339,7 +339,7 @@ def test_command_footnotes_node():
 
     assert result == {
         "data": {
-            "type": "command_footnotes",
+            "type": "footnotes",
             "entries": [
                 {
                     "data": {
@@ -381,10 +381,10 @@ def test_command_footnotes_node():
     }
 
 
-def test_command_references():
+def test_references():
     visitor = BaseVisitor(Environment())
 
-    node = CommandReferencesNode(
+    node = ReferencesNode(
         content_type=None,
         entries=[
             ReferencesEntryNode(
@@ -499,7 +499,7 @@ def test_command_references():
             ],
             "kwargs": {"key1": "value1"},
             "tags": ["tag1", "tag2"],
-            "type": "command_references",
+            "type": "references",
         }
     }
 

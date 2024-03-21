@@ -4,12 +4,8 @@ from unittest.mock import patch
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.page import ContainerNode, ParagraphNode
-from mau.nodes.references import (
-    CommandReferencesNode,
-    ReferenceNode,
-    ReferencesEntryNode,
-)
-from mau.nodes.toc import CommandTocNode
+from mau.nodes.references import ReferenceNode, ReferencesEntryNode, ReferencesNode
+from mau.nodes.toc import TocNode
 from mau.parsers.main_parser import MainParser
 from mau.parsers.references import reference_anchor
 
@@ -246,7 +242,7 @@ def test_command_references_parse_args():
     parser = runner(source)
 
     assert parser.nodes == [
-        CommandReferencesNode(
+        ReferencesNode(
             content_type="content_type",
             entries=[],
             args=["arg1"],
@@ -331,7 +327,7 @@ def test_command_references_filter_content_type(mock_reference_anchor):
             args=[],
             kwargs={},
         ),
-        CommandReferencesNode(
+        ReferencesNode(
             content_type="content_type1",
             entries=[
                 ReferencesEntryNode(
@@ -407,7 +403,7 @@ def test_references_output(mock_reference_anchor):
                     args=[],
                     kwargs={},
                 ),
-                CommandReferencesNode(
+                ReferencesNode(
                     content_type="content_type1",
                     entries=[
                         ReferencesEntryNode(
@@ -440,6 +436,6 @@ def test_references_output(mock_reference_anchor):
                 content_anchor="cnt-content_type1-1-XXYY",
             )
         },
-        "toc": CommandTocNode(entries=[]),
+        "toc": TocNode(entries=[]),
         "custom_filters": {},
     }

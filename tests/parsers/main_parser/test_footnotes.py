@@ -1,11 +1,13 @@
 import textwrap
 from unittest.mock import patch
 
+import pytest
+from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.footnotes import CommandFootnotesNode, FootnoteNode, FootnotesEntryNode
+from mau.nodes.footnotes import FootnoteNode, FootnotesEntryNode, FootnotesNode
 from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.page import ContainerNode, ParagraphNode
-from mau.nodes.toc import CommandTocNode
+from mau.nodes.toc import TocNode
 from mau.parsers.footnotes import footnote_anchor
 from mau.parsers.main_parser import MainParser
 
@@ -184,7 +186,7 @@ def test_footnotes_output(mock_footnote_anchor):
                 ]
             )
         ),
-        CommandFootnotesNode(
+        FootnotesNode(
             [
                 FootnotesEntryNode(
                     [
@@ -223,6 +225,22 @@ def test_footnotes_output(mock_footnote_anchor):
             ),
         ],
         "references": {},
-        "toc": CommandTocNode(entries=[]),
+        "toc": TocNode(entries=[]),
         "custom_filters": {},
     }
+
+
+def test_footnote_duplication():
+    source = """
+    [footnote, note1]
+    ----
+    This is the content of the footnote
+    ----
+
+    This is a paragraph with a footnote[footnote](note1).
+
+    This is a paragraph with the same footnote[footnote](note1).
+    """
+
+    with pytest.raises(MauErrorException):
+        runner(textwrap.dedent(source))

@@ -28,13 +28,13 @@ class TocEntryNode(PageNode):
         }
 
 
-class CommandTocNode(PageNode):
+class TocNode(PageNode):
     """A Table of Contents command.
 
     This node contains the headers that go into the ToC.
     """
 
-    node_type = "command_toc"
+    node_type = "toc"
 
     def __init__(self, entries, args=None, kwargs=None, tags=None):
         super().__init__(args, kwargs, tags)

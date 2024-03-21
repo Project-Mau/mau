@@ -1,9 +1,5 @@
 from mau.nodes.inline import TextNode, VerbatimNode
-from mau.nodes.references import (
-    CommandReferencesNode,
-    ReferenceNode,
-    ReferencesEntryNode,
-)
+from mau.nodes.references import ReferenceNode, ReferencesEntryNode, ReferencesNode
 
 
 def test_reference_node():
@@ -79,8 +75,8 @@ def test_references_entry_node():
     )
 
 
-def test_command_references_node():
-    node = CommandReferencesNode(
+def test_references_node():
+    node = ReferencesNode(
         content_type="somecontent",
         entries=[TextNode("somevalue1"), TextNode("somevalue2")],
         args=["value1", "value2"],
@@ -93,8 +89,8 @@ def test_command_references_node():
     assert node.args == ["value1", "value2"]
     assert node.tags == ["tag1", "tag2"]
     assert node.kwargs == {"key1": "text1", "key2": "text2"}
-    assert node.node_type == "command_references"
-    assert node == CommandReferencesNode(
+    assert node.node_type == "references"
+    assert node == ReferencesNode(
         content_type="somecontent",
         entries=[TextNode("somevalue1"), TextNode("somevalue2")],
         args=["value1", "value2"],

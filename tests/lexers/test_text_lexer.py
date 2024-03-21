@@ -1,6 +1,5 @@
 from mau.lexers.base_lexer import TokenTypes
 from mau.lexers.text_lexer import TextLexer
-from mau.text_buffer.text_buffer import TextBuffer
 from mau.tokens.tokens import Token
 
 from tests.helpers import init_lexer_factory, lexer_runner_factory

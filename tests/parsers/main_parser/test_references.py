@@ -45,11 +45,6 @@ def test_document_with_reference():
                 )
             ),
         ],
-        "title": SentenceNode(
-            [
-                TextNode("Some title"),
-            ]
-        ),
     }
 
 

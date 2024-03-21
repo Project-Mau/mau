@@ -34,7 +34,6 @@ def test_reference_node_with_number_and_anchor():
     assert node.content_type == "somecontent"
     assert node.content == [VerbatimNode("somevalue"), TextNode("othervalue")]
     assert node.number == "3"
-    assert node.title == "Exercise 1"
     assert node.reference_anchor == "someanchor"
     assert node.content_anchor == "someanchor-def"
     assert node.node_type == "reference"

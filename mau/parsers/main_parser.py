@@ -617,8 +617,11 @@ class MainParser(BaseParser):
                 "Detected unclosed block (possibly before this line)"
             )  # pragma: no cover
 
+        # Create the block
+        block = BlockNode(content, secondary_content)
+
         # Consume the title
-        title = self._pop_title()
+        block.title = self._pop_title()
 
         # Consume the arguments
         args, kwargs, tags = self._pop_arguments()
@@ -639,7 +642,7 @@ class MainParser(BaseParser):
         block_defaults = self.block_defaults.get(subtype, {})
 
         # Now replace the alias with the true block type
-        subtype = self.block_aliases.get(subtype, subtype)
+        block.subtype = self.block_aliases.get(subtype, subtype)
 
         # Assign names
         args, kwargs = self._set_names_and_defaults(
@@ -656,6 +659,7 @@ class MainParser(BaseParser):
 
             if classes:
                 classes = classes.split(",")
+        block.classes = classes
 
         # Extract condition if present and process it
         condition = kwargs.pop("condition", None)
@@ -686,129 +690,117 @@ class MainParser(BaseParser):
                 return True
 
         # Extract the preprocessor
-        preprocessor = kwargs.pop("preprocessor", "none")
+        block.preprocessor = kwargs.pop("preprocessor", "none")
 
         # Extract the engine
-        engine = kwargs.pop("engine", "default")
+        block.engine = kwargs.pop("engine", "default")
 
-        if engine == "source":
-            # Engine "source" extracts the content (source code),
-            # the callouts, and the highlights.
-            # The default language is "text".
+        block.args = args
+        block.kwargs = kwargs
+        block.tags = tags
 
-            self._parse_source_engine(
-                subtype, content, secondary_content, title, kwargs
-            )
-
-            return True
-
-        if engine == "footnote":
-            name = kwargs.pop("name")
-
-            current_context = self._current_token.context
-
-            environment = self.environment
-
-            content_parser = MainParser.analyse(
-                "\n".join(content),
-                current_context,
-                environment,
-            )
-
-            content = content_parser.nodes
-
-            self.footnote_data[name] = {
-                "content": content,
-            }
-
-            return True
-
-        if engine == "reference":
-            content_type = kwargs["type"]
-            name = kwargs["name"]
-
-            current_context = self._current_token.context
-
-            environment = self.environment
-
-            content_parser = MainParser.analyse(
-                "\n".join(content),
-                current_context,
-                environment,
-            )
-
-            content = content_parser.nodes
-
-            self.reference_data[(content_type, name)] = {
-                "content": content,
-                "title": title,
-            }
-
-            return True
-
-        # Create the node parameters according to the engine
-        if engine == "raw":
-            # Engine "raw" doesn't process the content,
-            # so we just pass it untouched in the form of
-            # a RawNode per line.
-            content = [RawNode(line) for line in content]
-            secondary_content = [RawNode(line) for line in secondary_content]
-        elif engine in ["default", "mau"]:
-            # Both engines parse content and secondary content
-            # using a new parser but the default one should merge
-            # headers and footnotes into the current one.
-
-            current_context = self._current_token.context
-
-            if engine == "default":
-                environment = self.environment
-            else:
-                environment = Environment()
-
-            content_parser = MainParser.analyse(
-                "\n".join(content),
-                current_context,
-                environment,
-            )
-
-            secondary_content_parser = MainParser.analyse(
-                "\n".join(secondary_content),
-                current_context,
-                environment,
-            )
-
-            content = content_parser.nodes
-            secondary_content = secondary_content_parser.nodes
-
-            if engine == "default":
-                self.footnote_mentions.update(content_parser.footnote_mentions)
-                self.footnote_data.update(content_parser.footnote_data)
-                self.headers.extend(content_parser.headers)
-                self.reference_mentions.update(content_parser.reference_mentions)
-                self.reference_data.update(content_parser.reference_data)
+        if block.engine == "source":
+            self._parse_source_engine(block)
+        elif block.engine == "footnote":
+            self._parse_footnote_engine(block)
+        elif block.engine == "reference":
+            self._parse_reference_engine(block)
+        elif block.engine == "raw":
+            self._parse_raw_engine(block)
+        elif block.engine == "default":
+            self._parse_default_engine(block)
+        elif block.engine == "mau":
+            self._parse_mau_engine(block)
         else:
-            self._error(f"Engine {engine} is not available")
-
-        self._save(
-            BlockNode(
-                content=content,
-                secondary_content=secondary_content,
-                subtype=subtype,
-                classes=classes,
-                title=title,
-                engine=engine,
-                preprocessor=preprocessor,
-                args=args,
-                kwargs=kwargs,
-                tags=tags,
-            )
-        )
+            self._error(f"Engine {block.engine} is not available")
 
         return True
 
-    def _parse_source_engine(
-        self, subtype, content, secondary_content, title, kwargs
-    ):  # pylint: disable=too-many-locals
+    def _parse_footnote_engine(self, block):
+        name = block.kwargs.pop("name")
+
+        content_parser = MainParser.analyse(
+            "\n".join(block.content),
+            self._current_token.context,
+            self.environment,
+        )
+
+        self.footnote_data[name] = {
+            "content": content_parser.nodes,
+        }
+
+    def _parse_reference_engine(self, block):
+        content_type = block.kwargs["type"]
+        name = block.kwargs["name"]
+
+        content_parser = MainParser.analyse(
+            "\n".join(block.content),
+            self._current_token.context,
+            self.environment,
+        )
+
+        self.reference_data[(content_type, name)] = {"content": content_parser.nodes}
+
+    def _parse_raw_engine(self, block):
+        # Engine "raw" doesn't process the content,
+        # so we just pass it untouched in the form of
+        # a RawNode per line.
+        block.content = [RawNode(line) for line in block.content]
+        block.secondary_content = [RawNode(line) for line in block.secondary_content]
+
+        self._save(block)
+
+    def _parse_default_engine(self, block):
+        current_context = self._current_token.context
+
+        environment = self.environment
+
+        content_parser = MainParser.analyse(
+            "\n".join(block.content),
+            current_context,
+            environment,
+        )
+
+        secondary_content_parser = MainParser.analyse(
+            "\n".join(block.secondary_content),
+            current_context,
+            environment,
+        )
+
+        block.content = content_parser.nodes
+        block.secondary_content = secondary_content_parser.nodes
+
+        self.footnote_mentions.update(content_parser.footnote_mentions)
+        self.footnote_data.update(content_parser.footnote_data)
+        self.headers.extend(content_parser.headers)
+        self.reference_mentions.update(content_parser.reference_mentions)
+        self.reference_data.update(content_parser.reference_data)
+
+        self._save(block)
+
+    def _parse_mau_engine(self, block):
+        current_context = self._current_token.context
+
+        environment = Environment()
+
+        content_parser = MainParser.analyse(
+            "\n".join(block.content),
+            current_context,
+            environment,
+        )
+
+        secondary_content_parser = MainParser.analyse(
+            "\n".join(block.secondary_content),
+            current_context,
+            environment,
+        )
+
+        block.content = content_parser.nodes
+        block.secondary_content = secondary_content_parser.nodes
+
+        self._save(block)
+
+    def _parse_source_engine(self, block):  # pylint: disable=too-many-locals
         # Parse a source block in the form
         #
         # [source, language, attributes...]
@@ -844,14 +836,14 @@ class MainParser(BaseParser):
         # is one of the langauges supported by that tool.
 
         # Get the delimiter for callouts (":" by default)
-        delimiter = kwargs.pop("callouts", ":")
+        delimiter = block.kwargs.pop("callouts", ":")
 
         # A list that contains callout markers in
         # the form (linenum,name)
         callout_markers = []
 
         # Get the marker for highlighted lines ("@" by default)
-        highlight_marker = kwargs.pop("highlight", "@")
+        highlight_marker = block.kwargs.pop("highlight", "@")
 
         # A list of highlighted lines
         highlighted_lines = []
@@ -863,7 +855,7 @@ class MainParser(BaseParser):
         # later to be sure.
         lines_with_callouts = [
             (linenum, line)
-            for linenum, line in enumerate(content)
+            for linenum, line in enumerate(block.content)
             if line.endswith(delimiter)
         ]
 
@@ -882,7 +874,7 @@ class MainParser(BaseParser):
             callout_name = splits[-1]
             line = delimiter.join(splits[:-1])
 
-            content[linenum] = line
+            block.content[linenum] = line
 
             # Check if we want to just highlight the line
             if callout_name == highlight_marker:
@@ -897,7 +889,7 @@ class MainParser(BaseParser):
         # If there was secondary content it should be formatted
         # with callout names followed by colon and the
         # callout text.
-        for line in secondary_content:
+        for line in block.secondary_content:
             if ":" not in line:
                 self._error(
                     (
@@ -919,7 +911,7 @@ class MainParser(BaseParser):
         # Escape characters are preserved by source blocks as anything
         # else, but in this case the character should be removed.
         textlines = []
-        for line in content:
+        for line in block.content:
             if line.startswith(r"\::#"):
                 line = line[1:]
 
@@ -927,13 +919,13 @@ class MainParser(BaseParser):
 
         self._save(
             SourceNode(
-                subtype=subtype,
+                subtype=block.subtype,
                 code=textlines,
-                language=kwargs["language"],
+                language=block.kwargs["language"],
                 callouts=callout_contents,
                 highlights=highlighted_lines,
                 markers=callout_markers,
-                title=title,
+                title=block.title,
             )
         )
 

@@ -3,8 +3,6 @@ from mau.nodes.page import PageNode
 
 
 class ReferenceNode(Node):
-    """Reference to stored content."""
-
     node_type = "reference"
 
     def __init__(
@@ -45,6 +43,12 @@ class ReferenceNode(Node):
             self.reference_anchor,
             self.content_anchor,
         )
+
+
+class MacroReferenceNode(ReferenceNode):
+    """Reference to stored content."""
+
+    node_type = "reference"
 
 
 class ReferencesEntryNode(ReferenceNode):

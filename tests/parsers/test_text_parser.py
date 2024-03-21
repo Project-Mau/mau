@@ -1,10 +1,12 @@
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import (
-    ClassNode,
-    ImageNode,
-    LinkNode,
+from mau.nodes.macros import (
+    MacroClassNode,
+    MacroImageNode,
+    MacroLinkNode,
     MacroNode,
+)
+from mau.nodes.inline import (
     SentenceNode,
     StyleNode,
     TextNode,
@@ -476,7 +478,7 @@ def test_macro_link():
     expected = [
         SentenceNode(
             [
-                LinkNode("https://somedomain.org/the/path", "link text"),
+                MacroLinkNode("https://somedomain.org/the/path", "link text"),
             ]
         ),
     ]
@@ -490,7 +492,7 @@ def test_macro_link_without_text():
     expected = [
         SentenceNode(
             [
-                LinkNode(
+                MacroLinkNode(
                     "https://somedomain.org/the/path", "https://somedomain.org/the/path"
                 ),
             ]
@@ -506,7 +508,7 @@ def test_macro_mailto():
     expected = [
         SentenceNode(
             [
-                LinkNode("mailto:info@projectmau.org", "info@projectmau.org"),
+                MacroLinkNode("mailto:info@projectmau.org", "info@projectmau.org"),
             ]
         ),
     ]
@@ -520,7 +522,7 @@ def test_macro_mailto_custom_text():
     expected = [
         SentenceNode(
             [
-                LinkNode("mailto:info@projectmau.org", "my email"),
+                MacroLinkNode("mailto:info@projectmau.org", "my email"),
             ]
         ),
     ]
@@ -559,7 +561,7 @@ def test_single_class():
         SentenceNode(
             [
                 TextNode("Some text "),
-                ClassNode(
+                MacroClassNode(
                     ["classname"],
                     SentenceNode(
                         [
@@ -581,7 +583,7 @@ def test_multiple_classes():
         SentenceNode(
             [
                 TextNode("Some text "),
-                ClassNode(
+                MacroClassNode(
                     ["classname1", "classname2"],
                     SentenceNode(
                         [
@@ -602,7 +604,7 @@ def test_parse_class_with_rich_text():
     expected = [
         SentenceNode(
             [
-                ClassNode(
+                MacroClassNode(
                     ["classname"],
                     SentenceNode(
                         [
@@ -628,7 +630,7 @@ def test_macro_image():
     expected = [
         SentenceNode(
             [
-                ImageNode("/the/path.jpg"),
+                MacroImageNode("/the/path.jpg"),
             ]
         ),
     ]
@@ -642,7 +644,7 @@ def test_macro_image_with_alt_text():
     expected = [
         SentenceNode(
             [
-                ImageNode("/the/path.jpg", alt_text="alt name"),
+                MacroImageNode("/the/path.jpg", alt_text="alt name"),
             ]
         ),
     ]
@@ -656,7 +658,9 @@ def test_macro_image_with_width_and_height():
     expected = [
         SentenceNode(
             [
-                ImageNode("/the/path.jpg", alt_text=None, width="1200", height="600"),
+                MacroImageNode(
+                    "/the/path.jpg", alt_text=None, width="1200", height="600"
+                ),
             ]
         ),
     ]

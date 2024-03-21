@@ -1,9 +1,11 @@
-from mau.nodes.inline import (
-    ClassNode,
-    ImageNode,
-    LinkNode,
-    ListItemNode,
+from mau.nodes.macros import (
+    MacroClassNode,
+    MacroImageNode,
+    MacroLinkNode,
     MacroNode,
+)
+from mau.nodes.inline import (
+    ListItemNode,
     RawNode,
     SentenceNode,
     StyleNode,
@@ -73,41 +75,41 @@ def test_macro_node():
 
 
 def test_class_node():
-    node = ClassNode(["class1", "class2"], TextNode("othervalue"))
+    node = MacroClassNode(["class1", "class2"], TextNode("othervalue"))
 
     assert node.classes == ["class1", "class2"]
     assert node.content == TextNode("othervalue")
     assert node.node_type == "class"
-    assert node == ClassNode(["class1", "class2"], TextNode("othervalue"))
+    assert node == MacroClassNode(["class1", "class2"], TextNode("othervalue"))
 
 
 def test_link_node():
-    node = LinkNode("atarget", "sometext")
+    node = MacroLinkNode("atarget", "sometext")
 
     assert node.target == "atarget"
     assert node.text == "sometext"
     assert node.node_type == "link"
-    assert node == LinkNode("atarget", "sometext")
+    assert node == MacroLinkNode("atarget", "sometext")
 
 
 def test_link_node_no_text():
-    node = LinkNode("atarget")
+    node = MacroLinkNode("atarget")
 
     assert node.target == "atarget"
     assert node.text is None
     assert node.node_type == "link"
-    assert node == LinkNode("atarget")
+    assert node == MacroLinkNode("atarget")
 
 
 def test_image_node():
-    node = ImageNode("someuri", "somealttext", "width", "height")
+    node = MacroImageNode("someuri", "somealttext", "width", "height")
 
     assert node.uri == "someuri"
     assert node.alt_text == "somealttext"
     assert node.width == "width"
     assert node.height == "height"
     assert node.node_type == "image"
-    assert node == ImageNode("someuri", "somealttext", "width", "height")
+    assert node == MacroImageNode("someuri", "somealttext", "width", "height")
 
 
 def test_list_item_node():

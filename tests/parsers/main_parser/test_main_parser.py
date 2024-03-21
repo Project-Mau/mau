@@ -3,7 +3,8 @@ from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.footnotes import FootnotesNode
-from mau.nodes.inline import LinkNode, SentenceNode, StyleNode, TextNode
+from mau.nodes.macros import MacroLinkNode
+from mau.nodes.inline import SentenceNode, StyleNode, TextNode
 from mau.nodes.page import (
     ContainerNode,
     DocumentNode,
@@ -157,7 +158,7 @@ def test_parse_paragraph_starting_with_a_macro():
         ParagraphNode(
             SentenceNode(
                 [
-                    LinkNode(target="http://some.where", text="This"),
+                    MacroLinkNode(target="http://some.where", text="This"),
                     TextNode(" is the link I want"),
                 ]
             )

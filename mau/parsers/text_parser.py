@@ -3,11 +3,13 @@ import itertools
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import (
-    ClassNode,
-    ImageNode,
-    LinkNode,
+from mau.nodes.macros import (
+    MacroClassNode,
+    MacroImageNode,
+    MacroLinkNode,
     MacroNode,
+)
+from mau.nodes.inline import (
     SentenceNode,
     StyleNode,
     TextNode,
@@ -181,7 +183,7 @@ class TextParser(BaseParser):
         if text is None:
             text = target
 
-        return LinkNode(target=target, text=text)
+        return MacroLinkNode(target=target, text=text)
 
     def _parse_macro_mailto(self, args, kwargs):
         """
@@ -199,7 +201,7 @@ class TextParser(BaseParser):
         if text is None:
             text = email
 
-        return LinkNode(target, text)
+        return MacroLinkNode(target, text)
 
     def _parse_macro_class(self, args, kwargs):
         """
@@ -222,7 +224,7 @@ class TextParser(BaseParser):
         # Multiple classes are separated by commas
         classes = kwargs["classes"].split(",")
 
-        return ClassNode(classes, result)
+        return MacroClassNode(classes, result)
 
     def _parse_macro_image(self, args, kwargs):
         """
@@ -238,7 +240,7 @@ class TextParser(BaseParser):
             {"alt_text": None, "width": None, "height": None},
         )
 
-        return ImageNode(
+        return MacroImageNode(
             uri=kwargs.get("uri"),
             alt_text=kwargs.get("alt_text"),
             width=kwargs.get("width"),

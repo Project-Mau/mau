@@ -3,8 +3,6 @@ from mau.nodes.page import PageNode
 
 
 class FootnoteNode(Node):
-    """A footnote created inside a piece of text."""
-
     node_type = "footnote"
 
     def __init__(
@@ -30,6 +28,12 @@ class FootnoteNode(Node):
         return FootnotesEntryNode(
             self.content, self.number, self.reference_anchor, self.content_anchor
         )
+
+
+class MacroFootnoteNode(FootnoteNode):
+    """A footnote created inside a piece of text."""
+
+    node_type = "footnote"
 
 
 class FootnotesEntryNode(FootnoteNode):

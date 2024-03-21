@@ -2,12 +2,14 @@ import pytest
 from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import (
-    ClassNode,
-    ImageNode,
-    LinkNode,
-    ListItemNode,
+from mau.nodes.macros import (
+    MacroClassNode,
+    MacroImageNode,
+    MacroLinkNode,
     MacroNode,
+)
+from mau.nodes.inline import (
+    ListItemNode,
     SentenceNode,
     StyleNode,
     TextNode,
@@ -331,7 +333,7 @@ def test_inline_class_node():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = ClassNode(["class1", "class2"], TextNode("Just some text."))
+    node = MacroClassNode(["class1", "class2"], TextNode("Just some text."))
 
     result = visitor.visit(node)
 
@@ -348,7 +350,7 @@ def test_inline_link_node():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = LinkNode(target="sometarget", text="sometext")
+    node = MacroLinkNode(target="sometarget", text="sometext")
 
     result = visitor.visit(node)
 
@@ -365,7 +367,7 @@ def test_inline_image_node():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = ImageNode(uri="someuri", alt_text="sometext", width="100", height="400")
+    node = MacroImageNode(uri="someuri", alt_text="sometext", width="100", height="400")
 
     result = visitor.visit(node)
 

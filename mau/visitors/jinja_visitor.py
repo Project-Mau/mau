@@ -255,7 +255,6 @@ class JinjaVisitor(BaseVisitor):
         base = super()._visit_references_entry(node)
         base["templates"] = [
             f"references_entry.{node.content_type}",
-            "references_entry",
         ]
 
         return base

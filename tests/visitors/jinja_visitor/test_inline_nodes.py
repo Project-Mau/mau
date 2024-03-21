@@ -180,7 +180,7 @@ def test_inline_style_node_star():
     templates = {
         "text.j2": "{{ value }}",
         "sentence.j2": "{{ content }}",
-        "star.j2": "*{{ content }}*",
+        "style.star.j2": "*{{ content }}*",
     }
 
     environment = Environment()
@@ -198,7 +198,7 @@ def test_inline_style_node_underscore():
     templates = {
         "text.j2": "{{ value }}",
         "sentence.j2": "{{ content }}",
-        "underscore.j2": "_{{ content }}_",
+        "style.underscore.j2": "_{{ content }}_",
     }
 
     environment = Environment()
@@ -216,7 +216,7 @@ def test_inline_style_node_tilde():
     templates = {
         "text.j2": "{{ value }}",
         "sentence.j2": "{{ content }}",
-        "tilde.j2": "~{{ content }}~",
+        "style.tilde.j2": "~{{ content }}~",
     }
 
     environment = Environment()
@@ -234,7 +234,7 @@ def test_inline_style_node_caret():
     templates = {
         "text.j2": "{{ value }}",
         "sentence.j2": "{{ content }}",
-        "caret.j2": "^{{ content }}^",
+        "style.caret.j2": "^{{ content }}^",
     }
 
     environment = Environment()

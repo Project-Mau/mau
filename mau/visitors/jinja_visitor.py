@@ -197,7 +197,7 @@ class JinjaVisitor(BaseVisitor):
 
     def _visit_style(self, node, *args, **kwargs):
         base = super()._visit_style(node)
-        base["templates"] = [node.value]
+        base["templates"] = [f"style.{node.value}"]
 
         return base
 
@@ -224,18 +224,6 @@ class JinjaVisitor(BaseVisitor):
         ]
 
         return base
-
-    # def _visit_toc(self, node, *args, **kwargs):
-    #     base = super()._visit_command_toc(node)
-    #     base["templates"] = ["toc"]
-
-    #     return base
-
-    # def _visit_command_footnotes(self, node, *args, **kwargs):
-    #     base = super()._visit_command_footnotes(node)
-    #     base["templates"] = ["footnotes"]
-
-    #     return base
 
     def _visit_source(self, node, *args, **kwargs):
         base = super()._visit_source(node)

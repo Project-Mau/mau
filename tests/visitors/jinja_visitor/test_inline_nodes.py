@@ -9,7 +9,6 @@ from mau.nodes.macros import (
     MacroNode,
 )
 from mau.nodes.inline import (
-    ListItemNode,
     SentenceNode,
     StyleNode,
     TextNode,
@@ -372,20 +371,3 @@ def test_inline_image_node():
     result = visitor.visit(node)
 
     assert result == "someuri - sometext - 100x400"
-
-
-def test_inline_list_item_node():
-    templates = {
-        "text.j2": "{{ value }}",
-        "list_item.j2": "{{ level }} - {{ content }}",
-    }
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
-
-    node = ListItemNode("4", TextNode("Just some text."))
-
-    result = visitor.visit(node)
-
-    assert result == "4 - Just some text."

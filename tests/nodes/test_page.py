@@ -7,7 +7,6 @@ from mau.nodes.page import (
     DocumentNode,
     HeaderNode,
     HorizontalRuleNode,
-    ListNode,
     PageNode,
     ParagraphNode,
 )
@@ -95,18 +94,6 @@ def test_header_node():
         tags=["tag1", "tag2"],
         kwargs={"key1": "text1", "key2": "text2"},
     )
-
-
-def test_list_node():
-    node = ListNode(ordered=True, items=[], main_node=False)
-
-    assert node.ordered is True
-    assert node.items == []
-    assert node.main_node is False
-    assert node.args == []
-    assert node.kwargs == {}
-    assert node.node_type == "list"
-    assert node == ListNode(ordered=True, items=[], main_node=False)
 
 
 def test_content_node():

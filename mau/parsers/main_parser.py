@@ -8,7 +8,8 @@ from mau.lexers.base_lexer import TokenTypes as BLTokenTypes
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
 from mau.nodes.footnotes import FootnotesNode
-from mau.nodes.inline import ListItemNode, RawNode
+from mau.nodes.lists import ListItemNode, ListNode
+from mau.nodes.inline import RawNode
 from mau.nodes.page import (
     BlockNode,
     ContainerNode,
@@ -16,7 +17,6 @@ from mau.nodes.page import (
     ContentNode,
     HeaderNode,
     HorizontalRuleNode,
-    ListNode,
     ParagraphNode,
 )
 from mau.nodes.references import ReferencesNode

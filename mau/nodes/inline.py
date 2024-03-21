@@ -71,22 +71,3 @@ class StyleNode(Node):
             "value": self.value,
             "content": self.content,
         }
-
-
-class ListItemNode(Node):
-    """An entry in a list."""
-
-    node_type = "list_item"
-
-    def __init__(self, level, content):
-        super().__init__()
-        self.level = level
-        self.content = content
-
-    @property
-    def _content(self):
-        return {
-            "type": self.node_type,
-            "level": self.level,
-            "content": self.content,
-        }

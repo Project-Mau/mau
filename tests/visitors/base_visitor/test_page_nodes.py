@@ -1,6 +1,6 @@
 from mau.environment.environment import Environment
 from mau.nodes.footnotes import FootnoteNode, FootnotesNode
-from mau.nodes.inline import ListItemNode, SentenceNode, TextNode
+from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.page import (
     BlockNode,
     ContentImageNode,
@@ -8,7 +8,6 @@ from mau.nodes.page import (
     DocumentNode,
     HeaderNode,
     HorizontalRuleNode,
-    ListNode,
     ParagraphNode,
 )
 from mau.nodes.references import ReferencesEntryNode, ReferencesNode
@@ -88,46 +87,6 @@ def test_header_node():
             "anchor": "someanchor",
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
-            "tags": ["tag1", "tag2"],
-        }
-    }
-
-
-def test_list_node():
-    visitor = BaseVisitor(Environment())
-
-    node = ListNode(
-        ordered=True,
-        items=[ListItemNode("4", TextNode("Just some text."))],
-        main_node=True,
-        args=["arg1", "arg2"],
-        kwargs={"key1": "value1", "start": 4},
-        tags=["tag1", "tag2"],
-    )
-
-    result = visitor.visit(node)
-
-    assert result == {
-        "data": {
-            "type": "list",
-            "items": [
-                {
-                    "data": {
-                        "type": "list_item",
-                        "level": 4,
-                        "content": {
-                            "data": {
-                                "type": "text",
-                                "value": "Just some text.",
-                            }
-                        },
-                    }
-                }
-            ],
-            "main_node": True,
-            "ordered": True,
-            "args": ["arg1", "arg2"],
-            "kwargs": {"key1": "value1", "start": 4},
             "tags": ["tag1", "tag2"],
         }
     }

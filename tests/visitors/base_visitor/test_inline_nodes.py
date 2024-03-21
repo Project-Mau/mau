@@ -9,7 +9,6 @@ from mau.nodes.macros import (
     MacroNode,
 )
 from mau.nodes.inline import (
-    ListItemNode,
     RawNode,
     SentenceNode,
     StyleNode,
@@ -364,26 +363,5 @@ def test_image_node():
             "alt_text": "sometext",
             "width": "100",
             "height": "400",
-        }
-    }
-
-
-def test_list_item_node():
-    visitor = BaseVisitor(Environment())
-
-    node = ListItemNode("4", TextNode("Just some text."))
-
-    result = visitor.visit(node)
-
-    assert result == {
-        "data": {
-            "type": "list_item",
-            "level": 4,
-            "content": {
-                "data": {
-                    "type": "text",
-                    "value": "Just some text.",
-                }
-            },
         }
     }

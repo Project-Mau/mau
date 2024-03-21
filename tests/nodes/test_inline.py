@@ -1,5 +1,4 @@
 from mau.nodes.inline import (
-    ListItemNode,
     RawNode,
     SentenceNode,
     StyleNode,
@@ -56,12 +55,3 @@ def test_style_node():
     assert node.content == TextNode("othervalue")
     assert node.node_type == "style"
     assert node == StyleNode("mystyle", TextNode("othervalue"))
-
-
-def test_list_item_node():
-    node = ListItemNode("3", "somecontent")
-
-    assert node.level == "3"
-    assert node.content == "somecontent"
-    assert node.node_type == "list_item"
-    assert node == ListItemNode("3", "somecontent")

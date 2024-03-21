@@ -91,38 +91,6 @@ class HeaderNode(PageNode):
         }
 
 
-class ListNode(PageNode):
-    """A list."""
-
-    node_type = "list"
-
-    def __init__(
-        self,
-        ordered,
-        items,
-        main_node=False,
-        args=None,
-        kwargs=None,
-        tags=None,
-    ):
-        super().__init__(args, kwargs, tags)
-        self.ordered = ordered
-        self.items = items
-        self.main_node = main_node
-
-    @property
-    def _content(self):
-        return {
-            "type": self.node_type,
-            "ordered": self.ordered,
-            "items": self.items,
-            "main_node": self.main_node,
-            "args": self.args,
-            "kwargs": self.kwargs,
-            "tags": self.tags,
-        }
-
-
 class ContentNode(PageNode):
     """Content included in the page.
 

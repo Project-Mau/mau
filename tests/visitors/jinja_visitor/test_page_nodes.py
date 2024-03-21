@@ -1,13 +1,12 @@
 from mau.environment.environment import Environment
 from mau.nodes.footnotes import FootnoteNode, FootnotesNode
-from mau.nodes.inline import ListItemNode, SentenceNode, TextNode
+from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.page import (
     BlockNode,
     ContentImageNode,
     ContentNode,
     HeaderNode,
     HorizontalRuleNode,
-    ListNode,
     ParagraphNode,
 )
 from mau.nodes.references import ReferencesEntryNode, ReferencesNode
@@ -93,41 +92,6 @@ def test_page_header_node():
     assert (
         result
         == "Just some text - 3 - someanchor - arg1,arg2 - key1:value1 - tag1,tag2"
-    )
-
-
-def test_page_list_node():
-    templates = {
-        "text.j2": "{{ value }}",
-        "list_item.j2": "{{ level }}:{{ content }}",
-        "list.j2": (
-            "{{ ordered }} - {{ items }} - {{ main_node }} - {{ args | join(',') }} - "
-            "{{ kwargs|items|map('join', '=')|join(',') }} - {{ tags | join(',') }} - "
-            "{{ kwargs.start }}"
-        ),
-    }
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
-
-    args = ["arg1", "arg2"]
-    kwargs = {"key1": "value1", "start": 4}
-    tags = ["tag1", "tag2"]
-    node = ListNode(
-        True,
-        [ListItemNode("4", TextNode("Just some text."))],
-        True,
-        args=args,
-        kwargs=kwargs,
-        tags=tags,
-    )
-
-    result = visitor.visit(node)
-
-    assert (
-        result
-        == "True - 4:Just some text. - True - arg1,arg2 - key1=value1,start=4 - tag1,tag2 - 4"
     )
 
 

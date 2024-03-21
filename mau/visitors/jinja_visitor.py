@@ -218,9 +218,9 @@ class JinjaVisitor(BaseVisitor):
     def _visit_block(self, node, *args, **kwargs):
         base = super()._visit_block(node)
         base["templates"] = [
-            f"block.{node.engine}.{node.blocktype}",
+            f"block.{node.engine}.{node.subtype}",
             f"block.{node.engine}",
-            f"block.{node.blocktype}",
+            f"block.{node.subtype}",
         ]
 
         return base
@@ -228,9 +228,9 @@ class JinjaVisitor(BaseVisitor):
     def _visit_source(self, node, *args, **kwargs):
         base = super()._visit_source(node)
         base["templates"] = [
-            f"source.{node.blocktype}.{node.language}",
+            f"source.{node.subtype}.{node.language}",
             f"source.{node.language}",
-            f"source.{node.blocktype}",
+            f"source.{node.subtype}",
         ]
 
         return base

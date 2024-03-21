@@ -20,7 +20,7 @@ def test_source_empty_block():
     """
 
     assert runner(source).nodes == [
-        SourceNode(blocktype="default", code=[]),
+        SourceNode(subtype="default", code=[]),
     ]
 
 
@@ -105,7 +105,7 @@ def test_source_explicit_engine():
 
     assert runner(source).nodes == [
         SourceNode(
-            blocktype="myblock",
+            subtype="myblock",
             language="somelang",
             code=[
                 RawNode("import os"),

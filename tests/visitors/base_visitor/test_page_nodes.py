@@ -201,7 +201,7 @@ def test_block_node_standard_block_template():
     visitor = BaseVisitor(Environment())
 
     node = BlockNode(
-        blocktype="someblock",
+        subtype="someblock",
         content=[TextNode("my content")],
         secondary_content=[TextNode("my secondary content")],
         classes=["class1", "class2"],
@@ -218,7 +218,7 @@ def test_block_node_standard_block_template():
     assert result == {
         "data": {
             "type": "block",
-            "blocktype": "someblock",
+            "subtype": "someblock",
             "content": [
                 {
                     "data": {
@@ -530,7 +530,7 @@ def test_source_node():
     assert result == {
         "data": {
             "type": "source",
-            "blocktype": "default",
+            "subtype": "default",
             "callouts": [
                 {
                     "data": {

@@ -138,15 +138,15 @@ def test_content_image_node():
 
 
 def test_block_node():
-    node = BlockNode(blocktype="sometype", content=[], secondary_content=[])
+    node = BlockNode(subtype="sometype", content=[], secondary_content=[])
 
-    assert node.blocktype == "sometype"
+    assert node.subtype == "sometype"
     assert node.content == []
     assert node.secondary_content == []
     assert node.args == []
     assert node.kwargs == {}
     assert node.node_type == "block"
-    assert node == BlockNode(blocktype="sometype", content=[], secondary_content=[])
+    assert node == BlockNode(subtype="sometype", content=[], secondary_content=[])
 
 
 def test_container_node():

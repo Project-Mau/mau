@@ -16,7 +16,7 @@ runner = parser_runner_factory(MainLexer, MainParser)
 
 def test_attributes_block():
     source = """
-    [blocktype,myattr1=value1]
+    [subtype,myattr1=value1]
     ----
     This is a simple line of text
     followed by another line of text
@@ -27,7 +27,7 @@ def test_attributes_block():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -61,7 +61,7 @@ def test_attributes_can_contain_variables():
     source = """
     :value:42
 
-    [blocktype,myattr1={value}]
+    [subtype,myattr1={value}]
     ----
     This is a simple line of text
     followed by another line of text
@@ -72,7 +72,7 @@ def test_attributes_can_contain_variables():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -105,14 +105,14 @@ def test_attributes_can_contain_variables():
 def test_parse_block_title_and_attributes():
     source = """
     .Just a title
-    [blocktype, name1=value1, name2=value2]
+    [subtype, name1=value1, name2=value2]
     ----
     ----
     """
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[],
             secondary_content=[],
             classes=[],
@@ -132,18 +132,18 @@ def test_parse_block_title_and_attributes():
 def test_parse_block_title_and_attributes_are_reset():
     source = """
     .Just a title
-    [blocktype1, name1=value1, name2=value2]
+    [subtype1, name1=value1, name2=value2]
     ----
     ----
 
-    [blocktype2]
+    [subtype2]
     ----
     ----
     """
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype1",
+            subtype="subtype1",
             content=[],
             secondary_content=[],
             classes=[],
@@ -158,7 +158,7 @@ def test_parse_block_title_and_attributes_are_reset():
             kwargs={"name1": "value1", "name2": "value2"},
         ),
         BlockNode(
-            blocktype="blocktype2",
+            subtype="subtype2",
             content=[],
             secondary_content=[],
             classes=[],
@@ -173,14 +173,14 @@ def test_parse_block_title_and_attributes_are_reset():
 
 def test_block_classes_single_class():
     source = """
-    [blocktype,classes=cls1]
+    [subtype,classes=cls1]
     ----
     ----
     """
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[],
             secondary_content=[],
             classes=["cls1"],
@@ -195,14 +195,14 @@ def test_block_classes_single_class():
 
 def test_block_classes_multiple_classes():
     source = """
-    [blocktype,classes="cls1,cls2"]
+    [subtype,classes="cls1,cls2"]
     ----
     ----
     """
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[],
             secondary_content=[],
             classes=["cls1", "cls2"],
@@ -217,7 +217,7 @@ def test_block_classes_multiple_classes():
 
 def test_block_engine():
     source = """
-    [blocktype,engine=someengine]
+    [subtype,engine=someengine]
     ----
     ----
     """
@@ -252,7 +252,7 @@ def test_block_raw_engine():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="block",
+            subtype="block",
             content=[
                 RawNode("Raw content"),
                 RawNode("on multiple lines"),
@@ -289,7 +289,7 @@ def test_block_default_engine_adds_headers_to_global_toc(mock_header_anchor):
     assert par.nodes == [
         HeaderNode("Global header", "1", "XXYY"),
         BlockNode(
-            blocktype="someblock",
+            subtype="someblock",
             content=[
                 HeaderNode("Block header", "1", "XXYY"),
             ],
@@ -321,7 +321,7 @@ def test_block_positive_condition_matches():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="block",
+            subtype="block",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -367,7 +367,7 @@ def test_block_negative_condition_matches():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="block",
+            subtype="block",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -438,7 +438,7 @@ def test_block_condition_can_use_variable_namespace():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="block",
+            subtype="block",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -511,7 +511,7 @@ def test_command_defblock_single_arg():
 
 def test_block_definitions_are_used():
     source = """
-    ::defblock:alias, blocktype, name1=value1, name2=value2
+    ::defblock:alias, subtype, name1=value1, name2=value2
 
     [alias]
     ----
@@ -520,7 +520,7 @@ def test_block_definitions_are_used():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[],
             secondary_content=[],
             classes=[],
@@ -535,7 +535,7 @@ def test_block_definitions_are_used():
 
 def test_block_definitions_local_kwargs_overwrite_defined_ones():
     source = """
-    ::defblock:alias, blocktype, name1=value1, name2=value2
+    ::defblock:alias, subtype, name1=value1, name2=value2
 
     [alias, name1=value99]
     ----
@@ -544,7 +544,7 @@ def test_block_definitions_local_kwargs_overwrite_defined_ones():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[],
             secondary_content=[],
             classes=[],
@@ -563,7 +563,7 @@ def test_block_definitions_local_args_are_used():
     # blocks cannot have unnamed arguments.
 
     source = """
-    ::defblock:alias, blocktype, name1=value1, name2=value2
+    ::defblock:alias, subtype, name1=value1, name2=value2
 
     [alias, attr1, name1=value99]
     ----
@@ -572,7 +572,7 @@ def test_block_definitions_local_args_are_used():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[],
             secondary_content=[],
             classes=[],
@@ -591,7 +591,7 @@ def test_block_definitions_unnamed_args_are_used_as_names():
     # unnamed arguments passed to the block.
 
     source = """
-    ::defblock:alias, blocktype, attr1, attr2
+    ::defblock:alias, subtype, attr1, attr2
 
     [alias, value1, value2]
     ----
@@ -600,7 +600,7 @@ def test_block_definitions_unnamed_args_are_used_as_names():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[],
             secondary_content=[],
             classes=[],
@@ -619,7 +619,7 @@ def test_block_definitions_unnamed_and_named_args():
     # kwargs if not redefined.
 
     source = """
-    ::defblock:alias, blocktype, attr1, attr2, attr3=value3
+    ::defblock:alias, subtype, attr1, attr2, attr3=value3
 
     [alias, value1, value2]
     ----
@@ -628,7 +628,7 @@ def test_block_definitions_unnamed_and_named_args():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[],
             secondary_content=[],
             classes=[],
@@ -647,7 +647,7 @@ def test_block_definitions_no_values_for_unnamed_args():
     # when the block is created.
 
     source = """
-    ::defblock:alias, blocktype, attr1, attr2, attr3=value3
+    ::defblock:alias, subtype, attr1, attr2, attr3=value3
 
     [alias]
     ----
@@ -664,7 +664,7 @@ def test_block_definitions_values_without_unnamed_args():
     # specified in the block definition.
 
     source = """
-    ::defblock:alias, blocktype, attr3=value3
+    ::defblock:alias, subtype, attr3=value3
 
     [alias, value1, value2]
     ----
@@ -673,7 +673,7 @@ def test_block_definitions_values_without_unnamed_args():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="blocktype",
+            subtype="subtype",
             content=[],
             secondary_content=[],
             classes=[],

@@ -147,15 +147,15 @@ class MainParser(BaseParser):
         #     self.variables["mau"].get("block_definitions", {}).items()
         # ):
         #     try:
-        #         blocktype = block_definition["blocktype"]
-        #         self.block_aliases[alias] = blocktype
+        #         subtype = block_definition["subtype"]
+        #         self.block_aliases[alias] = subtype
         #     except KeyError:
         #         raise ConfigurationError(
-        #             f"Block definition '{alias}' is missing key 'blocktype'"
+        #             f"Block definition '{alias}' is missing key 'subtype'"
         #         )
 
         #     try:
-        #         self.block_defaults[blocktype] = block_definition["kwargs"]
+        #         self.block_defaults[subtype] = block_definition["kwargs"]
         #     except KeyError:
         #         raise ConfigurationError(
         #             f"Block definition '{alias}' is missing key 'kwargs'"
@@ -416,7 +416,7 @@ class MainParser(BaseParser):
             # the alias and the block type.
             if len(args) < 2:
                 self._error(
-                    "Block definitions require at least two unnamed arguments: ALIAS and BLOCKTYPE"
+                    "Block definitions require at least two unnamed arguments: ALIAS and SUBTYPE"
                 )
 
             block_alias = args.pop(0)
@@ -625,21 +625,21 @@ class MainParser(BaseParser):
 
         # The first unnamed argument is the block type
         try:
-            blocktype = args.pop(0)
+            subtype = args.pop(0)
         except IndexError:
-            blocktype = "default"
+            subtype = "default"
 
-        # If there is a block alias for blocktype replace it
-        # otherwise use the blocktype we already have
+        # If there is a block alias for subtype replace it
+        # otherwise use the subtype we already have
 
         # Retrieve the block names and defaults for the
         # specific type of block
 
-        block_names = self.block_names.get(blocktype, [])
-        block_defaults = self.block_defaults.get(blocktype, {})
+        block_names = self.block_names.get(subtype, [])
+        block_defaults = self.block_defaults.get(subtype, {})
 
         # Now replace the alias with the true block type
-        blocktype = self.block_aliases.get(blocktype, blocktype)
+        subtype = self.block_aliases.get(subtype, subtype)
 
         # Assign names
         args, kwargs = self._set_names_and_defaults(
@@ -697,7 +697,7 @@ class MainParser(BaseParser):
             # The default language is "text".
 
             self._parse_source_engine(
-                blocktype, content, secondary_content, title, kwargs
+                subtype, content, secondary_content, title, kwargs
             )
 
             return True
@@ -791,9 +791,9 @@ class MainParser(BaseParser):
 
         self._save(
             BlockNode(
-                blocktype=blocktype,
                 content=content,
                 secondary_content=secondary_content,
+                subtype=subtype,
                 classes=classes,
                 title=title,
                 engine=engine,
@@ -807,7 +807,7 @@ class MainParser(BaseParser):
         return True
 
     def _parse_source_engine(
-        self, blocktype, content, secondary_content, title, kwargs
+        self, subtype, content, secondary_content, title, kwargs
     ):  # pylint: disable=too-many-locals
         # Parse a source block in the form
         #
@@ -927,7 +927,7 @@ class MainParser(BaseParser):
 
         self._save(
             SourceNode(
-                blocktype=blocktype,
+                subtype=subtype,
                 code=textlines,
                 language=kwargs["language"],
                 callouts=callout_contents,

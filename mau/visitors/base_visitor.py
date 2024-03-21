@@ -270,13 +270,13 @@ class BaseVisitor:
         return {
             "data": {
                 "type": node.node_type,
-                "blocktype": node.blocktype,
                 "content": self.visitlist(
                     node.content, *args, join_with=join_with, **kwargs
                 ),
                 "secondary_content": self.visitlist(
                     node.secondary_content, *args, join_with=join_with, **kwargs
                 ),
+                "subtype": node.subtype,
                 "classes": node.classes,
                 "title": self.visit(node.title, *args, **kwargs),
                 "engine": node.engine,
@@ -313,8 +313,8 @@ class BaseVisitor:
         return {
             "data": {
                 "type": node.node_type,
-                "blocktype": node.blocktype,
                 "code": code,
+                "subtype": node.subtype,
                 "language": node.language,
                 "callouts": self.visitlist(node.callouts, *args, **kwargs),
                 "highlights": node.highlights,

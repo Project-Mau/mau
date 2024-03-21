@@ -197,7 +197,7 @@ def test_page_block_node_standard_block_template():
     templates = {
         "text.j2": "{{ value }}",
         "block.j2": (
-            "{{ blocktype }} - {{ content }} - {{ secondary_content }} - "
+            "{{ subtype }} - {{ content }} - {{ secondary_content }} - "
             "{{ classes | join(',') }} - {{ title }} - {{ args | join(',') }} - "
             "{% for key, value in kwargs|items %}{{ key }}:{{ value }}{% endfor %} - "
             "{{ tags | join(',') }}"
@@ -212,7 +212,7 @@ def test_page_block_node_standard_block_template():
     kwargs = {"key1": "value1"}
     tags = ["tag1", "tag2"]
     node = BlockNode(
-        blocktype="someblock",
+        subtype="someblock",
         content=[TextNode("my content")],
         secondary_content=[TextNode("my secondary content")],
         classes=["class1", "class2"],
@@ -232,10 +232,10 @@ def test_page_block_node_standard_block_template():
     )
 
 
-def test_page_block_node_blocktype_template_has_precedence():
+def test_page_block_node_subtype_template_has_precedence():
     templates = {
         "text.j2": "{{ value }}",
-        "block.someblock.j2": "The blocktype template",
+        "block.someblock.j2": "The subtype template",
         "block.j2": "The wrong template",
     }
 
@@ -247,7 +247,7 @@ def test_page_block_node_blocktype_template_has_precedence():
     kwargs = {"key1": "value1"}
     tags = ["tag1", "tag2"]
     node = BlockNode(
-        blocktype="someblock",
+        subtype="someblock",
         content=[TextNode("my content")],
         secondary_content=[TextNode("my secondary content")],
         classes=["class1", "class2"],
@@ -261,7 +261,7 @@ def test_page_block_node_blocktype_template_has_precedence():
 
     result = visitor.visit(node)
 
-    assert result == "The blocktype template"
+    assert result == "The subtype template"
 
 
 def test_page_block_node_engine_template_has_precedence():
@@ -280,7 +280,7 @@ def test_page_block_node_engine_template_has_precedence():
     kwargs = {"key1": "value1"}
     tags = ["tag1", "tag2"]
     node = BlockNode(
-        blocktype="someblock",
+        subtype="someblock",
         content=[TextNode("my content")],
         secondary_content=[TextNode("my secondary content")],
         classes=["class1", "class2"],
@@ -297,7 +297,7 @@ def test_page_block_node_engine_template_has_precedence():
     assert result == "The engine template"
 
 
-def test_page_block_node_engine_and_blocktype_template_has_precedence():
+def test_page_block_node_engine_and_subtype_template_has_precedence():
     templates = {
         "text.j2": "{{ value }}",
         "block.someengine.someblock.j2": "The engine+block template",
@@ -314,7 +314,7 @@ def test_page_block_node_engine_and_blocktype_template_has_precedence():
     kwargs = {"key1": "value1"}
     tags = ["tag1", "tag2"]
     node = BlockNode(
-        blocktype="someblock",
+        subtype="someblock",
         content=[TextNode("my content")],
         secondary_content=[TextNode("my secondary content")],
         classes=["class1", "class2"],
@@ -505,9 +505,9 @@ def test_source_node():
         "text.j2": "{{ value }}",
         "callout.j2": "",
         "callouts_entry.j2": "{{ marker }} - {{ value }}",
-        "source.default.somelang.j2": "The blocktype+language template",
+        "source.default.somelang.j2": "The subtype+language template",
         "source.somelang.j2": "The language template",
-        "source.default.j2": "The blocktype template",
+        "source.default.j2": "The subtype template",
     }
 
     environment = Environment()
@@ -534,4 +534,4 @@ def test_source_node():
 
     result = visitor.visit(node)
 
-    assert result == "The blocktype+language template"
+    assert result == "The subtype+language template"

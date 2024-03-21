@@ -219,9 +219,9 @@ class BlockNode(PageNode):
 
     def __init__(
         self,
-        blocktype,
         content,
         secondary_content,
+        subtype=None,
         classes=None,
         title=None,
         engine=None,
@@ -231,7 +231,7 @@ class BlockNode(PageNode):
         tags=None,
     ):
         super().__init__(args, kwargs, tags)
-        self.blocktype = blocktype
+        self.subtype = subtype
         self.content = content
         self.secondary_content = secondary_content
         self.title = title
@@ -243,7 +243,7 @@ class BlockNode(PageNode):
     def _content(self):
         return {
             "type": self.node_type,
-            "blocktype": self.blocktype,
+            "subtype": self.subtype,
             "content": self.content,
             "secondary_content": self.secondary_content,
             "title": self.title,

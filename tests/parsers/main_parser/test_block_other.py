@@ -20,7 +20,7 @@ def test_admonition():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="admonition",
+            subtype="admonition",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -52,7 +52,7 @@ def test_parse_block_quote_attribution_in_secondary_content():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="quote",
+            subtype="quote",
             content=[
                 ParagraphNode(
                     SentenceNode(

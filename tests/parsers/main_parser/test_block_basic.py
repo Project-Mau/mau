@@ -20,7 +20,7 @@ def test_parse_block_with_empty_body():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="default",
+            subtype="default",
             content=[],
             secondary_content=[],
             classes=[],
@@ -42,7 +42,7 @@ def test_parse_block_content():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="default",
+            subtype="default",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -73,7 +73,7 @@ def test_parse_block_content_variables():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="default",
+            subtype="default",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -104,7 +104,7 @@ def test_parse_block_content_external_variables():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="default",
+            subtype="default",
             content=[
                 ParagraphNode(
                     SentenceNode(
@@ -142,7 +142,7 @@ def test_parse_block_secondary_content():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="default",
+            subtype="default",
             content=[],
             secondary_content=[
                 ParagraphNode(
@@ -185,10 +185,10 @@ def test_parse_block_inside_block():
 
     assert runner(source).nodes == [
         BlockNode(
-            blocktype="default",
+            subtype="default",
             content=[
                 BlockNode(
-                    blocktype="default",
+                    subtype="default",
                     content=[],
                     secondary_content=[],
                     classes=[],

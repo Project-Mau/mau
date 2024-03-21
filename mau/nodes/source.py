@@ -60,8 +60,8 @@ class SourceNode(PageNode):
 
     def __init__(
         self,
-        blocktype="default",
         code=None,
+        subtype="default",
         language="text",
         callouts=None,
         delimiter=":",
@@ -75,8 +75,8 @@ class SourceNode(PageNode):
         tags=None,
     ):
         super().__init__(args, kwargs, tags)
-        self.blocktype = blocktype
         self.code = code or []
+        self.subtype = subtype
         self.language = language
         self.callouts = callouts or []
         self.markers = markers or []
@@ -90,7 +90,7 @@ class SourceNode(PageNode):
     def _content(self):
         return {
             "type": self.node_type,
-            "blocktype": self.blocktype,
+            "subtype": self.subtype,
             "code": self.code,
             "language": self.language,
             "callouts": self.callouts,

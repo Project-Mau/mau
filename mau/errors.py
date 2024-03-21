@@ -5,7 +5,7 @@ class MauErrorException(ValueError):
     """
 
     def __init__(self, error):
-        super().__init__()
+        super().__init__(error.message)
 
         self.error = error
 

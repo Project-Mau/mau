@@ -72,11 +72,13 @@ class HeaderNode(PageNode):
         value,
         level,
         anchor,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
     ):
         super().__init__(args, kwargs, tags)
+        self.subtype = subtype
         self.value = value
         self.level = level
         self.anchor = anchor
@@ -85,6 +87,7 @@ class HeaderNode(PageNode):
     def _content(self):
         return {
             "type": self.node_type,
+            "subtype": self.subtype,
             "value": self.value,
             "level": self.level,
             "anchor": self.anchor,

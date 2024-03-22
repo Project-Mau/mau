@@ -113,7 +113,7 @@ def test_attributes_header(header_anchor_mock):
     header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
 
     source = """
-    [value1,someattr1=somevalue1,someattr2=somevalue2]
+    [arg1,key1=value1]
     = Header
     """
 
@@ -122,8 +122,8 @@ def test_attributes_header(header_anchor_mock):
             "Header",
             "1",
             "Header-XXXXXX",
-            args=["value1"],
-            kwargs={"someattr1": "somevalue1", "someattr2": "somevalue2"},
+            args=["arg1"],
+            kwargs={"key1": "value1"},
         ),
     ]
 
@@ -133,7 +133,7 @@ def test_single_tag_header(header_anchor_mock):
     header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
 
     source = """
-    [value1, #tag1, value2,someattr1=somevalue1,someattr2=somevalue2]
+    [arg1, #tag1, key1=value1]
     = Header
     """
 
@@ -142,19 +142,19 @@ def test_single_tag_header(header_anchor_mock):
             "Header",
             "1",
             "Header-XXXXXX",
-            args=["value1", "value2"],
-            kwargs={"someattr1": "somevalue1", "someattr2": "somevalue2"},
+            args=["arg1"],
+            kwargs={"key1": "value1"},
             tags=["tag1"],
         ),
     ]
 
 
 @patch("mau.parsers.main_parser.header_anchor")
-def test_multiple_tags_header(header_anchor_mock):
+def test_(header_anchor_mock):
     header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
 
     source = """
-    [value1, #tag1, value2,#tag2,someattr1=somevalue1,someattr2=somevalue2]
+    [*type1]
     = Header
     """
 
@@ -163,8 +163,9 @@ def test_multiple_tags_header(header_anchor_mock):
             "Header",
             "1",
             "Header-XXXXXX",
-            args=["value1", "value2"],
-            kwargs={"someattr1": "somevalue1", "someattr2": "somevalue2"},
-            tags=["tag1", "tag2"],
+            args=[],
+            kwargs={},
+            tags=[],
+            subtype="type1",
         ),
     ]

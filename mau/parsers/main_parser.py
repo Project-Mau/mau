@@ -545,6 +545,7 @@ class MainParser(BaseParser):
             value=text,
             level=str(level),
             anchor=anchor,
+            subtype=subtype,
             args=args,
             tags=tags,
             kwargs=kwargs,

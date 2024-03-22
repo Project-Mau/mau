@@ -164,6 +164,13 @@ class JinjaVisitor(BaseVisitor):
         templates = result.get("templates", [])
         templates.append(node.node_type.replace("__", "."))
 
+        # Create subtype templates
+        node_subtype = getattr(node, "subtype", None)
+        if node_subtype:
+            templates = [
+                f"{t}{suffix}" for t in templates for suffix in (f".{node_subtype}", "")
+            ]
+
         # Create prefixed templates
         prefixed_templates = []
         for prefix in self.template_prefixes:
@@ -217,21 +224,10 @@ class JinjaVisitor(BaseVisitor):
 
     def _visit_block(self, node, *args, **kwargs):
         base = super()._visit_block(node)
-        base["templates"] = [
-            f"block.{node.engine}.{node.subtype}",
-            f"block.{node.engine}",
-            f"block.{node.subtype}",
-        ]
 
-        return base
-
-    def _visit_source(self, node, *args, **kwargs):
-        base = super()._visit_source(node)
-        base["templates"] = [
-            f"source.{node.subtype}.{node.language}",
-            f"source.{node.language}",
-            f"source.{node.subtype}",
-        ]
+        base["templates"] = []
+        if node.engine is not None:
+            base["templates"].append(f"{node.node_type}.{node.engine}")
 
         return base
 

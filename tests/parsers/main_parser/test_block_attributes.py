@@ -16,7 +16,7 @@ runner = parser_runner_factory(MainLexer, MainParser)
 
 def test_attributes_block():
     source = """
-    [subtype,myattr1=value1]
+    [*subtype,myattr1=value1]
     ----
     This is a simple line of text
     followed by another line of text
@@ -49,7 +49,7 @@ def test_attributes_block():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={"myattr1": "value1"},
@@ -61,7 +61,7 @@ def test_attributes_can_contain_variables():
     source = """
     :value:42
 
-    [subtype,myattr1={value}]
+    [*subtype,myattr1={value}]
     ----
     This is a simple line of text
     followed by another line of text
@@ -94,7 +94,7 @@ def test_attributes_can_contain_variables():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={"myattr1": "42"},
@@ -105,7 +105,7 @@ def test_attributes_can_contain_variables():
 def test_parse_block_title_and_attributes():
     source = """
     .Just a title
-    [subtype, name1=value1, name2=value2]
+    [*subtype, name1=value1, name2=value2]
     ----
     ----
     """
@@ -121,7 +121,7 @@ def test_parse_block_title_and_attributes():
                     TextNode("Just a title"),
                 ]
             ),
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={"name1": "value1", "name2": "value2"},
@@ -132,11 +132,11 @@ def test_parse_block_title_and_attributes():
 def test_parse_block_title_and_attributes_are_reset():
     source = """
     .Just a title
-    [subtype1, name1=value1, name2=value2]
+    [*subtype1, name1=value1, name2=value2]
     ----
     ----
 
-    [subtype2]
+    [*subtype2]
     ----
     ----
     """
@@ -152,7 +152,7 @@ def test_parse_block_title_and_attributes_are_reset():
                     TextNode("Just a title"),
                 ]
             ),
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={"name1": "value1", "name2": "value2"},
@@ -163,7 +163,7 @@ def test_parse_block_title_and_attributes_are_reset():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={},
@@ -173,7 +173,7 @@ def test_parse_block_title_and_attributes_are_reset():
 
 def test_block_classes_single_class():
     source = """
-    [subtype,classes=cls1]
+    [*subtype,classes=cls1]
     ----
     ----
     """
@@ -185,7 +185,7 @@ def test_block_classes_single_class():
             secondary_content=[],
             classes=["cls1"],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={},
@@ -195,7 +195,7 @@ def test_block_classes_single_class():
 
 def test_block_classes_multiple_classes():
     source = """
-    [subtype,classes="cls1,cls2"]
+    [*subtype,classes="cls1,cls2"]
     ----
     ----
     """
@@ -207,7 +207,7 @@ def test_block_classes_multiple_classes():
             secondary_content=[],
             classes=["cls1", "cls2"],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={},
@@ -217,7 +217,7 @@ def test_block_classes_multiple_classes():
 
 def test_block_engine():
     source = """
-    [subtype,engine=someengine]
+    [*subtype,engine=someengine]
     ----
     ----
     """
@@ -229,7 +229,7 @@ def test_block_engine():
 def test_block_mau_has_no_external_variables():
     source = """
     :answer:42
-    [block, engine=mau]
+    [*block, engine=mau]
     ----
     The answer is {answer}.
     ----
@@ -241,7 +241,7 @@ def test_block_mau_has_no_external_variables():
 
 def test_block_raw_engine():
     source = """
-    [block, engine=raw]
+    [*block, engine=raw]
     ----
     Raw content
     on multiple lines
@@ -278,7 +278,7 @@ def test_block_default_engine_adds_headers_to_global_toc(mock_header_anchor):
     source = """
     = Global header
 
-    [someblock]
+    [*someblock]
     ----
     = Block header
     ----
@@ -296,7 +296,7 @@ def test_block_default_engine_adds_headers_to_global_toc(mock_header_anchor):
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={},
@@ -313,7 +313,7 @@ def test_block_positive_condition_matches():
     source = """
     :render:yes
 
-    [block, condition="if:render:yes"]
+    [*block, condition="if:render:yes"]
     ----
     This is a paragraph.
     ----
@@ -334,7 +334,7 @@ def test_block_positive_condition_matches():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={},
@@ -346,7 +346,7 @@ def test_block_positive_condition_doesnt_match():
     source = """
     :render:no
 
-    [block, condition="if:render:yes"]
+    [*block, condition="if:render:yes"]
     ----
     This is a paragraph.
     ----
@@ -359,7 +359,7 @@ def test_block_negative_condition_matches():
     source = """
     :render:yes
 
-    [block, condition="ifnot:render:no"]
+    [*block, condition="ifnot:render:no"]
     ----
     This is a paragraph.
     ----
@@ -380,7 +380,7 @@ def test_block_negative_condition_matches():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={},
@@ -392,7 +392,7 @@ def test_block_negative_condition_doesnt_match():
     source = """
     :render:no
 
-    [block, condition="ifnot:render:no"]
+    [*block, condition="ifnot:render:no"]
     ----
     This is a paragraph.
     ----
@@ -405,7 +405,7 @@ def test_block_condition_accepts_booleans():
     source = """
     :render:
 
-    [block, condition="ifnot:render:"]
+    [*block, condition="ifnot:render:"]
     ----
     This is a paragraph.
     ----
@@ -416,7 +416,7 @@ def test_block_condition_accepts_booleans():
 
 def test_block_condition_raises_exception():
     source = """
-    [block, condition="if:render"]
+    [*block, condition="if:render"]
     ----
     This is a paragraph.
     ----
@@ -430,7 +430,7 @@ def test_block_condition_can_use_variable_namespace():
     source = """
     :flags.render:yes
 
-    [block, condition="if:flags.render:yes"]
+    [*block, condition="if:flags.render:yes"]
     ----
     This is a paragraph.
     ----
@@ -451,7 +451,7 @@ def test_block_condition_can_use_variable_namespace():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={},
@@ -476,7 +476,7 @@ def test_command_defblock_source():
 
     par = runner(source)
 
-    assert par.block_aliases["source"] == "default"
+    assert par.block_aliases["source"] == None
     assert par.block_defaults["source"] == {"language": "text", "engine": "source"}
 
 
@@ -513,7 +513,7 @@ def test_block_definitions_are_used():
     source = """
     ::defblock:alias, subtype, name1=value1, name2=value2
 
-    [alias]
+    [*alias]
     ----
     ----
     """
@@ -525,7 +525,7 @@ def test_block_definitions_are_used():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={"name1": "value1", "name2": "value2"},
@@ -537,7 +537,7 @@ def test_block_definitions_local_kwargs_overwrite_defined_ones():
     source = """
     ::defblock:alias, subtype, name1=value1, name2=value2
 
-    [alias, name1=value99]
+    [*alias, name1=value99]
     ----
     ----
     """
@@ -549,7 +549,7 @@ def test_block_definitions_local_kwargs_overwrite_defined_ones():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={"name1": "value99", "name2": "value2"},
@@ -565,7 +565,7 @@ def test_block_definitions_local_args_are_used():
     source = """
     ::defblock:alias, subtype, name1=value1, name2=value2
 
-    [alias, attr1, name1=value99]
+    [*alias, attr1, name1=value99]
     ----
     ----
     """
@@ -577,7 +577,7 @@ def test_block_definitions_local_args_are_used():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=["attr1"],
             kwargs={"name1": "value99", "name2": "value2"},
@@ -593,7 +593,7 @@ def test_block_definitions_unnamed_args_are_used_as_names():
     source = """
     ::defblock:alias, subtype, attr1, attr2
 
-    [alias, value1, value2]
+    [*alias, value1, value2]
     ----
     ----
     """
@@ -605,7 +605,7 @@ def test_block_definitions_unnamed_args_are_used_as_names():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={"attr1": "value1", "attr2": "value2"},
@@ -621,7 +621,7 @@ def test_block_definitions_unnamed_and_named_args():
     source = """
     ::defblock:alias, subtype, attr1, attr2, attr3=value3
 
-    [alias, value1, value2]
+    [*alias, value1, value2]
     ----
     ----
     """
@@ -633,7 +633,7 @@ def test_block_definitions_unnamed_and_named_args():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={"attr1": "value1", "attr2": "value2", "attr3": "value3"},
@@ -649,7 +649,7 @@ def test_block_definitions_no_values_for_unnamed_args():
     source = """
     ::defblock:alias, subtype, attr1, attr2, attr3=value3
 
-    [alias]
+    [*alias]
     ----
     ----
     """
@@ -666,7 +666,7 @@ def test_block_definitions_values_without_unnamed_args():
     source = """
     ::defblock:alias, subtype, attr3=value3
 
-    [alias, value1, value2]
+    [*alias, value1, value2]
     ----
     ----
     """
@@ -678,7 +678,7 @@ def test_block_definitions_values_without_unnamed_args():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=["value1", "value2"],
             kwargs={"attr3": "value3"},

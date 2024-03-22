@@ -27,7 +27,7 @@ def test_default_footnote_anchor_function(mock_md5):
 
 def test_footnote_empty_block():
     source = """
-    [footnote, note1]
+    [*footnote, note1]
     ----
     ----
     """
@@ -45,12 +45,12 @@ def test_footnote_content(mock_footnote_anchor):
     mock_footnote_anchor.return_value = "XXYY"
 
     source = """
-    [footnote, note2]
+    [*footnote, note2]
     ----
     This is another paragraph.
     ----
 
-    [footnote, note1]
+    [*footnote, note1]
     ----
     This is a paragraph.
     ----
@@ -103,7 +103,7 @@ def test_footnote_mention_and_content(mock_footnote_anchor):
     source = """
     This is a paragraph with a footnote[footnote](note1).
     
-    [footnote, note1]
+    [*footnote, note1]
     ----
     This is the content of the footnote
     ----
@@ -153,7 +153,7 @@ def test_footnotes_output(mock_footnote_anchor):
     source = """
     This is a paragraph with a footnote[footnote](note1).
     
-    [footnote, note1]
+    [*footnote, note1]
     ----
     This is the content of the footnote
     ----
@@ -232,7 +232,7 @@ def test_footnotes_output(mock_footnote_anchor):
 
 def test_footnote_duplication():
     source = """
-    [footnote, note1]
+    [*footnote, note1]
     ----
     This is the content of the footnote
     ----

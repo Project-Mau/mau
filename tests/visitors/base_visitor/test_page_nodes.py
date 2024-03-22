@@ -489,7 +489,7 @@ def test_source_node():
     assert result == {
         "data": {
             "type": "source",
-            "subtype": "default",
+            "subtype": None,
             "callouts": [
                 {
                     "data": {

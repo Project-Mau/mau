@@ -469,9 +469,8 @@ def test_source_node():
         "text.j2": "{{ value }}",
         "callout.j2": "",
         "callouts_entry.j2": "{{ marker }} - {{ value }}",
-        "source.default.somelang.j2": "The subtype+language template",
-        "source.somelang.j2": "The language template",
-        "source.default.j2": "The subtype template",
+        "source.custom.j2": "The custom template",
+        "source.j2": "The default template",
     }
 
     environment = Environment()
@@ -491,6 +490,7 @@ def test_source_node():
             CalloutsEntryNode("imp", "This is an import"),
             CalloutsEntryNode("env", "Environment variables are paramount"),
         ],
+        subtype="custom",
         args=["arg1", "arg2"],
         kwargs={"key1": "value1"},
         tags=["tag1", "tag2"],
@@ -498,4 +498,4 @@ def test_source_node():
 
     result = visitor.visit(node)
 
-    assert result == "The subtype+language template"
+    assert result == "The custom template"

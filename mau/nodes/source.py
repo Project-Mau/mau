@@ -61,8 +61,8 @@ class SourceNode(PageNode):
     def __init__(
         self,
         code=None,
-        subtype="default",
         language="text",
+        subtype=None,
         callouts=None,
         delimiter=":",
         markers=None,

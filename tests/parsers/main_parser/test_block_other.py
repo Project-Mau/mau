@@ -12,7 +12,7 @@ runner = parser_runner_factory(MainLexer, MainParser)
 
 def test_admonition():
     source = """
-    [admonition,someclass,someicon,somelabel]
+    [*admonition,someclass,someicon,somelabel]
     ----
     Content
     ----
@@ -33,7 +33,7 @@ def test_admonition():
             secondary_content=[],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={"class": "someclass", "icon": "someicon", "label": "somelabel"},
@@ -43,7 +43,7 @@ def test_admonition():
 
 def test_parse_block_quote_attribution_in_secondary_content():
     source = """
-    [quote]
+    [*quote]
     ----
     Learn about the Force, Luke.
     ----
@@ -81,7 +81,7 @@ def test_parse_block_quote_attribution_in_secondary_content():
             ],
             classes=[],
             title=None,
-            engine="default",
+            engine=None,
             preprocessor="none",
             args=[],
             kwargs={},

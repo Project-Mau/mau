@@ -328,7 +328,7 @@ class TextParser(BaseParser):
 
         par = ArgumentsParser.analyse(arguments, current_context, self.environment)
 
-        args, kwargs, _ = par.process_arguments()
+        args, kwargs, _, _ = par.process_arguments()
 
         if macro_name == "link":
             return self._parse_macro_link(args, kwargs)

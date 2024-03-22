@@ -178,6 +178,7 @@ def test_attributes():
             "someattr2": "somevalue2",
         },
         [],
+        None,
     )
 
 

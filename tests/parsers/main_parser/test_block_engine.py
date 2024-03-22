@@ -21,7 +21,7 @@ def test_engine_mau(mock_header_anchor):
 
     = Header 2
 
-    [sometype, engine=mau]
+    [*sometype, engine=mau]
     ----
     = Header 3
 
@@ -65,14 +65,14 @@ def test_engine_mau_multiple_blocks_are_independent(mock_header_anchor):
 
     = Header 2
 
-    [sometype, engine=mau]
+    [*sometype, engine=mau]
     ----
     = Header 3
 
     = Header 4
     ----
 
-    [sometype, engine=mau]
+    [*sometype, engine=mau]
     ----
     = Header 5
 
@@ -130,7 +130,7 @@ def test_engine_mau_toc(mock_header_anchor):
 
     = Header 2
 
-    [sometype, engine=mau]
+    [*sometype, engine=mau]
     ----
     = Header 3
 

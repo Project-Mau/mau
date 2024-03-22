@@ -26,7 +26,7 @@ def test_default_reference_anchor_function(mock_md5):
 def test_document_with_reference():
     source = """
     . Some title
-    [reference, content_type, value]
+    [*reference, content_type, value]
     ----
     This is a paragraph.
     ----
@@ -53,7 +53,7 @@ def test_simple_reference(mock_reference_anchor):
     source = """
     This is a paragraph with a [reference](content_type, value)
 
-    [reference, content_type, value]
+    [*reference, content_type, value]
     ----
     This is a paragraph.
     ----
@@ -89,7 +89,7 @@ def test_reference_data_inside_block(mock_reference_anchor):
 
     [someblock]
     ====
-    [reference, content_type, value]
+    [*reference, content_type, value]
     ----
     This is a paragraph.
     ----
@@ -126,7 +126,7 @@ def test_reference_mention_and_data_inside_block(mock_reference_anchor):
     ====
     This is a paragraph with a [reference](content_type, value)
 
-    [reference, content_type, value]
+    [*reference, content_type, value]
     ----
     This is a paragraph.
     ----
@@ -161,17 +161,17 @@ def test_multiple_content_types(mock_reference_anchor):
     mock_reference_anchor.return_value = "XXYY"
 
     source = """
-    [reference, content_type1, name1]
+    [*reference, content_type1, name1]
     ----
     Content type 1, value 1
     ----
 
-    [reference, content_type1, name2]
+    [*reference, content_type1, name2]
     ----
     Content type 1, value 2
     ----
 
-    [reference, content_type2, name1]
+    [*reference, content_type2, name1]
     ----
     Content type 2, value 1
     ----
@@ -252,17 +252,17 @@ def test_command_references_filter_content_type(mock_reference_anchor):
     mock_reference_anchor.return_value = "XXYY"
 
     source = """
-    [reference, content_type1, name1]
+    [*reference, content_type1, name1]
     ----
     Content type 1, value 1
     ----
 
-    [reference, content_type1, name2]
+    [*reference, content_type1, name2]
     ----
     Content type 1, value 2
     ----
 
-    [reference, content_type2, name1]
+    [*reference, content_type2, name1]
     ----
     Content type 2, value 1
     ----
@@ -360,7 +360,7 @@ def test_references_output(mock_reference_anchor):
     mock_reference_anchor.return_value = "XXYY"
 
     source = """
-    [reference, content_type1, name1]
+    [*reference, content_type1, name1]
     ----
     Content type 1, value 1
     ----

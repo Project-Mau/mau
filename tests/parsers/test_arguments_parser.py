@@ -246,7 +246,7 @@ def test_apply_prototype_unnamed_and_named_arguments():
         NamedArgumentNode("attr5", "value5"),
     ]
 
-    args, kwargs, tags = parser.process_arguments()
+    args, kwargs, tags, subtype = parser.process_arguments()
 
     args, kwargs = set_names_and_defaults(
         args, kwargs, ["attr1", "attr2"], {"attr3": "value3"}
@@ -260,6 +260,7 @@ def test_apply_prototype_unnamed_and_named_arguments():
         "attr5": "value5",
     }
     assert tags == []
+    assert subtype is None
 
 
 def test_apply_prototype_clash_between_default_value_and_named_value():
@@ -271,7 +272,7 @@ def test_apply_prototype_clash_between_default_value_and_named_value():
         NamedArgumentNode("attr3", "value5"),
     ]
 
-    args, kwargs, tags = parser.process_arguments()
+    args, kwargs, tags, subtype = parser.process_arguments()
 
     args, kwargs = set_names_and_defaults(
         args, kwargs, ["attr1", "attr2"], {"attr3": "value3"}
@@ -284,6 +285,7 @@ def test_apply_prototype_clash_between_default_value_and_named_value():
         "attr3": "value5",
     }
     assert tags == []
+    assert subtype is None
 
 
 def test_apply_prototype_clash_between_positional_value_and_named_value():
@@ -295,7 +297,7 @@ def test_apply_prototype_clash_between_positional_value_and_named_value():
         NamedArgumentNode("attr1", "value5"),
     ]
 
-    args, kwargs, tags = parser.process_arguments()
+    args, kwargs, tags, subtype = parser.process_arguments()
 
     args, kwargs = set_names_and_defaults(
         args, kwargs, ["attr1", "attr2"], {"attr3": "value3"}
@@ -308,6 +310,7 @@ def test_apply_prototype_clash_between_positional_value_and_named_value():
         "attr3": "value3",
     }
     assert tags == []
+    assert subtype is None
 
 
 def test_apply_prototype_clash_in_prototype():
@@ -319,7 +322,7 @@ def test_apply_prototype_clash_in_prototype():
         NamedArgumentNode("attr3", "value3"),
     ]
 
-    args, kwargs, tags = parser.process_arguments()
+    args, kwargs, tags, subtype = parser.process_arguments()
 
     args, kwargs = set_names_and_defaults(
         args, kwargs, ["attr1", "attr2"], {"attr1": "value7"}
@@ -332,6 +335,7 @@ def test_apply_prototype_clash_in_prototype():
         "attr3": "value3",
     }
     assert tags == []
+    assert subtype is None
 
 
 def test_apply_prototype_positional_values_not_provided():
@@ -339,7 +343,7 @@ def test_apply_prototype_positional_values_not_provided():
 
     parser.nodes = [UnnamedArgumentNode("value1")]
 
-    args, kwargs, _ = parser.process_arguments()
+    args, kwargs, _, _ = parser.process_arguments()
 
     with pytest.raises(ValueError):
         set_names_and_defaults(args, kwargs, ["attr1", "attr2"], {"attr3": "value3"})
@@ -350,7 +354,7 @@ def test_apply_prototype_positional_values_without_name():
 
     parser.nodes = [UnnamedArgumentNode("value1"), UnnamedArgumentNode("value2")]
 
-    args, kwargs, tags = parser.process_arguments()
+    args, kwargs, tags, subtype = parser.process_arguments()
 
     args, kwargs = set_names_and_defaults(args, kwargs, ["attr1"], {"attr3": "value3"})
 
@@ -360,6 +364,7 @@ def test_apply_prototype_positional_values_without_name():
         "attr3": "value3",
     }
     assert tags == []
+    assert subtype is None
 
 
 def test_apply_prototype_missing_positional_with_default():
@@ -369,7 +374,7 @@ def test_apply_prototype_missing_positional_with_default():
         NamedArgumentNode("attr1", "value5"),
     ]
 
-    args, kwargs, tags = parser.process_arguments()
+    args, kwargs, tags, subtype = parser.process_arguments()
 
     args, kwargs = set_names_and_defaults(args, kwargs, ["attr1"])
 
@@ -378,3 +383,38 @@ def test_apply_prototype_missing_positional_with_default():
         "attr1": "value5",
     }
     assert tags == []
+    assert subtype is None
+
+
+def test_tags_and_subtype():
+    parser = ArgumentsParser(Environment())
+
+    parser.nodes = [
+        UnnamedArgumentNode("value1"),
+        UnnamedArgumentNode("#value2"),
+        UnnamedArgumentNode("*value3"),
+    ]
+
+    args, kwargs, tags, subtype = parser.process_arguments()
+
+    assert args == ["value1"]
+    assert kwargs == {}
+    assert tags == ["value2"]
+    assert subtype == "value3"
+
+
+def test_multiple_subtypes():
+    parser = ArgumentsParser(Environment())
+
+    parser.nodes = [
+        UnnamedArgumentNode("value1"),
+        UnnamedArgumentNode("*value2"),
+        UnnamedArgumentNode("*value3"),
+    ]
+
+    args, kwargs, tags, subtype = parser.process_arguments()
+
+    assert args == ["value1"]
+    assert kwargs == {}
+    assert tags == []
+    assert subtype == "value2"

@@ -127,15 +127,15 @@ class MainParser(BaseParser):
         # This establishes a default block definition so that
         # [source] = [source, engine=source]
         # This definition can be overridden by custom block definitions.
-        self.block_aliases["source"] = "default"
+        self.block_aliases["source"] = None
         self.block_defaults["source"] = {"engine": "source", "language": "text"}
         self.block_names["source"] = ["language"]
 
-        self.block_aliases["footnote"] = "default"
+        self.block_aliases["footnote"] = None
         self.block_defaults["footnote"] = {"engine": "footnote"}
         self.block_names["footnote"] = ["name"]
 
-        self.block_aliases["reference"] = "default"
+        self.block_aliases["reference"] = None
         self.block_defaults["reference"] = {"engine": "reference"}
         self.block_names["reference"] = ["type", "name"]
 
@@ -179,7 +179,7 @@ class MainParser(BaseParser):
 
         # A temporary space to store parsed arguments
         # The tuple represents (args, kwargs, tags)
-        self.arguments = ([], {}, [])
+        self.arguments = ([], {}, [], None)
 
         # This is the final output of the parser
         self.output = {}
@@ -218,13 +218,13 @@ class MainParser(BaseParser):
     def _pop_arguments(self):
         # This return the arguments and resets the
         # cached ones.
-        args, kwargs, tags = self.arguments
-        self.arguments = ([], {}, [])
+        args, kwargs, tags, subtype = self.arguments
+        self.arguments = ([], {}, [], None)
 
-        return args, kwargs, tags
+        return args, kwargs, tags, subtype
 
-    def _push_arguments(self, args, kwargs, tags):
-        self.arguments = (args, kwargs, tags)
+    def _push_arguments(self, args, kwargs, tags, subtype):
+        self.arguments = (args, kwargs, tags, subtype)
 
     def _process_functions(self):
         # All the functions that this parser provides.
@@ -326,7 +326,7 @@ class MainParser(BaseParser):
 
         self._get_token(MLTokenTypes.HORIZONTAL_RULE)
 
-        args, kwargs, tags = self._pop_arguments()
+        args, kwargs, tags, subtype = self._pop_arguments()
 
         self._save(HorizontalRuleNode(args, kwargs, tags))
 
@@ -409,7 +409,7 @@ class MainParser(BaseParser):
                 arguments, current_context, self.environment
             )
 
-            args, kwargs, tags = arguments_parser.process_arguments()
+            args, kwargs, tags, subtype = arguments_parser.process_arguments()
 
         if name == "defblock":
             # Block definitions must have at least 2 arguments,
@@ -509,8 +509,8 @@ class MainParser(BaseParser):
             text, current_context, self.environment
         )
 
-        args, kwargs, tags = arguments_parser.process_arguments()
-        self._push_arguments(args, kwargs, tags)
+        args, kwargs, tags, subtype = arguments_parser.process_arguments()
+        self._push_arguments(args, kwargs, tags, subtype)
 
         return True
 
@@ -538,7 +538,7 @@ class MainParser(BaseParser):
         anchor = self.header_anchor(text, level)
 
         # Consume the arguments
-        args, kwargs, tags = self._pop_arguments()
+        args, kwargs, tags, subtype = self._pop_arguments()
 
         # Generate the header node
         header_node = HeaderNode(
@@ -624,13 +624,13 @@ class MainParser(BaseParser):
         block.title = self._pop_title()
 
         # Consume the arguments
-        args, kwargs, tags = self._pop_arguments()
+        args, kwargs, tags, subtype = self._pop_arguments()
 
         # The first unnamed argument is the block type
-        try:
-            subtype = args.pop(0)
-        except IndexError:
-            subtype = "default"
+        # try:
+        #     subtype = args.pop(0)
+        # except IndexError:
+        #     subtype = None
 
         # If there is a block alias for subtype replace it
         # otherwise use the subtype we already have
@@ -693,13 +693,15 @@ class MainParser(BaseParser):
         block.preprocessor = kwargs.pop("preprocessor", "none")
 
         # Extract the engine
-        block.engine = kwargs.pop("engine", "default")
+        block.engine = kwargs.pop("engine", None)
 
         block.args = args
         block.kwargs = kwargs
         block.tags = tags
 
-        if block.engine == "source":
+        if block.engine is None:
+            self._parse_default_engine(block)
+        elif block.engine == "source":
             self._parse_source_engine(block)
         elif block.engine == "footnote":
             self._parse_footnote_engine(block)
@@ -707,8 +709,6 @@ class MainParser(BaseParser):
             self._parse_reference_engine(block)
         elif block.engine == "raw":
             self._parse_raw_engine(block)
-        elif block.engine == "default":
-            self._parse_default_engine(block)
         elif block.engine == "mau":
             self._parse_mau_engine(block)
         else:
@@ -961,7 +961,7 @@ class MainParser(BaseParser):
                 arguments, current_context, self.environment
             )
 
-            args, kwargs, tags = arguments_parser.process_arguments()
+            args, kwargs, tags, subtype = arguments_parser.process_arguments()
 
         if content_type == "image":
             return self._parse_content_image(title, args, kwargs, tags)
@@ -1058,7 +1058,7 @@ class MainParser(BaseParser):
         header = self._peek_token(MLTokenTypes.LIST)
         numbered = header.value[0] == "#"
 
-        args, kwargs, tags = self._pop_arguments()
+        args, kwargs, tags, subtype = self._pop_arguments()
 
         # Parse all the following items
         nodes = self._process_list_nodes()
@@ -1174,7 +1174,7 @@ class MainParser(BaseParser):
         sentence = self._parse_text_content(text, context)
 
         # Consume the arguments
-        args, kwargs, tags = self._pop_arguments()
+        args, kwargs, tags, subtype = self._pop_arguments()
 
         self._save(ParagraphNode(sentence, args=args, kwargs=kwargs, tags=tags))
 

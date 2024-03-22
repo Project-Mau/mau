@@ -105,10 +105,20 @@ class ArgumentsParser(BaseParser):
         # Isolate tags
         tags = [i for i in args if i.startswith("#")]
 
-        # Isolate non-tags
-        args = [i for i in args if i not in tags]
+        # Isolate subtypes
+        subtypes = [i for i in args if i.startswith("*")]
+
+        # Keep normal args
+        args = [i for i in args if i not in tags + subtypes]
 
         # Remove the "#" from tags
         tags = [i[1:] for i in tags]
 
-        return args, kwargs, tags
+        # Remove the "*" from subtypes
+        try:
+            # Get the first subtype and remove the leading "*"
+            subtype = subtypes[0][1:]
+        except IndexError:
+            subtype = None
+
+        return args, kwargs, tags, subtype

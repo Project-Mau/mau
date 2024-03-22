@@ -1,6 +1,7 @@
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.inline import SentenceNode, StyleNode, TextNode
-from mau.nodes.page import BlockNode, ParagraphNode
+from mau.nodes.page import BlockNode
+from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory

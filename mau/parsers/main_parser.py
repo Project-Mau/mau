@@ -17,8 +17,8 @@ from mau.nodes.page import (
     ContentNode,
     HeaderNode,
     HorizontalRuleNode,
-    ParagraphNode,
 )
+from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.references import ReferencesNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.nodes.toc import TocNode

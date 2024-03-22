@@ -1,6 +1,7 @@
 from mau.environment.environment import Environment
 from mau.nodes.footnotes import FootnoteNode, FootnotesNode
 from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.page import (
     BlockNode,
     ContentImageNode,
@@ -8,7 +9,6 @@ from mau.nodes.page import (
     DocumentNode,
     HeaderNode,
     HorizontalRuleNode,
-    ParagraphNode,
 )
 from mau.nodes.references import ReferencesEntryNode, ReferencesNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
@@ -30,34 +30,6 @@ def test_horizontal_rule_node():
     assert result == {
         "data": {
             "type": "horizontal_rule",
-            "args": ["arg1", "arg2"],
-            "kwargs": {"key1": "value1"},
-            "tags": ["tag1", "tag2"],
-        }
-    }
-
-
-def test_paragraph_node():
-    visitor = BaseVisitor(Environment())
-
-    node = ParagraphNode(
-        TextNode("Just some text"),
-        args=["arg1", "arg2"],
-        kwargs={"key1": "value1"},
-        tags=["tag1", "tag2"],
-    )
-
-    result = visitor.visit(node)
-
-    assert result == {
-        "data": {
-            "type": "paragraph",
-            "content": {
-                "data": {
-                    "type": "text",
-                    "value": "Just some text",
-                }
-            },
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
             "tags": ["tag1", "tag2"],

@@ -7,8 +7,8 @@ from mau.nodes.page import (
     ContentNode,
     HeaderNode,
     HorizontalRuleNode,
-    ParagraphNode,
 )
+from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.references import ReferencesEntryNode, ReferencesNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.nodes.toc import TocEntryNode, TocNode
@@ -38,32 +38,6 @@ def test_page_horizontal_rule_node():
     result = visitor.visit(node)
 
     assert result == "--- - arg1,arg2 - key1:value1 - tag1,tag2"
-
-
-def test_page_paragraph_node():
-    templates = {
-        "text.j2": "{{ value }}",
-        "paragraph.j2": (
-            "{{ content }} - {{ args | join(',') }} - "
-            "{% for key, value in kwargs|items %}{{ key }}:{{ value }}{% endfor %} - "
-            "{{ tags | join(',') }}"
-        ),
-    }
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
-
-    args = ["arg1", "arg2"]
-    kwargs = {"key1": "value1"}
-    tags = ["tag1", "tag2"]
-    node = ParagraphNode(
-        TextNode("Just some text"), args=args, kwargs=kwargs, tags=tags
-    )
-
-    result = visitor.visit(node)
-
-    assert result == "Just some text - arg1,arg2 - key1:value1 - tag1,tag2"
 
 
 def test_page_header_node():

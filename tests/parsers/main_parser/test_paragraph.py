@@ -9,8 +9,8 @@ from mau.nodes.page import (
     ContainerNode,
     DocumentNode,
     HorizontalRuleNode,
-    ParagraphNode,
 )
+from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.toc import TocNode
 from mau.parsers.main_parser import MainParser
 

@@ -3,19 +3,8 @@ import itertools
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.macros import (
-    MacroClassNode,
-    MacroImageNode,
-    MacroLinkNode,
-    MacroNode,
-)
-from mau.nodes.inline import (
-    SentenceNode,
-    StyleNode,
-    TextNode,
-    VerbatimNode,
-    WordNode,
-)
+from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode, WordNode
+from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
 from mau.nodes.references import ReferenceNode
 from mau.parsers.arguments import set_names_and_defaults
 from mau.parsers.arguments_parser import ArgumentsParser

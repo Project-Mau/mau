@@ -1,7 +1,7 @@
-from mau.nodes.lists import ListItemNode, ListNode
-from mau.visitors.jinja_visitor import JinjaVisitor
 from mau.environment.environment import Environment
 from mau.nodes.inline import TextNode
+from mau.nodes.lists import ListItemNode, ListNode
+from mau.visitors.jinja_visitor import JinjaVisitor
 
 
 def test_inline_list_item_node():

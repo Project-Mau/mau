@@ -63,6 +63,9 @@ class BaseParser:
         of them, so this convenience method wraps the
         possible index error.
         """
+        if not self.tokens:
+            return None
+
         if self.index < 0:
             return self.tokens[-1]
 
@@ -166,10 +169,14 @@ class BaseParser:
         return []
 
     def _error(self, message=None):
+        context = None
+        if self._current_token:
+            context = self._current_token.context
+
         error = MauParserError(
             message=message,
             details={
-                "context": self._current_token.context,
+                "context": context,
             },
         )
 

@@ -1,10 +1,5 @@
 from mau.nodes.inline import TextNode
-from mau.nodes.macros import (
-    MacroClassNode,
-    MacroImageNode,
-    MacroLinkNode,
-    MacroNode,
-)
+from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
 
 
 def test_macro_node():

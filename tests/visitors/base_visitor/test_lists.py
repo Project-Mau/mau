@@ -1,7 +1,6 @@
 from mau.environment.environment import Environment
-from mau.nodes.lists import ListItemNode, ListNode
-from mau.visitors.base_visitor import BaseVisitor
 from mau.nodes.inline import TextNode
+from mau.nodes.lists import ListItemNode, ListNode
 from mau.visitors.base_visitor import BaseVisitor
 
 

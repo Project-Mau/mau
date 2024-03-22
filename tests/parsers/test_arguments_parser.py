@@ -412,9 +412,5 @@ def test_multiple_subtypes():
         UnnamedArgumentNode("*value3"),
     ]
 
-    args, kwargs, tags, subtype = parser.process_arguments()
-
-    assert args == ["value1"]
-    assert kwargs == {}
-    assert tags == []
-    assert subtype == "value2"
+    with pytest.raises(MauErrorException):
+        parser.process_arguments()

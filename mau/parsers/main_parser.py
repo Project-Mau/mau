@@ -8,8 +8,8 @@ from mau.lexers.base_lexer import TokenTypes as BLTokenTypes
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
 from mau.nodes.footnotes import FootnotesNode
-from mau.nodes.lists import ListItemNode, ListNode
 from mau.nodes.inline import RawNode
+from mau.nodes.lists import ListItemNode, ListNode
 from mau.nodes.page import (
     BlockNode,
     ContainerNode,
@@ -1176,7 +1176,11 @@ class MainParser(BaseParser):
         # Consume the arguments
         args, kwargs, tags, subtype = self._pop_arguments()
 
-        self._save(ParagraphNode(sentence, args=args, kwargs=kwargs, tags=tags))
+        self._save(
+            ParagraphNode(
+                sentence, subtype=subtype, args=args, kwargs=kwargs, tags=tags
+            )
+        )
 
         return True
 

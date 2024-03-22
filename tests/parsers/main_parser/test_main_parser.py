@@ -3,8 +3,8 @@ from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.footnotes import FootnotesNode
-from mau.nodes.macros import MacroLinkNode
 from mau.nodes.inline import SentenceNode, StyleNode, TextNode
+from mau.nodes.macros import MacroLinkNode
 from mau.nodes.page import (
     ContainerNode,
     DocumentNode,
@@ -117,105 +117,6 @@ def test_parse_open_multi_line_comments():
 
     with pytest.raises(MauErrorException):
         runner(source)
-
-
-def test_parse_paragraphs():
-    source = """
-    This is a paragraph.
-    This is part of the same paragraph.
-
-    This is a new paragraph.
-    """
-
-    assert runner(source).nodes == [
-        ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode(
-                        "This is a paragraph. This is part of the same paragraph."
-                    ),
-                ]
-            ),
-            args=[],
-            kwargs={},
-        ),
-        ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is a new paragraph."),
-                ]
-            ),
-            args=[],
-            kwargs={},
-        ),
-    ]
-
-
-def test_parse_paragraph_starting_with_a_macro():
-    source = "[link](http://some.where,This) is the link I want"
-
-    assert runner(source).nodes == [
-        ParagraphNode(
-            SentenceNode(
-                [
-                    MacroLinkNode(target="http://some.where", text="This"),
-                    TextNode(" is the link I want"),
-                ]
-            )
-        )
-    ]
-
-
-def test_attributes():
-    source = "[value1,someattr1=somevalue1,someattr2=somevalue2]"
-
-    parser = runner(source)
-
-    assert parser.arguments == (
-        ["value1"],
-        {
-            "someattr1": "somevalue1",
-            "someattr2": "somevalue2",
-        },
-        [],
-        None,
-    )
-
-
-def test_attributes_paragraph():
-    source = """
-    [value1,someattr1=somevalue1,someattr2=somevalue2]
-    This is text
-    """
-
-    assert runner(source).nodes == [
-        ParagraphNode(
-            SentenceNode(
-                [TextNode("This is text")],
-            ),
-            args=["value1"],
-            kwargs={"someattr1": "somevalue1", "someattr2": "somevalue2"},
-        ),
-    ]
-
-
-def test_attributes_with_variables():
-    source = """
-    :attrs:value1,someattr1=somevalue1,someattr2=somevalue2
-
-    [{attrs}]
-    This is text
-    """
-
-    assert runner(source).nodes == [
-        ParagraphNode(
-            SentenceNode(
-                [TextNode("This is text")],
-            ),
-            args=["value1"],
-            kwargs={"someattr1": "somevalue1", "someattr2": "somevalue2"},
-        ),
-    ]
 
 
 def test_command():

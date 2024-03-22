@@ -1,6 +1,6 @@
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.lists import ListItemNode, ListNode
 from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.lists import ListItemNode, ListNode
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory

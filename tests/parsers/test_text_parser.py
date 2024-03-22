@@ -1,17 +1,7 @@
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.macros import (
-    MacroClassNode,
-    MacroImageNode,
-    MacroLinkNode,
-    MacroNode,
-)
-from mau.nodes.inline import (
-    SentenceNode,
-    StyleNode,
-    TextNode,
-    VerbatimNode,
-)
+from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode
+from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
 from mau.nodes.references import ReferenceNode
 from mau.parsers.text_parser import TextParser
 

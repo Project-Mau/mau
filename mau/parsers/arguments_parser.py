@@ -3,7 +3,6 @@ from mau.lexers.base_lexer import TokenTypes
 from mau.nodes.arguments import NamedArgumentNode, UnnamedArgumentNode
 from mau.parsers.base_parser import BaseParser
 from mau.tokens.tokens import Token
-from mau.errors import MauErrorException
 
 
 class ArgumentsParser(BaseParser):

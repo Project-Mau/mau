@@ -1,5 +1,5 @@
-from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.paragraph import ParagraphNode
 
 
 def test_paragraph_node():

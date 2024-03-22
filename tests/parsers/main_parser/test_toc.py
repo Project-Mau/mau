@@ -1,7 +1,8 @@
 from unittest.mock import patch
 
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.page import ContainerNode, HeaderNode
+from mau.nodes.header import HeaderNode
+from mau.nodes.page import ContainerNode
 from mau.nodes.toc import TocEntryNode, TocNode
 from mau.parsers.main_parser import MainParser
 

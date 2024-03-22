@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from mau.environment.environment import Environment
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.page import HeaderNode
+from mau.nodes.header import HeaderNode
 from mau.parsers.main_parser import MainParser, header_anchor
 
 from tests.helpers import init_parser_factory, parser_runner_factory

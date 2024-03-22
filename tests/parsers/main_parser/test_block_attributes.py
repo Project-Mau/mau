@@ -3,8 +3,9 @@ from unittest.mock import patch
 import pytest
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
+from mau.nodes.block import BlockNode
+from mau.nodes.header import HeaderNode
 from mau.nodes.inline import RawNode, SentenceNode, TextNode
-from mau.nodes.page import BlockNode, HeaderNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser
 

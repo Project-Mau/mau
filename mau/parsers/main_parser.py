@@ -7,17 +7,13 @@ from mau.environment.environment import Environment
 from mau.lexers.base_lexer import TokenTypes as BLTokenTypes
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
+from mau.nodes.block import BlockNode
+from mau.nodes.content import ContentImageNode, ContentNode
 from mau.nodes.footnotes import FootnotesNode
+from mau.nodes.header import HeaderNode
 from mau.nodes.inline import RawNode
 from mau.nodes.lists import ListItemNode, ListNode
-from mau.nodes.page import (
-    BlockNode,
-    ContainerNode,
-    ContentImageNode,
-    ContentNode,
-    HeaderNode,
-    HorizontalRuleNode,
-)
+from mau.nodes.page import ContainerNode, HorizontalRuleNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.references import ReferencesNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode

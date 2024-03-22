@@ -1,17 +1,7 @@
-import pytest
-from mau.environment.environment import Environment
-from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.footnotes import FootnotesNode
-from mau.nodes.inline import SentenceNode, StyleNode, TextNode
+from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.macros import MacroLinkNode
-from mau.nodes.page import (
-    ContainerNode,
-    DocumentNode,
-    HorizontalRuleNode,
-)
 from mau.nodes.paragraph import ParagraphNode
-from mau.nodes.toc import TocNode
 from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory

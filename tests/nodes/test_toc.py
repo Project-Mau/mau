@@ -1,4 +1,4 @@
-from mau.nodes.page import HeaderNode
+from mau.nodes.header import HeaderNode
 from mau.nodes.toc import TocEntryNode, TocNode
 
 

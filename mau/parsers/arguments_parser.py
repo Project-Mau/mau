@@ -3,6 +3,7 @@ from mau.lexers.base_lexer import TokenTypes
 from mau.nodes.arguments import NamedArgumentNode, UnnamedArgumentNode
 from mau.parsers.base_parser import BaseParser
 from mau.tokens.tokens import Token
+from mau.errors import MauErrorException
 
 
 class ArgumentsParser(BaseParser):
@@ -108,17 +109,18 @@ class ArgumentsParser(BaseParser):
         # Isolate subtypes
         subtypes = [i for i in args if i.startswith("*")]
 
+        if len(subtypes) == 0:
+            subtype = None
+        if len(subtypes) == 1:
+            # Get the first subtype and remove the leading "*"
+            subtype = subtypes[0][1:]
+        if len(subtypes) > 1:
+            self._error("Multiple subtypes detected")
+
         # Keep normal args
         args = [i for i in args if i not in tags + subtypes]
 
         # Remove the "#" from tags
         tags = [i[1:] for i in tags]
-
-        # Remove the "*" from subtypes
-        try:
-            # Get the first subtype and remove the leading "*"
-            subtype = subtypes[0][1:]
-        except IndexError:
-            subtype = None
 
         return args, kwargs, tags, subtype

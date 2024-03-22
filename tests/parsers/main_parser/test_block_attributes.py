@@ -14,90 +14,48 @@ init_parser = init_parser_factory(MainLexer, MainParser)
 runner = parser_runner_factory(MainLexer, MainParser)
 
 
-def test_attributes_block():
+def test_block_attributes_args_and_kwargs():
     source = """
-    [*subtype,myattr1=value1]
+    [*subtype,arg1,key1=value1]
     ----
-    This is a simple line of text
-    followed by another line of text
-
-    And this is another paragraph
     ----
     """
 
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[
-                ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode(
-                                "This is a simple line of text followed by another line of text"
-                            ),
-                        ]
-                    )
-                ),
-                ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("And this is another paragraph"),
-                        ]
-                    )
-                ),
-            ],
+            content=[],
             secondary_content=[],
             classes=[],
             title=None,
             engine=None,
             preprocessor="none",
-            args=[],
-            kwargs={"myattr1": "value1"},
+            args=["arg1"],
+            kwargs={"key1": "value1"},
         )
     ]
 
 
-def test_attributes_can_contain_variables():
+def test_block_attributes_can_contain_variables():
     source = """
-    :value:42
+    :value1:42
 
-    [*subtype,myattr1={value}]
+    [*subtype,key1={value1}]
     ----
-    This is a simple line of text
-    followed by another line of text
-
-    And this is another paragraph
     ----
     """
 
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[
-                ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode(
-                                "This is a simple line of text followed by another line of text"
-                            ),
-                        ]
-                    )
-                ),
-                ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("And this is another paragraph"),
-                        ]
-                    )
-                ),
-            ],
+            content=[],
             secondary_content=[],
             classes=[],
             title=None,
             engine=None,
             preprocessor="none",
             args=[],
-            kwargs={"myattr1": "42"},
+            kwargs={"key1": "42"},
         )
     ]
 

@@ -285,3 +285,23 @@ def test_parse_numbered_list_do_not_continue():
             main_node=True,
         ),
     ]
+
+
+def test_parse_list_with_subtype():
+    source = """
+    [*type1]
+    * This is a list with one element
+    """
+
+    assert runner(source).nodes == [
+        ListNode(
+            False,
+            [
+                ListItemNode(
+                    "1", SentenceNode([TextNode("This is a list with one element")])
+                )
+            ],
+            True,
+            subtype="type1",
+        )
+    ]

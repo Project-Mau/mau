@@ -1068,7 +1068,13 @@ class MainParser(BaseParser):
 
         self._save(
             ListNode(
-                numbered, nodes, main_node=True, args=args, kwargs=kwargs, tags=tags
+                numbered,
+                nodes,
+                main_node=True,
+                subtype=subtype,
+                args=args,
+                kwargs=kwargs,
+                tags=tags,
             )
         )
 

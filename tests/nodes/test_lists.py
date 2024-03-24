@@ -16,6 +16,7 @@ def test_list_node():
     assert node.ordered is True
     assert node.items == []
     assert node.main_node is False
+    assert node.subtype is None
     assert node.args == []
     assert node.kwargs == {}
     assert node.node_type == "list"

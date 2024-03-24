@@ -12,11 +12,13 @@ class ListNode(PageNode):
         ordered,
         items,
         main_node=False,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
     ):
         super().__init__(args, kwargs, tags)
+        self.subtype = subtype
         self.ordered = ordered
         self.items = items
         self.main_node = main_node
@@ -28,6 +30,7 @@ class ListNode(PageNode):
             "ordered": self.ordered,
             "items": self.items,
             "main_node": self.main_node,
+            "subtype": self.subtype,
             "args": self.args,
             "kwargs": self.kwargs,
             "tags": self.tags,

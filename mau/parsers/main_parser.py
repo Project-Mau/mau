@@ -405,7 +405,7 @@ class MainParser(BaseParser):
                 arguments, current_context, self.environment
             )
 
-            args, kwargs, tags, subtype = arguments_parser.process_arguments()
+            args, kwargs, tags, _ = arguments_parser.process_arguments()
 
         if name == "defblock":
             # Block definitions must have at least 2 arguments,

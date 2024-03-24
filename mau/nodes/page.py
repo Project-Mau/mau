@@ -32,6 +32,26 @@ class HorizontalRuleNode(PageNode):
 
     node_type = "horizontal_rule"
 
+    def __init__(
+        self,
+        subtype=None,
+        args=None,
+        kwargs=None,
+        tags=None,
+    ):
+        super().__init__(args, kwargs, tags)
+        self.subtype = subtype
+
+    @property
+    def _content(self):
+        return {
+            "type": self.node_type,
+            "subtype": self.subtype,
+            "args": self.args,
+            "kwargs": self.kwargs,
+            "tags": self.tags,
+        }
+
 
 class ContainerNode(PageNode):
     node_type = "container"

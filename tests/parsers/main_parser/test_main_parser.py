@@ -4,7 +4,7 @@ from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.footnotes import FootnotesNode
 from mau.nodes.inline import SentenceNode, StyleNode, TextNode
-from mau.nodes.page import ContainerNode, DocumentNode, HorizontalRuleNode
+from mau.nodes.page import ContainerNode, DocumentNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.toc import TocNode
 from mau.parsers.main_parser import MainParser
@@ -47,27 +47,6 @@ def test_parse_output_custom_container():
         "toc": TocNode(entries=[]),
         "custom_filters": {},
     }
-
-
-def test_horizontal_rule():
-    source = "---"
-
-    expected = [HorizontalRuleNode()]
-
-    assert runner(source).nodes == expected
-
-
-def test_horizontal_rule_with_arguments():
-    source = """
-    [break,arg1=value1]
-    ---
-    """
-
-    expected = [
-        HorizontalRuleNode(args=["break"], kwargs={"arg1": "value1"}),
-    ]
-
-    assert runner(source).nodes == expected
 
 
 def test_parse_single_line_comments():

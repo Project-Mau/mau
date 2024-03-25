@@ -36,15 +36,24 @@ class TocNode(PageNode):
 
     node_type = "toc"
 
-    def __init__(self, entries, args=None, kwargs=None, tags=None):
+    def __init__(
+        self,
+        entries,
+        subtype=None,
+        args=None,
+        kwargs=None,
+        tags=None,
+    ):
         super().__init__(args, kwargs, tags)
         self.entries = entries
+        self.subtype = subtype
 
     @property
     def _content(self):
         return {
             "type": self.node_type,
             "entries": self.entries,
+            "subtype": self.subtype,
             "args": self.args,
             "kwargs": self.kwargs,
             "tags": self.tags,

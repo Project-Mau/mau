@@ -17,6 +17,26 @@ init_parser = init_parser_factory(MainLexer, MainParser)
 runner = parser_runner_factory(MainLexer, MainParser)
 
 
+def test_command_references_parse_args():
+    source = """
+    [*subtype1, arg1, arg2, #tag1, key1=value1, key2=value2]
+    ::references:content_type
+    """
+
+    parser = runner(source)
+
+    assert parser.nodes == [
+        ReferencesNode(
+            content_type="content_type",
+            entries=[],
+            subtype="subtype1",
+            args=["arg1", "arg2"],
+            kwargs={"key1": "value1", "key2": "value2"},
+            tags=["tag1"],
+        ),
+    ]
+
+
 @patch("mau.parsers.references.hashlib.md5")
 def test_default_reference_anchor_function(mock_md5):
     mock_md5().hexdigest.return_value = "XXYYXXYYZZZ"
@@ -230,22 +250,6 @@ def test_multiple_content_types(mock_reference_anchor):
             content_anchor="cnt-content_type2-3-XXYY",
         ).to_entry(),
     }
-
-
-def test_command_references_parse_args():
-    source = "::references:content_type, arg1, #tag1, kwarg1=kwvalue1, kwarg2=kwvalue2"
-
-    parser = runner(source)
-
-    assert parser.nodes == [
-        ReferencesNode(
-            content_type="content_type",
-            entries=[],
-            args=["arg1"],
-            kwargs={"kwarg1": "kwvalue1", "kwarg2": "kwvalue2"},
-            tags=["tag1"],
-        ),
-    ]
 
 
 @patch("mau.parsers.references.reference_anchor")

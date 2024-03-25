@@ -19,6 +19,26 @@ init_parser = init_parser_factory(MainLexer, MainParser)
 runner = parser_runner_factory(MainLexer, MainParser)
 
 
+def test_command_footnotes():
+    source = """
+    [*subtype1, arg1, arg2, #tag1, key1=value1, key2=value2]
+    ::footnotes:
+    """
+
+    parser = runner(source)
+    parser.footnote_entries = []
+
+    assert parser.nodes == [
+        FootnotesNode(
+            parser.footnote_entries,
+            subtype="subtype1",
+            args=["arg1", "arg2"],
+            kwargs={"key1": "value1", "key2": "value2"},
+            tags=["tag1"],
+        ),
+    ]
+
+
 @patch("mau.parsers.footnotes.hashlib.md5")
 def test_default_footnote_anchor_function(mock_md5):
     mock_md5().hexdigest.return_value = "XXYYXXYYZZZ"

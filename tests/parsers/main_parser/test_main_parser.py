@@ -105,35 +105,6 @@ def test_command_without_arguments():
     assert runner(source).nodes == []
 
 
-def test_command_toc():
-    source = "::toc:arg1, arg2, #tag1, name1=value1, name2=value2"
-
-    assert runner(source).nodes == [
-        TocNode(
-            [],
-            args=["arg1", "arg2"],
-            kwargs={"name1": "value1", "name2": "value2"},
-            tags=["tag1"],
-        ),
-    ]
-
-
-def test_command_footnotes():
-    source = "::footnotes:arg1, arg2, #tag1, name1=value1, name2=value2"
-
-    parser = runner(source)
-    parser.footnote_entries = []
-
-    assert parser.nodes == [
-        FootnotesNode(
-            parser.footnote_entries,
-            args=["arg1", "arg2"],
-            kwargs={"name1": "value1", "name2": "value2"},
-            tags=["tag1"],
-        ),
-    ]
-
-
 def test_style_underscore():
     source = """
     This is _underscore_ text

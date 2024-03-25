@@ -390,12 +390,11 @@ class MainParser(BaseParser):
         name = self._get_token(BLTokenTypes.TEXT).value
         self._get_token(BLTokenTypes.LITERAL, ":")
 
-        args = []
-        kwargs = {}
-        tags = []
+        args, kwargs, tags, subtype = self._pop_arguments()
 
         # Commands can have arguments
-        arguments = ""
+        command_args = []
+        command_kwargs = {}
         with self:
             arguments = self._get_token(BLTokenTypes.TEXT).value
 
@@ -405,31 +404,41 @@ class MainParser(BaseParser):
                 arguments, current_context, self.environment
             )
 
-            args, kwargs, tags, _ = arguments_parser.process_arguments()
+            command_args, command_kwargs, _, _ = arguments_parser.process_arguments()
 
         if name == "defblock":
             # Block definitions must have at least 2 arguments,
             # the alias and the block type.
-            if len(args) < 2:
+            if len(command_args) < 2:
                 self._error(
                     "Block definitions require at least two unnamed arguments: ALIAS and SUBTYPE"
                 )
 
-            block_alias = args.pop(0)
-            block_type = args.pop(0)
+            block_alias = command_args.pop(0)
+            block_type = command_args.pop(0)
 
             self.block_aliases[block_alias] = block_type
-            self.block_defaults[block_alias] = kwargs
-            self.block_names[block_alias] = args
+            self.block_defaults[block_alias] = command_kwargs
+            self.block_names[block_alias] = command_args
 
         elif name == "toc":
-            node = TocNode(entries=self.headers, args=args, kwargs=kwargs, tags=tags)
+            node = TocNode(
+                entries=self.headers,
+                subtype=subtype,
+                args=args,
+                kwargs=kwargs,
+                tags=tags,
+            )
             self.toc_command_nodes.append(node)
             self._save(node)
 
         elif name == "footnotes":
             node = FootnotesNode(
-                entries=self.footnotes, args=args, kwargs=kwargs, tags=tags
+                entries=self.footnotes,
+                subtype=subtype,
+                args=args,
+                kwargs=kwargs,
+                tags=tags,
             )
 
             self.footnote_command_nodes.append(node)
@@ -437,13 +446,16 @@ class MainParser(BaseParser):
 
         elif name == "references":
             # Assign names
-            args, kwargs = self._set_names_and_defaults(args, kwargs, ["content_type"])
+            command_args, command_kwargs = self._set_names_and_defaults(
+                command_args, command_kwargs, ["content_type"]
+            )
 
-            content_type = kwargs.pop("content_type")
+            content_type = command_kwargs.pop("content_type")
 
             node = ReferencesNode(
                 entries=[],
                 content_type=content_type,
+                subtype=subtype,
                 args=args,
                 kwargs=kwargs,
                 tags=tags,

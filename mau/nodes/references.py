@@ -66,6 +66,7 @@ class ReferencesNode(PageNode):
         self,
         entries,
         content_type=None,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
@@ -73,6 +74,7 @@ class ReferencesNode(PageNode):
         super().__init__(args, kwargs, tags)
         self.content_type = content_type
         self.entries = entries
+        self.subtype = subtype
 
     @property
     def _content(self):
@@ -80,6 +82,7 @@ class ReferencesNode(PageNode):
             "type": self.node_type,
             "content_type": self.content_type,
             "entries": self.entries,
+            "subtype": self.subtype,
             "args": self.args,
             "kwargs": self.kwargs,
             "tags": self.tags,

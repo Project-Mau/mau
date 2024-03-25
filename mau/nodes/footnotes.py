@@ -47,8 +47,16 @@ class FootnotesNode(PageNode):
 
     node_type = "footnotes"
 
-    def __init__(self, entries, args=None, kwargs=None, tags=None):
+    def __init__(
+        self,
+        entries,
+        subtype=None,
+        args=None,
+        kwargs=None,
+        tags=None,
+    ):
         super().__init__(args, kwargs, tags)
+        self.subtype = subtype
         self.entries = entries
 
     @property
@@ -56,6 +64,7 @@ class FootnotesNode(PageNode):
         return {
             "type": self.node_type,
             "entries": self.entries,
+            "subtype": self.subtype,
             "args": self.args,
             "kwargs": self.kwargs,
             "tags": self.tags,

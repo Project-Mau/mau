@@ -31,21 +31,17 @@ def test_toc_node():
                 {
                     "data": {
                         "anchor": "header-1",
-                        "args": [],
                         "children": [
                             {
                                 "data": {
                                     "anchor": "header-1-1",
-                                    "args": [],
                                     "children": [],
-                                    "kwargs": {},
                                     "tags": [],
                                     "type": "toc_entry",
                                     "value": "Header 1.1",
                                 }
                             },
                         ],
-                        "kwargs": {},
                         "tags": [],
                         "type": "toc_entry",
                         "value": "Header 1",
@@ -55,9 +51,7 @@ def test_toc_node():
                     "data": {
                         "type": "toc_entry",
                         "anchor": "header-2",
-                        "args": [],
                         "children": [],
-                        "kwargs": {},
                         "tags": [],
                         "value": "Header 2",
                     }

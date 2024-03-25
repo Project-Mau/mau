@@ -360,8 +360,6 @@ class BaseVisitor:
                 "children": self.visitlist(
                     node.children, *args, join_with=join_with, **kwargs
                 ),
-                "args": node.args,
-                "kwargs": node.kwargs,
                 "tags": node.tags,
             },
         }

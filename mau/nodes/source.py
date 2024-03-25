@@ -74,9 +74,8 @@ class SourceNode(PageNode):
         kwargs=None,
         tags=None,
     ):
-        super().__init__(args, kwargs, tags)
+        super().__init__(subtype, args, kwargs, tags)
         self.code = code or []
-        self.subtype = subtype
         self.language = language
         self.callouts = callouts or []
         self.markers = markers or []

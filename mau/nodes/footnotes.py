@@ -55,8 +55,7 @@ class FootnotesNode(PageNode):
         kwargs=None,
         tags=None,
     ):
-        super().__init__(args, kwargs, tags)
-        self.subtype = subtype
+        super().__init__(subtype, args, kwargs, tags)
         self.entries = entries
 
     @property

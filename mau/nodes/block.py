@@ -34,8 +34,7 @@ class BlockNode(PageNode):
         kwargs=None,
         tags=None,
     ):
-        super().__init__(args, kwargs, tags)
-        self.subtype = subtype
+        super().__init__(subtype, args, kwargs, tags)
         self.content = content
         self.secondary_content = secondary_content
         self.title = title

@@ -1,7 +1,8 @@
+from mau.nodes.nodes import Node
 from mau.nodes.page import PageNode
 
 
-class TocEntryNode(PageNode):
+class TocEntryNode(Node):
     """An entry of the Table of Contents.
 
     This node contains an entry of the Table of Contents.
@@ -9,11 +10,18 @@ class TocEntryNode(PageNode):
 
     node_type = "toc_entry"
 
-    def __init__(self, value, anchor, children=None, args=None, kwargs=None, tags=None):
-        super().__init__(args, kwargs, tags)
+    def __init__(
+        self,
+        value,
+        anchor,
+        children=None,
+        tags=None,
+    ):
+        super().__init__()
         self.value = value
         self.anchor = anchor
         self.children = children or []
+        self.tags = tags or []
 
     @property
     def _content(self):
@@ -22,8 +30,6 @@ class TocEntryNode(PageNode):
             "value": self.value,
             "anchor": self.anchor,
             "children": self.children,
-            "args": self.args,
-            "kwargs": self.kwargs,
             "tags": self.tags,
         }
 
@@ -44,9 +50,8 @@ class TocNode(PageNode):
         kwargs=None,
         tags=None,
     ):
-        super().__init__(args, kwargs, tags)
+        super().__init__(subtype, args, kwargs, tags)
         self.entries = entries
-        self.subtype = subtype
 
     @property
     def _content(self):

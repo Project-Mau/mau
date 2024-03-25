@@ -14,9 +14,8 @@ class ParagraphNode(PageNode):
         kwargs=None,
         tags=None,
     ):
-        super().__init__(args, kwargs, tags)
+        super().__init__(subtype, args, kwargs, tags)
         self.content = content
-        self.subtype = subtype
 
     @property
     def _content(self):

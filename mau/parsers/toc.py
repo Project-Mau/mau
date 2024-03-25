@@ -12,8 +12,6 @@ def create_toc(headers, exclude_tag=None):
         node = TocEntryNode(
             header_node.value,
             header_node.anchor,
-            args=header_node.args,
-            kwargs=header_node.kwargs,
             tags=header_node.tags,
         )
         level = int(header_node.level)

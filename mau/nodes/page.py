@@ -8,39 +8,16 @@ class PageNode(Node):
 
     def __init__(
         self,
-        args=None,
-        kwargs=None,
-        tags=None,
-    ):
-        super().__init__()
-        self.args = args or []
-        self.kwargs = kwargs or {}
-        self.tags = tags or []
-
-    @property
-    def _content(self):
-        return {
-            "type": self.node_type,
-            "args": self.args,
-            "kwargs": self.kwargs,
-            "tags": self.tags,
-        }
-
-
-class HorizontalRuleNode(PageNode):
-    """A horizontal rule."""
-
-    node_type = "horizontal_rule"
-
-    def __init__(
-        self,
         subtype=None,
         args=None,
         kwargs=None,
         tags=None,
     ):
-        super().__init__(args, kwargs, tags)
+        super().__init__()
         self.subtype = subtype
+        self.args = args or []
+        self.kwargs = kwargs or {}
+        self.tags = tags or []
 
     @property
     def _content(self):
@@ -53,17 +30,24 @@ class HorizontalRuleNode(PageNode):
         }
 
 
+class HorizontalRuleNode(PageNode):
+    """A horizontal rule."""
+
+    node_type = "horizontal_rule"
+
+
 class ContainerNode(PageNode):
     node_type = "container"
 
     def __init__(
         self,
         content,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
     ):
-        super().__init__(args, kwargs, tags)
+        super().__init__(subtype, args, kwargs, tags)
         self.content = content
 
     @property
@@ -71,6 +55,7 @@ class ContainerNode(PageNode):
         return {
             "type": self.node_type,
             "content": self.content,
+            "subtype": self.subtype,
             "args": self.args,
             "kwargs": self.kwargs,
             "tags": self.tags,

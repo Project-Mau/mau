@@ -27,10 +27,9 @@ class ContentNode(PageNode):
         kwargs=None,
         tags=None,
     ):
-        super().__init__(args, kwargs, tags)
+        super().__init__(subtype, args, kwargs, tags)
         self.uri_args = uri_args or []
         self.uri_kwargs = uri_kwargs or {}
-        self.subtype = subtype
         self.content_type = content_type
         self.title = title
 
@@ -65,12 +64,11 @@ class ContentImageNode(PageNode):
         kwargs=None,
         tags=None,
     ):
-        super().__init__(args, kwargs, tags)
+        super().__init__(subtype, args, kwargs, tags)
         self.uri = uri
         self.classes = classes
         self.title = title
         self.alt_text = alt_text
-        self.subtype = subtype
 
     @property
     def _content(self):

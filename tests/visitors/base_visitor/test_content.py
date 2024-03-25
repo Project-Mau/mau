@@ -9,6 +9,8 @@ def test_content_node():
 
     node = ContentNode(
         content_type="sometype",
+        uri_args=["/uri1", "/uri2"],
+        uri_kwargs={"path": "/uri3"},
         title=TextNode("sometitle"),
         args=["arg1", "arg2"],
         kwargs={"key1": "value1"},
@@ -21,6 +23,8 @@ def test_content_node():
         "data": {
             "type": "content",
             "content_type": "sometype",
+            "uri_args": ["/uri1", "/uri2"],
+            "uri_kwargs": {"path": "/uri3"},
             "title": {
                 "data": {
                     "type": "text",

@@ -11,7 +11,7 @@ class TokenTypes:
     COMMENT = "COMMENT"
     HEADER = "HEADER"
     HORIZONTAL_RULE = "HORIZONTAL_RULE"
-    INCLUDE = "INCLUDE"
+    CONTENT = "CONTENT"
     LIST = "LIST"
     MULTILINE_COMMENT = "MULTILINE_COMMENT"
     TITLE = "TITLE"
@@ -131,7 +131,7 @@ class MainLexer(BaseLexer):
         if not match.group(2):  # pragma: no cover
             return None
 
-        tokens = [self._create_token_and_skip(TokenTypes.INCLUDE, "<<")]
+        tokens = [self._create_token_and_skip(TokenTypes.CONTENT, "<<")]
 
         if match.group(1):
             tokens.append(

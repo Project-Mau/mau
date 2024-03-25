@@ -243,6 +243,8 @@ class BaseVisitor:
             "data": {
                 "type": node.node_type,
                 "content_type": node.content_type,
+                "uri_args": node.uri_args,
+                "uri_kwargs": node.uri_kwargs,
                 "title": self.visit(node.title, *args, **kwargs),
                 "args": node.args,
                 "kwargs": node.kwargs,

@@ -327,7 +327,7 @@ def test_include_content():
     lex = runner("<<type:/path/to/it.jpg")
 
     assert lex.tokens == [
-        Token(TokenTypes.INCLUDE, "<<"),
+        Token(TokenTypes.CONTENT, "<<"),
         Token(BLTokenTypes.TEXT, "type"),
         Token(BLTokenTypes.LITERAL, ":"),
         Token(BLTokenTypes.TEXT, "/path/to/it.jpg"),
@@ -349,7 +349,7 @@ def test_include_content_with_space():
     lex = runner("<<      type:/path/to/it.jpg")
 
     assert lex.tokens == [
-        Token(TokenTypes.INCLUDE, "<<"),
+        Token(TokenTypes.CONTENT, "<<"),
         Token(BLTokenTypes.WHITESPACE, "      "),
         Token(BLTokenTypes.TEXT, "type"),
         Token(BLTokenTypes.LITERAL, ":"),
@@ -373,7 +373,7 @@ def test_include_content_without_arguments():
     lex = runner("<<type:")
 
     assert lex.tokens == [
-        Token(TokenTypes.INCLUDE, "<<"),
+        Token(TokenTypes.CONTENT, "<<"),
         Token(BLTokenTypes.TEXT, "type"),
         Token(BLTokenTypes.LITERAL, ":"),
         Token(BLTokenTypes.EOL),

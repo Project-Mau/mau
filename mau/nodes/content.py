@@ -19,12 +19,18 @@ class ContentNode(PageNode):
     def __init__(
         self,
         content_type,
+        uri_args=None,
+        uri_kwargs=None,
         title=None,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
     ):
         super().__init__(args, kwargs, tags)
+        self.uri_args = uri_args or []
+        self.uri_kwargs = uri_kwargs or {}
+        self.subtype = subtype
         self.content_type = content_type
         self.title = title
 
@@ -33,7 +39,10 @@ class ContentNode(PageNode):
         return {
             "type": self.node_type,
             "content_type": self.content_type,
+            "uri_args": self.uri_args,
+            "uri_kwargs": self.uri_kwargs,
             "title": self.title,
+            "subtype": self.subtype,
             "args": self.args,
             "kwargs": self.kwargs,
             "tags": self.tags,
@@ -51,6 +60,7 @@ class ContentImageNode(PageNode):
         alt_text=None,
         classes=None,
         title=None,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
@@ -60,6 +70,7 @@ class ContentImageNode(PageNode):
         self.classes = classes
         self.title = title
         self.alt_text = alt_text
+        self.subtype = subtype
 
     @property
     def _content(self):
@@ -69,6 +80,7 @@ class ContentImageNode(PageNode):
             "alt_text": self.alt_text,
             "classes": self.classes,
             "title": self.title,
+            "subtype": self.subtype,
             "args": self.args,
             "kwargs": self.kwargs,
             "tags": self.tags,

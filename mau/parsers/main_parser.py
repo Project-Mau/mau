@@ -236,7 +236,7 @@ class MainParser(BaseParser):
             self._process_arguments,
             self._process_header,
             self._process_block,
-            self._process_include_content,
+            self._process_content,
             self._process_list,
             self._process_paragraph,
         ]
@@ -926,13 +926,13 @@ class MainParser(BaseParser):
             )
         )
 
-    def _process_include_content(self):
-        # Parse include content in the form
+    def _process_content(self):
+        # Parse content in the form
         #
-        # << content_type:arguments
+        # << content_type:URI
 
         # Get the mandatory "<<"
-        self._get_token(MLTokenTypes.INCLUDE)
+        self._get_token(MLTokenTypes.CONTENT)
 
         with self:
             self._get_token(BLTokenTypes.WHITESPACE)
@@ -943,12 +943,11 @@ class MainParser(BaseParser):
 
         title = self._pop_title()
 
-        args = []
-        kwargs = {}
-        tags = []
+        args, kwargs, tags, subtype = self._pop_arguments()
 
-        # Commands can have arguments
-        arguments = ""
+        # Read the content URIs
+        uri_args = []
+        uri_kwargs = {}
         with self:
             arguments = self._get_token(BLTokenTypes.TEXT).value
 
@@ -958,14 +957,20 @@ class MainParser(BaseParser):
                 arguments, current_context, self.environment
             )
 
-            args, kwargs, tags, subtype = arguments_parser.process_arguments()
+            uri_args, uri_kwargs, _, _ = arguments_parser.process_arguments()
 
         if content_type == "image":
-            return self._parse_content_image(title, args, kwargs, tags)
+            return self._parse_content_image(
+                uri_args, uri_kwargs, title, subtype, args, kwargs, tags
+            )
 
-        return self._parse_standard_content(content_type, title, args, kwargs, tags)
+        return self._parse_standard_content(
+            content_type, uri_args, uri_kwargs, title, subtype, args, kwargs, tags
+        )
 
-    def _parse_content_image(self, title, args, kwargs, tags):
+    def _parse_content_image(
+        self, uri_args, uri_kwargs, title, subtype, args, kwargs, tags
+    ):
         # Parse a content image in the form
         #
         # << image:uri,alt_text,classes
@@ -977,11 +982,11 @@ class MainParser(BaseParser):
         args, kwargs = self._set_names_and_defaults(
             args,
             kwargs,
-            ["uri", "alt_text", "classes"],
+            ["alt_text", "classes"],
             {"alt_text": None, "classes": None},
         )
 
-        uri = kwargs.pop("uri")
+        uri = uri_args[0]
         alt_text = kwargs.pop("alt_text")
         classes = kwargs.pop("classes")
 
@@ -994,6 +999,8 @@ class MainParser(BaseParser):
                 alt_text=alt_text,
                 classes=classes,
                 title=title,
+                subtype=subtype,
+                args=args,
                 kwargs=kwargs,
                 tags=tags,
             )
@@ -1001,13 +1008,18 @@ class MainParser(BaseParser):
 
         return True
 
-    def _parse_standard_content(self, content_type, title, args, kwargs, tags):
+    def _parse_standard_content(
+        self, content_type, uri_args, uri_kwargs, title, subtype, args, kwargs, tags
+    ):
         # This is the fallback for an unknown content type
 
         self._save(
             ContentNode(
                 content_type=content_type,
+                uri_args=uri_args,
+                uri_kwargs=uri_kwargs,
                 title=title,
+                subtype=subtype,
                 args=args,
                 kwargs=kwargs,
                 tags=tags,

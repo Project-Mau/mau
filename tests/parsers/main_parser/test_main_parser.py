@@ -2,7 +2,6 @@ import pytest
 from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.footnotes import FootnotesNode
 from mau.nodes.inline import SentenceNode, StyleNode, TextNode
 from mau.nodes.page import ContainerNode, DocumentNode
 from mau.nodes.paragraph import ParagraphNode

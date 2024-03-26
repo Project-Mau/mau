@@ -6,12 +6,14 @@ from mau.lexers.main_lexer import MainLexer
 from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
 from mau.nodes.block import BlockNode
 from mau.nodes.content import ContentImageNode, ContentNode
+from mau.nodes.header import HeaderNode
 from mau.nodes.inline import RawNode
 from mau.nodes.lists import ListItemNode, ListNode
 from mau.nodes.page import ContainerNode, HorizontalRuleNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.parsers.arguments_parser import ArgumentsParser
+from mau.parsers.attributes import AttributesManager
 from mau.parsers.base_parser import BaseParser
 from mau.parsers.footnotes import FootnotesManager
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
@@ -34,6 +36,7 @@ class MainParser(BaseParser):
         self.footnotes_manager = FootnotesManager(self)
         self.references_manager = ReferencesManager(self)
         self.toc_manager = TocManager(self)
+        self.attributes_manager = AttributesManager(self)
 
         # When we define a block we establish an alias
         # {alias:actual_block_name}.
@@ -100,23 +103,8 @@ class MainParser(BaseParser):
         # next one when start=auto
         self.latest_ordered_list_length = 0
 
-        # A temporary space to store parsed arguments
-        # The tuple represents (args, kwargs, tags)
-        self.arguments = ([], {}, [], None)
-
         # This is the final output of the parser
         self.output = {}
-
-    def _pop_arguments(self):
-        # This return the arguments and resets the
-        # cached ones.
-        args, kwargs, tags, subtype = self.arguments
-        self.arguments = ([], {}, [], None)
-
-        return args, kwargs, tags, subtype
-
-    def _push_arguments(self, args, kwargs, tags, subtype):
-        self.arguments = (args, kwargs, tags, subtype)
 
     def _process_functions(self):
         # All the functions that this parser provides.
@@ -208,7 +196,7 @@ class MainParser(BaseParser):
 
         self._get_token(MLTokenTypes.HORIZONTAL_RULE)
 
-        args, kwargs, tags, subtype = self._pop_arguments()
+        args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         self._save(HorizontalRuleNode(subtype, args, kwargs, tags))
 
@@ -276,7 +264,7 @@ class MainParser(BaseParser):
         name = self._get_token(BLTokenTypes.TEXT).value
         self._get_token(BLTokenTypes.LITERAL, ":")
 
-        args, kwargs, tags, subtype = self._pop_arguments()
+        args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         # Commands can have arguments
         command_args = []
@@ -385,7 +373,7 @@ class MainParser(BaseParser):
         )
 
         args, kwargs, tags, subtype = arguments_parser.process_arguments()
-        self._push_arguments(args, kwargs, tags, subtype)
+        self.attributes_manager.push(args, kwargs, tags, subtype)
 
         return True
 
@@ -409,10 +397,25 @@ class MainParser(BaseParser):
         text = self._get_token(BLTokenTypes.TEXT).value
         level = len(header)
 
-        # Generate the header node
-        header_node = self.toc_manager.create_header_node(text, level)
+        # Create the anchor
+        anchor = self.header_anchor(text, level)
 
-        self._save(header_node)
+        # Consume the parser arguments
+        args, kwargs, tags, subtype = self.attributes_manager.pop()
+
+        node = HeaderNode(
+            value=text,
+            level=str(level),
+            anchor=anchor,
+            subtype=subtype,
+            args=args,
+            tags=tags,
+            kwargs=kwargs,
+        )
+
+        self.toc_manager.add_header_node(node)
+
+        self._save(node)
 
         return True
 
@@ -484,7 +487,7 @@ class MainParser(BaseParser):
         block.title = self._pop_title()
 
         # Consume the arguments
-        args, kwargs, tags, subtype = self._pop_arguments()
+        args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         # The first unnamed argument is the block type
         # try:
@@ -813,7 +816,7 @@ class MainParser(BaseParser):
 
         title = self._pop_title()
 
-        args, kwargs, tags, subtype = self._pop_arguments()
+        args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         # Read the content URIs
         uri_args = []
@@ -937,7 +940,7 @@ class MainParser(BaseParser):
         header = self._peek_token(MLTokenTypes.LIST)
         numbered = header.value[0] == "#"
 
-        args, kwargs, tags, subtype = self._pop_arguments()
+        args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         # Parse all the following items
         nodes = self._process_list_nodes()
@@ -1061,7 +1064,7 @@ class MainParser(BaseParser):
         sentence = self._parse_text_content(text, context)
 
         # Consume the arguments
-        args, kwargs, tags, subtype = self._pop_arguments()
+        args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         self._save(
             ParagraphNode(

@@ -231,7 +231,7 @@ def test_block_raw_engine():
     ]
 
 
-@patch("mau.parsers.toc.header_anchor")
+@patch("mau.parsers.main_parser.header_anchor")
 def test_block_default_engine_adds_headers_to_global_toc(mock_header_anchor):
     mock_header_anchor.return_value = "XXYY"
 

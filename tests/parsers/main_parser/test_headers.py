@@ -45,38 +45,46 @@ def test_custom_header_anchor_function():
         "mau.parser.header_anchor_function", lambda text, level: "XXXXXY"
     )
 
-    env_runner = parser_runner_factory(MainLexer, MainParser)
-
-    assert env_runner(source, environment).nodes == [
+    assert runner(source, environment).nodes == [
         HeaderNode("Title of the section", "1", "XXXXXY")
     ]
 
 
-@patch("mau.parsers.toc.header_anchor")
-def test_parse_header_level_1(header_anchor_mock):
-    header_anchor_mock.return_value = "XXXXXX"
+def test_parse_header_level_1():
+    environment = Environment()
+    environment.setvar(
+        "mau.parser.header_anchor_function", lambda text, level: "XXXXXY"
+    )
 
     source = """
     = Title of the section
     """
 
-    assert runner(source).nodes == [HeaderNode("Title of the section", "1", "XXXXXX")]
+    assert runner(source, environment).nodes == [
+        HeaderNode("Title of the section", "1", "XXXXXY")
+    ]
 
 
-@patch("mau.parsers.toc.header_anchor")
-def test_parse_header_level_3(header_anchor_mock):
-    header_anchor_mock.return_value = "XXXXXX"
+def test_parse_header_level_3():
+    environment = Environment()
+    environment.setvar(
+        "mau.parser.header_anchor_function", lambda text, level: "XXXXXX"
+    )
 
     source = """
     === Title of a subsection
     """
 
-    assert runner(source).nodes == [HeaderNode("Title of a subsection", "3", "XXXXXX")]
+    assert runner(source, environment).nodes == [
+        HeaderNode("Title of a subsection", "3", "XXXXXX")
+    ]
 
 
-@patch("mau.parsers.toc.header_anchor")
-def test_parse_collect_headers(header_anchor_mock):
-    header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
+def test_parse_collect_headers():
+    environment = Environment()
+    environment.setvar(
+        "mau.parser.header_anchor_function", lambda text, level: f"{text}-XXXXXX"
+    )
 
     source = """
     = Header 1
@@ -87,7 +95,7 @@ def test_parse_collect_headers(header_anchor_mock):
     === Header 2.1.1
     """
 
-    parser = runner(source)
+    parser = runner(source, environment)
 
     assert parser.nodes == [
         HeaderNode("Header 1", "1", "Header 1-XXXXXX"),
@@ -108,16 +116,18 @@ def test_parse_collect_headers(header_anchor_mock):
     ]
 
 
-@patch("mau.parsers.toc.header_anchor")
-def test_attributes_header(header_anchor_mock):
-    header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
+def test_attributes_header():
+    environment = Environment()
+    environment.setvar(
+        "mau.parser.header_anchor_function", lambda text, level: f"{text}-XXXXXX"
+    )
 
     source = """
     [arg1,key1=value1]
     = Header
     """
 
-    assert runner(source).nodes == [
+    assert runner(source, environment).nodes == [
         HeaderNode(
             "Header",
             "1",
@@ -128,16 +138,18 @@ def test_attributes_header(header_anchor_mock):
     ]
 
 
-@patch("mau.parsers.toc.header_anchor")
-def test_single_tag_header(header_anchor_mock):
-    header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
+def test_single_tag_header():
+    environment = Environment()
+    environment.setvar(
+        "mau.parser.header_anchor_function", lambda text, level: f"{text}-XXXXXX"
+    )
 
     source = """
     [arg1, #tag1, key1=value1]
     = Header
     """
 
-    assert runner(source).nodes == [
+    assert runner(source, environment).nodes == [
         HeaderNode(
             "Header",
             "1",
@@ -149,16 +161,18 @@ def test_single_tag_header(header_anchor_mock):
     ]
 
 
-@patch("mau.parsers.toc.header_anchor")
-def test_(header_anchor_mock):
-    header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
+def test_():
+    environment = Environment()
+    environment.setvar(
+        "mau.parser.header_anchor_function", lambda text, level: f"{text}-XXXXXX"
+    )
 
     source = """
     [*type1]
     = Header
     """
 
-    assert runner(source).nodes == [
+    assert runner(source, environment).nodes == [
         HeaderNode(
             "Header",
             "1",

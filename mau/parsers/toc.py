@@ -1,9 +1,7 @@
 import hashlib
 import re
 
-from mau.nodes.toc import TocEntryNode
-from mau.nodes.toc import TocNode
-from mau.nodes.header import HeaderNode
+from mau.nodes.toc import TocEntryNode, TocNode
 
 
 class TocManager:
@@ -24,33 +22,8 @@ class TocManager:
         # This is the parser that contains the manager
         self.parser = parser
 
-        # This is the function used to create the header
-        # anchors. It can be specified through
-        # mau.header_anchor_function to override
-        # the default one.
-        self.header_anchor = self.parser.environment.getvar(
-            "mau.parser.header_anchor_function", header_anchor
-        )
-
-    def create_header_node(self, text, level):
-        anchor = self.header_anchor(text, level)
-
-        # Consume the parser arguments
-        args, kwargs, tags, subtype = self.parser._pop_arguments()
-
-        node = HeaderNode(
-            value=text,
-            level=str(level),
-            anchor=anchor,
-            subtype=subtype,
-            args=args,
-            tags=tags,
-            kwargs=kwargs,
-        )
-
+    def add_header_node(self, node):
         self.headers.append(node)
-
-        return node
 
     def create_toc_node(self, subtype, args, kwargs, tags):
         # This creates an empty TocNode

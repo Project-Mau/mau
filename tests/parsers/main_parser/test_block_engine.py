@@ -13,7 +13,7 @@ init_parser = init_parser_factory(MainLexer, MainParser)
 runner = parser_runner_factory(MainLexer, MainParser)
 
 
-@patch("mau.parsers.toc.header_anchor")
+@patch("mau.parsers.main_parser.header_anchor")
 def test_engine_mau(mock_header_anchor):
     mock_header_anchor.return_value = "XXYY"
 
@@ -57,7 +57,7 @@ def test_engine_mau(mock_header_anchor):
     ]
 
 
-@patch("mau.parsers.toc.header_anchor")
+@patch("mau.parsers.main_parser.header_anchor")
 def test_engine_mau_multiple_blocks_are_independent(mock_header_anchor):
     mock_header_anchor.return_value = "XXYY"
 
@@ -122,7 +122,7 @@ def test_engine_mau_multiple_blocks_are_independent(mock_header_anchor):
     ]
 
 
-@patch("mau.parsers.toc.header_anchor")
+@patch("mau.parsers.main_parser.header_anchor")
 def test_engine_mau_toc(mock_header_anchor):
     mock_header_anchor.return_value = "XXYY"
 

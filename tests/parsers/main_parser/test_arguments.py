@@ -15,7 +15,7 @@ def test_arguments_empty():
     []
     """
 
-    assert runner(source).arguments == ([], {}, [], None)
+    assert runner(source).attributes_manager.attributes == ([], {}, [], None)
 
 
 def test_arguments_subtype():
@@ -23,7 +23,7 @@ def test_arguments_subtype():
     [*subtype]
     """
 
-    assert runner(source).arguments == ([], {}, [], "subtype")
+    assert runner(source).attributes_manager.attributes == ([], {}, [], "subtype")
 
 
 def test_arguments_multiple_subtypes():
@@ -32,7 +32,7 @@ def test_arguments_multiple_subtypes():
     """
 
     with pytest.raises(MauErrorException):
-        assert runner(source).arguments == ([], {}, [], "subtype1")
+        assert runner(source).attributes_manager.attributes == ([], {}, [], "subtype1")
 
 
 def test_arguments_args():
@@ -40,7 +40,12 @@ def test_arguments_args():
     [arg1,arg2]
     """
 
-    assert runner(source).arguments == (["arg1", "arg2"], {}, [], None)
+    assert runner(source).attributes_manager.attributes == (
+        ["arg1", "arg2"],
+        {},
+        [],
+        None,
+    )
 
 
 def test_arguments_kwargs():
@@ -48,7 +53,7 @@ def test_arguments_kwargs():
     [key1=value1,key2=value2]
     """
 
-    assert runner(source).arguments == (
+    assert runner(source).attributes_manager.attributes == (
         [],
         {"key1": "value1", "key2": "value2"},
         [],
@@ -64,7 +69,12 @@ def test_arguments_support_variables():
     [{arg1},key1={value1}]
     """
 
-    assert runner(source).arguments == (["number1"], {"key1": "42"}, [], None)
+    assert runner(source).attributes_manager.attributes == (
+        ["number1"],
+        {"key1": "42"},
+        [],
+        None,
+    )
 
 
 def test_arguments_tags():
@@ -72,4 +82,9 @@ def test_arguments_tags():
     [#tag1,#tag2]
     """
 
-    assert runner(source).arguments == ([], {}, ["tag1", "tag2"], None)
+    assert runner(source).attributes_manager.attributes == (
+        [],
+        {},
+        ["tag1", "tag2"],
+        None,
+    )

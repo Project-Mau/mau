@@ -1,6 +1,6 @@
 from mau.lexers.main_lexer import MainLexer
-from mau.parsers.main_parser import MainParser
 from mau.nodes.page import HorizontalRuleNode
+from mau.parsers.main_parser import MainParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory
 

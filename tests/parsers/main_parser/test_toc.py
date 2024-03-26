@@ -30,7 +30,7 @@ def test_command_toc():
     ]
 
 
-@patch("mau.parsers.toc.header_anchor")
+@patch("mau.parsers.main_parser.header_anchor")
 def test_toc(header_anchor_mock):
     header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
 

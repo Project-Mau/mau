@@ -1,50 +1,24 @@
 # pylint: disable=too-many-lines
 
-import hashlib
-import re
-
 from mau.environment.environment import Environment
 from mau.lexers.base_lexer import TokenTypes as BLTokenTypes
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
 from mau.nodes.block import BlockNode
 from mau.nodes.content import ContentImageNode, ContentNode
-from mau.nodes.footnotes import FootnotesNode
-from mau.nodes.header import HeaderNode
 from mau.nodes.inline import RawNode
 from mau.nodes.lists import ListItemNode, ListNode
 from mau.nodes.page import ContainerNode, HorizontalRuleNode
 from mau.nodes.paragraph import ParagraphNode
-from mau.nodes.references import ReferencesNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
-from mau.nodes.toc import TocNode
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.base_parser import BaseParser
-from mau.parsers.footnotes import create_footnotes
+from mau.parsers.footnotes import FootnotesManager
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
-from mau.parsers.references import create_references
+from mau.parsers.references import ReferencesManager
 from mau.parsers.text_parser import TextParser
-from mau.parsers.toc import create_toc
+from mau.parsers.toc import TocManager, header_anchor
 from mau.tokens.tokens import Token
-
-
-def header_anchor(text, level):
-    """
-    Return a sanitised anchor for a header.
-    """
-
-    # Everything lowercase
-    sanitised_text = text.lower()
-
-    # Get only letters, numbers, dashes, spaces, and dots
-    sanitised_text = "".join(re.findall("[a-z0-9-\\. ]+", sanitised_text))
-
-    # Remove multiple spaces
-    sanitised_text = "-".join(sanitised_text.split())
-
-    hashed_value = hashlib.md5(f"{level} {text}".encode("utf-8")).hexdigest()[:4]
-
-    return f"{sanitised_text}-{hashed_value}"
 
 
 # The MainParser is in charge of parsing
@@ -57,56 +31,9 @@ class MainParser(BaseParser):
     def __init__(self, environment):
         super().__init__(environment)
 
-        self.headers = []
-
-        # This list contains all the ToC entries
-        # that will be shown by a toc command.
-        self.tocnodes = []
-
-        # This is the list of ::toc commands
-        # that need to be updated once the toc
-        # has been processed
-        self.toc_command_nodes = []
-
-        # This is the full ToC
-        self.toc = None
-
-        # This dictionary containes the footnotes created
-        # in the text through a macro.
-        self.footnote_mentions = {}
-
-        # This dictionary contains the content of each
-        # footnote created through blocks.
-        # This is a helper dictionary that will be merged
-        # with self.footnotes once the parsing is completed.
-        self.footnote_data = {}
-
-        # This list contains all the footnote entries
-        # that will be shown by a footnotes command.
-        self.footnotes = []
-
-        # This is the list of ::footnotes commands
-        # that need to be updated once footnotes
-        # have been processed
-        self.footnote_command_nodes = []
-
-        # This dictionary containes the references created
-        # in the text through a macro.
-        self.reference_mentions = {}
-
-        # This dictionary contains the content of each
-        # reference created through blocks.
-        self.reference_data = {}
-
-        # This list contains all the references contained
-        # in this parser in the form
-        # {content_type:[references]}.
-        self.references = {}
-
-        # This is the list of ::references commands
-        # that need to be updated once references
-        # have been processed
-        self.reference_command_nodes = []
+        self.footnotes_manager = FootnotesManager(self)
+        self.references_manager = ReferencesManager(self)
+        self.toc_manager = TocManager(self)
 
         # When we define a block we establish an alias
         # {alias:actual_block_name}.
@@ -179,37 +106,6 @@ class MainParser(BaseParser):
 
         # This is the final output of the parser
         self.output = {}
-
-    def process_footnotes(self):
-        self.footnotes = create_footnotes(
-            self.footnote_mentions,
-            self.footnote_data,
-        )
-
-        for node in self.footnote_command_nodes:
-            node.entries = self.footnotes
-
-    def process_references(self):
-        self.references = create_references(
-            self.reference_mentions,
-            self.reference_data,
-        )
-
-        # Filter references according to the node parameters
-        for node in self.reference_command_nodes:
-            node.entries = [
-                i
-                for i in self.references.values()
-                if i.content_type == node.content_type
-            ]
-
-    def process_toc(self):
-        self.toc = TocNode(create_toc(self.headers))
-
-        for node in self.toc_command_nodes:
-            node.entries = create_toc(
-                self.headers, exclude_tag=node.kwargs.get("exclude_tag")
-            )
 
     def _pop_arguments(self):
         # This return the arguments and resets the
@@ -290,23 +186,13 @@ class MainParser(BaseParser):
         # A text parser returns a single sentence node
         result = text_parser.nodes[0]
 
-        # Retrieve the footnotes
-        # The format of this dictionary is
-        # {"name": node}
-        text_footnotes = set(text_parser.footnotes.keys())
-        existing_footnotes = set(self.footnote_mentions.keys())
-        duplicate_footnotes = set.intersection(existing_footnotes, text_footnotes)
+        # Extract the footnote mentions
+        # found in this piece of text
+        self.footnotes_manager.update_mentions(text_parser.footnotes)
 
-        if duplicate_footnotes:
-            duplicates_list = ", ".join(duplicate_footnotes)
-            self._error(f"Duplicate footnotes detected: {duplicates_list}")
-
-        self.footnote_mentions.update(text_parser.footnotes)
-
-        # Retrieve the references
-        # The format of this dictionary is
-        # {(content_type,name): node}
-        self.reference_mentions.update(text_parser.references)
+        # Extract the reference mentions
+        # found in this piece of text
+        self.references_manager.update_mentions(text_parser.references)
 
         return result
 
@@ -422,27 +308,11 @@ class MainParser(BaseParser):
             self.block_names[block_alias] = command_args
 
         elif name == "toc":
-            node = TocNode(
-                entries=self.headers,
-                subtype=subtype,
-                args=args,
-                kwargs=kwargs,
-                tags=tags,
-            )
-            self.toc_command_nodes.append(node)
-            self._save(node)
+            self.toc_manager.create_toc_node(subtype, args, kwargs, tags)
 
         elif name == "footnotes":
-            node = FootnotesNode(
-                entries=self.footnotes,
-                subtype=subtype,
-                args=args,
-                kwargs=kwargs,
-                tags=tags,
-            )
-
-            self.footnote_command_nodes.append(node)
-            self._save(node)
+            # Create a footnotes node
+            self.footnotes_manager.create_node(subtype, args, kwargs, tags)
 
         elif name == "references":
             # Assign names
@@ -452,17 +322,14 @@ class MainParser(BaseParser):
 
             content_type = command_kwargs.pop("content_type")
 
-            node = ReferencesNode(
-                entries=[],
-                content_type=content_type,
-                subtype=subtype,
-                args=args,
-                kwargs=kwargs,
-                tags=tags,
+            # Create a references node
+            self.references_manager.create_node(
+                content_type,
+                subtype,
+                args,
+                kwargs,
+                tags,
             )
-
-            self.reference_command_nodes.append(node)
-            self._save(node)
 
         return True
 
@@ -542,24 +409,8 @@ class MainParser(BaseParser):
         text = self._get_token(BLTokenTypes.TEXT).value
         level = len(header)
 
-        # Generate the anchor and append it to the TOC
-        anchor = self.header_anchor(text, level)
-
-        # Consume the arguments
-        args, kwargs, tags, subtype = self._pop_arguments()
-
         # Generate the header node
-        header_node = HeaderNode(
-            value=text,
-            level=str(level),
-            anchor=anchor,
-            subtype=subtype,
-            args=args,
-            tags=tags,
-            kwargs=kwargs,
-        )
-
-        self.headers.append(header_node)
+        header_node = self.toc_manager.create_header_node(text, level)
 
         self._save(header_node)
 
@@ -726,6 +577,9 @@ class MainParser(BaseParser):
         return True
 
     def _parse_footnote_engine(self, block):
+        # The current block contains footnote data.
+        # Extract the content and store it in
+        # the footnotes manager.
         name = block.kwargs.pop("name")
 
         content_parser = MainParser.analyse(
@@ -734,9 +588,7 @@ class MainParser(BaseParser):
             self.environment,
         )
 
-        self.footnote_data[name] = {
-            "content": content_parser.nodes,
-        }
+        self.footnotes_manager.add_data(name, content_parser.nodes)
 
     def _parse_reference_engine(self, block):
         content_type = block.kwargs["type"]
@@ -748,7 +600,7 @@ class MainParser(BaseParser):
             self.environment,
         )
 
-        self.reference_data[(content_type, name)] = {"content": content_parser.nodes}
+        self.references_manager.add_data(content_type, name, content_parser.nodes)
 
     def _parse_raw_engine(self, block):
         # Engine "raw" doesn't process the content,
@@ -779,11 +631,17 @@ class MainParser(BaseParser):
         block.content = content_parser.nodes
         block.secondary_content = secondary_content_parser.nodes
 
-        self.footnote_mentions.update(content_parser.footnote_mentions)
-        self.footnote_data.update(content_parser.footnote_data)
-        self.headers.extend(content_parser.headers)
-        self.reference_mentions.update(content_parser.reference_mentions)
-        self.reference_data.update(content_parser.reference_data)
+        # The footnote mentions and definitions
+        # found in this block are part of the
+        # main document. Import them.
+        self.footnotes_manager.update(content_parser.footnotes_manager)
+
+        # The reference mentions and definitions
+        # found in this block are part of the
+        # main document. Import them.
+        self.references_manager.update(content_parser.references_manager)
+
+        self.toc_manager.update(content_parser.toc_manager)
 
         self._save(block)
 
@@ -1156,7 +1014,9 @@ class MainParser(BaseParser):
                 text = self._collect_text_content()
                 content = self._parse_text_content(text, context)
 
-                nodes.append(ListItemNode(str(len(header)), content))
+                level = len(header)
+
+                nodes.append(ListItemNode(str(level), content))
             elif len(self._peek_token().value) > level:
                 # The new item is on a deeper level
 
@@ -1214,14 +1074,20 @@ class MainParser(BaseParser):
     def parse(self, tokens):
         super().parse(tokens)
 
-        # Create the footnotes
-        self.process_footnotes()
+        # This processes all footnotes stored in
+        # the manager merging mentions and data
+        # and updating the nodes that contain
+        # a list of footnotes
+        footnotes = self.footnotes_manager.process_footnotes()
 
-        # Process references
-        self.process_references()
+        # This processes all references stored in
+        # the manager merging mentions and data
+        # and updating the nodes that contain
+        # a list of references
+        references = self.references_manager.process_references()
 
         # Process ToC
-        self.process_toc()
+        toc = self.toc_manager.process_toc()
 
         custom_filters = {}
 
@@ -1239,9 +1105,9 @@ class MainParser(BaseParser):
         self.output.update(
             {
                 "content": wrapper_node_class(self.nodes),
-                "toc": self.toc,
-                "references": self.references,
-                "footnotes": self.footnotes,
+                "toc": toc,
+                "references": references,
+                "footnotes": footnotes,
                 "custom_filters": custom_filters,
             }
         )

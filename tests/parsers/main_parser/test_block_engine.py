@@ -13,7 +13,7 @@ init_parser = init_parser_factory(MainLexer, MainParser)
 runner = parser_runner_factory(MainLexer, MainParser)
 
 
-@patch("mau.parsers.main_parser.header_anchor")
+@patch("mau.parsers.toc.header_anchor")
 def test_engine_mau(mock_header_anchor):
     mock_header_anchor.return_value = "XXYY"
 
@@ -51,13 +51,13 @@ def test_engine_mau(mock_header_anchor):
         ),
     ]
 
-    assert par.headers == [
+    assert par.toc_manager.headers == [
         HeaderNode("Header 1", "1", "XXYY"),
         HeaderNode("Header 2", "1", "XXYY"),
     ]
 
 
-@patch("mau.parsers.main_parser.header_anchor")
+@patch("mau.parsers.toc.header_anchor")
 def test_engine_mau_multiple_blocks_are_independent(mock_header_anchor):
     mock_header_anchor.return_value = "XXYY"
 
@@ -116,13 +116,13 @@ def test_engine_mau_multiple_blocks_are_independent(mock_header_anchor):
         ),
     ]
 
-    assert par.headers == [
+    assert par.toc_manager.headers == [
         HeaderNode("Header 1", "1", "XXYY"),
         HeaderNode("Header 2", "1", "XXYY"),
     ]
 
 
-@patch("mau.parsers.main_parser.header_anchor")
+@patch("mau.parsers.toc.header_anchor")
 def test_engine_mau_toc(mock_header_anchor):
     mock_header_anchor.return_value = "XXYY"
 
@@ -176,7 +176,7 @@ def test_engine_mau_toc(mock_header_anchor):
         ),
     ]
 
-    assert par.headers == [
+    assert par.toc_manager.headers == [
         HeaderNode("Header 1", "1", "XXYY"),
         HeaderNode("Header 2", "1", "XXYY"),
     ]

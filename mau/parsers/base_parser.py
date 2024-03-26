@@ -133,6 +133,10 @@ class BaseParser:
         # Store the node.
         self.nodes.append(node)
 
+    def save(self, node):
+        # Store the node.
+        self.nodes.append(node)
+
     def _check_token(
         self,
         token,

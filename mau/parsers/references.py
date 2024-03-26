@@ -1,6 +1,67 @@
 import hashlib
 
-from mau.nodes.references import ReferencesEntryNode
+from mau.nodes.references import ReferencesEntryNode, ReferencesNode
+
+
+class ReferencesManager:
+    def __init__(self, parser):
+        # This dictionary containes the references created
+        # in the text through a macro.
+        self.mentions = {}
+
+        # This dictionary contains the content of each
+        # reference created through blocks.
+        self.data = {}
+
+        # This list contains all the references contained
+        # in this parser in the form
+        # {content_type:[references]}.
+        self.references = {}
+
+        # This is the list of ::references commands
+        # that need to be updated once references
+        # have been processed
+        self.command_nodes = []
+
+        # This is the parser that contains the manager
+        self.parser = parser
+
+    def create_node(self, content_type, subtype, args, kwargs, tags):
+        node = ReferencesNode(
+            entries=[],
+            content_type=content_type,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
+
+        self.command_nodes.append(node)
+        self.parser.save(node)
+
+    def add_data(self, content_type, name, content):
+        self.data[(content_type, name)] = content
+
+    def process_references(self):
+        references = create_references(
+            self.mentions,
+            self.data,
+        )
+
+        # Filter references according to the node parameters
+        for node in self.command_nodes:
+            node.entries = [
+                i for i in references.values() if i.content_type == node.content_type
+            ]
+
+        return references
+
+    def update(self, other):
+        self.update_mentions(other.mentions)
+        self.data.update(other.data)
+
+    def update_mentions(self, mentions):
+        self.mentions.update(mentions)
 
 
 def reference_anchor(content):
@@ -27,8 +88,7 @@ def create_references(reference_mentions, reference_data):
         reference.number = num
 
     for key, reference in reference_mentions.items():
-        data = reference_data[key]
-        reference.content = data["content"]
+        reference.content = reference_data[key]
         anchor = reference_anchor(reference.content)
         content_type = reference.content_type
 

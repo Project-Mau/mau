@@ -56,17 +56,15 @@ def test_document_with_reference():
     parser = runner(textwrap.dedent(source))
 
     assert parser.nodes == []
-    assert parser.reference_data[("content_type", "value")] == {
-        "content": [
-            ParagraphNode(
-                SentenceNode(
-                    [
-                        TextNode("This is a paragraph."),
-                    ]
-                )
-            ),
-        ],
-    }
+    assert parser.references_manager.data[("content_type", "value")] == [
+        ParagraphNode(
+            SentenceNode(
+                [
+                    TextNode("This is a paragraph."),
+                ]
+            )
+        ),
+    ]
 
 
 @patch("mau.parsers.references.reference_anchor")
@@ -84,7 +82,7 @@ def test_simple_reference(mock_reference_anchor):
 
     parser = runner(source)
 
-    assert parser.references == {
+    assert parser.output["references"] == {
         ("content_type", "value"): ReferencesEntryNode(
             "content_type",
             content=[
@@ -121,7 +119,7 @@ def test_reference_data_inside_block(mock_reference_anchor):
 
     parser = runner(source)
 
-    assert parser.references == {
+    assert parser.output["references"] == {
         ("content_type", "value"): ReferencesEntryNode(
             "content_type",
             content=[
@@ -158,7 +156,7 @@ def test_reference_mention_and_data_inside_block(mock_reference_anchor):
 
     parser = runner(source)
 
-    assert parser.references == {
+    assert parser.output["references"] == {
         ("content_type", "value"): ReferencesEntryNode(
             "content_type",
             content=[
@@ -203,7 +201,7 @@ def test_multiple_content_types(mock_reference_anchor):
 
     parser = runner(source)
 
-    assert parser.references == {
+    assert parser.output["references"] == {
         ("content_type1", "name1"): ReferenceNode(
             "content_type1",
             content=[

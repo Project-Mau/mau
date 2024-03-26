@@ -26,11 +26,11 @@ def test_command_footnotes():
     """
 
     parser = runner(source)
-    parser.footnote_entries = []
+    parser.footnotes_manager.footnote_entries = []
 
     assert parser.nodes == [
         FootnotesNode(
-            parser.footnote_entries,
+            parser.footnotes_manager.footnote_entries,
             subtype="subtype1",
             args=["arg1", "arg2"],
             kwargs={"key1": "value1", "key2": "value2"},
@@ -78,14 +78,14 @@ def test_footnote_content(mock_footnote_anchor):
     """
 
     parser = runner(textwrap.dedent(source))
-    parser.footnote_mentions = {
+    parser.footnotes_manager.mentions = {
         "note1": FootnoteNode(number=1),
         "note2": FootnoteNode(number=2),
     }
     parser.parse(parser.tokens)
 
     assert parser.nodes == []
-    assert parser.footnote_mentions == {
+    assert parser.footnotes_manager.mentions == {
         "note1": FootnoteNode(
             number=1,
             content=[
@@ -132,7 +132,7 @@ def test_footnote_mention_and_content(mock_footnote_anchor):
 
     parser = runner(textwrap.dedent(source))
 
-    assert parser.footnote_mentions == {
+    assert parser.footnotes_manager.mentions == {
         "note1": FootnoteNode(
             number=1,
             content=[
@@ -148,23 +148,21 @@ def test_footnote_mention_and_content(mock_footnote_anchor):
             content_anchor="cnt-footnote-1-XXYY",
         )
     }
-    assert parser.footnote_data == {
-        "note1": {
-            "content": [
-                ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is the content of the footnote"),
-                        ]
-                    )
+    assert parser.footnotes_manager.data == {
+        "note1": [
+            ParagraphNode(
+                SentenceNode(
+                    [
+                        TextNode("This is the content of the footnote"),
+                    ]
                 )
-            ],
-        }
+            )
+        ],
     }
 
-    footnote_mention = parser.footnote_mentions["note1"]
+    footnote_mention = parser.footnotes_manager.mentions["note1"]
 
-    assert parser.footnotes == [footnote_mention.to_entry()]
+    assert parser.output["footnotes"] == [footnote_mention.to_entry()]
 
 
 @patch("mau.parsers.footnotes.footnote_anchor")

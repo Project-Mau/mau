@@ -1,4 +1,87 @@
+import hashlib
+import re
+
 from mau.nodes.toc import TocEntryNode
+from mau.nodes.toc import TocNode
+from mau.nodes.header import HeaderNode
+
+
+class TocManager:
+    def __init__(self, parser):
+        # This list contains the headers
+        # found parsing a document
+        self.headers = []
+
+        # This list contains all the ToC entries
+        # that will be shown by a toc command.
+        self.tocnodes = []
+
+        # This is the list of ::toc commands
+        # that need to be updated once the ToC
+        # has been processed
+        self.command_nodes = []
+
+        # This is the parser that contains the manager
+        self.parser = parser
+
+        # This is the function used to create the header
+        # anchors. It can be specified through
+        # mau.header_anchor_function to override
+        # the default one.
+        self.header_anchor = self.parser.environment.getvar(
+            "mau.parser.header_anchor_function", header_anchor
+        )
+
+    def create_header_node(self, text, level):
+        anchor = self.header_anchor(text, level)
+
+        # Consume the parser arguments
+        args, kwargs, tags, subtype = self.parser._pop_arguments()
+
+        node = HeaderNode(
+            value=text,
+            level=str(level),
+            anchor=anchor,
+            subtype=subtype,
+            args=args,
+            tags=tags,
+            kwargs=kwargs,
+        )
+
+        self.headers.append(node)
+
+        return node
+
+    def create_toc_node(self, subtype, args, kwargs, tags):
+        # This creates an empty TocNode
+        # that will be stored in the parser
+        # and in the command_nodes list.
+        # The method process_footnotes will
+        # eventually update all these nodes
+        # with the right entries.
+        node = TocNode(
+            entries=[],
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
+
+        self.command_nodes.append(node)
+        self.parser.save(node)
+
+    def process_toc(self):
+        toc = TocNode(create_toc(self.headers))
+
+        for node in self.command_nodes:
+            node.entries = create_toc(
+                self.headers, exclude_tag=node.kwargs.get("exclude_tag")
+            )
+
+        return toc
+
+    def update(self, other):
+        self.headers.extend(other.headers)
 
 
 def create_toc(headers, exclude_tag=None):
@@ -37,6 +120,25 @@ def create_toc(headers, exclude_tag=None):
         nodes = exclude_entries(nodes, exclude_tag)
 
     return nodes
+
+
+def header_anchor(text, level):
+    """
+    Return a sanitised anchor for a header.
+    """
+
+    # Everything lowercase
+    sanitised_text = text.lower()
+
+    # Get only letters, numbers, dashes, spaces, and dots
+    sanitised_text = "".join(re.findall("[a-z0-9-\\. ]+", sanitised_text))
+
+    # Remove multiple spaces
+    sanitised_text = "-".join(sanitised_text.split())
+
+    hashed_value = hashlib.md5(f"{level} {text}".encode("utf-8")).hexdigest()[:4]
+
+    return f"{sanitised_text}-{hashed_value}"
 
 
 def exclude_entries(entries, exclude_tag):

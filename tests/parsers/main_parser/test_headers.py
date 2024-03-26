@@ -12,14 +12,14 @@ init_parser = init_parser_factory(MainLexer, MainParser)
 runner = parser_runner_factory(MainLexer, MainParser)
 
 
-@patch("mau.parsers.main_parser.hashlib.md5")
+@patch("mau.parsers.toc.hashlib.md5")
 def test_default_header_anchor_function(mock_md5):
     mock_md5().hexdigest.return_value = "XXYY"
 
     assert header_anchor("Some Words 1234 56", "1") == "some-words-1234-56-XXYY"
 
 
-@patch("mau.parsers.main_parser.hashlib.md5")
+@patch("mau.parsers.toc.hashlib.md5")
 def test_default_header_anchor_function_multiple_spaces(mock_md5):
     mock_md5().hexdigest.return_value = "XXYY"
 
@@ -28,7 +28,7 @@ def test_default_header_anchor_function_multiple_spaces(mock_md5):
     )
 
 
-@patch("mau.parsers.main_parser.hashlib.md5")
+@patch("mau.parsers.toc.hashlib.md5")
 def test_default_header_anchor_function_filter_characters(mock_md5):
     mock_md5().hexdigest.return_value = "XXYY"
 
@@ -52,7 +52,7 @@ def test_custom_header_anchor_function():
     ]
 
 
-@patch("mau.parsers.main_parser.header_anchor")
+@patch("mau.parsers.toc.header_anchor")
 def test_parse_header_level_1(header_anchor_mock):
     header_anchor_mock.return_value = "XXXXXX"
 
@@ -63,7 +63,7 @@ def test_parse_header_level_1(header_anchor_mock):
     assert runner(source).nodes == [HeaderNode("Title of the section", "1", "XXXXXX")]
 
 
-@patch("mau.parsers.main_parser.header_anchor")
+@patch("mau.parsers.toc.header_anchor")
 def test_parse_header_level_3(header_anchor_mock):
     header_anchor_mock.return_value = "XXXXXX"
 
@@ -74,7 +74,7 @@ def test_parse_header_level_3(header_anchor_mock):
     assert runner(source).nodes == [HeaderNode("Title of a subsection", "3", "XXXXXX")]
 
 
-@patch("mau.parsers.main_parser.header_anchor")
+@patch("mau.parsers.toc.header_anchor")
 def test_parse_collect_headers(header_anchor_mock):
     header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
 
@@ -98,7 +98,7 @@ def test_parse_collect_headers(header_anchor_mock):
         HeaderNode("Header 2.1.1", "3", "Header 2.1.1-XXXXXX"),
     ]
 
-    assert parser.headers == [
+    assert parser.toc_manager.headers == [
         HeaderNode("Header 1", "1", "Header 1-XXXXXX"),
         HeaderNode("Header 1.1", "2", "Header 1.1-XXXXXX"),
         HeaderNode("Header 1.2", "2", "Header 1.2-XXXXXX"),
@@ -108,7 +108,7 @@ def test_parse_collect_headers(header_anchor_mock):
     ]
 
 
-@patch("mau.parsers.main_parser.header_anchor")
+@patch("mau.parsers.toc.header_anchor")
 def test_attributes_header(header_anchor_mock):
     header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
 
@@ -128,7 +128,7 @@ def test_attributes_header(header_anchor_mock):
     ]
 
 
-@patch("mau.parsers.main_parser.header_anchor")
+@patch("mau.parsers.toc.header_anchor")
 def test_single_tag_header(header_anchor_mock):
     header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
 
@@ -149,7 +149,7 @@ def test_single_tag_header(header_anchor_mock):
     ]
 
 
-@patch("mau.parsers.main_parser.header_anchor")
+@patch("mau.parsers.toc.header_anchor")
 def test_(header_anchor_mock):
     header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
 

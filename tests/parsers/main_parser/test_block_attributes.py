@@ -231,7 +231,7 @@ def test_block_raw_engine():
     ]
 
 
-@patch("mau.parsers.main_parser.header_anchor")
+@patch("mau.parsers.toc.header_anchor")
 def test_block_default_engine_adds_headers_to_global_toc(mock_header_anchor):
     mock_header_anchor.return_value = "XXYY"
 
@@ -263,7 +263,7 @@ def test_block_default_engine_adds_headers_to_global_toc(mock_header_anchor):
         ),
     ]
 
-    assert par.headers == [
+    assert par.toc_manager.headers == [
         HeaderNode("Global header", "1", "XXYY"),
         HeaderNode("Block header", "1", "XXYY"),
     ]

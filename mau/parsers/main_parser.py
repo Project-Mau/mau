@@ -718,6 +718,9 @@ class MainParser(BaseParser):
         # A list of highlighted lines
         highlighted_lines = []
 
+        # Get the language
+        language = block.kwargs.pop("language")
+
         # Source blocks preserve anything is inside
 
         # This is a list of all lines that might contain
@@ -789,13 +792,16 @@ class MainParser(BaseParser):
 
         self._save(
             SourceNode(
-                subtype=block.subtype,
                 code=textlines,
-                language=block.kwargs["language"],
+                language=language,
                 callouts=callout_contents,
                 highlights=highlighted_lines,
                 markers=callout_markers,
                 title=block.title,
+                subtype=block.subtype,
+                args=block.args,
+                kwargs=block.kwargs,
+                tags=block.tags,
             )
         )
 

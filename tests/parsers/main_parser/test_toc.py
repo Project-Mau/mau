@@ -51,7 +51,7 @@ def test_toc(header_anchor_mock):
                 HeaderNode("Header 1.1", "2", "Header 1.1-XXXXXX"),
                 HeaderNode("Header 2", "1", "Header 2-XXXXXX"),
                 TocNode(
-                    entries=[
+                    children=[
                         TocEntryNode(
                             value="Header 1",
                             anchor="Header 1-XXXXXX",
@@ -75,7 +75,7 @@ def test_toc(header_anchor_mock):
         "footnotes": [],
         "references": {},
         "toc": TocNode(
-            entries=[
+            children=[
                 TocEntryNode(
                     value="Header 1",
                     anchor="Header 1-XXXXXX",

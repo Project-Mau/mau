@@ -379,7 +379,7 @@ class BaseVisitor:
             "data": {
                 "type": node.node_type,
                 "entries": self.visitlist(
-                    node.entries,
+                    node.children,
                     join_with=join_with,
                     *args,
                     **kwargs,

@@ -154,7 +154,7 @@ def test_engine_mau_toc(mock_header_anchor):
                 HeaderNode("Header 3", "1", "XXYY"),
                 HeaderNode("Header 4", "1", "XXYY"),
                 TocNode(
-                    [
+                    children=[
                         TocEntryNode("Header 3", anchor="XXYY"),
                         TocEntryNode("Header 4", anchor="XXYY"),
                     ]
@@ -169,7 +169,7 @@ def test_engine_mau_toc(mock_header_anchor):
             kwargs={},
         ),
         TocNode(
-            [
+            children=[
                 TocEntryNode("Header 1", anchor="XXYY"),
                 TocEntryNode("Header 2", anchor="XXYY"),
             ]

@@ -29,7 +29,7 @@ def test_custom_filters_is_empty_by_default():
         "content": ContainerNode([]),
         "footnotes": [],
         "references": {},
-        "toc": TocNode(entries=[]),
+        "toc": TocNode(),
         "custom_filters": {},
     }
 
@@ -84,7 +84,7 @@ def test_custom_filter_no_filter():
         "content": ContainerNode(children=nodes),
         "footnotes": [],
         "references": {},
-        "toc": TocNode(entries=[]),
+        "toc": TocNode(),
         "custom_filters": {"all_nodes": nodes},
     }
 
@@ -156,6 +156,6 @@ def test_custom_filter_extract_tags():
         "content": ContainerNode(children=nodes),
         "footnotes": [],
         "references": {},
-        "toc": TocNode(entries=[]),
+        "toc": TocNode(),
         "custom_filters": {"important_nodes": important_nodes},
     }

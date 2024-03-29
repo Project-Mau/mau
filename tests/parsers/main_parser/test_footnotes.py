@@ -228,7 +228,7 @@ def test_footnotes_output(mock_footnote_anchor):
             ),
         ],
         "references": {},
-        "toc": TocNode(entries=[]),
+        "toc": TocNode(),
         "custom_filters": {},
     }
 

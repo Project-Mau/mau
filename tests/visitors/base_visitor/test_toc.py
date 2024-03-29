@@ -7,7 +7,7 @@ def test_toc_node():
     visitor = BaseVisitor(Environment())
 
     node = TocNode(
-        entries=[
+        children=[
             TocEntryNode(
                 "Header 1",
                 "header-1",

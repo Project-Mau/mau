@@ -28,7 +28,7 @@ def test_parse_output():
         "content": ContainerNode(children=[]),
         "footnotes": [],
         "references": {},
-        "toc": TocNode(entries=[]),
+        "toc": TocNode(),
         "custom_filters": {},
     }
 
@@ -43,7 +43,7 @@ def test_parse_output_custom_container():
         "content": DocumentNode(children=[]),
         "footnotes": [],
         "references": {},
-        "toc": TocNode(entries=[]),
+        "toc": TocNode(),
         "custom_filters": {},
     }
 

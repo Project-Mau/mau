@@ -33,7 +33,6 @@ class TocManager:
         # eventually update all these nodes
         # with the right entries.
         node = TocNode(
-            entries=[],
             subtype=subtype,
             args=args,
             kwargs=kwargs,
@@ -47,7 +46,7 @@ class TocManager:
         toc = TocNode(create_toc(self.headers))
 
         for node in self.command_nodes:
-            node.entries = create_toc(
+            node.children = create_toc(
                 self.headers, exclude_tag=node.kwargs.get("exclude_tag")
             )
 
@@ -90,7 +89,7 @@ def create_toc(headers, exclude_tag=None):
             children[-1].append(node)
 
     if exclude_tag:
-        nodes = exclude_entries(nodes, exclude_tag)
+        nodes = exclude_children(nodes, exclude_tag)
 
     return nodes
 
@@ -114,10 +113,10 @@ def header_anchor(text, level):
     return f"{sanitised_text}-{hashed_value}"
 
 
-def exclude_entries(entries, exclude_tag):
-    valid_entries = [i for i in entries if exclude_tag not in i.tags]
+def exclude_children(children, exclude_tag):
+    valid_children = [i for i in children if exclude_tag not in i.tags]
 
-    for entry in valid_entries:
-        entry.children = exclude_entries(entry.children, exclude_tag)
+    for entry in valid_children:
+        entry.children = exclude_children(entry.children, exclude_tag)
 
-    return valid_entries
+    return valid_children

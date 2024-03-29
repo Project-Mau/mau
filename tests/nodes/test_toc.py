@@ -14,7 +14,7 @@ def test_toc_entry_node():
 
 def test_toc_node():
     node = TocNode(
-        entries=[
+        children=[
             HeaderNode(
                 "somevalue",
                 "somelevel",
@@ -28,7 +28,7 @@ def test_toc_node():
         kwargs={"key1": "text1", "key2": "text2"},
     )
 
-    assert node.entries == [
+    assert node.children == [
         HeaderNode(
             "somevalue",
             "somelevel",
@@ -42,7 +42,7 @@ def test_toc_node():
     assert node.kwargs == {"key1": "text1", "key2": "text2"}
     assert node.node_type == "toc"
     assert node == TocNode(
-        entries=[
+        children=[
             HeaderNode(
                 "somevalue",
                 "somelevel",

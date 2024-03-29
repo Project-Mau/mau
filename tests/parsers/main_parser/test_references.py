@@ -402,6 +402,6 @@ def test_references_output(mock_reference_anchor):
                 content_anchor="cnt-content_type1-1-XXYY",
             )
         },
-        "toc": TocNode(entries=[]),
+        "toc": TocNode(),
         "custom_filters": {},
     }

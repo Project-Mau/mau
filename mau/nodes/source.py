@@ -1,46 +1,76 @@
-from mau.nodes.nodes import Node
+from mau.nodes.nodes import Node, SupaNode
 from mau.nodes.page import PageNode
 
 
-class CalloutsEntryNode(Node):
+class CalloutsEntryNode(SupaNode):
     # This is an entry in the list of callouts after source code
 
     node_type = "callouts_entry"
 
-    def __init__(self, marker, value):
-        super().__init__()
+    def __init__(
+        self,
+        marker,
+        value,
+        parent=None,
+        children=None,
+        subtype=None,
+        args=None,
+        kwargs=None,
+        tags=None,
+    ):
+        super().__init__(
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
         self.marker = marker
         self.value = value
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
-            "marker": self.marker,
             "value": self.value,
+            "marker": self.marker,
         }
 
 
-class CalloutNode(Node):
+class CalloutNode(SupaNode):
     # This is a marker near a source code line
 
     node_type = "callout"
 
-    def __init__(self, line, marker):
-        super().__init__()
+    def __init__(
+        self,
+        line,
+        marker,
+        parent=None,
+        children=None,
+        subtype=None,
+        args=None,
+        kwargs=None,
+        tags=None,
+    ):
+        super().__init__(
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
         self.line = line
         self.marker = marker
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
             "line": self.line,
             "marker": self.marker,
         }
 
 
-class SourceNode(PageNode):
+class SourceNode(SupaNode):
     """A block of verbatim text or source code.
 
     This node contains verbatim text or source code.
@@ -62,7 +92,6 @@ class SourceNode(PageNode):
         self,
         code=None,
         language="text",
-        subtype=None,
         callouts=None,
         delimiter=":",
         markers=None,
@@ -70,36 +99,40 @@ class SourceNode(PageNode):
         classes=None,
         title=None,
         preprocessor=None,
+        parent=None,
+        children=None,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
     ):
-        super().__init__(subtype, args, kwargs, tags)
+        super().__init__(
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
         self.code = code or []
         self.language = language
         self.callouts = callouts or []
-        self.markers = markers or []
         self.delimiter = delimiter
+        self.markers = markers or []
         self.highlights = highlights or []
         self.classes = classes or []
         self.title = title
         self.preprocessor = preprocessor
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
-            "subtype": self.subtype,
             "code": self.code,
             "language": self.language,
             "callouts": self.callouts,
-            "markers": self.markers,
             "delimiter": self.delimiter,
+            "markers": self.markers,
             "highlights": self.highlights,
             "classes": self.classes,
             "title": self.title,
             "preprocessor": self.preprocessor,
-            "args": self.args,
-            "kwargs": self.kwargs,
-            "tags": self.tags,
         }

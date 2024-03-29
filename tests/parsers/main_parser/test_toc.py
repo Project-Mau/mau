@@ -46,7 +46,7 @@ def test_toc(header_anchor_mock):
 
     assert parser.output == {
         "content": ContainerNode(
-            [
+            children=[
                 HeaderNode("Header 1", "1", "Header 1-XXXXXX"),
                 HeaderNode("Header 1.1", "2", "Header 1.1-XXXXXX"),
                 HeaderNode("Header 2", "1", "Header 2-XXXXXX"),

@@ -43,7 +43,7 @@ class TocManager:
         self.parser.save(node)
 
     def process_toc(self):
-        toc = TocNode(create_toc(self.headers))
+        toc = TocNode(children=create_toc(self.headers))
 
         for node in self.command_nodes:
             node.children = create_toc(

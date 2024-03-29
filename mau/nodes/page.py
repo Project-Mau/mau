@@ -40,7 +40,7 @@ class ContainerNode(SupaNode):
     node_type = "container"
 
 
-class DocumentNode(ContainerNode):
+class DocumentNode(SupaNode):
     """A document.
 
     This node represents the full document.

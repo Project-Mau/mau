@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode
+from mau.nodes.nodes import Node
 
 
-class CalloutsEntryNode(SupaNode):
+class CalloutsEntryNode(Node):
     # This is an entry in the list of callouts after source code
 
     node_type = "callouts_entry"
@@ -35,7 +35,7 @@ class CalloutsEntryNode(SupaNode):
         }
 
 
-class CalloutNode(SupaNode):
+class CalloutNode(Node):
     # This is a marker near a source code line
 
     node_type = "callout"
@@ -69,7 +69,7 @@ class CalloutNode(SupaNode):
         }
 
 
-class SourceNode(SupaNode):
+class SourceNode(Node):
     """A block of verbatim text or source code.
 
     This node contains verbatim text or source code.

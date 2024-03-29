@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode, SupaValueNode
+from mau.nodes.nodes import Node, ValueNode
 
 
-class UnnamedArgumentNode(SupaValueNode):
+class UnnamedArgumentNode(ValueNode):
     """
     This node contains an unnamed argument.
     """
@@ -9,7 +9,7 @@ class UnnamedArgumentNode(SupaValueNode):
     node_type = "unnamed_argument"
 
 
-class NamedArgumentNode(SupaNode):
+class NamedArgumentNode(Node):
     """
     This node contains a named argument.
     """

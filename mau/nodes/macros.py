@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode
+from mau.nodes.nodes import Node
 
 
-class MacroNode(SupaNode):
+class MacroNode(Node):
     """This node contains a macro, with a name and arguments."""
 
     node_type = "macro"
@@ -26,7 +26,7 @@ class MacroNode(SupaNode):
         }
 
 
-class MacroClassNode(SupaNode):
+class MacroClassNode(Node):
     """Text with one or more classes."""
 
     node_type = "macro__class"
@@ -54,7 +54,7 @@ class MacroClassNode(SupaNode):
         }
 
 
-class MacroLinkNode(SupaNode):
+class MacroLinkNode(Node):
     """This node contains a link."""
 
     node_type = "macro__link"
@@ -82,7 +82,7 @@ class MacroLinkNode(SupaNode):
         }
 
 
-class MacroImageNode(SupaNode):
+class MacroImageNode(Node):
     """This node contains an inline image."""
 
     node_type = "macro__image"

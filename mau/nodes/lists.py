@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode
+from mau.nodes.nodes import Node
 
 
-class ListItemNode(SupaNode):
+class ListItemNode(Node):
     """An entry in a list."""
 
     node_type = "list_item"
@@ -33,7 +33,7 @@ class ListItemNode(SupaNode):
         }
 
 
-class ListNode(SupaNode):
+class ListNode(Node):
     """A list."""
 
     node_type = "list"

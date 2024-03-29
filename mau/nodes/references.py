@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode
+from mau.nodes.nodes import Node
 
 
-class ReferenceNode(SupaNode):
+class ReferenceNode(Node):
     node_type = "reference"
 
     def __init__(
@@ -69,7 +69,7 @@ class ReferencesEntryNode(ReferenceNode):
     node_type = "references_entry"
 
 
-class ReferencesNode(SupaNode):
+class ReferencesNode(Node):
     """This instructs Mau to insert the content of references."""
 
     node_type = "references"

@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode
+from mau.nodes.nodes import Node
 
 
-class TocEntryNode(SupaNode):
+class TocEntryNode(Node):
     """An entry of the Table of Contents.
 
     This node contains an entry of the Table of Contents.
@@ -38,7 +38,7 @@ class TocEntryNode(SupaNode):
         }
 
 
-class TocNode(SupaNode):
+class TocNode(Node):
     """A Table of Contents command.
 
     This node contains the headers that go into the ToC.

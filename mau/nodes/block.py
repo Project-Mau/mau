@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode
+from mau.nodes.nodes import Node
 
 
-class BlockNode(SupaNode):
+class BlockNode(Node):
     """A block.
 
     This node contains a generic block.

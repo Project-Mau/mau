@@ -1,7 +1,7 @@
 import hashlib
 
 
-class SupaNode:
+class Node:
     node_type = "node"
 
     def __init__(
@@ -65,7 +65,7 @@ class SupaNode:
         return hashlib.md5(str(self).encode("utf-8")).hexdigest()[:8]
 
 
-class SupaValueNode(SupaNode):
+class ValueNode(Node):
     node_type = "value_node"
 
     def __init__(

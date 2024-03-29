@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode
+from mau.nodes.nodes import Node
 
 
-class FootnoteNode(SupaNode):
+class FootnoteNode(Node):
     node_type = "footnote"
 
     def __init__(
@@ -61,7 +61,7 @@ class FootnotesEntryNode(FootnoteNode):
     node_type = "footnotes_entry"
 
 
-class FootnotesNode(SupaNode):
+class FootnotesNode(Node):
     """This instructs Mau to insert the list of footnotes."""
 
     node_type = "footnotes"

@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode, SupaValueNode
+from mau.nodes.nodes import Node, ValueNode
 
 
-class WordNode(SupaValueNode):
+class WordNode(ValueNode):
     """This is a single word, it's used internally
     and eventually packed together with others into
     a TextNode
@@ -10,7 +10,7 @@ class WordNode(SupaValueNode):
     node_type = "word"
 
 
-class TextNode(SupaValueNode):
+class TextNode(ValueNode):
     """This contains plain text and is created
     as a collation of multiple WordNode objects
     """
@@ -18,7 +18,7 @@ class TextNode(SupaValueNode):
     node_type = "text"
 
 
-class RawNode(SupaValueNode):
+class RawNode(ValueNode):
     """This contains plain text but the content
     should be treated as raw data and left untouched.
     E.g. it shouldn't be escaped.
@@ -27,13 +27,13 @@ class RawNode(SupaValueNode):
     node_type = "raw"
 
 
-class VerbatimNode(SupaValueNode):
+class VerbatimNode(ValueNode):
     """This node contains verbatim text."""
 
     node_type = "verbatim"
 
 
-class SentenceNode(SupaNode):
+class SentenceNode(Node):
     """A recursive container node.
 
     This node represents the content of a paragraph, but it is recursive,
@@ -43,7 +43,7 @@ class SentenceNode(SupaNode):
     node_type = "sentence"
 
 
-class StyleNode(SupaValueNode):
+class StyleNode(ValueNode):
     """Describes the style applied to a node."""
 
     node_type = "style"

@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode
+from mau.nodes.nodes import Node
 
 
-class ParagraphNode(SupaNode):
+class ParagraphNode(Node):
     """A paragraph."""
 
     node_type = "paragraph"

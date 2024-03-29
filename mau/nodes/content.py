@@ -1,7 +1,7 @@
-from mau.nodes.page import SupaNode
+from mau.nodes.page import Node
 
 
-class ContentNode(SupaNode):
+class ContentNode(Node):
     """Content included in the page.
 
     This represents generic content included in the page.
@@ -51,7 +51,7 @@ class ContentNode(SupaNode):
         }
 
 
-class ContentImageNode(SupaNode):
+class ContentImageNode(Node):
     """An image included in the page."""
 
     node_type = "content_image"

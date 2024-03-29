@@ -1,19 +1,19 @@
 # Page nodes can be found at top level in a page
 
-from mau.nodes.nodes import SupaNode
+from mau.nodes.nodes import Node
 
 
-class HorizontalRuleNode(SupaNode):
+class HorizontalRuleNode(Node):
     """A horizontal rule."""
 
     node_type = "horizontal_rule"
 
 
-class ContainerNode(SupaNode):
+class ContainerNode(Node):
     node_type = "container"
 
 
-class DocumentNode(SupaNode):
+class DocumentNode(Node):
     """A document.
 
     This node represents the full document.

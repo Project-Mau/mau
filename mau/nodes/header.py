@@ -1,7 +1,7 @@
-from mau.nodes.nodes import SupaNode
+from mau.nodes.nodes import Node
 
 
-class HeaderNode(SupaNode):
+class HeaderNode(Node):
     """A header."""
 
     node_type = "header"

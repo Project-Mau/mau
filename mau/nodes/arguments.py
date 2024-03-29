@@ -1,7 +1,7 @@
-from mau.nodes.nodes import Node, ValueNode
+from mau.nodes.nodes import SupaNode, SupaValueNode
 
 
-class UnnamedArgumentNode(ValueNode):
+class UnnamedArgumentNode(SupaValueNode):
     """
     This node contains an unnamed argument.
     """
@@ -9,22 +9,37 @@ class UnnamedArgumentNode(ValueNode):
     node_type = "unnamed_argument"
 
 
-class NamedArgumentNode(Node):
+class NamedArgumentNode(SupaNode):
     """
     This node contains a named argument.
     """
 
     node_type = "named_argument"
 
-    def __init__(self, key, value):
-        super().__init__()
+    def __init__(
+        self,
+        key,
+        value,
+        parent=None,
+        children=None,
+        subtype=None,
+        args=None,
+        kwargs=None,
+        tags=None,
+    ):
+        super().__init__(
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
         self.key = key
         self.value = value
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
             "key": self.key,
             "value": self.value,
         }

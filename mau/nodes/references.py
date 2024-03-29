@@ -1,5 +1,4 @@
 from mau.nodes.nodes import SupaNode
-from mau.nodes.page import PageNode
 
 
 class ReferenceNode(SupaNode):

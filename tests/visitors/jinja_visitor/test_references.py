@@ -1,5 +1,5 @@
 from mau.environment.environment import Environment
-from mau.nodes.inline import TextNode, SentenceNode
+from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.references import ReferencesEntryNode, ReferencesNode
 from mau.visitors.jinja_visitor import JinjaVisitor

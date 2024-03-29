@@ -1,22 +1,4 @@
-from mau.nodes.page import ContainerNode, DocumentNode, HorizontalRuleNode, PageNode
-
-
-def test_page_node():
-    node = PageNode(
-        args=["value1", "value2"],
-        tags=["tag1", "tag2"],
-        kwargs={"key1": "text1", "key2": "text2"},
-    )
-
-    assert node.args == ["value1", "value2"]
-    assert node.tags == ["tag1", "tag2"]
-    assert node.kwargs == {"key1": "text1", "key2": "text2"}
-    assert node.node_type == "page_node"
-    assert node == PageNode(
-        args=["value1", "value2"],
-        tags=["tag1", "tag2"],
-        kwargs={"key1": "text1", "key2": "text2"},
-    )
+from mau.nodes.page import ContainerNode, DocumentNode, HorizontalRuleNode
 
 
 def test_horizontal_rule_node():

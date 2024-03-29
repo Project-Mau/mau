@@ -1,4 +1,4 @@
-from mau.nodes.nodes import Node, SupaNode
+from mau.nodes.nodes import SupaNode
 
 
 class MacroNode(SupaNode):

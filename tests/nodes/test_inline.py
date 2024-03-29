@@ -1,10 +1,4 @@
-from mau.nodes.inline import (
-    RawNode,
-    StyleNode,
-    TextNode,
-    VerbatimNode,
-    WordNode,
-)
+from mau.nodes.inline import RawNode, StyleNode, TextNode, VerbatimNode, WordNode
 
 
 def test_word_node():

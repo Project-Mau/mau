@@ -75,7 +75,7 @@ def test_sentence_node():
     visitor = BaseVisitor(Environment())
 
     node = SentenceNode(
-        [
+        children=[
             TextNode("Just some text. "),
             TextNode("More text."),
         ]
@@ -245,7 +245,7 @@ def test_reference_node():
         content_type="somecontent",
         content=[TextNode("Just some text.")],
         number="5",
-        title=SentenceNode([TextNode("Some title")]),
+        title=SentenceNode(children=[TextNode("Some title")]),
         reference_anchor="someanchor",
         content_anchor="someanchor-def",
     )

@@ -137,7 +137,6 @@ class TextParser(BaseParser):
             else:
                 grouped_nodes.extend(list(group))
 
-        # return SentenceNode(content=grouped_nodes)
         return grouped_nodes
 
     def _parse_verbatim(self):

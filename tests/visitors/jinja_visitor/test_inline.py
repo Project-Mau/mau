@@ -273,7 +273,7 @@ def test_inline_reference_node():
         "somecontent",
         [TextNode("Just some text.")],
         "5",
-        SentenceNode([TextNode("Some title")]),
+        SentenceNode(children=[TextNode("Some title")]),
         "someanchor",
         "someanchor-def",
     )

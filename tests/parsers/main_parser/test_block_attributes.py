@@ -26,8 +26,6 @@ def test_block_attributes_args_and_kwargs():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
             classes=[],
             title=None,
             engine=None,
@@ -50,8 +48,6 @@ def test_block_attributes_can_contain_variables():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
             classes=[],
             title=None,
             engine=None,
@@ -73,8 +69,6 @@ def test_parse_block_title_and_attributes():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
             classes=[],
             title=SentenceNode(
                 [
@@ -104,8 +98,6 @@ def test_parse_block_title_and_attributes_are_reset():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype1",
-            content=[],
-            secondary_content=[],
             classes=[],
             title=SentenceNode(
                 [
@@ -119,8 +111,6 @@ def test_parse_block_title_and_attributes_are_reset():
         ),
         BlockNode(
             subtype="subtype2",
-            content=[],
-            secondary_content=[],
             classes=[],
             title=None,
             engine=None,
@@ -141,8 +131,6 @@ def test_block_classes_single_class():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
             classes=["cls1"],
             title=None,
             engine=None,
@@ -163,8 +151,6 @@ def test_block_classes_multiple_classes():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
             classes=["cls1", "cls2"],
             title=None,
             engine=None,
@@ -213,11 +199,11 @@ def test_block_raw_engine():
     assert runner(source).nodes == [
         BlockNode(
             subtype="block",
-            content=[
+            children=[
                 RawNode("Raw content"),
                 RawNode("on multiple lines"),
             ],
-            secondary_content=[
+            secondary_children=[
                 RawNode("Secondary content"),
                 RawNode("on multiple lines as well"),
             ],
@@ -250,10 +236,10 @@ def test_block_default_engine_adds_headers_to_global_toc(mock_header_anchor):
         HeaderNode("Global header", "1", "XXYY"),
         BlockNode(
             subtype="someblock",
-            content=[
+            children=[
                 HeaderNode("Block header", "1", "XXYY"),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -282,14 +268,14 @@ def test_block_positive_condition_matches():
     assert runner(source).nodes == [
         BlockNode(
             subtype="block",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("This is a paragraph."),
                     ]
                 ),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -326,14 +312,14 @@ def test_block_negative_condition_matches():
     assert runner(source).nodes == [
         BlockNode(
             subtype="block",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("This is a paragraph."),
                     ]
                 ),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -395,14 +381,14 @@ def test_block_condition_can_use_variable_namespace():
     assert runner(source).nodes == [
         BlockNode(
             subtype="block",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("This is a paragraph."),
                     ]
                 ),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -430,7 +416,7 @@ def test_command_defblock_source():
 
     par = runner(source)
 
-    assert par.block_aliases["source"] == None
+    assert par.block_aliases["source"] is None
     assert par.block_defaults["source"] == {"language": "text", "engine": "source"}
 
 
@@ -475,8 +461,8 @@ def test_block_definitions_are_used():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
+            children=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -499,8 +485,8 @@ def test_block_definitions_local_kwargs_overwrite_defined_ones():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
+            children=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -527,8 +513,8 @@ def test_block_definitions_local_args_are_used():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
+            children=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -555,8 +541,8 @@ def test_block_definitions_unnamed_args_are_used_as_names():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
+            children=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -583,8 +569,8 @@ def test_block_definitions_unnamed_and_named_args():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
+            children=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -628,8 +614,8 @@ def test_block_definitions_values_without_unnamed_args():
     assert runner(source).nodes == [
         BlockNode(
             subtype="subtype",
-            content=[],
-            secondary_content=[],
+            children=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,

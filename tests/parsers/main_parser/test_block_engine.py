@@ -37,11 +37,11 @@ def test_engine_mau(mock_header_anchor):
         HeaderNode("Header 2", "1", "XXYY"),
         BlockNode(
             subtype="sometype",
-            content=[
+            children=[
                 HeaderNode("Header 3", "1", "XXYY"),
                 HeaderNode("Header 4", "1", "XXYY"),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine="mau",
@@ -88,11 +88,11 @@ def test_engine_mau_multiple_blocks_are_independent(mock_header_anchor):
         HeaderNode("Header 2", "1", "XXYY"),
         BlockNode(
             subtype="sometype",
-            content=[
+            children=[
                 HeaderNode("Header 3", "1", "XXYY"),
                 HeaderNode("Header 4", "1", "XXYY"),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine="mau",
@@ -102,11 +102,11 @@ def test_engine_mau_multiple_blocks_are_independent(mock_header_anchor):
         ),
         BlockNode(
             subtype="sometype",
-            content=[
+            children=[
                 HeaderNode("Header 5", "1", "XXYY"),
                 HeaderNode("Header 6", "1", "XXYY"),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine="mau",
@@ -150,7 +150,7 @@ def test_engine_mau_toc(mock_header_anchor):
         HeaderNode("Header 2", "1", "XXYY"),
         BlockNode(
             subtype="sometype",
-            content=[
+            children=[
                 HeaderNode("Header 3", "1", "XXYY"),
                 HeaderNode("Header 4", "1", "XXYY"),
                 TocNode(
@@ -160,7 +160,7 @@ def test_engine_mau_toc(mock_header_anchor):
                     ]
                 ),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine="mau",

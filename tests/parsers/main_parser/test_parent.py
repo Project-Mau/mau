@@ -19,7 +19,7 @@ def test_parent_block():
     nodes = mainrunner(source).nodes
 
     block_node = nodes[0]
-    paragraph_node = block_node.content[0]
+    paragraph_node = block_node.children[0]
 
     assert paragraph_node.parent is block_node
 

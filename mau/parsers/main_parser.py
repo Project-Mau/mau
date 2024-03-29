@@ -493,7 +493,7 @@ class MainParser(BaseParser):
             )  # pragma: no cover
 
         # Create the block
-        block = BlockNode(content, secondary_content)
+        block = BlockNode(children=content, secondary_children=secondary_content)
 
         # Consume the title
         block.title = self._pop_title()
@@ -598,7 +598,7 @@ class MainParser(BaseParser):
         name = block.kwargs.pop("name")
 
         content_parser = MainParser.analyse(
-            "\n".join(block.content),
+            "\n".join(block.children),
             self._current_token.context,
             self.environment,
             parent_node=block,
@@ -611,7 +611,7 @@ class MainParser(BaseParser):
         name = block.kwargs["name"]
 
         content_parser = MainParser.analyse(
-            "\n".join(block.content),
+            "\n".join(block.children),
             self._current_token.context,
             self.environment,
             parent_node=block,
@@ -623,8 +623,8 @@ class MainParser(BaseParser):
         # Engine "raw" doesn't process the content,
         # so we just pass it untouched in the form of
         # a RawNode per line.
-        block.content = [RawNode(line) for line in block.content]
-        block.secondary_content = [RawNode(line) for line in block.secondary_content]
+        block.children = [RawNode(line) for line in block.children]
+        block.secondary_children = [RawNode(line) for line in block.secondary_children]
 
         self._save(block)
 
@@ -634,18 +634,18 @@ class MainParser(BaseParser):
         environment = self.environment
 
         content_parser = MainParser.analyse(
-            "\n".join(block.content), current_context, environment, parent_node=block
+            "\n".join(block.children), current_context, environment, parent_node=block
         )
 
         secondary_content_parser = MainParser.analyse(
-            "\n".join(block.secondary_content),
+            "\n".join(block.secondary_children),
             current_context,
             environment,
             parent_node=block,
         )
 
-        block.content = content_parser.nodes
-        block.secondary_content = secondary_content_parser.nodes
+        block.children = content_parser.nodes
+        block.secondary_children = secondary_content_parser.nodes
 
         # The footnote mentions and definitions
         # found in this block are part of the
@@ -667,18 +667,18 @@ class MainParser(BaseParser):
         environment = Environment()
 
         content_parser = MainParser.analyse(
-            "\n".join(block.content), current_context, environment, parent_node=block
+            "\n".join(block.children), current_context, environment, parent_node=block
         )
 
         secondary_content_parser = MainParser.analyse(
-            "\n".join(block.secondary_content),
+            "\n".join(block.secondary_children),
             current_context,
             environment,
             parent_node=block,
         )
 
-        block.content = content_parser.nodes
-        block.secondary_content = secondary_content_parser.nodes
+        block.children = content_parser.nodes
+        block.secondary_children = secondary_content_parser.nodes
 
         self._save(block)
 
@@ -740,7 +740,7 @@ class MainParser(BaseParser):
         # later to be sure.
         lines_with_callouts = [
             (linenum, line)
-            for linenum, line in enumerate(block.content)
+            for linenum, line in enumerate(block.children)
             if line.endswith(delimiter)
         ]
 
@@ -759,7 +759,7 @@ class MainParser(BaseParser):
             callout_name = splits[-1]
             line = delimiter.join(splits[:-1])
 
-            block.content[linenum] = line
+            block.children[linenum] = line
 
             # Check if we want to just highlight the line
             if callout_name == highlight_marker:
@@ -774,7 +774,7 @@ class MainParser(BaseParser):
         # If there was secondary content it should be formatted
         # with callout names followed by colon and the
         # callout text.
-        for line in block.secondary_content:
+        for line in block.secondary_children:
             if ":" not in line:
                 self._error(
                     (
@@ -796,7 +796,7 @@ class MainParser(BaseParser):
         # Escape characters are preserved by source blocks as anything
         # else, but in this case the character should be removed.
         textlines = []
-        for line in block.content:
+        for line in block.children:
             if line.startswith(r"\::#"):
                 line = line[1:]
 

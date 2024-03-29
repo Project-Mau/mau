@@ -285,10 +285,10 @@ class BaseVisitor:
             "data": {
                 "type": node.node_type,
                 "content": self.visitlist(
-                    node.content, *args, join_with=join_with, **kwargs
+                    node.children, *args, join_with=join_with, **kwargs
                 ),
                 "secondary_content": self.visitlist(
-                    node.secondary_content, *args, join_with=join_with, **kwargs
+                    node.secondary_children, *args, join_with=join_with, **kwargs
                 ),
                 "subtype": node.subtype,
                 "classes": node.classes,

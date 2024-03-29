@@ -1,6 +1,6 @@
 from mau.environment.environment import Environment
 from mau.nodes.block import BlockNode
-from mau.nodes.inline import TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.visitors.base_visitor import BaseVisitor
 
 
@@ -9,10 +9,10 @@ def test_block_node_standard_block_template():
 
     node = BlockNode(
         subtype="someblock",
-        content=[TextNode("my content")],
-        secondary_content=[TextNode("my secondary content")],
+        children=[TextNode("my content")],
+        secondary_children=[TextNode("my secondary content")],
         classes=["class1", "class2"],
-        title=TextNode("sometitle"),
+        title=SentenceNode(children=[TextNode("sometitle")]),
         engine="someengine",
         preprocessor="somepreprocessor",
         args=["arg1", "arg2"],
@@ -45,9 +45,16 @@ def test_block_node_standard_block_template():
             "classes": ["class1", "class2"],
             "title": {
                 "data": {
-                    "type": "text",
-                    "value": "sometitle",
-                }
+                    "content": [
+                        {
+                            "data": {
+                                "type": "text",
+                                "value": "sometitle",
+                            }
+                        },
+                    ],
+                    "type": "sentence",
+                },
             },
             "engine": "someengine",
             "preprocessor": "somepreprocessor",

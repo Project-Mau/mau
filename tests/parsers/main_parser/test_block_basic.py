@@ -22,8 +22,6 @@ def test_parse_block_with_empty_body():
     assert runner(source).nodes == [
         BlockNode(
             subtype=None,
-            content=[],
-            secondary_content=[],
             classes=[],
             title=None,
             engine=None,
@@ -44,14 +42,14 @@ def test_parse_block_content():
     assert runner(source).nodes == [
         BlockNode(
             subtype=None,
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("This is a paragraph."),
                     ]
                 ),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -73,14 +71,14 @@ def test_parse_block_content_variables():
     assert runner(source).nodes == [
         BlockNode(
             subtype=None,
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("The answer is 42."),
                     ]
                 ),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -102,14 +100,14 @@ def test_parse_block_content_external_variables():
     assert runner(source).nodes == [
         BlockNode(
             subtype=None,
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("The answer is 42."),
                     ]
                 ),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -138,8 +136,8 @@ def test_parse_block_secondary_content():
     assert runner(source).nodes == [
         BlockNode(
             subtype=None,
-            content=[],
-            secondary_content=[
+            children=[],
+            secondary_children=[
                 ParagraphNode(
                     children=[
                         TextNode(
@@ -177,11 +175,11 @@ def test_parse_block_inside_block():
     assert runner(source).nodes == [
         BlockNode(
             subtype=None,
-            content=[
+            children=[
                 BlockNode(
                     subtype=None,
-                    content=[],
-                    secondary_content=[],
+                    children=[],
+                    secondary_children=[],
                     classes=[],
                     title=None,
                     engine=None,
@@ -190,7 +188,7 @@ def test_parse_block_inside_block():
                     kwargs={},
                 )
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,

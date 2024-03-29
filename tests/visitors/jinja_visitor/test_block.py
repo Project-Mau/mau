@@ -1,12 +1,13 @@
 from mau.environment.environment import Environment
 from mau.nodes.block import BlockNode
-from mau.nodes.inline import TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.visitors.jinja_visitor import JinjaVisitor
 
 
 def test_page_block_node_standard_block_template():
     templates = {
         "text.j2": "{{ value }}",
+        "sentence.j2": "{{ content }}",
         "block.j2": (
             "{{ subtype }} - {{ content }} - {{ secondary_content }} - "
             "{{ classes | join(',') }} - {{ title }} - {{ args | join(',') }} - "
@@ -24,10 +25,10 @@ def test_page_block_node_standard_block_template():
     tags = ["tag1", "tag2"]
     node = BlockNode(
         subtype="someblock",
-        content=[TextNode("my content")],
-        secondary_content=[TextNode("my secondary content")],
+        children=[TextNode("my content")],
+        secondary_children=[TextNode("my secondary content")],
         classes=["class1", "class2"],
-        title=TextNode("sometitle"),
+        title=SentenceNode(children=[TextNode("sometitle")]),
         engine="someengine",
         preprocessor="somepreprocessor",
         args=args,
@@ -46,6 +47,7 @@ def test_page_block_node_standard_block_template():
 def test_page_block_node_subtype_template_has_precedence():
     templates = {
         "text.j2": "{{ value }}",
+        "sentence.j2": "{{ content }}",
         "block.someblock.j2": "The subtype template",
         "block.j2": "The wrong template",
     }
@@ -59,10 +61,10 @@ def test_page_block_node_subtype_template_has_precedence():
     tags = ["tag1", "tag2"]
     node = BlockNode(
         subtype="someblock",
-        content=[TextNode("my content")],
-        secondary_content=[TextNode("my secondary content")],
+        children=[TextNode("my content")],
+        secondary_children=[TextNode("my secondary content")],
         classes=["class1", "class2"],
-        title=TextNode("sometitle"),
+        title=SentenceNode(children=[TextNode("sometitle")]),
         engine="someengine",
         preprocessor="somepreprocessor",
         args=args,
@@ -78,6 +80,7 @@ def test_page_block_node_subtype_template_has_precedence():
 def test_page_block_node_engine_template_has_precedence():
     templates = {
         "text.j2": "{{ value }}",
+        "sentence.j2": "{{ content }}",
         "block.someengine.j2": "The engine template",
         "block.someblock.j2": "The wrong template",
         "block.j2": "The wrong template",
@@ -92,10 +95,10 @@ def test_page_block_node_engine_template_has_precedence():
     tags = ["tag1", "tag2"]
     node = BlockNode(
         subtype="someblock",
-        content=[TextNode("my content")],
-        secondary_content=[TextNode("my secondary content")],
+        children=[TextNode("my content")],
+        secondary_children=[TextNode("my secondary content")],
         classes=["class1", "class2"],
-        title=TextNode("sometitle"),
+        title=SentenceNode(children=[TextNode("sometitle")]),
         engine="someengine",
         preprocessor="somepreprocessor",
         args=args,
@@ -111,6 +114,7 @@ def test_page_block_node_engine_template_has_precedence():
 def test_page_block_node_engine_and_subtype_template_has_precedence():
     templates = {
         "text.j2": "{{ value }}",
+        "sentence.j2": "{{ content }}",
         "block.someengine.someblock.j2": "The engine+block template",
         "block.someengine.j2": "The wrong template",
         "block.someblock.j2": "The wrong template",
@@ -126,10 +130,10 @@ def test_page_block_node_engine_and_subtype_template_has_precedence():
     tags = ["tag1", "tag2"]
     node = BlockNode(
         subtype="someblock",
-        content=[TextNode("my content")],
-        secondary_content=[TextNode("my secondary content")],
+        children=[TextNode("my content")],
+        secondary_children=[TextNode("my secondary content")],
         classes=["class1", "class2"],
-        title=TextNode("sometitle"),
+        title=SentenceNode(children=[TextNode("sometitle")]),
         engine="someengine",
         preprocessor="somepreprocessor",
         args=args,

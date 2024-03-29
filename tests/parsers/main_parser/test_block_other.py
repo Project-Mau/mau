@@ -22,14 +22,14 @@ def test_admonition():
     assert runner(source).nodes == [
         BlockNode(
             subtype="admonition",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("Content"),
                     ]
                 ),
             ],
-            secondary_content=[],
+            secondary_children=[],
             classes=[],
             title=None,
             engine=None,
@@ -52,14 +52,14 @@ def test_parse_block_quote_attribution_in_secondary_content():
     assert runner(source).nodes == [
         BlockNode(
             subtype="quote",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("Learn about the Force, Luke."),
                     ]
                 ),
             ],
-            secondary_content=[
+            secondary_children=[
                 ParagraphNode(
                     children=[
                         StyleNode(

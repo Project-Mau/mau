@@ -1,7 +1,7 @@
-from mau.nodes.page import PageNode
+from mau.nodes.nodes import SupaNode
 
 
-class BlockNode(PageNode):
+class BlockNode(SupaNode):
     """A block.
 
     This node contains a generic block.
@@ -23,37 +23,37 @@ class BlockNode(PageNode):
 
     def __init__(
         self,
-        content,
-        secondary_content,
-        subtype=None,
         classes=None,
         title=None,
         engine=None,
         preprocessor=None,
+        parent=None,
+        children=None,
+        secondary_children=None,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
     ):
-        super().__init__(subtype, args, kwargs, tags)
-        self.content = content
-        self.secondary_content = secondary_content
-        self.title = title
+        super().__init__(
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
         self.classes = classes or []
+        self.title = title
         self.engine = engine
         self.preprocessor = preprocessor
+        self.secondary_children = secondary_children or []
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
-            "subtype": self.subtype,
-            "content": self.content,
-            "secondary_content": self.secondary_content,
-            "title": self.title,
             "classes": self.classes,
+            "title": self.title,
             "engine": self.engine,
             "preprocessor": self.preprocessor,
-            "args": self.args,
-            "kwargs": self.kwargs,
-            "tags": self.tags,
+            "secondary_children": self.secondary_children,
         }

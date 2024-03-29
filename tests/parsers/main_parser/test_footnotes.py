@@ -5,7 +5,7 @@ import pytest
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.footnotes import FootnoteNode, FootnotesEntryNode, FootnotesNode
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import TextNode
 from mau.nodes.page import ContainerNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.toc import TocNode
@@ -90,12 +90,10 @@ def test_footnote_content(mock_footnote_anchor):
             number=1,
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is a paragraph."),
-                        ]
-                    )
-                ),
+                    [
+                        TextNode("This is a paragraph."),
+                    ]
+                )
             ],
             reference_anchor="ref-footnote-1-XXYY",
             content_anchor="cnt-footnote-1-XXYY",
@@ -104,11 +102,9 @@ def test_footnote_content(mock_footnote_anchor):
             number=2,
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is another paragraph."),
-                        ]
-                    )
+                    [
+                        TextNode("This is another paragraph."),
+                    ]
                 ),
             ],
             reference_anchor="ref-footnote-2-XXYY",
@@ -137,11 +133,9 @@ def test_footnote_mention_and_content(mock_footnote_anchor):
             number=1,
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is the content of the footnote"),
-                        ]
-                    )
+                    [
+                        TextNode("This is the content of the footnote"),
+                    ]
                 ),
             ],
             reference_anchor="ref-footnote-1-XXYY",
@@ -151,11 +145,9 @@ def test_footnote_mention_and_content(mock_footnote_anchor):
     assert parser.footnotes_manager.data == {
         "note1": [
             ParagraphNode(
-                SentenceNode(
-                    [
-                        TextNode("This is the content of the footnote"),
-                    ]
-                )
+                [
+                    TextNode("This is the content of the footnote"),
+                ]
             )
         ],
     }
@@ -184,37 +176,31 @@ def test_footnotes_output(mock_footnote_anchor):
 
     assert parser.nodes == [
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is a paragraph with a footnote"),
-                    FootnoteNode(
-                        [
-                            ParagraphNode(
-                                SentenceNode(
-                                    [
-                                        TextNode("This is the content of the footnote"),
-                                    ]
-                                )
-                            )
-                        ],
-                        number=1,
-                        reference_anchor="ref-footnote-1-XXYY",
-                        content_anchor="cnt-footnote-1-XXYY",
-                    ),
-                    TextNode("."),
-                ]
-            )
+            [
+                TextNode("This is a paragraph with a footnote"),
+                FootnoteNode(
+                    [
+                        ParagraphNode(
+                            [
+                                TextNode("This is the content of the footnote"),
+                            ]
+                        )
+                    ],
+                    number=1,
+                    reference_anchor="ref-footnote-1-XXYY",
+                    content_anchor="cnt-footnote-1-XXYY",
+                ),
+                TextNode("."),
+            ]
         ),
         FootnotesNode(
             [
                 FootnotesEntryNode(
                     [
                         ParagraphNode(
-                            SentenceNode(
-                                [
-                                    TextNode("This is the content of the footnote"),
-                                ]
-                            )
+                            [
+                                TextNode("This is the content of the footnote"),
+                            ]
                         )
                     ],
                     number=1,
@@ -231,11 +217,9 @@ def test_footnotes_output(mock_footnote_anchor):
             FootnotesEntryNode(
                 [
                     ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("This is the content of the footnote"),
-                            ]
-                        )
+                        [
+                            TextNode("This is the content of the footnote"),
+                        ]
                     )
                 ],
                 number=1,

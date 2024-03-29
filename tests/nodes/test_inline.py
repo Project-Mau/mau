@@ -1,6 +1,5 @@
 from mau.nodes.inline import (
     RawNode,
-    SentenceNode,
     StyleNode,
     TextNode,
     VerbatimNode,
@@ -38,14 +37,6 @@ def test_verbatim_node():
     assert node.value == "somevalue"
     assert node.node_type == "verbatim"
     assert node == VerbatimNode("somevalue")
-
-
-def test_sentence_node():
-    node = SentenceNode([VerbatimNode("somevalue"), TextNode("othervalue")])
-
-    assert node.content == [VerbatimNode("somevalue"), TextNode("othervalue")]
-    assert node.node_type == "sentence"
-    assert node == SentenceNode([VerbatimNode("somevalue"), TextNode("othervalue")])
 
 
 def test_style_node():

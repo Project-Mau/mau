@@ -1,5 +1,5 @@
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import TextNode
 from mau.nodes.lists import ListItemNode, ListNode
 from mau.parsers.main_parser import MainParser
 
@@ -18,11 +18,7 @@ def test_parse_list_with_one_item():
     assert runner(source).nodes == [
         ListNode(
             False,
-            [
-                ListItemNode(
-                    "1", SentenceNode([TextNode("This is a list with one element")])
-                )
-            ],
+            [ListItemNode("1", [TextNode("This is a list with one element")])],
             True,
         )
     ]
@@ -38,8 +34,8 @@ def test_parse_list_with_multiple_items():
         ListNode(
             False,
             [
-                ListItemNode("1", SentenceNode([TextNode("Item 1")])),
-                ListItemNode("1", SentenceNode([TextNode("Item 2")])),
+                ListItemNode("1", [TextNode("Item 1")]),
+                ListItemNode("1", [TextNode("Item 2")]),
             ],
             True,
         )
@@ -59,27 +55,23 @@ def test_parse_list_with_multiple_levels():
             [
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [
-                            TextNode("Item 1"),
-                            ListNode(
-                                False,
-                                [
-                                    ListItemNode(
-                                        "2",
-                                        SentenceNode(
-                                            [
-                                                TextNode("Item 1.1"),
-                                            ]
-                                        ),
-                                    )
-                                ],
-                                False,
-                            ),
-                        ]
-                    ),
+                    [
+                        TextNode("Item 1"),
+                        ListNode(
+                            False,
+                            [
+                                ListItemNode(
+                                    "2",
+                                    [
+                                        TextNode("Item 1.1"),
+                                    ],
+                                )
+                            ],
+                            False,
+                        ),
+                    ],
                 ),
-                ListItemNode("1", SentenceNode([TextNode("Item 2")])),
+                ListItemNode("1", [TextNode("Item 2")]),
             ],
             True,
         )
@@ -99,31 +91,25 @@ def test_parse_numbered_list():
             [
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [
-                            TextNode("Item 1"),
-                            ListNode(
-                                True,
-                                [
-                                    ListItemNode(
-                                        "2",
-                                        SentenceNode(
-                                            [
-                                                TextNode("Item 1.1"),
-                                            ]
-                                        ),
-                                    )
-                                ],
-                                False,
-                            ),
-                        ]
-                    ),
+                    [
+                        TextNode("Item 1"),
+                        ListNode(
+                            True,
+                            [
+                                ListItemNode(
+                                    "2",
+                                    [
+                                        TextNode("Item 1.1"),
+                                    ],
+                                )
+                            ],
+                            False,
+                        ),
+                    ],
                 ),
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [TextNode("Item 2")],
-                    ),
+                    [TextNode("Item 2")],
                 ),
             ],
             True,
@@ -144,27 +130,23 @@ def test_parse_mixed_list():
             [
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [
-                            TextNode("Item 1"),
-                            ListNode(
-                                True,
-                                [
-                                    ListItemNode(
-                                        "2",
-                                        SentenceNode(
-                                            [
-                                                TextNode("Item 1.1"),
-                                            ]
-                                        ),
-                                    )
-                                ],
-                                False,
-                            ),
-                        ]
-                    ),
+                    [
+                        TextNode("Item 1"),
+                        ListNode(
+                            True,
+                            [
+                                ListItemNode(
+                                    "2",
+                                    [
+                                        TextNode("Item 1.1"),
+                                    ],
+                                )
+                            ],
+                            False,
+                        ),
+                    ],
                 ),
-                ListItemNode("1", SentenceNode([TextNode("Item 2")])),
+                ListItemNode("1", [TextNode("Item 2")]),
             ],
             True,
         )
@@ -203,15 +185,11 @@ def test_parse_numbered_list_continue():
             items=[
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [TextNode("Item 1")],
-                    ),
+                    [TextNode("Item 1")],
                 ),
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [TextNode("Item 2")],
-                    ),
+                    [TextNode("Item 2")],
                 ),
             ],
             main_node=True,
@@ -221,15 +199,11 @@ def test_parse_numbered_list_continue():
             items=[
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [TextNode("Item 3")],
-                    ),
+                    [TextNode("Item 3")],
                 ),
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [TextNode("Item 4")],
-                    ),
+                    [TextNode("Item 4")],
                 ),
             ],
             main_node=True,
@@ -253,15 +227,11 @@ def test_parse_numbered_list_do_not_continue():
             items=[
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [TextNode("Item 1")],
-                    ),
+                    [TextNode("Item 1")],
                 ),
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [TextNode("Item 2")],
-                    ),
+                    [TextNode("Item 2")],
                 ),
             ],
             main_node=True,
@@ -271,15 +241,11 @@ def test_parse_numbered_list_do_not_continue():
             items=[
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [TextNode("Item 3")],
-                    ),
+                    [TextNode("Item 3")],
                 ),
                 ListItemNode(
                     "1",
-                    SentenceNode(
-                        [TextNode("Item 4")],
-                    ),
+                    [TextNode("Item 4")],
                 ),
             ],
             main_node=True,
@@ -296,11 +262,7 @@ def test_parse_list_with_subtype():
     assert runner(source).nodes == [
         ListNode(
             False,
-            [
-                ListItemNode(
-                    "1", SentenceNode([TextNode("This is a list with one element")])
-                )
-            ],
+            [ListItemNode("1", [TextNode("This is a list with one element")])],
             True,
             subtype="type1",
         )

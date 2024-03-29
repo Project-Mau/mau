@@ -1,5 +1,5 @@
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import SentenceNode, StyleNode, TextNode
+from mau.nodes.inline import StyleNode, TextNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser
 
@@ -79,9 +79,7 @@ def test_variable_replacement():
 
     assert parser.nodes == [
         ParagraphNode(
-            SentenceNode(
-                [TextNode("The answer is 42")],
-            )
+            [TextNode("The answer is 42")],
         )
     ]
 
@@ -97,9 +95,7 @@ def test_variable_replacement_with_namespace():
 
     assert parser.nodes == [
         ParagraphNode(
-            SentenceNode(
-                [TextNode("The answer is 42")],
-            )
+            [TextNode("The answer is 42")],
         )
     ]
 
@@ -113,9 +109,7 @@ def test_variable_definition_escape():
 
     assert parser.nodes == [
         ParagraphNode(
-            SentenceNode(
-                [TextNode(":answer:42")],
-            )
+            [TextNode(":answer:42")],
         )
     ]
 
@@ -131,9 +125,7 @@ def test_skip_variable_replacement():
 
     assert parser.nodes == [
         ParagraphNode(
-            SentenceNode(
-                [TextNode("The answer is {answer}")],
-            )
+            [TextNode("The answer is {answer}")],
         )
     ]
 
@@ -149,18 +141,14 @@ def test_variables_are_preprocessed():
 
     assert parser.nodes == [
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is "),
-                    StyleNode(
-                        "star",
-                        SentenceNode(
-                            [
-                                TextNode("IMPORTANT"),
-                            ]
-                        ),
-                    ),
-                ],
-            )
+            [
+                TextNode("This is "),
+                StyleNode(
+                    "star",
+                    [
+                        TextNode("IMPORTANT"),
+                    ],
+                ),
+            ],
         )
     ]

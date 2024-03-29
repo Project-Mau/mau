@@ -111,7 +111,9 @@ class JinjaVisitor(BaseVisitor):
             "list": "",
             "reference": "\n",
             "references_entry": "\n",
+            "paragraph": "",
             "sentence": "",
+            "style": "",
             "toc_entry": "",
         }
 

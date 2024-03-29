@@ -32,7 +32,7 @@ def test_document_node():
     node = DocumentNode(
         content=[
             ParagraphNode(
-                TextNode("Just some text"),
+                [TextNode("Just some text")],
                 args=["arg1", "arg2"],
                 kwargs={"key1": "value1"},
                 tags=["tag1", "tag2"],
@@ -52,12 +52,14 @@ def test_document_node():
                 {
                     "data": {
                         "type": "paragraph",
-                        "content": {
-                            "data": {
-                                "type": "text",
-                                "value": "Just some text",
+                        "content": [
+                            {
+                                "data": {
+                                    "type": "text",
+                                    "value": "Just some text",
+                                }
                             }
-                        },
+                        ],
                         "args": ["arg1", "arg2"],
                         "kwargs": {"key1": "value1"},
                         "tags": ["tag1", "tag2"],

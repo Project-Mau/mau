@@ -22,7 +22,7 @@ def test_page_paragraph_node():
     kwargs = {"key1": "value1"}
     tags = ["tag1", "tag2"]
     node = ParagraphNode(
-        TextNode("Just some text"), args=args, kwargs=kwargs, tags=tags
+        [TextNode("Just some text")], args=args, kwargs=kwargs, tags=tags
     )
 
     result = visitor.visit(node)

@@ -1,5 +1,5 @@
 from mau.environment.environment import Environment
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.references import ReferencesEntryNode, ReferencesNode
 from mau.visitors.jinja_visitor import JinjaVisitor
@@ -7,8 +7,8 @@ from mau.visitors.jinja_visitor import JinjaVisitor
 
 def test_page_references_multiple_nodes():
     templates = {
-        "sentence.j2": "{{ content }}",
         "paragraph.j2": "{{ content }}",
+        "sentence.j2": "{{ content }}",
         "text.j2": "{{ value }}",
         "references.j2": "{{ entries }}",
         "references_entry.j2": (
@@ -31,11 +31,9 @@ def test_page_references_multiple_nodes():
                 "content_type1",
                 content=[
                     ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 1, value 1"),
-                            ]
-                        )
+                        [
+                            TextNode("Content type 1, value 1"),
+                        ]
                     ),
                 ],
                 number=1,
@@ -47,12 +45,10 @@ def test_page_references_multiple_nodes():
                 "content_type1",
                 content=[
                     ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 1, value 2"),
-                            ]
-                        )
-                    ),
+                        [
+                            TextNode("Content type 1, value 2"),
+                        ]
+                    )
                 ],
                 number=2,
                 title=SentenceNode([TextNode("Some title 1.2")]),
@@ -63,11 +59,9 @@ def test_page_references_multiple_nodes():
                 "content_type2",
                 content=[
                     ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 2, value 1"),
-                            ]
-                        )
+                        [
+                            TextNode("Content type 2, value 1"),
+                        ]
                     ),
                 ],
                 number=3,

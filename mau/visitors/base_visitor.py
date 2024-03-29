@@ -114,11 +114,15 @@ class BaseVisitor:
         }
 
     def _visit_style(self, node, *args, **kwargs):
+        join_with = self._join_with.get(node.node_type, None)
+
         return {
             "data": {
                 "type": node.node_type,
                 "value": node.value,
-                "content": self.visit(node.content, *args, **kwargs),
+                "content": self.visitlist(
+                    node.content, *args, join_with=join_with, **kwargs
+                ),
             },
         }
 
@@ -198,10 +202,14 @@ class BaseVisitor:
         }
 
     def _visit_paragraph(self, node, *args, **kwargs):
+        join_with = self._join_with.get(node.node_type, None)
+
         return {
             "data": {
                 "type": node.node_type,
-                "content": self.visit(node.content, *args, **kwargs),
+                "content": self.visitlist(
+                    node.content, *args, join_with=join_with, **kwargs
+                ),
                 "args": node.args,
                 "kwargs": node.kwargs,
                 "tags": node.tags,

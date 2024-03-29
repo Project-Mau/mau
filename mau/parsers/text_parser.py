@@ -3,7 +3,7 @@ import itertools
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode, WordNode
+from mau.nodes.inline import StyleNode, TextNode, VerbatimNode, WordNode
 from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
 from mau.nodes.references import ReferenceNode
 from mau.parsers.arguments import set_names_and_defaults
@@ -45,7 +45,8 @@ class TextParser(BaseParser):
         return True
 
     def _process_sentence(self):
-        self._save(self._parse_sentence())
+        for node in self._parse_sentence():
+            self._save(node)
 
         return True
 
@@ -136,7 +137,8 @@ class TextParser(BaseParser):
             else:
                 grouped_nodes.extend(list(group))
 
-        return SentenceNode(content=grouped_nodes)
+        # return SentenceNode(content=grouped_nodes)
+        return grouped_nodes
 
     def _parse_verbatim(self):
         """
@@ -207,13 +209,10 @@ class TextParser(BaseParser):
 
         par = self.analyse(text, current_context, self.environment)
 
-        # Text should return a single sentence node
-        result = par.nodes[0]
-
         # Multiple classes are separated by commas
         classes = kwargs["classes"].split(",")
 
-        return MacroClassNode(classes, result)
+        return MacroClassNode(classes, par.nodes)
 
     def _parse_macro_image(self, args, kwargs):
         """

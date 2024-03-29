@@ -1,5 +1,5 @@
 from mau.environment.environment import Environment
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import TextNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.references import ReferencesEntryNode, ReferencesNode
 from mau.visitors.base_visitor import BaseVisitor
@@ -15,11 +15,9 @@ def test_references():
                 "content_type1",
                 content=[
                     ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 1, value 1"),
-                            ]
-                        )
+                        [
+                            TextNode("Content type 1, value 1"),
+                        ]
                     ),
                 ],
                 number=1,
@@ -30,11 +28,9 @@ def test_references():
                 "content_type2",
                 content=[
                     ParagraphNode(
-                        SentenceNode(
-                            [
-                                TextNode("Content type 2, value 1"),
-                            ]
-                        )
+                        [
+                            TextNode("Content type 2, value 1"),
+                        ]
                     ),
                 ],
                 number=2,
@@ -60,19 +56,14 @@ def test_references():
                             {
                                 "data": {
                                     "args": [],
-                                    "content": {
-                                        "data": {
-                                            "content": [
-                                                {
-                                                    "data": {
-                                                        "type": "text",
-                                                        "value": "Content type 1, value 1",
-                                                    }
-                                                },
-                                            ],
-                                            "type": "sentence",
-                                        }
-                                    },
+                                    "content": [
+                                        {
+                                            "data": {
+                                                "type": "text",
+                                                "value": "Content type 1, value 1",
+                                            }
+                                        },
+                                    ],
                                     "kwargs": {},
                                     "tags": [],
                                     "type": "paragraph",
@@ -93,19 +84,14 @@ def test_references():
                             {
                                 "data": {
                                     "args": [],
-                                    "content": {
-                                        "data": {
-                                            "content": [
-                                                {
-                                                    "data": {
-                                                        "type": "text",
-                                                        "value": "Content type 2, value 1",
-                                                    }
-                                                },
-                                            ],
-                                            "type": "sentence",
-                                        }
-                                    },
+                                    "content": [
+                                        {
+                                            "data": {
+                                                "type": "text",
+                                                "value": "Content type 2, value 1",
+                                            }
+                                        },
+                                    ],
                                     "kwargs": {},
                                     "tags": [],
                                     "type": "paragraph",

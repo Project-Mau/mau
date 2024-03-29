@@ -8,7 +8,7 @@ def test_paragraph_node():
     visitor = BaseVisitor(Environment())
 
     node = ParagraphNode(
-        TextNode("Just some text"),
+        [TextNode("Just some text")],
         args=["arg1", "arg2"],
         kwargs={"key1": "value1"},
         tags=["tag1", "tag2"],
@@ -19,12 +19,14 @@ def test_paragraph_node():
     assert result == {
         "data": {
             "type": "paragraph",
-            "content": {
-                "data": {
-                    "type": "text",
-                    "value": "Just some text",
+            "content": [
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "Just some text",
+                    }
                 }
-            },
+            ],
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
             "tags": ["tag1", "tag2"],

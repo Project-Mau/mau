@@ -2,7 +2,7 @@ import textwrap
 from unittest.mock import patch
 
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import TextNode
 from mau.nodes.page import ContainerNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.references import ReferenceNode, ReferencesEntryNode, ReferencesNode
@@ -58,11 +58,9 @@ def test_document_with_reference():
     assert parser.nodes == []
     assert parser.references_manager.data[("content_type", "value")] == [
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is a paragraph."),
-                ]
-            )
+            [
+                TextNode("This is a paragraph."),
+            ]
         ),
     ]
 
@@ -87,11 +85,9 @@ def test_simple_reference(mock_reference_anchor):
             "content_type",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is a paragraph."),
-                        ]
-                    )
+                    [
+                        TextNode("This is a paragraph."),
+                    ]
                 ),
             ],
             number=1,
@@ -124,11 +120,9 @@ def test_reference_data_inside_block(mock_reference_anchor):
             "content_type",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is a paragraph."),
-                        ]
-                    )
+                    [
+                        TextNode("This is a paragraph."),
+                    ]
                 ),
             ],
             number=1,
@@ -161,11 +155,9 @@ def test_reference_mention_and_data_inside_block(mock_reference_anchor):
             "content_type",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is a paragraph."),
-                        ]
-                    )
+                    [
+                        TextNode("This is a paragraph."),
+                    ]
                 ),
             ],
             number=1,
@@ -206,11 +198,9 @@ def test_multiple_content_types(mock_reference_anchor):
             "content_type1",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("Content type 1, value 1"),
-                        ]
-                    )
+                    [
+                        TextNode("Content type 1, value 1"),
+                    ]
                 ),
             ],
             number=1,
@@ -221,11 +211,9 @@ def test_multiple_content_types(mock_reference_anchor):
             "content_type1",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("Content type 1, value 2"),
-                        ]
-                    )
+                    [
+                        TextNode("Content type 1, value 2"),
+                    ]
                 ),
             ],
             number=2,
@@ -236,11 +224,9 @@ def test_multiple_content_types(mock_reference_anchor):
             "content_type2",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("Content type 2, value 1"),
-                        ]
-                    )
+                    [
+                        TextNode("Content type 2, value 1"),
+                    ]
                 ),
             ],
             number=3,
@@ -280,48 +266,38 @@ def test_command_references_filter_content_type(mock_reference_anchor):
 
     assert parser.nodes == [
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode(
-                        "This is a paragraph with references of different types: "
-                    ),
-                    ReferenceNode(
-                        "content_type1",
-                        content=[
-                            ParagraphNode(
-                                SentenceNode([TextNode("Content type 1, value 1")])
-                            ),
-                        ],
-                        number=1,
-                        reference_anchor="ref-content_type1-1-XXYY",
-                        content_anchor="cnt-content_type1-1-XXYY",
-                    ),
-                    TextNode(", "),
-                    ReferenceNode(
-                        "content_type1",
-                        content=[
-                            ParagraphNode(
-                                SentenceNode([TextNode("Content type 1, value 2")])
-                            ),
-                        ],
-                        number=2,
-                        reference_anchor="ref-content_type1-2-XXYY",
-                        content_anchor="cnt-content_type1-2-XXYY",
-                    ),
-                    TextNode(", "),
-                    ReferenceNode(
-                        "content_type2",
-                        content=[
-                            ParagraphNode(
-                                SentenceNode([TextNode("Content type 2, value 1")])
-                            ),
-                        ],
-                        number=3,
-                        reference_anchor="ref-content_type2-3-XXYY",
-                        content_anchor="cnt-content_type2-3-XXYY",
-                    ),
-                ]
-            ),
+            [
+                TextNode("This is a paragraph with references of different types: "),
+                ReferenceNode(
+                    "content_type1",
+                    content=[
+                        ParagraphNode([TextNode("Content type 1, value 1")]),
+                    ],
+                    number=1,
+                    reference_anchor="ref-content_type1-1-XXYY",
+                    content_anchor="cnt-content_type1-1-XXYY",
+                ),
+                TextNode(", "),
+                ReferenceNode(
+                    "content_type1",
+                    content=[
+                        ParagraphNode([TextNode("Content type 1, value 2")]),
+                    ],
+                    number=2,
+                    reference_anchor="ref-content_type1-2-XXYY",
+                    content_anchor="cnt-content_type1-2-XXYY",
+                ),
+                TextNode(", "),
+                ReferenceNode(
+                    "content_type2",
+                    content=[
+                        ParagraphNode([TextNode("Content type 2, value 1")]),
+                    ],
+                    number=3,
+                    reference_anchor="ref-content_type2-3-XXYY",
+                    content_anchor="cnt-content_type2-3-XXYY",
+                ),
+            ],
             args=[],
             kwargs={},
         ),
@@ -331,9 +307,7 @@ def test_command_references_filter_content_type(mock_reference_anchor):
                 ReferencesEntryNode(
                     "content_type1",
                     content=[
-                        ParagraphNode(
-                            SentenceNode([TextNode("Content type 1, value 1")])
-                        ),
+                        ParagraphNode([TextNode("Content type 1, value 1")]),
                     ],
                     number=1,
                     reference_anchor="ref-content_type1-1-XXYY",
@@ -342,9 +316,7 @@ def test_command_references_filter_content_type(mock_reference_anchor):
                 ReferencesEntryNode(
                     "content_type1",
                     content=[
-                        ParagraphNode(
-                            SentenceNode([TextNode("Content type 1, value 2")])
-                        ),
+                        ParagraphNode([TextNode("Content type 1, value 2")]),
                     ],
                     number=2,
                     reference_anchor="ref-content_type1-2-XXYY",
@@ -379,25 +351,19 @@ def test_references_output(mock_reference_anchor):
         "content": ContainerNode(
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is a paragraph with a reference "),
-                            ReferenceNode(
-                                "content_type1",
-                                content=[
-                                    ParagraphNode(
-                                        SentenceNode(
-                                            [TextNode("Content type 1, value 1")]
-                                        )
-                                    ),
-                                ],
-                                number=1,
-                                reference_anchor="ref-content_type1-1-XXYY",
-                                content_anchor="cnt-content_type1-1-XXYY",
-                            ),
-                            TextNode("."),
-                        ]
-                    ),
+                    [
+                        TextNode("This is a paragraph with a reference "),
+                        ReferenceNode(
+                            "content_type1",
+                            content=[
+                                ParagraphNode([TextNode("Content type 1, value 1")]),
+                            ],
+                            number=1,
+                            reference_anchor="ref-content_type1-1-XXYY",
+                            content_anchor="cnt-content_type1-1-XXYY",
+                        ),
+                        TextNode("."),
+                    ],
                     args=[],
                     kwargs={},
                 ),
@@ -407,9 +373,7 @@ def test_references_output(mock_reference_anchor):
                         ReferencesEntryNode(
                             "content_type1",
                             content=[
-                                ParagraphNode(
-                                    SentenceNode([TextNode("Content type 1, value 1")])
-                                ),
+                                ParagraphNode([TextNode("Content type 1, value 1")]),
                             ],
                             number=1,
                             reference_anchor="ref-content_type1-1-XXYY",
@@ -427,7 +391,7 @@ def test_references_output(mock_reference_anchor):
             ("content_type1", "name1"): ReferencesEntryNode(
                 "content_type1",
                 content=[
-                    ParagraphNode(SentenceNode([TextNode("Content type 1, value 1")])),
+                    ParagraphNode([TextNode("Content type 1, value 1")]),
                 ],
                 number=1,
                 reference_anchor="ref-content_type1-1-XXYY",

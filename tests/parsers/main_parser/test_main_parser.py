@@ -2,7 +2,7 @@ import pytest
 from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import SentenceNode, StyleNode, TextNode
+from mau.nodes.inline import StyleNode, TextNode
 from mau.nodes.page import ContainerNode, DocumentNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.toc import TocNode
@@ -111,20 +111,16 @@ def test_style_underscore():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is "),
-                    StyleNode(
-                        "underscore",
-                        SentenceNode(
-                            [
-                                TextNode("underscore"),
-                            ],
-                        ),
-                    ),
-                    TextNode(" text"),
-                ],
-            )
+            [
+                TextNode("This is "),
+                StyleNode(
+                    "underscore",
+                    [
+                        TextNode("underscore"),
+                    ],
+                ),
+                TextNode(" text"),
+            ],
         )
     ]
 
@@ -136,18 +132,14 @@ def test_style_at_beginning():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            SentenceNode(
-                [
-                    StyleNode(
-                        "star",
-                        SentenceNode(
-                            [
-                                TextNode("This is star text"),
-                            ]
-                        ),
-                    ),
-                ],
-            )
+            [
+                StyleNode(
+                    "star",
+                    [
+                        TextNode("This is star text"),
+                    ],
+                ),
+            ],
         )
     ]
 
@@ -159,11 +151,9 @@ def test_style_not_closed():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This ` is a backtick and this _an underscore"),
-                ],
-            )
+            [
+                TextNode("This ` is a backtick and this _an underscore"),
+            ],
         )
     ]
 
@@ -175,10 +165,8 @@ def test_style_escape_markers():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is _underscore_ and this is `verbatim`"),
-                ],
-            )
+            [
+                TextNode("This is _underscore_ and this is `verbatim`"),
+            ],
         )
     ]

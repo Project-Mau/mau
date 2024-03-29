@@ -107,26 +107,21 @@ def test_sentence_node():
 def test_style_node_star():
     visitor = BaseVisitor(Environment())
 
-    node = StyleNode("star", SentenceNode([TextNode("Just some text.")]))
+    node = StyleNode("star", [TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
     assert result == {
         "data": {
             "type": "style",
-            "content": {
-                "data": {
-                    "type": "sentence",
-                    "content": [
-                        {
-                            "data": {
-                                "type": "text",
-                                "value": "Just some text.",
-                            }
-                        },
-                    ],
-                }
-            },
+            "content": [
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "Just some text.",
+                    }
+                },
+            ],
             "value": "star",
         }
     }
@@ -135,26 +130,21 @@ def test_style_node_star():
 def test_style_node_underscore():
     visitor = BaseVisitor(Environment())
 
-    node = StyleNode("underscore", SentenceNode([TextNode("Just some text.")]))
+    node = StyleNode("underscore", [TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
     assert result == {
         "data": {
             "type": "style",
-            "content": {
-                "data": {
-                    "type": "sentence",
-                    "content": [
-                        {
-                            "data": {
-                                "type": "text",
-                                "value": "Just some text.",
-                            }
-                        },
-                    ],
-                }
-            },
+            "content": [
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "Just some text.",
+                    }
+                },
+            ],
             "value": "underscore",
         }
     }
@@ -163,26 +153,21 @@ def test_style_node_underscore():
 def test_style_node_tilde():
     visitor = BaseVisitor(Environment())
 
-    node = StyleNode("tilde", SentenceNode([TextNode("Just some text.")]))
+    node = StyleNode("tilde", [TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
     assert result == {
         "data": {
             "type": "style",
-            "content": {
-                "data": {
-                    "type": "sentence",
-                    "content": [
-                        {
-                            "data": {
-                                "type": "text",
-                                "value": "Just some text.",
-                            }
-                        },
-                    ],
-                }
-            },
+            "content": [
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "Just some text.",
+                    }
+                },
+            ],
             "value": "tilde",
         }
     }
@@ -191,26 +176,21 @@ def test_style_node_tilde():
 def test_style_node_caret():
     visitor = BaseVisitor(Environment())
 
-    node = StyleNode("caret", SentenceNode([TextNode("Just some text.")]))
+    node = StyleNode("caret", [TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
     assert result == {
         "data": {
             "type": "style",
-            "content": {
-                "data": {
-                    "type": "sentence",
-                    "content": [
-                        {
-                            "data": {
-                                "type": "text",
-                                "value": "Just some text.",
-                            }
-                        },
-                    ],
-                }
-            },
+            "content": [
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "Just some text.",
+                    }
+                },
+            ],
             "value": "caret",
         }
     }

@@ -1,6 +1,6 @@
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode
-from mau.nodes.inline import SentenceNode, StyleNode, TextNode
+from mau.nodes.inline import StyleNode, TextNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser
 
@@ -24,11 +24,9 @@ def test_admonition():
             subtype="admonition",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("Content"),
-                        ]
-                    )
+                    [
+                        TextNode("Content"),
+                    ]
                 ),
             ],
             secondary_content=[],
@@ -56,28 +54,22 @@ def test_parse_block_quote_attribution_in_secondary_content():
             subtype="quote",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("Learn about the Force, Luke."),
-                        ]
-                    )
+                    [
+                        TextNode("Learn about the Force, Luke."),
+                    ]
                 ),
             ],
             secondary_content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            StyleNode(
-                                "underscore",
-                                SentenceNode(
-                                    [
-                                        TextNode("Star Wars"),
-                                    ]
-                                ),
-                            ),
-                            TextNode(", 1977"),
-                        ]
-                    )
+                    [
+                        StyleNode(
+                            "underscore",
+                            [
+                                TextNode("Star Wars"),
+                            ],
+                        ),
+                        TextNode(", 1977"),
+                    ]
                 ),
             ],
             classes=[],

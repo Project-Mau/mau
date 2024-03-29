@@ -5,7 +5,7 @@ from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import RawNode, SentenceNode, TextNode
+from mau.nodes.inline import RawNode, TextNode, SentenceNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser
 
@@ -284,11 +284,9 @@ def test_block_positive_condition_matches():
             subtype="block",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is a paragraph."),
-                        ]
-                    )
+                    [
+                        TextNode("This is a paragraph."),
+                    ]
                 ),
             ],
             secondary_content=[],
@@ -330,11 +328,9 @@ def test_block_negative_condition_matches():
             subtype="block",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is a paragraph."),
-                        ]
-                    )
+                    [
+                        TextNode("This is a paragraph."),
+                    ]
                 ),
             ],
             secondary_content=[],
@@ -401,11 +397,9 @@ def test_block_condition_can_use_variable_namespace():
             subtype="block",
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is a paragraph."),
-                        ]
-                    )
+                    [
+                        TextNode("This is a paragraph."),
+                    ]
                 ),
             ],
             secondary_content=[],

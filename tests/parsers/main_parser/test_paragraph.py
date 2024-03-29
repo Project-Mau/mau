@@ -1,5 +1,5 @@
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import TextNode
 from mau.nodes.macros import MacroLinkNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser
@@ -21,22 +21,16 @@ def test_parse_paragraphs():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode(
-                        "This is a paragraph. This is part of the same paragraph."
-                    ),
-                ]
-            ),
+            [
+                TextNode("This is a paragraph. This is part of the same paragraph."),
+            ],
             args=[],
             kwargs={},
         ),
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is a new paragraph."),
-                ]
-            ),
+            [
+                TextNode("This is a new paragraph."),
+            ],
             args=[],
             kwargs={},
         ),
@@ -48,12 +42,10 @@ def test_parse_paragraph_starting_with_a_macro():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            SentenceNode(
-                [
-                    MacroLinkNode(target="http://some.where", text="This"),
-                    TextNode(" is the link I want"),
-                ]
-            )
+            [
+                MacroLinkNode(target="http://some.where", text="This"),
+                TextNode(" is the link I want"),
+            ]
         )
     ]
 
@@ -66,9 +58,7 @@ def test_attributes_paragraph():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            SentenceNode(
-                [TextNode("This is text")],
-            ),
+            [TextNode("This is text")],
             args=["arg1"],
             kwargs={"key1": "value1"},
             subtype="type",

@@ -5,7 +5,6 @@ from mau.parsers.text_parser import TextParser
 
 from tests.helpers import parser_runner_factory
 
-
 mainrunner = parser_runner_factory(MainLexer, MainParser)
 textrunner = parser_runner_factory(TextLexer, TextParser)
 

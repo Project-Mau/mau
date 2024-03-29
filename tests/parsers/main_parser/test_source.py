@@ -1,7 +1,7 @@
 import pytest
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import RawNode, SentenceNode, TextNode
+from mau.nodes.inline import RawNode, TextNode, SentenceNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.parsers.main_parser import MainParser
 

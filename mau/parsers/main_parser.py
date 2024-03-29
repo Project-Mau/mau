@@ -7,7 +7,7 @@ from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
 from mau.nodes.block import BlockNode
 from mau.nodes.content import ContentImageNode, ContentNode
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import RawNode
+from mau.nodes.inline import RawNode, SentenceNode
 from mau.nodes.lists import ListItemNode, ListNode
 from mau.nodes.page import ContainerNode, HorizontalRuleNode
 from mau.nodes.paragraph import ParagraphNode
@@ -176,9 +176,6 @@ class MainParser(BaseParser):
             parent_node=self.parent_node,
         )
 
-        # A text parser returns a single sentence node
-        result = text_parser.nodes[0]
-
         # Extract the footnote mentions
         # found in this piece of text
         self.footnotes_manager.update_mentions(text_parser.footnotes)
@@ -187,7 +184,7 @@ class MainParser(BaseParser):
         # found in this piece of text
         self.references_manager.update_mentions(text_parser.references)
 
-        return result
+        return text_parser.nodes
 
     def _process_eol(self):
         # This simply parses the end of line.
@@ -354,9 +351,7 @@ class MainParser(BaseParser):
             parent_node=self.parent_node,
         )
 
-        title = text_parser.nodes[0]
-
-        self._push_title(title)
+        self._push_title(SentenceNode(text_parser.nodes))
 
         return True
 
@@ -1009,9 +1004,9 @@ class MainParser(BaseParser):
             Token(BLTokenTypes.EOF),
             Token(BLTokenTypes.EOL),
         ]:
-            # This is the SentenceNode inside the last node added to the list
-            # which is used to append potential nested nodes
-            last_node_sentence = nodes[-1].content
+            # This are the nodes inside the last element added to the list
+            # which is used to append potential nested elements
+            last_element_nodes = nodes[-1].content
 
             # Ignore the initial white spaces
             with self:
@@ -1043,7 +1038,7 @@ class MainParser(BaseParser):
                 numbered = self._peek_token().value[0] == "#"
                 subnodes = self._process_list_nodes()
 
-                last_node_sentence.content.append(ListNode(numbered, subnodes))
+                last_element_nodes.append(ListNode(numbered, subnodes))
             else:
                 break
 
@@ -1077,15 +1072,13 @@ class MainParser(BaseParser):
             self._get_token(BLTokenTypes.EOL)
 
         text = " ".join(lines)
-        sentence = self._parse_text_content(text, context)
+        content = self._parse_text_content(text, context)
 
         # Consume the arguments
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         self._save(
-            ParagraphNode(
-                sentence, subtype=subtype, args=args, kwargs=kwargs, tags=tags
-            )
+            ParagraphNode(content, subtype=subtype, args=args, kwargs=kwargs, tags=tags)
         )
 
         return True

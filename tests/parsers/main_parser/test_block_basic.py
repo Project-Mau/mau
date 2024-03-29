@@ -2,7 +2,7 @@ import pytest
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import TextNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser
 
@@ -46,11 +46,9 @@ def test_parse_block_content():
             subtype=None,
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("This is a paragraph."),
-                        ]
-                    )
+                    [
+                        TextNode("This is a paragraph."),
+                    ]
                 ),
             ],
             secondary_content=[],
@@ -77,11 +75,9 @@ def test_parse_block_content_variables():
             subtype=None,
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("The answer is 42."),
-                        ]
-                    )
+                    [
+                        TextNode("The answer is 42."),
+                    ]
                 ),
             ],
             secondary_content=[],
@@ -108,11 +104,9 @@ def test_parse_block_content_external_variables():
             subtype=None,
             content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode("The answer is 42."),
-                        ]
-                    )
+                    [
+                        TextNode("The answer is 42."),
+                    ]
                 ),
             ],
             secondary_content=[],
@@ -147,16 +141,14 @@ def test_parse_block_secondary_content():
             content=[],
             secondary_content=[
                 ParagraphNode(
-                    SentenceNode(
-                        [
-                            TextNode(
-                                (
-                                    "This is a paragraph that gets eaten. "
-                                    "This is a second paragraph that gets eaten."
-                                )
-                            ),
-                        ]
-                    )
+                    [
+                        TextNode(
+                            (
+                                "This is a paragraph that gets eaten. "
+                                "This is a second paragraph that gets eaten."
+                            )
+                        ),
+                    ]
                 ),
             ],
             classes=[],
@@ -167,11 +159,9 @@ def test_parse_block_secondary_content():
             kwargs={},
         ),
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This paragraph appears in the output."),
-                ]
-            )
+            [
+                TextNode("This paragraph appears in the output."),
+            ]
         ),
     ]
 

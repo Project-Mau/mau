@@ -3,7 +3,7 @@
 
 from mau.environment.environment import Environment
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import TextNode
 from mau.nodes.page import ContainerNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.nodes.toc import TocNode
@@ -57,33 +57,25 @@ def test_custom_filter_no_filter():
 
     nodes = [
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is a paragraph."),
-                ]
-            )
+            [
+                TextNode("This is a paragraph."),
+            ]
         ),
         ParagraphNode(
-            content=SentenceNode(
-                [
-                    TextNode("This is an important paragraph."),
-                ]
-            ),
+            content=[
+                TextNode("This is an important paragraph."),
+            ],
             tags=["important"],
         ),
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is another paragraph."),
-                ]
-            )
+            [
+                TextNode("This is another paragraph."),
+            ]
         ),
         ParagraphNode(
-            content=SentenceNode(
-                [
-                    TextNode("This is another important paragraph."),
-                ]
-            ),
+            content=[
+                TextNode("This is another important paragraph."),
+            ],
             tags=["important"],
         ),
     ]
@@ -122,52 +114,40 @@ def test_custom_filter_extract_tags():
 
     nodes = [
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is a paragraph."),
-                ]
-            )
+            [
+                TextNode("This is a paragraph."),
+            ]
         ),
         ParagraphNode(
-            content=SentenceNode(
-                [
-                    TextNode("This is an important paragraph."),
-                ]
-            ),
+            content=[
+                TextNode("This is an important paragraph."),
+            ],
             tags=["important"],
         ),
         ParagraphNode(
-            SentenceNode(
-                [
-                    TextNode("This is another paragraph."),
-                ]
-            )
+            [
+                TextNode("This is another paragraph."),
+            ]
         ),
         ParagraphNode(
-            content=SentenceNode(
-                [
-                    TextNode("This is another important paragraph."),
-                ]
-            ),
+            content=[
+                TextNode("This is another important paragraph."),
+            ],
             tags=["important"],
         ),
     ]
 
     important_nodes = [
         ParagraphNode(
-            content=SentenceNode(
-                [
-                    TextNode("This is an important paragraph."),
-                ]
-            ),
+            content=[
+                TextNode("This is an important paragraph."),
+            ],
             tags=["important"],
         ),
         ParagraphNode(
-            content=SentenceNode(
-                [
-                    TextNode("This is another important paragraph."),
-                ]
-            ),
+            content=[
+                TextNode("This is another important paragraph."),
+            ],
             tags=["important"],
         ),
     ]

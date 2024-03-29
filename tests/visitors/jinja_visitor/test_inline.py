@@ -2,7 +2,7 @@ import pytest
 from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode
+from mau.nodes.inline import StyleNode, TextNode, VerbatimNode, SentenceNode
 from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
 from mau.nodes.references import ReferenceNode
 from mau.visitors.jinja_visitor import JinjaVisitor
@@ -145,32 +145,9 @@ def test_inline_verbatim_node():
     assert result == "Just some text."
 
 
-def test_inline_sentence_node():
-    templates = {
-        "text.j2": "{{ value }}",
-        "sentence.j2": "{{ content }}",
-    }
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
-
-    node = SentenceNode(
-        [
-            TextNode("Just some text. "),
-            TextNode("More text."),
-        ]
-    )
-
-    result = visitor.visit(node)
-
-    assert result == "Just some text. More text."
-
-
 def test_inline_style_node_star():
     templates = {
         "text.j2": "{{ value }}",
-        "sentence.j2": "{{ content }}",
         "style.star.j2": "*{{ content }}*",
     }
 
@@ -178,7 +155,7 @@ def test_inline_style_node_star():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = StyleNode("star", SentenceNode([TextNode("Just some text.")]))
+    node = StyleNode("star", [TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -188,7 +165,6 @@ def test_inline_style_node_star():
 def test_inline_style_node_underscore():
     templates = {
         "text.j2": "{{ value }}",
-        "sentence.j2": "{{ content }}",
         "style.underscore.j2": "_{{ content }}_",
     }
 
@@ -196,7 +172,7 @@ def test_inline_style_node_underscore():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = StyleNode("underscore", SentenceNode([TextNode("Just some text.")]))
+    node = StyleNode("underscore", [TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -206,7 +182,6 @@ def test_inline_style_node_underscore():
 def test_inline_style_node_tilde():
     templates = {
         "text.j2": "{{ value }}",
-        "sentence.j2": "{{ content }}",
         "style.tilde.j2": "~{{ content }}~",
     }
 
@@ -214,7 +189,7 @@ def test_inline_style_node_tilde():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = StyleNode("tilde", SentenceNode([TextNode("Just some text.")]))
+    node = StyleNode("tilde", [TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -224,7 +199,6 @@ def test_inline_style_node_tilde():
 def test_inline_style_node_caret():
     templates = {
         "text.j2": "{{ value }}",
-        "sentence.j2": "{{ content }}",
         "style.caret.j2": "^{{ content }}^",
     }
 
@@ -232,7 +206,7 @@ def test_inline_style_node_caret():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = StyleNode("caret", SentenceNode([TextNode("Just some text.")]))
+    node = StyleNode("caret", [TextNode("Just some text.")])
 
     result = visitor.visit(node)
 

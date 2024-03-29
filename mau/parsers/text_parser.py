@@ -54,7 +54,7 @@ class TextParser(BaseParser):
         """
         Parse a single word.
         """
-        return WordNode(self._get_token().value)
+        return WordNode(value=self._get_token().value, parent=self.parent_node)
 
     def _parse_style(self):
         """
@@ -72,7 +72,9 @@ class TextParser(BaseParser):
         # Get the closing marker
         self._get_token(TokenTypes.LITERAL, style)
 
-        return StyleNode(MAP_STYLES[style], content)
+        return StyleNode(
+            value=MAP_STYLES[style], children=content, parent=self.parent_node
+        )
 
     def _parse_escape(self):
         """
@@ -82,7 +84,7 @@ class TextParser(BaseParser):
         # Drop the backslash
         self._get_token(TokenTypes.LITERAL, "\\")
 
-        return WordNode(self._get_token().value)
+        return WordNode(value=self._get_token().value, parent=self.parent_node)
 
     def _parse_styled_text(self, stop_tokens=None):
         """
@@ -133,7 +135,7 @@ class TextParser(BaseParser):
         for key, group in itertools.groupby(content, lambda x: x.__class__ == WordNode):
             if key:
                 text = "".join([n.value for n in group])
-                grouped_nodes.append(TextNode(text))
+                grouped_nodes.append(TextNode(value=text, parent=self.parent_node))
             else:
                 grouped_nodes.extend(list(group))
 
@@ -156,7 +158,7 @@ class TextParser(BaseParser):
         # Remove the closing marker
         self._get_token(TokenTypes.LITERAL, "`")
 
-        return VerbatimNode(content)
+        return VerbatimNode(content, parent=self.parent_node)
 
     def _parse_macro_link(self, args, kwargs):
         """
@@ -173,7 +175,7 @@ class TextParser(BaseParser):
         if text is None:
             text = target
 
-        return MacroLinkNode(target=target, text=text)
+        return MacroLinkNode(target=target, text=text, parent=self.parent_node)
 
     def _parse_macro_mailto(self, args, kwargs):
         """
@@ -191,7 +193,7 @@ class TextParser(BaseParser):
         if text is None:
             text = email
 
-        return MacroLinkNode(target, text)
+        return MacroLinkNode(target=target, text=text, parent=self.parent_node)
 
     def _parse_macro_class(self, args, kwargs):
         """
@@ -211,7 +213,9 @@ class TextParser(BaseParser):
         # Multiple classes are separated by commas
         classes = kwargs["classes"].split(",")
 
-        return MacroClassNode(classes, par.nodes)
+        return MacroClassNode(
+            classes=classes, content=par.nodes, parent=self.parent_node
+        )
 
     def _parse_macro_image(self, args, kwargs):
         """
@@ -232,6 +236,7 @@ class TextParser(BaseParser):
             alt_text=kwargs.get("alt_text"),
             width=kwargs.get("width"),
             height=kwargs.get("height"),
+            parent=self.parent_node,
         )
 
     def _parse_macro_footnote(self, args, kwargs):
@@ -244,7 +249,7 @@ class TextParser(BaseParser):
 
         name = kwargs["name"]
 
-        node = FootnoteNode()
+        node = FootnoteNode(parent=self.parent_node)
 
         self.footnotes[name] = node
 
@@ -261,7 +266,7 @@ class TextParser(BaseParser):
         content_type = kwargs["type"]
         name = kwargs["name"]
 
-        node = ReferenceNode(content_type)
+        node = ReferenceNode(content_type, parent=self.parent_node)
 
         self.references[(content_type, name)] = node
 
@@ -335,4 +340,4 @@ class TextParser(BaseParser):
         if macro_name == "class":
             return self._parse_macro_class(args, kwargs)
 
-        return MacroNode(macro_name, args=args, kwargs=kwargs)
+        return MacroNode(macro_name, args=args, kwargs=kwargs, parent=self.parent_node)

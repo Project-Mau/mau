@@ -63,8 +63,8 @@ def test_parse_block_quote_attribution_in_secondary_content():
                 ParagraphNode(
                     children=[
                         StyleNode(
-                            "underscore",
-                            [
+                            value="underscore",
+                            children=[
                                 TextNode("Star Wars"),
                             ],
                         ),

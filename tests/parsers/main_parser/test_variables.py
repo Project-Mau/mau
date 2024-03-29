@@ -144,8 +144,8 @@ def test_variables_are_preprocessed():
             children=[
                 TextNode("This is "),
                 StyleNode(
-                    "star",
-                    [
+                    value="star",
+                    children=[
                         TextNode("IMPORTANT"),
                     ],
                 ),

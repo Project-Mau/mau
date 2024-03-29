@@ -155,7 +155,7 @@ class MainParser(BaseParser):
 
         return " ".join(values)
 
-    def _parse_text_content(self, text, context=None):
+    def _parse_text_content(self, text, parent_node=None, context=None):
         # Parse a piece of text using the TextParser.
 
         current_context = context or self._current_token.context
@@ -173,7 +173,7 @@ class MainParser(BaseParser):
             text,
             current_context,
             self.environment,
-            parent_node=self.parent_node,
+            parent_node=parent_node,
         )
 
         # Extract the footnote mentions
@@ -999,7 +999,7 @@ class MainParser(BaseParser):
 
         # Collect and parse the text of the item
         text = self._collect_text_content()
-        content = self._parse_text_content(text, context)
+        content = self._parse_text_content(text, self.parent_node, context)
 
         # Compute the level of the item
         level = len(header)
@@ -1033,7 +1033,7 @@ class MainParser(BaseParser):
 
                 # Collect and parse the text of the item
                 text = self._collect_text_content()
-                content = self._parse_text_content(text, context)
+                content = self._parse_text_content(text, self.parent_node, context)
 
                 level = len(header)
 
@@ -1079,20 +1079,20 @@ class MainParser(BaseParser):
             self._get_token(BLTokenTypes.EOL)
 
         text = " ".join(lines)
-        content = self._parse_text_content(text, context)
 
         # Consume the arguments
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
-        self._save(
-            ParagraphNode(
-                children=content,
-                subtype=subtype,
-                args=args,
-                kwargs=kwargs,
-                tags=tags,
-            )
+        node = ParagraphNode(
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
         )
+
+        node.children = self._parse_text_content(text, node, context)
+
+        self._save(node)
 
         return True
 

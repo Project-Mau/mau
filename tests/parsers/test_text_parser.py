@@ -63,8 +63,8 @@ def test_parse_style_underscore():
 
     expected = [
         StyleNode(
-            "underscore",
-            [
+            value="underscore",
+            children=[
                 TextNode("Some text"),
             ],
         ),
@@ -78,8 +78,8 @@ def test_parse_style_star():
 
     expected = [
         StyleNode(
-            "star",
-            [
+            value="star",
+            children=[
                 TextNode("Some text"),
             ],
         ),
@@ -93,8 +93,8 @@ def test_parse_style_caret():
 
     expected = [
         StyleNode(
-            "caret",
-            [
+            value="caret",
+            children=[
                 TextNode("Some text"),
             ],
         ),
@@ -108,8 +108,8 @@ def test_parse_style_tilde():
 
     expected = [
         StyleNode(
-            "tilde",
-            [
+            value="tilde",
+            children=[
                 TextNode("Some text"),
             ],
         ),
@@ -123,11 +123,11 @@ def test_style_within_style():
 
     expected = [
         StyleNode(
-            "underscore",
-            [
+            value="underscore",
+            children=[
                 StyleNode(
-                    "star",
-                    [TextNode("Words with two styles")],
+                    value="star",
+                    children=[TextNode("Words with two styles")],
                 )
             ],
         )
@@ -140,9 +140,9 @@ def test_paragraph_double_style_cancels_itself():
     source = "__Text__"
 
     expected = [
-        StyleNode("underscore", []),
+        StyleNode(value="underscore"),
         TextNode("Text"),
-        StyleNode("underscore", []),
+        StyleNode(value="underscore"),
     ]
 
     assert runner(source).nodes == expected
@@ -154,15 +154,15 @@ def test_text_and_styles():
     expected = [
         TextNode("Some text "),
         StyleNode(
-            "underscore",
-            [
+            value="underscore",
+            children=[
                 TextNode("and style"),
             ],
         ),
         TextNode(" and "),
         StyleNode(
-            "star",
-            [
+            value="star",
+            children=[
                 TextNode("more style"),
             ],
         ),
@@ -230,8 +230,8 @@ def test_verbatim_and_style():
         VerbatimNode("verbatim words"),
         TextNode(" and "),
         StyleNode(
-            "underscore",
-            [
+            value="underscore",
+            children=[
                 TextNode("styled ones"),
             ],
         ),
@@ -466,7 +466,7 @@ def test_parse_class_with_rich_text():
                 TextNode("Some text with "),
                 VerbatimNode("verbatim words"),
                 TextNode(" and "),
-                StyleNode("underscore", [TextNode("styled ones")]),
+                StyleNode(value="underscore", children=[TextNode("styled ones")]),
             ],
         ),
     ]

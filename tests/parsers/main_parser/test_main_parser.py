@@ -114,8 +114,8 @@ def test_style_underscore():
             children=[
                 TextNode("This is "),
                 StyleNode(
-                    "underscore",
-                    [
+                    value="underscore",
+                    children=[
                         TextNode("underscore"),
                     ],
                 ),
@@ -134,8 +134,8 @@ def test_style_at_beginning():
         ParagraphNode(
             children=[
                 StyleNode(
-                    "star",
-                    [
+                    value="star",
+                    children=[
                         TextNode("This is star text"),
                     ],
                 ),

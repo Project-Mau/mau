@@ -1,81 +1,114 @@
-from mau.nodes.nodes import Node
+from mau.nodes.nodes import Node, SupaNode
 
 
-class MacroNode(Node):
+class MacroNode(SupaNode):
     """This node contains a macro, with a name and arguments."""
 
     node_type = "macro"
 
-    def __init__(self, name, args=None, kwargs=None):
-        super().__init__()
+    def __init__(
+        self,
+        name,
+        args=None,
+        kwargs=None,
+        tags=None,
+        subtype=None,
+        parent=None,
+    ):
+        super().__init__(
+            parent=parent, subtype=subtype, args=args, kwargs=kwargs, tags=tags
+        )
         self.name = name
-        self.args = args or []
-        self.kwargs = kwargs or {}
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
             "name": self.name,
-            "args": self.args,
-            "kwargs": self.kwargs,
         }
 
 
-class MacroClassNode(Node):
+class MacroClassNode(SupaNode):
     """Text with one or more classes."""
 
     node_type = "macro__class"
 
-    def __init__(self, classes, content):
-        super().__init__()
+    def __init__(
+        self,
+        classes,
+        content,
+        args=None,
+        kwargs=None,
+        tags=None,
+        subtype=None,
+        parent=None,
+    ):
+        super().__init__(
+            parent=parent, subtype=subtype, args=args, kwargs=kwargs, tags=tags
+        )
         self.classes = classes
         self.content = content
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
             "classes": self.classes,
             "content": self.content,
         }
 
 
-class MacroLinkNode(Node):
+class MacroLinkNode(SupaNode):
     """This node contains a link."""
 
     node_type = "macro__link"
 
-    def __init__(self, target, text=None):
-        super().__init__()
+    def __init__(
+        self,
+        target,
+        text=None,
+        args=None,
+        kwargs=None,
+        tags=None,
+        subtype=None,
+        parent=None,
+    ):
+        super().__init__(
+            parent=parent, subtype=subtype, args=args, kwargs=kwargs, tags=tags
+        )
         self.target = target
         self.text = text
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
             "target": self.target,
             "text": self.text,
         }
 
 
-class MacroImageNode(Node):
+class MacroImageNode(SupaNode):
     """This node contains an inline image."""
 
     node_type = "macro__image"
 
-    def __init__(self, uri, alt_text=None, width=None, height=None):
-        super().__init__()
+    def __init__(
+        self,
+        uri,
+        alt_text=None,
+        width=None,
+        height=None,
+        args=None,
+        kwargs=None,
+        tags=None,
+        subtype=None,
+        parent=None,
+    ):
+        super().__init__(
+            parent=parent, subtype=subtype, args=args, kwargs=kwargs, tags=tags
+        )
         self.uri = uri
         self.alt_text = alt_text
         self.width = width
         self.height = height
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
             "uri": self.uri,
             "alt_text": self.alt_text,
             "width": self.width,

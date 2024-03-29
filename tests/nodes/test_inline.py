@@ -40,9 +40,9 @@ def test_verbatim_node():
 
 
 def test_style_node():
-    node = StyleNode("mystyle", TextNode("othervalue"))
+    node = StyleNode("mystyle", children=[TextNode("othervalue")])
 
     assert node.value == "mystyle"
-    assert node.content == TextNode("othervalue")
+    assert node.children == [TextNode("othervalue")]
     assert node.node_type == "style"
-    assert node == StyleNode("mystyle", TextNode("othervalue"))
+    assert node == StyleNode("mystyle", children=[TextNode("othervalue")])

@@ -107,7 +107,7 @@ def test_sentence_node():
 def test_style_node_star():
     visitor = BaseVisitor(Environment())
 
-    node = StyleNode("star", [TextNode("Just some text.")])
+    node = StyleNode("star", children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -130,7 +130,7 @@ def test_style_node_star():
 def test_style_node_underscore():
     visitor = BaseVisitor(Environment())
 
-    node = StyleNode("underscore", [TextNode("Just some text.")])
+    node = StyleNode("underscore", children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -153,7 +153,7 @@ def test_style_node_underscore():
 def test_style_node_tilde():
     visitor = BaseVisitor(Environment())
 
-    node = StyleNode("tilde", [TextNode("Just some text.")])
+    node = StyleNode("tilde", children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -176,7 +176,7 @@ def test_style_node_tilde():
 def test_style_node_caret():
     visitor = BaseVisitor(Environment())
 
-    node = StyleNode("caret", [TextNode("Just some text.")])
+    node = StyleNode("caret", children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 

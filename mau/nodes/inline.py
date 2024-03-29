@@ -43,20 +43,38 @@ class SentenceNode(SupaNode):
     node_type = "sentence"
 
 
-class StyleNode(Node):
+class StyleNode(SupaValueNode):
     """Describes the style applied to a node."""
 
     node_type = "style"
 
-    def __init__(self, value, content):
-        super().__init__()
-        self.value = value
-        self.content = content
+    # def __init__(
+    #     self,
+    #     value,
+    #     parent=None,
+    #     children=None,
+    #     subtype=None,
+    #     args=None,
+    #     kwargs=None,
+    #     tags=None,
+    # ):
+    #     super().__init__(
+    #         parent=parent,
+    #         children=children,
+    #         subtype=subtype,
+    #         args=args,
+    #         kwargs=kwargs,
+    #         tags=tags,
+    #     )
+    #     self.value = value
 
-    @property
-    def _content(self):
-        return {
-            "type": self.node_type,
-            "value": self.value,
-            "content": self.content,
-        }
+    # @property
+    # def _content(self):
+    #     return {
+    #         "type": self.node_type,
+    #         "subtype": self.subtype,
+    #         "value": self.value,
+    #         "args": self.args,
+    #         "kwargs": self.kwargs,
+    #         "tags": self.tags,
+    #     }

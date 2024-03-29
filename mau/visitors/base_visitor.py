@@ -121,7 +121,7 @@ class BaseVisitor:
                 "type": node.node_type,
                 "value": node.value,
                 "content": self.visitlist(
-                    node.content, *args, join_with=join_with, **kwargs
+                    node.children, *args, join_with=join_with, **kwargs
                 ),
             },
         }

@@ -112,13 +112,21 @@ class SupaValueNode(SupaNode):
     def __init__(
         self,
         value,
+        parent=None,
+        children=None,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
-        subtype=None,
-        parent=None,
     ):
-        super().__init__(parent, subtype, args, kwargs, tags)
+        super().__init__(
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
         self.value = value
 
     def _custom_dict(self):

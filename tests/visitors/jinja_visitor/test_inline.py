@@ -155,7 +155,7 @@ def test_inline_style_node_star():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = StyleNode("star", [TextNode("Just some text.")])
+    node = StyleNode("star", children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -172,7 +172,7 @@ def test_inline_style_node_underscore():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = StyleNode("underscore", [TextNode("Just some text.")])
+    node = StyleNode("underscore", children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -189,7 +189,7 @@ def test_inline_style_node_tilde():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = StyleNode("tilde", [TextNode("Just some text.")])
+    node = StyleNode("tilde", children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -206,7 +206,7 @@ def test_inline_style_node_caret():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = StyleNode("caret", [TextNode("Just some text.")])
+    node = StyleNode("caret", children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 

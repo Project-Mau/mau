@@ -28,7 +28,6 @@ def test_command_references_parse_args():
     assert parser.nodes == [
         ReferencesNode(
             content_type="content_type",
-            entries=[],
             subtype="subtype1",
             args=["arg1", "arg2"],
             kwargs={"key1": "value1", "key2": "value2"},
@@ -83,7 +82,7 @@ def test_simple_reference(mock_reference_anchor):
     assert parser.output["references"] == {
         ("content_type", "value"): ReferencesEntryNode(
             "content_type",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("This is a paragraph."),
@@ -118,7 +117,7 @@ def test_reference_data_inside_block(mock_reference_anchor):
     assert parser.output["references"] == {
         ("content_type", "value"): ReferencesEntryNode(
             "content_type",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("This is a paragraph."),
@@ -153,7 +152,7 @@ def test_reference_mention_and_data_inside_block(mock_reference_anchor):
     assert parser.output["references"] == {
         ("content_type", "value"): ReferencesEntryNode(
             "content_type",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("This is a paragraph."),
@@ -196,7 +195,7 @@ def test_multiple_content_types(mock_reference_anchor):
     assert parser.output["references"] == {
         ("content_type1", "name1"): ReferenceNode(
             "content_type1",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("Content type 1, value 1"),
@@ -209,7 +208,7 @@ def test_multiple_content_types(mock_reference_anchor):
         ).to_entry(),
         ("content_type1", "name2"): ReferenceNode(
             "content_type1",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("Content type 1, value 2"),
@@ -222,7 +221,7 @@ def test_multiple_content_types(mock_reference_anchor):
         ).to_entry(),
         ("content_type2", "name1"): ReferenceNode(
             "content_type2",
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("Content type 2, value 1"),
@@ -270,7 +269,7 @@ def test_command_references_filter_content_type(mock_reference_anchor):
                 TextNode("This is a paragraph with references of different types: "),
                 ReferenceNode(
                     "content_type1",
-                    content=[
+                    children=[
                         ParagraphNode(children=[TextNode("Content type 1, value 1")]),
                     ],
                     number=1,
@@ -280,7 +279,7 @@ def test_command_references_filter_content_type(mock_reference_anchor):
                 TextNode(", "),
                 ReferenceNode(
                     "content_type1",
-                    content=[
+                    children=[
                         ParagraphNode(children=[TextNode("Content type 1, value 2")]),
                     ],
                     number=2,
@@ -290,7 +289,7 @@ def test_command_references_filter_content_type(mock_reference_anchor):
                 TextNode(", "),
                 ReferenceNode(
                     "content_type2",
-                    content=[
+                    children=[
                         ParagraphNode(children=[TextNode("Content type 2, value 1")]),
                     ],
                     number=3,
@@ -303,10 +302,10 @@ def test_command_references_filter_content_type(mock_reference_anchor):
         ),
         ReferencesNode(
             content_type="content_type1",
-            entries=[
+            children=[
                 ReferencesEntryNode(
                     "content_type1",
-                    content=[
+                    children=[
                         ParagraphNode(children=[TextNode("Content type 1, value 1")]),
                     ],
                     number=1,
@@ -315,7 +314,7 @@ def test_command_references_filter_content_type(mock_reference_anchor):
                 ),
                 ReferencesEntryNode(
                     "content_type1",
-                    content=[
+                    children=[
                         ParagraphNode(children=[TextNode("Content type 1, value 2")]),
                     ],
                     number=2,
@@ -355,7 +354,7 @@ def test_references_output(mock_reference_anchor):
                         TextNode("This is a paragraph with a reference "),
                         ReferenceNode(
                             "content_type1",
-                            content=[
+                            children=[
                                 ParagraphNode(
                                     children=[TextNode("Content type 1, value 1")]
                                 ),
@@ -371,10 +370,10 @@ def test_references_output(mock_reference_anchor):
                 ),
                 ReferencesNode(
                     content_type="content_type1",
-                    entries=[
+                    children=[
                         ReferencesEntryNode(
                             "content_type1",
-                            content=[
+                            children=[
                                 ParagraphNode(
                                     children=[TextNode("Content type 1, value 1")]
                                 ),
@@ -394,7 +393,7 @@ def test_references_output(mock_reference_anchor):
         "references": {
             ("content_type1", "name1"): ReferencesEntryNode(
                 "content_type1",
-                content=[
+                children=[
                     ParagraphNode(children=[TextNode("Content type 1, value 1")]),
                 ],
                 number=1,

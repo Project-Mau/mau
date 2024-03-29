@@ -243,7 +243,7 @@ def test_reference_node():
 
     node = ReferenceNode(
         content_type="somecontent",
-        content=[TextNode("Just some text.")],
+        children=[TextNode("Just some text.")],
         number="5",
         title=SentenceNode(children=[TextNode("Some title")]),
         reference_anchor="someanchor",

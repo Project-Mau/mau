@@ -28,7 +28,6 @@ class ReferencesManager:
 
     def create_node(self, content_type, subtype, args, kwargs, tags):
         node = ReferencesNode(
-            entries=[],
             content_type=content_type,
             subtype=subtype,
             args=args,
@@ -50,7 +49,7 @@ class ReferencesManager:
 
         # Filter references according to the node parameters
         for node in self.command_nodes:
-            node.entries = [
+            node.children = [
                 i for i in references.values() if i.content_type == node.content_type
             ]
 
@@ -88,8 +87,8 @@ def create_references(reference_mentions, reference_data):
         reference.number = num
 
     for key, reference in reference_mentions.items():
-        reference.content = reference_data[key]
-        anchor = reference_anchor(reference.content)
+        reference.children = reference_data[key]
+        anchor = reference_anchor(reference.children)
         content_type = reference.content_type
 
         reference.reference_anchor = f"ref-{content_type}-{reference.number}-{anchor}"
@@ -97,7 +96,7 @@ def create_references(reference_mentions, reference_data):
 
         references[key] = ReferencesEntryNode(
             content_type=reference.content_type,
-            content=reference.content,
+            children=reference.children,
             number=reference.number,
             title=reference.title,
             reference_anchor=reference.reference_anchor,

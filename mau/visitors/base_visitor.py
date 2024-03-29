@@ -446,7 +446,7 @@ class BaseVisitor:
                 "type": node.node_type,
                 "content_type": node.content_type,
                 "content": self.visitlist(
-                    node.content, *args, join_with=join_with, **kwargs
+                    node.children, *args, join_with=join_with, **kwargs
                 ),
                 "number": node.number,
                 "title": self.visit(node.title, *args, **kwargs),
@@ -463,7 +463,7 @@ class BaseVisitor:
                 "type": node.node_type,
                 "content_type": node.content_type,
                 "entries": self.visitlist(
-                    node.entries, *args, join_with=join_with, **kwargs
+                    node.children, *args, join_with=join_with, **kwargs
                 ),
                 "args": node.args,
                 "kwargs": node.kwargs,
@@ -479,7 +479,7 @@ class BaseVisitor:
                 "type": node.node_type,
                 "content_type": node.content_type,
                 "content": self.visitlist(
-                    node.content, *args, join_with=join_with, **kwargs
+                    node.children, *args, join_with=join_with, **kwargs
                 ),
                 "number": node.number,
                 "title": self.visit(node.title, *args, **kwargs),

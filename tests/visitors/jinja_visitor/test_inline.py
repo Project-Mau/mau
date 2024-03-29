@@ -271,11 +271,11 @@ def test_inline_reference_node():
 
     node = ReferenceNode(
         "somecontent",
-        [TextNode("Just some text.")],
-        "5",
-        SentenceNode(children=[TextNode("Some title")]),
-        "someanchor",
-        "someanchor-def",
+        children=[TextNode("Just some text.")],
+        number="5",
+        title=SentenceNode(children=[TextNode("Some title")]),
+        reference_anchor="someanchor",
+        content_anchor="someanchor-def",
     )
 
     result = visitor.visit(node)

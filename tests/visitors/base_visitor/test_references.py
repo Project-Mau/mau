@@ -10,10 +10,10 @@ def test_references():
 
     node = ReferencesNode(
         content_type=None,
-        entries=[
+        children=[
             ReferencesEntryNode(
                 "content_type1",
-                content=[
+                children=[
                     ParagraphNode(
                         children=[
                             TextNode("Content type 1, value 1"),
@@ -26,7 +26,7 @@ def test_references():
             ),
             ReferencesEntryNode(
                 "content_type2",
-                content=[
+                children=[
                     ParagraphNode(
                         children=[
                             TextNode("Content type 2, value 1"),

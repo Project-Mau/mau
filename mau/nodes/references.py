@@ -1,47 +1,56 @@
-from mau.nodes.nodes import Node
+from mau.nodes.nodes import SupaNode
 from mau.nodes.page import PageNode
 
 
-class ReferenceNode(Node):
+class ReferenceNode(SupaNode):
     node_type = "reference"
 
     def __init__(
         self,
         content_type,
-        content=None,
         number=None,
         title=None,
         reference_anchor=None,
         content_anchor=None,
+        parent=None,
+        children=None,
+        subtype=None,
+        args=None,
+        kwargs=None,
+        tags=None,
     ):
-        super().__init__()
+        super().__init__(
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
         self.content_type = content_type
-        self.content = content or []
         self.number = number
         self.title = title
         self.reference_anchor = reference_anchor
         self.content_anchor = content_anchor
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
             "content_type": self.content_type,
-            "content": self.content,
-            "number": self.number,
-            "title": self.title,
-            "reference_anchor": self.reference_anchor,
-            "content_anchor": self.content_anchor,
         }
 
     def to_entry(self):
         return ReferencesEntryNode(
             self.content_type,
-            self.content,
             self.number,
             self.title,
             self.reference_anchor,
             self.content_anchor,
+            self.parent,
+            self.children,
+            self.subtype,
+            self.args,
+            self.kwargs,
+            self.tags,
         )
 
 
@@ -57,32 +66,32 @@ class ReferencesEntryNode(ReferenceNode):
     node_type = "references_entry"
 
 
-class ReferencesNode(PageNode):
+class ReferencesNode(SupaNode):
     """This instructs Mau to insert the content of references."""
 
     node_type = "references"
 
     def __init__(
         self,
-        entries,
-        content_type=None,
+        content_type,
+        parent=None,
+        children=None,
         subtype=None,
         args=None,
         kwargs=None,
         tags=None,
     ):
-        super().__init__(subtype, args, kwargs, tags)
+        super().__init__(
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
         self.content_type = content_type
-        self.entries = entries
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
             "content_type": self.content_type,
-            "entries": self.entries,
-            "subtype": self.subtype,
-            "args": self.args,
-            "kwargs": self.kwargs,
-            "tags": self.tags,
         }

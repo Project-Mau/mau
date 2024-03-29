@@ -1,5 +1,4 @@
-from mau.nodes.nodes import Node, SupaNode
-from mau.nodes.page import PageNode
+from mau.nodes.nodes import SupaNode
 
 
 class CalloutsEntryNode(SupaNode):

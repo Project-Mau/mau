@@ -1005,7 +1005,7 @@ class MainParser(BaseParser):
         level = len(header)
 
         nodes = []
-        nodes.append(ListItemNode(str(level), content))
+        nodes.append(ListItemNode(level=str(level), children=content))
 
         while self._peek_token() not in [
             Token(BLTokenTypes.EOF),
@@ -1013,7 +1013,7 @@ class MainParser(BaseParser):
         ]:
             # This are the nodes inside the last element added to the list
             # which is used to append potential nested elements
-            last_element_nodes = nodes[-1].content
+            last_element_nodes = nodes[-1].children
 
             # Ignore the initial white spaces
             with self:
@@ -1037,7 +1037,7 @@ class MainParser(BaseParser):
 
                 level = len(header)
 
-                nodes.append(ListItemNode(str(level), content))
+                nodes.append(ListItemNode(level=str(level), children=content))
             elif len(self._peek_token().value) > level:
                 # The new item is on a deeper level
 

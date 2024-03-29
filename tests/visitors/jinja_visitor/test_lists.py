@@ -14,7 +14,7 @@ def test_inline_list_item_node():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = ListItemNode("4", TextNode("Just some text."))
+    node = ListItemNode(level="4", children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -42,7 +42,7 @@ def test_page_list_node():
     node = ListNode(
         ordered=True,
         main_node=True,
-        children=[ListItemNode("4", TextNode("Just some text."))],
+        children=[ListItemNode(level="4", children=[TextNode("Just some text.")])],
         args=args,
         kwargs=kwargs,
         tags=tags,

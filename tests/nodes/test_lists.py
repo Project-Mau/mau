@@ -3,12 +3,16 @@ from mau.nodes.lists import ListItemNode, ListNode
 
 
 def test_list_item_node():
-    node = ListItemNode("3", [TextNode("This is a list with one element")])
+    node = ListItemNode(
+        level="3", children=[TextNode("This is a list with one element")]
+    )
 
     assert node.level == "3"
-    assert node.content == [TextNode("This is a list with one element")]
+    assert node.children == [TextNode("This is a list with one element")]
     assert node.node_type == "list_item"
-    assert node == ListItemNode("3", [TextNode("This is a list with one element")])
+    assert node == ListItemNode(
+        level="3", children=[TextNode("This is a list with one element")]
+    )
 
 
 def test_list_node():

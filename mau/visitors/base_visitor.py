@@ -181,11 +181,15 @@ class BaseVisitor:
         }
 
     def _visit_list_item(self, node, *args, **kwargs):
+        join_with = self._join_with.get(node.node_type, None)
+
         return {
             "data": {
                 "type": node.node_type,
                 "level": int(node.level),
-                "content": self.visit(node.content, *args, **kwargs),
+                "content": self.visitlist(
+                    node.children, *args, join_with=join_with, **kwargs
+                ),
             },
         }
 

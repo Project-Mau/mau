@@ -109,6 +109,7 @@ class JinjaVisitor(BaseVisitor):
             "footnote": "\n",
             "footnotes_entry": "\n",
             "list": "",
+            "list_item": "",
             "reference": "\n",
             "references_entry": "\n",
             "paragraph": "",

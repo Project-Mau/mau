@@ -1,26 +1,35 @@
-from mau.nodes.nodes import Node, SupaNode
-from mau.nodes.page import PageNode
+from mau.nodes.nodes import SupaNode
 
 
-class ListItemNode(Node):
+class ListItemNode(SupaNode):
     """An entry in a list."""
 
     node_type = "list_item"
 
-    def __init__(self, level, content):
-        super().__init__()
+    def __init__(
+        self,
+        level,
+        main_node=False,
+        parent=None,
+        children=None,
+        subtype=None,
+        args=None,
+        kwargs=None,
+        tags=None,
+    ):
+        super().__init__(
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
         self.level = level
-        self.content = content
 
-    def asdict(self):
-        return self._content
-
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
             "level": self.level,
-            "content": self.content,
         }
 
 

@@ -19,7 +19,11 @@ def test_parse_list_with_one_item():
         ListNode(
             ordered=False,
             main_node=True,
-            children=[ListItemNode("1", [TextNode("This is a list with one element")])],
+            children=[
+                ListItemNode(
+                    level="1", children=[TextNode("This is a list with one element")]
+                )
+            ],
         )
     ]
 
@@ -35,8 +39,8 @@ def test_parse_list_with_multiple_items():
             ordered=False,
             main_node=True,
             children=[
-                ListItemNode("1", [TextNode("Item 1")]),
-                ListItemNode("1", [TextNode("Item 2")]),
+                ListItemNode(level="1", children=[TextNode("Item 1")]),
+                ListItemNode(level="1", children=[TextNode("Item 2")]),
             ],
         )
     ]
@@ -55,16 +59,16 @@ def test_parse_list_with_multiple_levels():
             main_node=True,
             children=[
                 ListItemNode(
-                    "1",
-                    [
+                    level="1",
+                    children=[
                         TextNode("Item 1"),
                         ListNode(
                             ordered=False,
                             main_node=False,
                             children=[
                                 ListItemNode(
-                                    "2",
-                                    [
+                                    level="2",
+                                    children=[
                                         TextNode("Item 1.1"),
                                     ],
                                 )
@@ -72,7 +76,7 @@ def test_parse_list_with_multiple_levels():
                         ),
                     ],
                 ),
-                ListItemNode("1", [TextNode("Item 2")]),
+                ListItemNode(level="1", children=[TextNode("Item 2")]),
             ],
         )
     ]
@@ -91,16 +95,16 @@ def test_parse_numbered_list():
             main_node=True,
             children=[
                 ListItemNode(
-                    "1",
-                    [
+                    level="1",
+                    children=[
                         TextNode("Item 1"),
                         ListNode(
                             ordered=True,
                             main_node=False,
                             children=[
                                 ListItemNode(
-                                    "2",
-                                    [
+                                    level="2",
+                                    children=[
                                         TextNode("Item 1.1"),
                                     ],
                                 )
@@ -109,8 +113,8 @@ def test_parse_numbered_list():
                     ],
                 ),
                 ListItemNode(
-                    "1",
-                    [TextNode("Item 2")],
+                    level="1",
+                    children=[TextNode("Item 2")],
                 ),
             ],
         )
@@ -130,16 +134,16 @@ def test_parse_mixed_list():
             main_node=True,
             children=[
                 ListItemNode(
-                    "1",
-                    [
+                    level="1",
+                    children=[
                         TextNode("Item 1"),
                         ListNode(
                             ordered=True,
                             main_node=False,
                             children=[
                                 ListItemNode(
-                                    "2",
-                                    [
+                                    level="2",
+                                    children=[
                                         TextNode("Item 1.1"),
                                     ],
                                 )
@@ -147,7 +151,7 @@ def test_parse_mixed_list():
                         ),
                     ],
                 ),
-                ListItemNode("1", [TextNode("Item 2")]),
+                ListItemNode(level="1", children=[TextNode("Item 2")]),
             ],
         )
     ]
@@ -185,12 +189,12 @@ def test_parse_numbered_list_continue():
             main_node=True,
             children=[
                 ListItemNode(
-                    "1",
-                    [TextNode("Item 1")],
+                    level="1",
+                    children=[TextNode("Item 1")],
                 ),
                 ListItemNode(
-                    "1",
-                    [TextNode("Item 2")],
+                    level="1",
+                    children=[TextNode("Item 2")],
                 ),
             ],
         ),
@@ -199,12 +203,12 @@ def test_parse_numbered_list_continue():
             main_node=True,
             children=[
                 ListItemNode(
-                    "1",
-                    [TextNode("Item 3")],
+                    level="1",
+                    children=[TextNode("Item 3")],
                 ),
                 ListItemNode(
-                    "1",
-                    [TextNode("Item 4")],
+                    level="1",
+                    children=[TextNode("Item 4")],
                 ),
             ],
             kwargs={"start": "3"},
@@ -227,12 +231,12 @@ def test_parse_numbered_list_do_not_continue():
             main_node=True,
             children=[
                 ListItemNode(
-                    "1",
-                    [TextNode("Item 1")],
+                    level="1",
+                    children=[TextNode("Item 1")],
                 ),
                 ListItemNode(
-                    "1",
-                    [TextNode("Item 2")],
+                    level="1",
+                    children=[TextNode("Item 2")],
                 ),
             ],
         ),
@@ -241,12 +245,12 @@ def test_parse_numbered_list_do_not_continue():
             main_node=True,
             children=[
                 ListItemNode(
-                    "1",
-                    [TextNode("Item 3")],
+                    level="1",
+                    children=[TextNode("Item 3")],
                 ),
                 ListItemNode(
-                    "1",
-                    [TextNode("Item 4")],
+                    level="1",
+                    children=[TextNode("Item 4")],
                 ),
             ],
         ),
@@ -263,7 +267,11 @@ def test_parse_list_with_subtype():
         ListNode(
             ordered=False,
             main_node=True,
-            children=[ListItemNode("1", [TextNode("This is a list with one element")])],
+            children=[
+                ListItemNode(
+                    level="1", children=[TextNode("This is a list with one element")]
+                )
+            ],
             subtype="type1",
         )
     ]

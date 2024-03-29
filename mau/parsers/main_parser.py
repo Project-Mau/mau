@@ -956,7 +956,7 @@ class MainParser(BaseParser):
 
         # Get the header and decide if it's a numbered or unnumbered list
         header = self._peek_token(MLTokenTypes.LIST)
-        numbered = header.value[0] == "#"
+        ordered = header.value[0] == "#"
 
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
@@ -971,9 +971,9 @@ class MainParser(BaseParser):
 
         self._save(
             ListNode(
-                numbered,
-                nodes,
+                ordered=ordered,
                 main_node=True,
+                children=nodes,
                 subtype=subtype,
                 args=args,
                 kwargs=kwargs,
@@ -1045,7 +1045,7 @@ class MainParser(BaseParser):
                 numbered = self._peek_token().value[0] == "#"
                 subnodes = self._process_list_nodes()
 
-                last_element_nodes.append(ListNode(numbered, subnodes))
+                last_element_nodes.append(ListNode(ordered=numbered, children=subnodes))
             else:
                 break
 

@@ -17,9 +17,9 @@ def test_parse_list_with_one_item():
 
     assert runner(source).nodes == [
         ListNode(
-            False,
-            [ListItemNode("1", [TextNode("This is a list with one element")])],
-            True,
+            ordered=False,
+            main_node=True,
+            children=[ListItemNode("1", [TextNode("This is a list with one element")])],
         )
     ]
 
@@ -32,12 +32,12 @@ def test_parse_list_with_multiple_items():
 
     assert runner(source).nodes == [
         ListNode(
-            False,
-            [
+            ordered=False,
+            main_node=True,
+            children=[
                 ListItemNode("1", [TextNode("Item 1")]),
                 ListItemNode("1", [TextNode("Item 2")]),
             ],
-            True,
         )
     ]
 
@@ -51,15 +51,17 @@ def test_parse_list_with_multiple_levels():
 
     assert runner(source).nodes == [
         ListNode(
-            False,
-            [
+            ordered=False,
+            main_node=True,
+            children=[
                 ListItemNode(
                     "1",
                     [
                         TextNode("Item 1"),
                         ListNode(
-                            False,
-                            [
+                            ordered=False,
+                            main_node=False,
+                            children=[
                                 ListItemNode(
                                     "2",
                                     [
@@ -67,13 +69,11 @@ def test_parse_list_with_multiple_levels():
                                     ],
                                 )
                             ],
-                            False,
                         ),
                     ],
                 ),
                 ListItemNode("1", [TextNode("Item 2")]),
             ],
-            True,
         )
     ]
 
@@ -87,15 +87,17 @@ def test_parse_numbered_list():
 
     assert runner(source).nodes == [
         ListNode(
-            True,
-            [
+            ordered=True,
+            main_node=True,
+            children=[
                 ListItemNode(
                     "1",
                     [
                         TextNode("Item 1"),
                         ListNode(
-                            True,
-                            [
+                            ordered=True,
+                            main_node=False,
+                            children=[
                                 ListItemNode(
                                     "2",
                                     [
@@ -103,7 +105,6 @@ def test_parse_numbered_list():
                                     ],
                                 )
                             ],
-                            False,
                         ),
                     ],
                 ),
@@ -112,7 +113,6 @@ def test_parse_numbered_list():
                     [TextNode("Item 2")],
                 ),
             ],
-            True,
         )
     ]
 
@@ -126,15 +126,17 @@ def test_parse_mixed_list():
 
     assert runner(source).nodes == [
         ListNode(
-            False,
-            [
+            ordered=False,
+            main_node=True,
+            children=[
                 ListItemNode(
                     "1",
                     [
                         TextNode("Item 1"),
                         ListNode(
-                            True,
-                            [
+                            ordered=True,
+                            main_node=False,
+                            children=[
                                 ListItemNode(
                                     "2",
                                     [
@@ -142,13 +144,11 @@ def test_parse_mixed_list():
                                     ],
                                 )
                             ],
-                            False,
                         ),
                     ],
                 ),
                 ListItemNode("1", [TextNode("Item 2")]),
             ],
-            True,
         )
     ]
 
@@ -182,7 +182,8 @@ def test_parse_numbered_list_continue():
     assert runner(source).nodes == [
         ListNode(
             ordered=True,
-            items=[
+            main_node=True,
+            children=[
                 ListItemNode(
                     "1",
                     [TextNode("Item 1")],
@@ -192,11 +193,11 @@ def test_parse_numbered_list_continue():
                     [TextNode("Item 2")],
                 ),
             ],
-            main_node=True,
         ),
         ListNode(
             ordered=True,
-            items=[
+            main_node=True,
+            children=[
                 ListItemNode(
                     "1",
                     [TextNode("Item 3")],
@@ -206,7 +207,6 @@ def test_parse_numbered_list_continue():
                     [TextNode("Item 4")],
                 ),
             ],
-            main_node=True,
             kwargs={"start": "3"},
         ),
     ]
@@ -224,7 +224,8 @@ def test_parse_numbered_list_do_not_continue():
     assert runner(source).nodes == [
         ListNode(
             ordered=True,
-            items=[
+            main_node=True,
+            children=[
                 ListItemNode(
                     "1",
                     [TextNode("Item 1")],
@@ -234,11 +235,11 @@ def test_parse_numbered_list_do_not_continue():
                     [TextNode("Item 2")],
                 ),
             ],
-            main_node=True,
         ),
         ListNode(
             ordered=True,
-            items=[
+            main_node=True,
+            children=[
                 ListItemNode(
                     "1",
                     [TextNode("Item 3")],
@@ -248,7 +249,6 @@ def test_parse_numbered_list_do_not_continue():
                     [TextNode("Item 4")],
                 ),
             ],
-            main_node=True,
         ),
     ]
 
@@ -261,9 +261,9 @@ def test_parse_list_with_subtype():
 
     assert runner(source).nodes == [
         ListNode(
-            False,
-            [ListItemNode("1", [TextNode("This is a list with one element")])],
-            True,
+            ordered=False,
+            main_node=True,
+            children=[ListItemNode("1", [TextNode("This is a list with one element")])],
             subtype="type1",
         )
     ]

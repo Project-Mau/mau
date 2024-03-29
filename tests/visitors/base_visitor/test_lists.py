@@ -30,8 +30,8 @@ def test_list_node():
 
     node = ListNode(
         ordered=True,
-        items=[ListItemNode("4", TextNode("Just some text."))],
         main_node=True,
+        children=[ListItemNode("4", TextNode("Just some text."))],
         args=["arg1", "arg2"],
         kwargs={"key1": "value1", "start": 4},
         tags=["tag1", "tag2"],

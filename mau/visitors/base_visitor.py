@@ -237,7 +237,7 @@ class BaseVisitor:
                 "type": node.node_type,
                 "ordered": node.ordered,
                 "items": self.visitlist(
-                    node.items, *args, join_with=join_with, **kwargs
+                    node.children, *args, join_with=join_with, **kwargs
                 ),
                 "main_node": node.main_node,
                 "args": node.args,

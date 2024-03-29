@@ -1,4 +1,4 @@
-from mau.nodes.nodes import Node
+from mau.nodes.nodes import Node, SupaNode
 from mau.nodes.page import PageNode
 
 
@@ -12,6 +12,9 @@ class ListItemNode(Node):
         self.level = level
         self.content = content
 
+    def asdict(self):
+        return self._content
+
     @property
     def _content(self):
         return {
@@ -21,7 +24,7 @@ class ListItemNode(Node):
         }
 
 
-class ListNode(PageNode):
+class ListNode(SupaNode):
     """A list."""
 
     node_type = "list"
@@ -29,27 +32,28 @@ class ListNode(PageNode):
     def __init__(
         self,
         ordered,
-        items,
         main_node=False,
+        parent=None,
+        children=None,
         subtype=None,
         args=None,
         kwargs=None,
         tags=None,
     ):
-        super().__init__(subtype, args, kwargs, tags)
+        super().__init__(
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
         self.ordered = ordered
-        self.items = items
+
         self.main_node = main_node
 
-    @property
-    def _content(self):
+    def _custom_dict(self):
         return {
-            "type": self.node_type,
             "ordered": self.ordered,
-            "items": self.items,
             "main_node": self.main_node,
-            "subtype": self.subtype,
-            "args": self.args,
-            "kwargs": self.kwargs,
-            "tags": self.tags,
         }

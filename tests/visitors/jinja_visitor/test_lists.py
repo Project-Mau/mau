@@ -40,9 +40,9 @@ def test_page_list_node():
     kwargs = {"key1": "value1", "start": 4}
     tags = ["tag1", "tag2"]
     node = ListNode(
-        True,
-        [ListItemNode("4", TextNode("Just some text."))],
-        True,
+        ordered=True,
+        main_node=True,
+        children=[ListItemNode("4", TextNode("Just some text."))],
         args=args,
         kwargs=kwargs,
         tags=tags,

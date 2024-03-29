@@ -24,7 +24,7 @@ def test_admonition():
             subtype="admonition",
             content=[
                 ParagraphNode(
-                    [
+                    children=[
                         TextNode("Content"),
                     ]
                 ),
@@ -54,14 +54,14 @@ def test_parse_block_quote_attribution_in_secondary_content():
             subtype="quote",
             content=[
                 ParagraphNode(
-                    [
+                    children=[
                         TextNode("Learn about the Force, Luke."),
                     ]
                 ),
             ],
             secondary_content=[
                 ParagraphNode(
-                    [
+                    children=[
                         StyleNode(
                             "underscore",
                             [

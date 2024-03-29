@@ -46,7 +46,7 @@ def test_parse_block_content():
             subtype=None,
             content=[
                 ParagraphNode(
-                    [
+                    children=[
                         TextNode("This is a paragraph."),
                     ]
                 ),
@@ -75,7 +75,7 @@ def test_parse_block_content_variables():
             subtype=None,
             content=[
                 ParagraphNode(
-                    [
+                    children=[
                         TextNode("The answer is 42."),
                     ]
                 ),
@@ -104,7 +104,7 @@ def test_parse_block_content_external_variables():
             subtype=None,
             content=[
                 ParagraphNode(
-                    [
+                    children=[
                         TextNode("The answer is 42."),
                     ]
                 ),
@@ -141,7 +141,7 @@ def test_parse_block_secondary_content():
             content=[],
             secondary_content=[
                 ParagraphNode(
-                    [
+                    children=[
                         TextNode(
                             (
                                 "This is a paragraph that gets eaten. "
@@ -159,7 +159,7 @@ def test_parse_block_secondary_content():
             kwargs={},
         ),
         ParagraphNode(
-            [
+            children=[
                 TextNode("This paragraph appears in the output."),
             ]
         ),

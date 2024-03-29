@@ -36,30 +36,8 @@ class HorizontalRuleNode(SupaNode):
     node_type = "horizontal_rule"
 
 
-class ContainerNode(PageNode):
+class ContainerNode(SupaNode):
     node_type = "container"
-
-    def __init__(
-        self,
-        content,
-        subtype=None,
-        args=None,
-        kwargs=None,
-        tags=None,
-    ):
-        super().__init__(subtype, args, kwargs, tags)
-        self.content = content
-
-    @property
-    def _content(self):
-        return {
-            "type": self.node_type,
-            "content": self.content,
-            "subtype": self.subtype,
-            "args": self.args,
-            "kwargs": self.kwargs,
-            "tags": self.tags,
-        }
 
 
 class DocumentNode(ContainerNode):

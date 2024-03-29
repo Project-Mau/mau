@@ -31,7 +31,7 @@ def test_page_references_multiple_nodes():
                 "content_type1",
                 content=[
                     ParagraphNode(
-                        [
+                        children=[
                             TextNode("Content type 1, value 1"),
                         ]
                     ),
@@ -45,7 +45,7 @@ def test_page_references_multiple_nodes():
                 "content_type1",
                 content=[
                     ParagraphNode(
-                        [
+                        children=[
                             TextNode("Content type 1, value 2"),
                         ]
                     )
@@ -59,7 +59,7 @@ def test_page_references_multiple_nodes():
                 "content_type2",
                 content=[
                     ParagraphNode(
-                        [
+                        children=[
                             TextNode("Content type 2, value 1"),
                         ]
                     ),

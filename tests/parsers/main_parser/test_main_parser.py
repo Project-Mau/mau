@@ -25,7 +25,7 @@ def test_parse_output():
     source = ""
 
     assert runner(source).output == {
-        "content": ContainerNode(content=[]),
+        "content": ContainerNode(children=[]),
         "footnotes": [],
         "references": {},
         "toc": TocNode(entries=[]),
@@ -40,7 +40,7 @@ def test_parse_output_custom_container():
     environment.setvar("mau.parser.content_wrapper", DocumentNode)
 
     assert runner(source, environment).output == {
-        "content": DocumentNode(content=[]),
+        "content": DocumentNode(children=[]),
         "footnotes": [],
         "references": {},
         "toc": TocNode(entries=[]),
@@ -111,7 +111,7 @@ def test_style_underscore():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            [
+            children=[
                 TextNode("This is "),
                 StyleNode(
                     "underscore",
@@ -132,7 +132,7 @@ def test_style_at_beginning():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            [
+            children=[
                 StyleNode(
                     "star",
                     [
@@ -151,7 +151,7 @@ def test_style_not_closed():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            [
+            children=[
                 TextNode("This ` is a backtick and this _an underscore"),
             ],
         )
@@ -165,7 +165,7 @@ def test_style_escape_markers():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            [
+            children=[
                 TextNode("This is _underscore_ and this is `verbatim`"),
             ],
         )

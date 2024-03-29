@@ -15,7 +15,7 @@ def test_references():
                 "content_type1",
                 content=[
                     ParagraphNode(
-                        [
+                        children=[
                             TextNode("Content type 1, value 1"),
                         ]
                     ),
@@ -28,7 +28,7 @@ def test_references():
                 "content_type2",
                 content=[
                     ParagraphNode(
-                        [
+                        children=[
                             TextNode("Content type 2, value 1"),
                         ]
                     ),

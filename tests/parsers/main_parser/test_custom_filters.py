@@ -57,23 +57,23 @@ def test_custom_filter_no_filter():
 
     nodes = [
         ParagraphNode(
-            [
+            children=[
                 TextNode("This is a paragraph."),
             ]
         ),
         ParagraphNode(
-            content=[
+            children=[
                 TextNode("This is an important paragraph."),
             ],
             tags=["important"],
         ),
         ParagraphNode(
-            [
+            children=[
                 TextNode("This is another paragraph."),
             ]
         ),
         ParagraphNode(
-            content=[
+            children=[
                 TextNode("This is another important paragraph."),
             ],
             tags=["important"],
@@ -81,7 +81,7 @@ def test_custom_filter_no_filter():
     ]
 
     assert parser.output == {
-        "content": ContainerNode(content=nodes),
+        "content": ContainerNode(children=nodes),
         "footnotes": [],
         "references": {},
         "toc": TocNode(entries=[]),
@@ -114,23 +114,23 @@ def test_custom_filter_extract_tags():
 
     nodes = [
         ParagraphNode(
-            [
+            children=[
                 TextNode("This is a paragraph."),
             ]
         ),
         ParagraphNode(
-            content=[
+            children=[
                 TextNode("This is an important paragraph."),
             ],
             tags=["important"],
         ),
         ParagraphNode(
-            [
+            children=[
                 TextNode("This is another paragraph."),
             ]
         ),
         ParagraphNode(
-            content=[
+            children=[
                 TextNode("This is another important paragraph."),
             ],
             tags=["important"],
@@ -139,13 +139,13 @@ def test_custom_filter_extract_tags():
 
     important_nodes = [
         ParagraphNode(
-            content=[
+            children=[
                 TextNode("This is an important paragraph."),
             ],
             tags=["important"],
         ),
         ParagraphNode(
-            content=[
+            children=[
                 TextNode("This is another important paragraph."),
             ],
             tags=["important"],
@@ -153,7 +153,7 @@ def test_custom_filter_extract_tags():
     ]
 
     assert parser.output == {
-        "content": ContainerNode(content=nodes),
+        "content": ContainerNode(children=nodes),
         "footnotes": [],
         "references": {},
         "toc": TocNode(entries=[]),

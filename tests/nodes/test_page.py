@@ -41,20 +41,20 @@ def test_horizontal_rule_node():
 
 
 def test_container_node():
-    node = ContainerNode(content=[])
+    node = ContainerNode()
 
-    assert node.content == []
+    assert node.children == []
     assert node.args == []
     assert node.kwargs == {}
     assert node.node_type == "container"
-    assert node == ContainerNode(content=[])
+    assert node == ContainerNode()
 
 
 def test_document_node():
-    node = DocumentNode(content=[])
+    node = DocumentNode()
 
-    assert node.content == []
+    assert node.children == []
     assert node.args == []
     assert node.kwargs == {}
     assert node.node_type == "document"
-    assert node == DocumentNode(content=[])
+    assert node == DocumentNode()

@@ -1085,7 +1085,13 @@ class MainParser(BaseParser):
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         self._save(
-            ParagraphNode(content, subtype=subtype, args=args, kwargs=kwargs, tags=tags)
+            ParagraphNode(
+                children=content,
+                subtype=subtype,
+                args=args,
+                kwargs=kwargs,
+                tags=tags,
+            )
         )
 
         return True
@@ -1123,7 +1129,7 @@ class MainParser(BaseParser):
 
         self.output.update(
             {
-                "content": wrapper_node_class(self.nodes),
+                "content": wrapper_node_class(children=self.nodes),
                 "toc": toc,
                 "references": references,
                 "footnotes": footnotes,

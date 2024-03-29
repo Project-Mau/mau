@@ -284,7 +284,7 @@ def test_block_positive_condition_matches():
             subtype="block",
             content=[
                 ParagraphNode(
-                    [
+                    children=[
                         TextNode("This is a paragraph."),
                     ]
                 ),
@@ -328,7 +328,7 @@ def test_block_negative_condition_matches():
             subtype="block",
             content=[
                 ParagraphNode(
-                    [
+                    children=[
                         TextNode("This is a paragraph."),
                     ]
                 ),
@@ -397,7 +397,7 @@ def test_block_condition_can_use_variable_namespace():
             subtype="block",
             content=[
                 ParagraphNode(
-                    [
+                    children=[
                         TextNode("This is a paragraph."),
                     ]
                 ),

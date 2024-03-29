@@ -8,7 +8,7 @@ def test_paragraph_node():
     visitor = BaseVisitor(Environment())
 
     node = ParagraphNode(
-        [TextNode("Just some text")],
+        children=[TextNode("Just some text")],
         args=["arg1", "arg2"],
         kwargs={"key1": "value1"},
         tags=["tag1", "tag2"],

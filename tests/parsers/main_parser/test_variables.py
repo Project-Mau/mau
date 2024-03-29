@@ -79,7 +79,7 @@ def test_variable_replacement():
 
     assert parser.nodes == [
         ParagraphNode(
-            [TextNode("The answer is 42")],
+            children=[TextNode("The answer is 42")],
         )
     ]
 
@@ -95,7 +95,7 @@ def test_variable_replacement_with_namespace():
 
     assert parser.nodes == [
         ParagraphNode(
-            [TextNode("The answer is 42")],
+            children=[TextNode("The answer is 42")],
         )
     ]
 
@@ -109,7 +109,7 @@ def test_variable_definition_escape():
 
     assert parser.nodes == [
         ParagraphNode(
-            [TextNode(":answer:42")],
+            children=[TextNode(":answer:42")],
         )
     ]
 
@@ -125,7 +125,7 @@ def test_skip_variable_replacement():
 
     assert parser.nodes == [
         ParagraphNode(
-            [TextNode("The answer is {answer}")],
+            children=[TextNode("The answer is {answer}")],
         )
     ]
 
@@ -141,7 +141,7 @@ def test_variables_are_preprocessed():
 
     assert parser.nodes == [
         ParagraphNode(
-            [
+            children=[
                 TextNode("This is "),
                 StyleNode(
                     "star",

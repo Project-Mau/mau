@@ -21,14 +21,14 @@ def test_parse_paragraphs():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            [
+            children=[
                 TextNode("This is a paragraph. This is part of the same paragraph."),
             ],
             args=[],
             kwargs={},
         ),
         ParagraphNode(
-            [
+            children=[
                 TextNode("This is a new paragraph."),
             ],
             args=[],
@@ -42,7 +42,7 @@ def test_parse_paragraph_starting_with_a_macro():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            [
+            children=[
                 MacroLinkNode(target="http://some.where", text="This"),
                 TextNode(" is the link I want"),
             ]
@@ -58,7 +58,7 @@ def test_attributes_paragraph():
 
     assert runner(source).nodes == [
         ParagraphNode(
-            [TextNode("This is text")],
+            children=[TextNode("This is text")],
             args=["arg1"],
             kwargs={"key1": "value1"},
             subtype="type",

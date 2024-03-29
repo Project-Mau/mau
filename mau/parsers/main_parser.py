@@ -30,8 +30,8 @@ from mau.tokens.tokens import Token
 class MainParser(BaseParser):
     lexer_class = MainLexer
 
-    def __init__(self, environment):
-        super().__init__(environment)
+    def __init__(self, environment, parent_node=None):
+        super().__init__(environment, parent_node)
 
         self.footnotes_manager = FootnotesManager(self)
         self.references_manager = ReferencesManager(self)
@@ -169,7 +169,12 @@ class MainParser(BaseParser):
         text = preprocess_parser.nodes[0].value
 
         # Parse the text
-        text_parser = TextParser.analyse(text, current_context, self.environment)
+        text_parser = TextParser.analyse(
+            text,
+            current_context,
+            self.environment,
+            parent_node=self.parent_node,
+        )
 
         # A text parser returns a single sentence node
         result = text_parser.nodes[0]
@@ -342,7 +347,12 @@ class MainParser(BaseParser):
         current_context = self._current_token.context
 
         # Titles can contain Mau code
-        text_parser = TextParser.analyse(text, current_context, self.environment)
+        text_parser = TextParser.analyse(
+            text,
+            current_context,
+            self.environment,
+            parent_node=self.parent_node,
+        )
 
         title = text_parser.nodes[0]
 
@@ -409,8 +419,8 @@ class MainParser(BaseParser):
             anchor=anchor,
             subtype=subtype,
             args=args,
-            tags=tags,
             kwargs=kwargs,
+            tags=tags,
         )
 
         self.toc_manager.add_header_node(node)
@@ -589,6 +599,7 @@ class MainParser(BaseParser):
             "\n".join(block.content),
             self._current_token.context,
             self.environment,
+            parent_node=block,
         )
 
         self.footnotes_manager.add_data(name, content_parser.nodes)
@@ -601,6 +612,7 @@ class MainParser(BaseParser):
             "\n".join(block.content),
             self._current_token.context,
             self.environment,
+            parent_node=block,
         )
 
         self.references_manager.add_data(content_type, name, content_parser.nodes)
@@ -620,15 +632,14 @@ class MainParser(BaseParser):
         environment = self.environment
 
         content_parser = MainParser.analyse(
-            "\n".join(block.content),
-            current_context,
-            environment,
+            "\n".join(block.content), current_context, environment, parent_node=block
         )
 
         secondary_content_parser = MainParser.analyse(
             "\n".join(block.secondary_content),
             current_context,
             environment,
+            parent_node=block,
         )
 
         block.content = content_parser.nodes
@@ -654,15 +665,14 @@ class MainParser(BaseParser):
         environment = Environment()
 
         content_parser = MainParser.analyse(
-            "\n".join(block.content),
-            current_context,
-            environment,
+            "\n".join(block.content), current_context, environment, parent_node=block
         )
 
         secondary_content_parser = MainParser.analyse(
             "\n".join(block.secondary_content),
             current_context,
             environment,
+            parent_node=block,
         )
 
         block.content = content_parser.nodes

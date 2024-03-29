@@ -21,8 +21,8 @@ MAP_STYLES = {"_": "underscore", "*": "star", "^": "caret", "~": "tilde"}
 class TextParser(BaseParser):
     lexer_class = TextLexer
 
-    def __init__(self, environment):
-        super().__init__(environment)
+    def __init__(self, environment, parent_node=None):
+        super().__init__(environment, parent_node)
 
         # These are the footnotes found in this text
         # The format of this dictionary is

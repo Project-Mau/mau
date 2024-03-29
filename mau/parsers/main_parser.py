@@ -200,7 +200,14 @@ class MainParser(BaseParser):
 
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
-        self._save(HorizontalRuleNode(subtype, args, kwargs, tags))
+        self._save(
+            HorizontalRuleNode(
+                subtype=subtype,
+                args=args,
+                kwargs=kwargs,
+                tags=tags,
+            )
+        )
 
         return True
 

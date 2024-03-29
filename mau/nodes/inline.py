@@ -1,4 +1,4 @@
-from mau.nodes.nodes import Node, ValueNode, SupaNode, SupaValueNode
+from mau.nodes.nodes import SupaNode, SupaValueNode
 
 
 class WordNode(SupaValueNode):

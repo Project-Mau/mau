@@ -1,6 +1,6 @@
 # Page nodes can be found at top level in a page
 
-from mau.nodes.nodes import Node
+from mau.nodes.nodes import Node, SupaNode
 
 
 class PageNode(Node):
@@ -30,7 +30,7 @@ class PageNode(Node):
         }
 
 
-class HorizontalRuleNode(PageNode):
+class HorizontalRuleNode(SupaNode):
     """A horizontal rule."""
 
     node_type = "horizontal_rule"

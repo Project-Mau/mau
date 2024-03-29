@@ -143,7 +143,7 @@ class BaseVisitor:
             "data": {
                 "type": node.node_type,
                 "content": self.visitlist(
-                    node.content, *args, join_with=join_with, **kwargs
+                    node.children, *args, join_with=join_with, **kwargs
                 ),
                 "number": node.number,
                 "reference_anchor": node.reference_anchor,
@@ -397,7 +397,7 @@ class BaseVisitor:
             "data": {
                 "type": node.node_type,
                 "entries": self.visitlist(
-                    node.entries, *args, join_with=join_with, **kwargs
+                    node.children, *args, join_with=join_with, **kwargs
                 ),
                 "args": node.args,
                 "kwargs": node.kwargs,
@@ -412,7 +412,7 @@ class BaseVisitor:
             "data": {
                 "type": node.node_type,
                 "content": self.visitlist(
-                    node.content, *args, join_with=join_with, **kwargs
+                    node.children, *args, join_with=join_with, **kwargs
                 ),
                 "number": node.number,
                 "reference_anchor": node.reference_anchor,

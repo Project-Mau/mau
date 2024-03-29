@@ -8,12 +8,18 @@ def test_footnotes():
     visitor = BaseVisitor(Environment())
 
     node = FootnotesNode(
-        entries=[
+        children=[
             FootnoteNode(
-                [TextNode("Footnote 1")], "1", "anchor-1", "anchor-1-def"
+                children=[TextNode("Footnote 1")],
+                number="1",
+                reference_anchor="anchor-1",
+                content_anchor="anchor-1-def",
             ).to_entry(),
             FootnoteNode(
-                [TextNode("Footnote 2")], "2", "anchor-2", "anchor-2-def"
+                children=[TextNode("Footnote 2")],
+                number="2",
+                reference_anchor="anchor-2",
+                content_anchor="anchor-2-def",
             ).to_entry(),
         ],
         args=["arg1", "arg2"],

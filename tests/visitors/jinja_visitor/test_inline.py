@@ -247,7 +247,10 @@ def test_inline_footnote_node():
     visitor = JinjaVisitor(environment)
 
     node = FootnoteNode(
-        [TextNode("Just some text.")], "5", "someanchor", "someanchor-def"
+        children=[TextNode("Just some text.")],
+        number="5",
+        reference_anchor="someanchor",
+        content_anchor="someanchor-def",
     )
 
     result = visitor.visit(node)

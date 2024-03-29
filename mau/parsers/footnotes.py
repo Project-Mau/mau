@@ -35,7 +35,6 @@ class FootnotesManager:
         # eventually update all these nodes
         # with the right entries.
         node = FootnotesNode(
-            entries=[],
             subtype=subtype,
             args=args,
             kwargs=kwargs,
@@ -55,7 +54,7 @@ class FootnotesManager:
         )
 
         for node in self.command_nodes:
-            node.entries = footnotes
+            node.children = footnotes
 
         return footnotes
 
@@ -90,8 +89,8 @@ def create_footnotes(footnote_mentions, footnote_data):
 
     for key, footnote in footnote_mentions.items():
         data = footnote_data[key]
-        footnote.content = data
-        anchor = footnote_anchor(footnote.content)
+        footnote.children = data
+        anchor = footnote_anchor(footnote.children)
 
         footnote.reference_anchor = f"ref-footnote-{footnote.number}-{anchor}"
         footnote.content_anchor = f"cnt-footnote-{footnote.number}-{anchor}"

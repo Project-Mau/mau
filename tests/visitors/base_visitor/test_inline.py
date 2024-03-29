@@ -217,7 +217,7 @@ def test_footnote_node():
     visitor = BaseVisitor(Environment())
 
     node = FootnoteNode(
-        content=[TextNode("Just some text.")],
+        children=[TextNode("Just some text.")],
         number="5",
         reference_anchor="someanchor",
         content_anchor="someanchor-def",

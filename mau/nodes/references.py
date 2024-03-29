@@ -36,6 +36,10 @@ class ReferenceNode(SupaNode):
     def _custom_dict(self):
         return {
             "content_type": self.content_type,
+            "number": self.number,
+            "title": self.title,
+            "reference_anchor": self.reference_anchor,
+            "content_anchor": self.content_anchor,
         }
 
     def to_entry(self):

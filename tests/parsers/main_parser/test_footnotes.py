@@ -26,11 +26,11 @@ def test_command_footnotes():
     """
 
     parser = runner(source)
-    parser.footnotes_manager.footnote_entries = []
+    parser.footnotes_manager.footnotes = []
 
     assert parser.nodes == [
         FootnotesNode(
-            parser.footnotes_manager.footnote_entries,
+            children=parser.footnotes_manager.footnotes,
             subtype="subtype1",
             args=["arg1", "arg2"],
             kwargs={"key1": "value1", "key2": "value2"},
@@ -88,7 +88,7 @@ def test_footnote_content(mock_footnote_anchor):
     assert parser.footnotes_manager.mentions == {
         "note1": FootnoteNode(
             number=1,
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("This is a paragraph."),
@@ -100,7 +100,7 @@ def test_footnote_content(mock_footnote_anchor):
         ),
         "note2": FootnoteNode(
             number=2,
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("This is another paragraph."),
@@ -131,7 +131,7 @@ def test_footnote_mention_and_content(mock_footnote_anchor):
     assert parser.footnotes_manager.mentions == {
         "note1": FootnoteNode(
             number=1,
-            content=[
+            children=[
                 ParagraphNode(
                     children=[
                         TextNode("This is the content of the footnote"),
@@ -179,7 +179,7 @@ def test_footnotes_output(mock_footnote_anchor):
             children=[
                 TextNode("This is a paragraph with a footnote"),
                 FootnoteNode(
-                    [
+                    children=[
                         ParagraphNode(
                             children=[
                                 TextNode("This is the content of the footnote"),
@@ -194,9 +194,9 @@ def test_footnotes_output(mock_footnote_anchor):
             ]
         ),
         FootnotesNode(
-            [
+            children=[
                 FootnotesEntryNode(
-                    [
+                    children=[
                         ParagraphNode(
                             children=[
                                 TextNode("This is the content of the footnote"),
@@ -215,7 +215,7 @@ def test_footnotes_output(mock_footnote_anchor):
         "content": ContainerNode(children=parser.nodes),
         "footnotes": [
             FootnotesEntryNode(
-                [
+                children=[
                     ParagraphNode(
                         children=[
                             TextNode("This is the content of the footnote"),

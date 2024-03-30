@@ -52,8 +52,8 @@ class BaseVisitor:
 
         return node.accept(self, *args, **kwargs)
 
-    def visitlist(self, nodes, *args, **kwargs):
-        join_with = kwargs.pop("join_with", None)
+    def visitlist(self, node, nodes, *args, **kwargs):
+        join_with = self._join_with.get(node.node_type, None)
 
         visited_nodes = [self.visit(i, *args, **kwargs) for i in nodes]
 
@@ -116,29 +116,21 @@ class BaseVisitor:
         return result
 
     def _visit_sentence(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
-                "content": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 
         return result
 
     def _visit_style(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
                 "value": node.value,
-                "content": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 
@@ -155,14 +147,10 @@ class BaseVisitor:
         return result
 
     def _visit_footnote(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
-                "content": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
                 "number": node.number,
                 "reference_anchor": node.reference_anchor,
                 "content_anchor": node.content_anchor,
@@ -207,29 +195,21 @@ class BaseVisitor:
         return result
 
     def _visit_list_item(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
                 "level": int(node.level),
-                "content": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 
         return result
 
     def _visit_paragraph(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
-                "content": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 
@@ -248,15 +228,11 @@ class BaseVisitor:
         return result
 
     def _visit_list(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
                 "ordered": node.ordered,
-                "items": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "items": self.visitlist(node, node.children, *args, **kwargs),
                 "main_node": node.main_node,
             }
         )
@@ -290,16 +266,12 @@ class BaseVisitor:
         return result
 
     def _visit_block(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
-                "content": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
                 "secondary_content": self.visitlist(
-                    node.secondary_children, *args, join_with=join_with, **kwargs
+                    node, node.secondary_children, *args, **kwargs
                 ),
                 "subtype": node.subtype,
                 "classes": node.classes,
@@ -324,7 +296,7 @@ class BaseVisitor:
         return method(node)
 
     def _visit_source__default(self, node, *args, **kwargs):
-        code = self.visitlist(node.code, *args, **kwargs)
+        code = self.visitlist(node, node.code, *args, **kwargs)
 
         # This is a list of callouts for each line
         # None if the callout is not present, otherwise
@@ -340,7 +312,7 @@ class BaseVisitor:
                 "code": code,
                 "subtype": node.subtype,
                 "language": node.language,
-                "callouts": self.visitlist(node.callouts, *args, **kwargs),
+                "callouts": self.visitlist(node, node.callouts, *args, **kwargs),
                 "highlights": node.highlights,
                 "markers": markers,
                 "classes": node.classes,
@@ -375,32 +347,21 @@ class BaseVisitor:
         return result
 
     def _visit_toc_entry(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         return {
             "data": {
                 "type": node.node_type,
                 "value": node.value,
                 "anchor": node.anchor,
-                "children": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "children": self.visitlist(node, node.children, *args, **kwargs),
                 "tags": node.tags,
             },
         }
 
     def _visit_toc(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         return {
             "data": {
                 "type": node.node_type,
-                "entries": self.visitlist(
-                    node.children,
-                    join_with=join_with,
-                    *args,
-                    **kwargs,
-                ),
+                "entries": self.visitlist(node, node.children, *args, **kwargs),
                 "args": node.args,
                 "kwargs": node.kwargs,
                 "tags": node.tags,
@@ -408,28 +369,20 @@ class BaseVisitor:
         }
 
     def _visit_footnotes(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
-                "entries": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "entries": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 
         return result
 
     def _visit_footnotes_entry(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
-                "content": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
                 "number": node.number,
                 "reference_anchor": node.reference_anchor,
                 "content_anchor": node.content_anchor,
@@ -439,14 +392,10 @@ class BaseVisitor:
         return result
 
     def _visit_container(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
-                "content": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 
@@ -456,15 +405,11 @@ class BaseVisitor:
         return self._visit_container(node)
 
     def _visit_reference(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
                 "content_type": node.content_type,
-                "content": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
                 "number": node.number,
                 "title": self.visit(node.title, *args, **kwargs),
                 "reference_anchor": node.reference_anchor,
@@ -475,30 +420,22 @@ class BaseVisitor:
         return result
 
     def _visit_references(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
                 "content_type": node.content_type,
-                "entries": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "entries": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 
         return result
 
     def _visit_references_entry(self, node, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
-
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
                 "content_type": node.content_type,
-                "content": self.visitlist(
-                    node.children, *args, join_with=join_with, **kwargs
-                ),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
                 "number": node.number,
                 "title": self.visit(node.title, *args, **kwargs),
                 "reference_anchor": node.reference_anchor,

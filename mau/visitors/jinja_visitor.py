@@ -9,6 +9,25 @@ from mau.visitors.base_visitor import BaseVisitor
 
 _logger = logging.getLogger(__name__)
 
+JOIN_CHARACTERS = {
+    "block": "\n",
+    "footnotes": "",
+    "references": "",
+    "toc": "",
+    "container": "",
+    "document": "",
+    "footnote": "\n",
+    "footnotes_entry": "\n",
+    "list": "",
+    "list_item": "",
+    "reference": "\n",
+    "references_entry": "\n",
+    "paragraph": "",
+    "sentence": "",
+    "style": "",
+    "toc_entry": "",
+}
+
 
 # pylint: disable=import-outside-toplevel
 def load_template_providers():  # pragma: no cover
@@ -135,24 +154,7 @@ class JinjaVisitor(BaseVisitor):
             environment.getvar("mau.visitor.custom_templates", Environment())
         )
 
-        self._join_with = {
-            "block": "\n",
-            "footnotes": "",
-            "references": "",
-            "toc": "",
-            "container": "",
-            "document": "",
-            "footnote": "\n",
-            "footnotes_entry": "\n",
-            "list": "",
-            "list_item": "",
-            "reference": "\n",
-            "references_entry": "\n",
-            "paragraph": "",
-            "sentence": "",
-            "style": "",
-            "toc_entry": "",
-        }
+        self._join_with = JOIN_CHARACTERS
 
         # These act as a temporary storage while we are in mau blocks.
         # There, ToC and footnotes have to be isolated, so at the

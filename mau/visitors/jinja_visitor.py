@@ -48,6 +48,42 @@ def load_templates_from_path(path, filt=None):  # pragma: no cover
     return result
 
 
+def create_templates(prefixes, node_templates, node, extension=None):
+    prefixes = [f"{prefix}." for prefix in prefixes]
+    prefixes.append("")
+
+    node_templates.append(node.node_type)
+
+    # Build ["parent_type.parent_subtype.", "parent_type.", ""]
+    parent_types = [""]
+    if node.parent:
+        parent_types.append(f"{node.parent.node_type}.")
+        if node.parent.subtype:
+            parent_types.append(f"{node.parent.node_type}.{node.parent.subtype}.")
+    parent_types = parent_types[::-1]
+
+    # Build [".{node_subtype}", ""]
+    node_subtypes = [""]
+    if node.subtype:
+        node_subtypes.append(f".{node.subtype}")
+    node_subtypes = node_subtypes[::-1]
+
+    templates = [
+        f"{prefix}{parent_type}{node_template}{node_subtype}"
+        for prefix in prefixes
+        for parent_type in parent_types
+        for node_template in node_templates
+        for node_subtype in node_subtypes
+    ]
+
+    # The template full name contains the extension
+    # with the type of template, e.g. document.txt
+    if extension:
+        templates = [f"{template}.{extension}" for template in templates]
+
+    return templates
+
+
 class TemplateNotFound(ValueError):
     pass
 
@@ -191,42 +227,11 @@ class JinjaVisitor(BaseVisitor):
             return {}
 
         result = super().visit(node, *args, **kwargs)
-
-        prefixes = [f"{prefix}." for prefix in self.template_prefixes]
-        prefixes.append("")
-
-        # The node type is appended
-        # as the last choice to allow specialised
-        # templates to be applied first
         node_templates = result.get("templates", [])
-        node_templates.append(node.node_type)
 
-        # Build ["parent_type.parent_subtype.", "parent_type.", ""]
-        parent_types = [""]
-        if node.parent:
-            parent_types.append(f"{node.parent.node_type}.")
-            if node.parent.subtype:
-                parent_types.append(f"{node.parent.node_type}.{node.parent.subtype}.")
-        parent_types = parent_types[::-1]
-
-        # Build [".{node_subtype}", ""]
-        node_subtypes = [""]
-        if node.subtype:
-            node_subtypes.append(f".{node.subtype}")
-        node_subtypes = node_subtypes[::-1]
-
-        templates = [
-            f"{prefix}{parent_type}{node_template}{node_subtype}"
-            for prefix in prefixes
-            for parent_type in parent_types
-            for node_template in node_templates
-            for node_subtype in node_subtypes
-        ]
-
-        # The template full name contains the extension
-        # with the type of template, e.g. document.txt
-        if self.extension:
-            templates = [f"{template}.{self.extension}" for template in templates]
+        templates = create_templates(
+            self.template_prefixes, node_templates, node, self.extension
+        )
 
         # The key "data" contains the values that we want
         # to pass to the template. These are used as arguments

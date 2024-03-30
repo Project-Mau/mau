@@ -1,7 +1,5 @@
 from mau.lexers.main_lexer import MainLexer
-from mau.lexers.text_lexer import TextLexer
 from mau.parsers.main_parser import MainParser
-from mau.parsers.text_parser import TextParser
 
 from tests.helpers import parser_runner_factory
 

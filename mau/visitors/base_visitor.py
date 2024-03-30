@@ -164,7 +164,7 @@ class BaseVisitor:
         result["data"].update(
             {
                 "classes": node.classes,
-                "content": self.visit(node.content, *args, **kwargs),
+                "content": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 
@@ -175,7 +175,7 @@ class BaseVisitor:
         result["data"].update(
             {
                 "target": node.target,
-                "text": node.text,
+                "content": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 

@@ -362,7 +362,9 @@ def test_macro_link():
     source = '[link](https://somedomain.org/the/path, "link text")'
 
     expected = [
-        MacroLinkNode("https://somedomain.org/the/path", "link text"),
+        MacroLinkNode(
+            "https://somedomain.org/the/path", children=[TextNode("link text")]
+        ),
     ]
 
     assert runner(source).nodes == expected
@@ -373,7 +375,26 @@ def test_macro_link_without_text():
 
     expected = [
         MacroLinkNode(
-            "https://somedomain.org/the/path", "https://somedomain.org/the/path"
+            "https://somedomain.org/the/path",
+            children=[TextNode("https://somedomain.org/the/path")],
+        ),
+    ]
+
+    assert runner(source).nodes == expected
+
+
+def test_macro_link_with_rich_text():
+    source = (
+        '[link]("https://somedomain.org/the/path", "Some text with _styled words_")'
+    )
+
+    expected = [
+        MacroLinkNode(
+            "https://somedomain.org/the/path",
+            children=[
+                TextNode("Some text with "),
+                StyleNode(value="underscore", children=[TextNode("styled words")]),
+            ],
         ),
     ]
 
@@ -384,7 +405,9 @@ def test_macro_mailto():
     source = "[mailto](info@projectmau.org)"
 
     expected = [
-        MacroLinkNode("mailto:info@projectmau.org", "info@projectmau.org"),
+        MacroLinkNode(
+            "mailto:info@projectmau.org", children=[TextNode("info@projectmau.org")]
+        ),
     ]
 
     assert runner(source).nodes == expected
@@ -394,7 +417,7 @@ def test_macro_mailto_custom_text():
     source = '[mailto](info@projectmau.org, "my email")'
 
     expected = [
-        MacroLinkNode("mailto:info@projectmau.org", "my email"),
+        MacroLinkNode("mailto:info@projectmau.org", children=[TextNode("my email")]),
     ]
 
     assert runner(source).nodes == expected
@@ -430,8 +453,8 @@ def test_single_class():
     expected = [
         TextNode("Some text "),
         MacroClassNode(
-            ["classname"],
-            [
+            classes=["classname"],
+            children=[
                 TextNode("text with that class"),
             ],
         ),
@@ -446,8 +469,8 @@ def test_multiple_classes():
     expected = [
         TextNode("Some text "),
         MacroClassNode(
-            ["classname1", "classname2"],
-            [
+            classes=["classname1", "classname2"],
+            children=[
                 TextNode("text with that class"),
             ],
         ),
@@ -461,8 +484,8 @@ def test_parse_class_with_rich_text():
 
     expected = [
         MacroClassNode(
-            ["classname"],
-            [
+            classes=["classname"],
+            children=[
                 TextNode("Some text with "),
                 VerbatimNode("verbatim words"),
                 TextNode(" and "),

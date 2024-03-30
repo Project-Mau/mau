@@ -172,7 +172,7 @@ def test_inline_macro_node():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = MacroNode("somename", ["arg1", "arg2"], {"key1": "value1"})
+    node = MacroNode("somename", args=["arg1", "arg2"], kwargs={"key1": "value1"})
 
     result = visitor.visit(node)
 
@@ -245,7 +245,7 @@ def test_inline_class_node():
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = MacroClassNode(["class1", "class2"], TextNode("Just some text."))
+    node = MacroClassNode(["class1", "class2"], children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -255,14 +255,14 @@ def test_inline_class_node():
 def test_inline_link_node():
     templates = {
         "text.j2": "{{ value }}",
-        "macro.link.j2": "{{ target }} - {{ text }}",
+        "macro.link.j2": "{{ target }} - {{ content }}",
     }
 
     environment = Environment()
     environment.update(templates, "mau.visitor.custom_templates")
     visitor = JinjaVisitor(environment)
 
-    node = MacroLinkNode(target="sometarget", text="sometext")
+    node = MacroLinkNode(target="sometarget", children=[TextNode("sometext")])
 
     result = visitor.visit(node)
 

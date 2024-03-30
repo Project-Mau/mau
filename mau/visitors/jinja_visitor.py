@@ -20,6 +20,8 @@ JOIN_CHARACTERS = {
     "footnotes_entry": "\n",
     "list": "",
     "list_item": "",
+    "macro.link": "",
+    "macro.class": "",
     "reference": "\n",
     "references_entry": "\n",
     "paragraph": "",

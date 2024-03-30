@@ -9,14 +9,20 @@ class MacroNode(Node):
     def __init__(
         self,
         name,
+        parent=None,
+        children=None,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
-        subtype=None,
-        parent=None,
     ):
         super().__init__(
-            parent=parent, subtype=subtype, args=args, kwargs=kwargs, tags=tags
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
         )
         self.name = name
 
@@ -34,23 +40,26 @@ class MacroClassNode(Node):
     def __init__(
         self,
         classes,
-        content,
+        parent=None,
+        children=None,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
-        subtype=None,
-        parent=None,
     ):
         super().__init__(
-            parent=parent, subtype=subtype, args=args, kwargs=kwargs, tags=tags
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
         )
         self.classes = classes
-        self.content = content
 
     def _custom_dict(self):
         return {
             "classes": self.classes,
-            "content": self.content,
         }
 
 
@@ -62,23 +71,26 @@ class MacroLinkNode(Node):
     def __init__(
         self,
         target,
-        text=None,
+        parent=None,
+        children=None,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
-        subtype=None,
-        parent=None,
     ):
         super().__init__(
-            parent=parent, subtype=subtype, args=args, kwargs=kwargs, tags=tags
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
         )
         self.target = target
-        self.text = text
 
     def _custom_dict(self):
         return {
             "target": self.target,
-            "text": self.text,
         }
 
 
@@ -93,14 +105,20 @@ class MacroImageNode(Node):
         alt_text=None,
         width=None,
         height=None,
+        parent=None,
+        children=None,
+        subtype=None,
         args=None,
         kwargs=None,
         tags=None,
-        subtype=None,
-        parent=None,
     ):
         super().__init__(
-            parent=parent, subtype=subtype, args=args, kwargs=kwargs, tags=tags
+            parent=parent,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
         )
         self.uri = uri
         self.alt_text = alt_text

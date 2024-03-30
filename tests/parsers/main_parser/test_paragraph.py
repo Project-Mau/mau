@@ -43,7 +43,7 @@ def test_parse_paragraph_starting_with_a_macro():
     assert runner(source).nodes == [
         ParagraphNode(
             children=[
-                MacroLinkNode(target="http://some.where", text="This"),
+                MacroLinkNode(target="http://some.where", children=[TextNode("This")]),
                 TextNode(" is the link I want"),
             ]
         )

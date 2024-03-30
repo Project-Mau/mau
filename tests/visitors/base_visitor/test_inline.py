@@ -265,7 +265,7 @@ def test_style_node_caret():
 def test_macro_node():
     visitor = BaseVisitor(Environment())
 
-    node = MacroNode("somename", ["arg1", "arg2"], {"key1": "value1"})
+    node = MacroNode(name="somename", args=["arg1", "arg2"], kwargs={"key1": "value1"})
 
     result = visitor.visit(node)
 
@@ -384,23 +384,25 @@ def test_reference_node():
 def test_class_node():
     visitor = BaseVisitor(Environment())
 
-    node = MacroClassNode(["class1", "class2"], TextNode("Just some text."))
+    node = MacroClassNode(["class1", "class2"], children=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
     assert result == {
         "data": {
             "type": "macro.class",
-            "content": {
-                "data": {
-                    "type": "text",
-                    "value": "Just some text.",
-                    "subtype": None,
-                    "args": [],
-                    "kwargs": {},
-                    "tags": [],
+            "content": [
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "Just some text.",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
+                    }
                 }
-            },
+            ],
             "classes": ["class1", "class2"],
             "subtype": None,
             "args": [],
@@ -413,14 +415,25 @@ def test_class_node():
 def test_link_node():
     visitor = BaseVisitor(Environment())
 
-    node = MacroLinkNode(target="sometarget", text="sometext")
+    node = MacroLinkNode(target="sometarget", children=[TextNode("sometext")])
 
     result = visitor.visit(node)
 
     assert result == {
         "data": {
             "type": "macro.link",
-            "text": "sometext",
+            "content": [
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "sometext",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
+                    }
+                }
+            ],
             "target": "sometarget",
             "subtype": None,
             "args": [],

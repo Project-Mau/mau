@@ -13,28 +13,30 @@ def test_macro_node():
 
 
 def test_class_node():
-    node = MacroClassNode(["class1", "class2"], TextNode("othervalue"))
+    node = MacroClassNode(["class1", "class2"], children=[TextNode("othervalue")])
 
     assert node.classes == ["class1", "class2"]
-    assert node.content == TextNode("othervalue")
+    assert node.children == [TextNode("othervalue")]
     assert node.node_type == "macro.class"
-    assert node == MacroClassNode(["class1", "class2"], TextNode("othervalue"))
+    assert node == MacroClassNode(
+        ["class1", "class2"], children=[TextNode("othervalue")]
+    )
 
 
 def test_link_node():
-    node = MacroLinkNode("atarget", "sometext")
+    node = MacroLinkNode("atarget", children=[TextNode("sometext")])
 
     assert node.target == "atarget"
-    assert node.text == "sometext"
+    assert node.children == [TextNode("sometext")]
     assert node.node_type == "macro.link"
-    assert node == MacroLinkNode("atarget", "sometext")
+    assert node == MacroLinkNode("atarget", children=[TextNode("sometext")])
 
 
 def test_link_node_no_text():
     node = MacroLinkNode("atarget")
 
     assert node.target == "atarget"
-    assert node.text is None
+    assert node.children == []
     assert node.node_type == "macro.link"
     assert node == MacroLinkNode("atarget")
 

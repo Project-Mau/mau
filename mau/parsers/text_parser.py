@@ -175,7 +175,10 @@ class TextParser(BaseParser):
         if text is None:
             text = target
 
-        return MacroLinkNode(target=target, text=text, parent=self.parent_node)
+        current_context = self._current_token.context
+        par = self.analyse(text, current_context, self.environment)
+
+        return MacroLinkNode(target=target, children=par.nodes, parent=self.parent_node)
 
     def _parse_macro_mailto(self, args, kwargs):
         """
@@ -193,7 +196,10 @@ class TextParser(BaseParser):
         if text is None:
             text = email
 
-        return MacroLinkNode(target=target, text=text, parent=self.parent_node)
+        current_context = self._current_token.context
+        par = self.analyse(text, current_context, self.environment)
+
+        return MacroLinkNode(target=target, children=par.nodes, parent=self.parent_node)
 
     def _parse_macro_class(self, args, kwargs):
         """
@@ -214,7 +220,7 @@ class TextParser(BaseParser):
         classes = kwargs["classes"].split(",")
 
         return MacroClassNode(
-            classes=classes, content=par.nodes, parent=self.parent_node
+            classes=classes, children=par.nodes, parent=self.parent_node
         )
 
     def _parse_macro_image(self, args, kwargs):

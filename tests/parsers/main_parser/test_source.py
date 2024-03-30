@@ -135,7 +135,7 @@ def test_source_with_title():
                 RawNode(""),
                 RawNode('print(os.environ["HOME"])'),
             ],
-            title=SentenceNode([TextNode("Title")]),
+            title=SentenceNode(children=[TextNode("Title")]),
         ),
     ]
 

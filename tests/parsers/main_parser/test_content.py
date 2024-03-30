@@ -93,7 +93,7 @@ def test_include_image_with_title():
         ContentImageNode(
             "/path/to/it.jpg",
             title=SentenceNode(
-                [
+                children=[
                     TextNode("A nice caption"),
                 ]
             ),

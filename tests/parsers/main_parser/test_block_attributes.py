@@ -71,7 +71,7 @@ def test_parse_block_title_and_attributes():
             subtype="subtype",
             classes=[],
             title=SentenceNode(
-                [
+                children=[
                     TextNode("Just a title"),
                 ]
             ),
@@ -100,7 +100,7 @@ def test_parse_block_title_and_attributes_are_reset():
             subtype="subtype1",
             classes=[],
             title=SentenceNode(
-                [
+                children=[
                     TextNode("Just a title"),
                 ]
             ),

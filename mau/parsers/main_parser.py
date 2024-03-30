@@ -358,7 +358,9 @@ class MainParser(BaseParser):
             parent_node=self.parent_node,
         )
 
-        self._push_title(SentenceNode(text_parser.nodes))
+        self._push_title(
+            SentenceNode(parent=self.parent_node, children=text_parser.nodes)
+        )
 
         return True
 

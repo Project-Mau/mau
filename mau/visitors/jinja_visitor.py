@@ -153,55 +153,93 @@ class JinjaVisitor(BaseVisitor):
         # The rest of the returned keys are passed to the _render function
         # as keys and are thus available in the template.
 
+        # Template names are created with this schema
+
+        # [prefix.][parent_type.][parent_subtype.][node_template][.node_subtype][.ext]
+
+        # The list of possible templates is the following, assuming
+        # there are 2 prefixes "prefix1" and "" (which is added automatically)
+        # and that the node itself outputs 2 templates "node_template1" and
+        # "node_template2".
+
+        # prefix1.parent_type.parent_subtype.node_template1.node_subtype.ext
+        # prefix1.parent_type.parent_subtype.node_template1.ext
+        # prefix1.parent_type.parent_subtype.node_template2.node_subtype.ext
+        # prefix1.parent_type.parent_subtype.node_template2.ext
+        # prefix1.parent_type.node_template1.node_subtype.ext
+        # prefix1.parent_type.node_template1.ext
+        # prefix1.parent_type.node_template2.node_subtype.ext
+        # prefix1.parent_type.node_template2.ext
+        # prefix1.node_template1.node_subtype.ext
+        # prefix1.node_template1.ext
+        # prefix1.node_template2.node_subtype.ext
+        # prefix1.node_template2.ext
+        # parent_type.parent_subtype.node_template1.node_subtype.ext
+        # parent_type.parent_subtype.node_template1.ext
+        # parent_type.parent_subtype.node_template2.node_subtype.ext
+        # parent_type.parent_subtype.node_template2.ext
+        # parent_type.node_template1.node_subtype.ext
+        # parent_type.node_template1.ext
+        # parent_type.node_template2.node_subtype.ext
+        # parent_type.node_template2.ext
+        # node_template1.node_subtype.ext
+        # node_template1.ext
+        # node_template2.node_subtype.ext
+        # node_template2.ext
+
         if node is None:
             return {}
 
         result = super().visit(node, *args, **kwargs)
 
-        # The key "templates" contains a list of all templates
-        # used for this node.
+        prefixes = [f"{prefix}." for prefix in self.template_prefixes]
+        prefixes.append("")
 
         # The node type is appended
         # as the last choice to allow specialised
         # templates to be applied first
-        templates = result.get("templates", [])
-        templates.append(node.node_type.replace("__", "."))
+        node_templates = result.get("templates", [])
+        node_templates.append(node.node_type)
 
-        # Create subtype templates
-        node_subtype = getattr(node, "subtype", None)
-        if node_subtype:
-            templates = [
-                f"{t}{suffix}" for t in templates for suffix in (f".{node_subtype}", "")
-            ]
+        # Build ["parent_type.parent_subtype.", "parent_type.", ""]
+        parent_types = [""]
+        if node.parent:
+            parent_types.append(f"{node.parent.node_type}.")
+            if node.parent.subtype:
+                parent_types.append(f"{node.parent.node_type}.{node.parent.subtype}.")
+        parent_types = parent_types[::-1]
 
-        # Create prefixed templates
-        prefixed_templates = []
-        for prefix in self.template_prefixes:
-            prefixed_templates.extend(
-                [f"{prefix}.{template}" for template in templates]
-            )
+        # Build [".{node_subtype}", ""]
+        node_subtypes = [""]
+        if node.subtype:
+            node_subtypes.append(f".{node.subtype}")
+        node_subtypes = node_subtypes[::-1]
 
-        # Preprend the prefixed templates
-        templates = prefixed_templates + templates
+        templates = [
+            f"{prefix}{parent_type}{node_template}{node_subtype}"
+            for prefix in prefixes
+            for parent_type in parent_types
+            for node_template in node_templates
+            for node_subtype in node_subtypes
+        ]
 
         # The template full name contains the extension
         # with the type of template, e.g. document.txt
-        template_full_names = [f"{template}.{self.extension}" for template in templates]
+        if self.extension:
+            templates = [f"{template}.{self.extension}" for template in templates]
 
         # The key "data" contains the values that we want
         # to pass to the template. These are used as arguments
         # when calling the template.
         data = result["data"]
 
-        for template_full_name in template_full_names:
+        for template in templates:
             try:
-                return self._render(template_full_name, **data)
+                return self._render(template, **data)
             except TemplateNotFound:
                 continue
 
-        self._error(
-            f"Cannot find any of the following templates {template_full_names}", node
-        )
+        self._error(f"Cannot find any of the following templates {templates}", node)
 
         return None  # pragma: no cover
 

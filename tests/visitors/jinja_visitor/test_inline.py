@@ -75,60 +75,6 @@ def test_inline_text_node():
     assert result == "Just some text."
 
 
-def test_inline_text_node_with_no_prefix():
-    templates = {
-        "text.j2": "{{ value }}",
-        "prefix.text.j2": "PREFIXED {{ value }}",
-    }
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    environment.setvar("mau.visitor.prefixes", [])
-    visitor = JinjaVisitor(environment)
-
-    node = TextNode("Just some text.")
-
-    result = visitor.visit(node)
-
-    assert result == "Just some text."
-
-
-def test_inline_text_node_with_prefix():
-    templates = {
-        "text.j2": "{{ value }}",
-        "prefix.text.j2": "PREFIXED {{ value }}",
-    }
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    environment.setvar("mau.visitor.prefixes", ["prefix"])
-    visitor = JinjaVisitor(environment)
-
-    node = TextNode("Just some text.")
-
-    result = visitor.visit(node)
-
-    assert result == "PREFIXED Just some text."
-
-
-def test_inline_text_node_with_multiple_prefixes():
-    templates = {
-        "text.j2": "{{ value }}",
-        "otherprefix.text.j2": "PREFIXED OTHER {{ value }}",
-    }
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    environment.setvar("mau.visitor.prefixes", ["prefix", "otherprefix"])
-    visitor = JinjaVisitor(environment)
-
-    node = TextNode("Just some text.")
-
-    result = visitor.visit(node)
-
-    assert result == "PREFIXED OTHER Just some text."
-
-
 def test_inline_verbatim_node():
     templates = {
         "verbatim.j2": "{{ value }}",

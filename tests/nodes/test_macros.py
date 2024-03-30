@@ -17,7 +17,7 @@ def test_class_node():
 
     assert node.classes == ["class1", "class2"]
     assert node.content == TextNode("othervalue")
-    assert node.node_type == "macro__class"
+    assert node.node_type == "macro.class"
     assert node == MacroClassNode(["class1", "class2"], TextNode("othervalue"))
 
 
@@ -26,7 +26,7 @@ def test_link_node():
 
     assert node.target == "atarget"
     assert node.text == "sometext"
-    assert node.node_type == "macro__link"
+    assert node.node_type == "macro.link"
     assert node == MacroLinkNode("atarget", "sometext")
 
 
@@ -35,7 +35,7 @@ def test_link_node_no_text():
 
     assert node.target == "atarget"
     assert node.text is None
-    assert node.node_type == "macro__link"
+    assert node.node_type == "macro.link"
     assert node == MacroLinkNode("atarget")
 
 
@@ -46,5 +46,5 @@ def test_image_node():
     assert node.alt_text == "somealttext"
     assert node.width == "width"
     assert node.height == "height"
-    assert node.node_type == "macro__image"
+    assert node.node_type == "macro.image"
     assert node == MacroImageNode("someuri", "somealttext", "width", "height")

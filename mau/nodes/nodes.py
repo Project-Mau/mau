@@ -43,7 +43,10 @@ class Node:
         return base
 
     def accept(self, visitor, *args, **kwargs):
-        method_name = f"_visit_{self.node_type}"
+        # Some node types contain a dot to allow templates
+        # to be created in a hierarchy of directories
+        # but dots are not allowed in function names
+        method_name = f"_visit_{self.node_type.replace('.', '__')}"
 
         try:
             method = getattr(visitor, method_name)

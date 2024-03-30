@@ -2,6 +2,7 @@ import pytest
 from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
+from mau.nodes.nodes import Node
 from mau.nodes.inline import RawNode, SentenceNode, StyleNode, TextNode, VerbatimNode
 from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
 from mau.nodes.references import ReferenceNode
@@ -19,11 +20,20 @@ def test_no_node():
 def test_unknown_node():
     visitor = BaseVisitor(Environment())
 
-    node = TextNode("Just some text.")
+    node = Node("Just some text.")
     node.node_type = "unknown"
 
-    with pytest.raises(MauErrorException):
-        visitor.visit(node)
+    result = visitor.visit(node)
+
+    assert result == {
+        "data": {
+            "type": "unknown",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
+        }
+    }
 
 
 def test_raw_node():
@@ -37,6 +47,10 @@ def test_raw_node():
         "data": {
             "type": "raw",
             "value": "Just some text.",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -52,6 +66,10 @@ def test_text_node():
         "data": {
             "type": "text",
             "value": "Just some text.",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -67,6 +85,10 @@ def test_verbatim_node():
         "data": {
             "type": "verbatim",
             "value": "Just some text.",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -91,15 +113,27 @@ def test_sentence_node():
                     "data": {
                         "type": "text",
                         "value": "Just some text. ",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
                     }
                 },
                 {
                     "data": {
                         "type": "text",
                         "value": "More text.",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
                     }
                 },
             ],
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -119,10 +153,18 @@ def test_style_node_star():
                     "data": {
                         "type": "text",
                         "value": "Just some text.",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
                     }
                 },
             ],
             "value": "star",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -142,10 +184,18 @@ def test_style_node_underscore():
                     "data": {
                         "type": "text",
                         "value": "Just some text.",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
                     }
                 },
             ],
             "value": "underscore",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -165,10 +215,18 @@ def test_style_node_tilde():
                     "data": {
                         "type": "text",
                         "value": "Just some text.",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
                     }
                 },
             ],
             "value": "tilde",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -188,10 +246,18 @@ def test_style_node_caret():
                     "data": {
                         "type": "text",
                         "value": "Just some text.",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
                     }
                 },
             ],
             "value": "caret",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -209,6 +275,8 @@ def test_macro_node():
             "name": "somename",
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
+            "tags": [],
+            "subtype": None,
         }
     }
 
@@ -232,8 +300,21 @@ def test_footnote_node():
             "reference_anchor": "someanchor",
             "content_anchor": "someanchor-def",
             "content": [
-                {"data": {"type": "text", "value": "Just some text."}},
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "Just some text.",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
+                    }
+                },
             ],
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -261,7 +342,14 @@ def test_reference_node():
             "content_anchor": "someanchor-def",
             "content": [
                 {
-                    "data": {"type": "text", "value": "Just some text."},
+                    "data": {
+                        "type": "text",
+                        "value": "Just some text.",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
+                    },
                 }
             ],
             "title": {
@@ -272,11 +360,23 @@ def test_reference_node():
                             "data": {
                                 "type": "text",
                                 "value": "Some title",
+                                "subtype": None,
+                                "args": [],
+                                "kwargs": {},
+                                "tags": [],
                             },
                         }
                     ],
+                    "subtype": None,
+                    "args": [],
+                    "kwargs": {},
+                    "tags": [],
                 }
             },
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -295,9 +395,17 @@ def test_class_node():
                 "data": {
                     "type": "text",
                     "value": "Just some text.",
+                    "subtype": None,
+                    "args": [],
+                    "kwargs": {},
+                    "tags": [],
                 }
             },
             "classes": ["class1", "class2"],
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -314,6 +422,10 @@ def test_link_node():
             "type": "macro.link",
             "text": "sometext",
             "target": "sometarget",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }
 
@@ -332,5 +444,9 @@ def test_image_node():
             "alt_text": "sometext",
             "width": "100",
             "height": "400",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
         }
     }

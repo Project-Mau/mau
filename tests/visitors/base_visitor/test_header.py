@@ -23,6 +23,7 @@ def test_header_node():
             "value": "Just some text",
             "level": 3,
             "anchor": "someanchor",
+            "subtype": None,
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
             "tags": ["tag1", "tag2"],

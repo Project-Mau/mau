@@ -61,12 +61,17 @@ def test_references():
                                             "data": {
                                                 "type": "text",
                                                 "value": "Content type 1, value 1",
+                                                "subtype": None,
+                                                "args": [],
+                                                "kwargs": {},
+                                                "tags": [],
                                             }
                                         },
                                     ],
                                     "kwargs": {},
                                     "tags": [],
                                     "type": "paragraph",
+                                    "subtype": None,
                                 }
                             },
                         ],
@@ -76,6 +81,10 @@ def test_references():
                         "reference_anchor": "ref-content_type1-1-XXYY",
                         "title": {},
                         "type": "references_entry",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
                     }
                 },
                 {
@@ -89,12 +98,17 @@ def test_references():
                                             "data": {
                                                 "type": "text",
                                                 "value": "Content type 2, value 1",
+                                                "subtype": None,
+                                                "args": [],
+                                                "kwargs": {},
+                                                "tags": [],
                                             }
                                         },
                                     ],
                                     "kwargs": {},
                                     "tags": [],
                                     "type": "paragraph",
+                                    "subtype": None,
                                 }
                             },
                         ],
@@ -104,11 +118,16 @@ def test_references():
                         "reference_anchor": "ref-content_type2-2-XXYY",
                         "title": {},
                         "type": "references_entry",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
                     }
                 },
             ],
             "kwargs": {"key1": "value1"},
             "tags": ["tag1", "tag2"],
             "type": "references",
+            "subtype": None,
         }
     }

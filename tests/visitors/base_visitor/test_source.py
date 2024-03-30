@@ -37,6 +37,10 @@ def test_source_node():
                         "marker": "imp",
                         "type": "callouts_entry",
                         "value": "This is an import",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
                     }
                 },
                 {
@@ -44,18 +48,53 @@ def test_source_node():
                         "marker": "env",
                         "type": "callouts_entry",
                         "value": "Environment variables are paramount",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
                     }
                 },
             ],
             "classes": [],
             "code": [
-                {"data": {"type": "text", "value": "import sys"}},
-                {"data": {"type": "text", "value": "import: os"}},
-                {"data": {"type": "text", "value": ""}},
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "import sys",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
+                    }
+                },
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "import: os",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
+                    }
+                },
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
+                    }
+                },
                 {
                     "data": {
                         "type": "text",
                         "value": 'print(os.environ["HOME"])',
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
                     }
                 },
             ],
@@ -64,14 +103,35 @@ def test_source_node():
             "lines": 4,
             "markers": [
                 None,
-                {"data": {"type": "callout", "line": 1, "marker": "imp"}},
+                {
+                    "data": {
+                        "type": "callout",
+                        "line": 1,
+                        "marker": "imp",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
+                    }
+                },
                 None,
-                {"data": {"type": "callout", "line": 3, "marker": "env"}},
+                {
+                    "data": {
+                        "type": "callout",
+                        "line": 3,
+                        "marker": "env",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
+                    }
+                },
             ],
             "preprocessor": None,
             "title": {},
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
             "tags": ["tag1", "tag2"],
+            "subtype": None,
         }
     }

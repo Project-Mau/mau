@@ -22,6 +22,7 @@ def test_horizontal_rule_node():
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
             "tags": ["tag1", "tag2"],
+            "subtype": None,
         }
     }
 
@@ -57,9 +58,14 @@ def test_document_node():
                                 "data": {
                                     "type": "text",
                                     "value": "Just some text",
+                                    "args": [],
+                                    "kwargs": {},
+                                    "subtype": None,
+                                    "tags": [],
                                 }
                             }
                         ],
+                        "subtype": None,
                         "args": ["arg1", "arg2"],
                         "kwargs": {"key1": "value1"},
                         "tags": ["tag1", "tag2"],
@@ -69,5 +75,6 @@ def test_document_node():
             "args": ["arg3", "arg4"],
             "kwargs": {"key2": "value2"},
             "tags": ["tag3", "tag4"],
+            "subtype": None,
         }
     }

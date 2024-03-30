@@ -29,11 +29,16 @@ def test_content_node():
                 "data": {
                     "type": "text",
                     "value": "sometitle",
+                    "args": [],
+                    "kwargs": {},
+                    "subtype": None,
+                    "tags": [],
                 }
             },
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
             "tags": ["tag1", "tag2"],
+            "subtype": None,
         }
     }
 
@@ -61,6 +66,10 @@ def test_content_image_node():
                 "data": {
                     "type": "text",
                     "value": "sometitle",
+                    "args": [],
+                    "kwargs": {},
+                    "subtype": None,
+                    "tags": [],
                 }
             },
             "alt_text": "sometext",
@@ -68,5 +77,6 @@ def test_content_image_node():
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
             "tags": ["tag1", "tag2"],
+            "subtype": None,
         }
     }

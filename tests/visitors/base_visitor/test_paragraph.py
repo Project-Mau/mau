@@ -24,9 +24,14 @@ def test_paragraph_node():
                     "data": {
                         "type": "text",
                         "value": "Just some text",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
                     }
-                }
+                },
             ],
+            "subtype": None,
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
             "tags": ["tag1", "tag2"],

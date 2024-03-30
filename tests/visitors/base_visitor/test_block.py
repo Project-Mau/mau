@@ -31,6 +31,10 @@ def test_block_node_standard_block_template():
                     "data": {
                         "type": "text",
                         "value": "my content",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
                     }
                 }
             ],
@@ -39,6 +43,10 @@ def test_block_node_standard_block_template():
                     "data": {
                         "type": "text",
                         "value": "my secondary content",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
                     }
                 }
             ],
@@ -50,10 +58,18 @@ def test_block_node_standard_block_template():
                             "data": {
                                 "type": "text",
                                 "value": "sometitle",
+                                "args": [],
+                                "kwargs": {},
+                                "subtype": None,
+                                "tags": [],
                             }
                         },
                     ],
                     "type": "sentence",
+                    "args": [],
+                    "kwargs": {},
+                    "subtype": None,
+                    "tags": [],
                 },
             },
             "engine": "someengine",

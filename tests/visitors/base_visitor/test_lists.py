@@ -20,9 +20,17 @@ def test_list_item_node():
                     "data": {
                         "type": "text",
                         "value": "Just some text.",
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
                     }
                 }
             ],
+            "args": [],
+            "kwargs": {},
+            "subtype": None,
+            "tags": [],
         }
     }
 
@@ -54,9 +62,17 @@ def test_list_node():
                                 "data": {
                                     "type": "text",
                                     "value": "Just some text.",
+                                    "args": [],
+                                    "kwargs": {},
+                                    "subtype": None,
+                                    "tags": [],
                                 }
                             }
                         ],
+                        "args": [],
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
                     }
                 }
             ],
@@ -65,5 +81,6 @@ def test_list_node():
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1", "start": 4},
             "tags": ["tag1", "tag2"],
+            "subtype": None,
         }
     }

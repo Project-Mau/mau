@@ -20,10 +20,6 @@ class Node:
         self.kwargs = kwargs or {}
         self.tags = tags or []
 
-    @property
-    def _content(self):
-        return self.asdict()
-
     def _custom_dict(self):
         return {}
 

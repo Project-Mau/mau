@@ -11,23 +11,10 @@ _logger = logging.getLogger(__name__)
 
 JOIN_CHARACTERS = {
     "block": "\n",
-    "footnotes": "",
-    "references": "",
-    "toc": "",
-    "container": "",
-    "document": "",
     "footnote": "\n",
     "footnotes_entry": "\n",
-    "list": "",
-    "list_item": "",
-    "macro.link": "",
-    "macro.class": "",
     "reference": "\n",
     "references_entry": "\n",
-    "paragraph": "",
-    "sentence": "",
-    "style": "",
-    "toc_entry": "",
 }
 
 
@@ -118,6 +105,9 @@ class JinjaVisitor(BaseVisitor):
     environment_options = {}
     default_templates = Environment()
 
+    _join_with = JOIN_CHARACTERS
+    _join_with_default = ""
+
     def __init__(
         self,
         environment,
@@ -155,8 +145,6 @@ class JinjaVisitor(BaseVisitor):
         self.templates.update(
             environment.getvar("mau.visitor.custom_templates", Environment())
         )
-
-        self._join_with = JOIN_CHARACTERS
 
         # These act as a temporary storage while we are in mau blocks.
         # There, ToC and footnotes have to be isolated, so at the

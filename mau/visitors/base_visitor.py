@@ -31,14 +31,15 @@ class BaseVisitor:
     extension = ""
     transform = no_aliases_dump
 
+    _join_with = {}
+    _join_with_default = None
+
     # pylint: disable=unused-argument
     def __init__(self, environment, *args, **kwds):
         self.toc = None
         self.footnotes = None
 
         self.environment = environment
-
-        self._join_with = {}
 
     def visit(self, node, *args, **kwargs):
         # The visitor has to define functions for each node type.
@@ -53,7 +54,7 @@ class BaseVisitor:
         return node.accept(self, *args, **kwargs)
 
     def visitlist(self, node, nodes, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, None)
+        join_with = self._join_with.get(node.node_type, self._join_with_default)
 
         visited_nodes = [self.visit(i, *args, **kwargs) for i in nodes]
 

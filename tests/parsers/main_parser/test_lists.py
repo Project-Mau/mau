@@ -187,6 +187,7 @@ def test_parse_numbered_list_continue():
         ListNode(
             ordered=True,
             main_node=True,
+            start=1,
             children=[
                 ListItemNode(
                     level="1",
@@ -201,6 +202,7 @@ def test_parse_numbered_list_continue():
         ListNode(
             ordered=True,
             main_node=True,
+            start=3,
             children=[
                 ListItemNode(
                     level="1",
@@ -211,7 +213,72 @@ def test_parse_numbered_list_continue():
                     children=[TextNode("Item 4")],
                 ),
             ],
-            kwargs={"start": "3"},
+            kwargs={},
+        ),
+    ]
+
+
+def test_parse_numbered_list_continue_after_forced():
+    source = """
+    # Item 1
+    # Item 2
+
+    [start=20]
+    # Item 20
+    # Item 21
+
+    [start=auto]
+    # Item 22
+    # Item 23
+    """
+
+    assert runner(source).nodes == [
+        ListNode(
+            ordered=True,
+            main_node=True,
+            start=1,
+            children=[
+                ListItemNode(
+                    level="1",
+                    children=[TextNode("Item 1")],
+                ),
+                ListItemNode(
+                    level="1",
+                    children=[TextNode("Item 2")],
+                ),
+            ],
+        ),
+        ListNode(
+            ordered=True,
+            main_node=True,
+            start=20,
+            children=[
+                ListItemNode(
+                    level="1",
+                    children=[TextNode("Item 20")],
+                ),
+                ListItemNode(
+                    level="1",
+                    children=[TextNode("Item 21")],
+                ),
+            ],
+            kwargs={},
+        ),
+        ListNode(
+            ordered=True,
+            main_node=True,
+            start=22,
+            children=[
+                ListItemNode(
+                    level="1",
+                    children=[TextNode("Item 22")],
+                ),
+                ListItemNode(
+                    level="1",
+                    children=[TextNode("Item 23")],
+                ),
+            ],
+            kwargs={},
         ),
     ]
 

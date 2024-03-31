@@ -41,6 +41,7 @@ def test_list_node():
     node = ListNode(
         ordered=True,
         main_node=True,
+        start=42,
         children=[ListItemNode(level="4", children=[TextNode("Just some text.")])],
         args=["arg1", "arg2"],
         kwargs={"key1": "value1", "start": 4},
@@ -52,6 +53,7 @@ def test_list_node():
     assert result == {
         "data": {
             "type": "list",
+            "start": 42,
             "items": [
                 {
                     "data": {

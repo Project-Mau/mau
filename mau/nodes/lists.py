@@ -42,6 +42,7 @@ class ListNode(Node):
         self,
         ordered,
         main_node=False,
+        start=1,
         parent=None,
         children=None,
         subtype=None,
@@ -58,11 +59,12 @@ class ListNode(Node):
             tags=tags,
         )
         self.ordered = ordered
-
         self.main_node = main_node
+        self.start = start
 
     def _custom_dict(self):
         return {
             "ordered": self.ordered,
             "main_node": self.main_node,
+            "start": self.start,
         }

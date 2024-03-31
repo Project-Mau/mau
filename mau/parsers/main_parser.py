@@ -98,10 +98,10 @@ class MainParser(BaseParser):
             "mau.parser.header_anchor_function", header_anchor
         )
 
-        # The number of nodes in the latest ordered list,
+        # The last index in the latest ordered list,
         # used to calculate the beginning value of them
         # next one when start=auto
-        self.latest_ordered_list_length = 0
+        self.latest_ordered_list_index = 0
 
         # This is the final output of the parser
         self.output = {}
@@ -965,16 +965,18 @@ class MainParser(BaseParser):
         # Parse all the following items
         nodes = self._process_list_nodes()
 
-        if kwargs.get("start") == "auto":
-            kwargs["start"] = str(self.latest_ordered_list_length + 1)
-            self.latest_ordered_list_length += len(nodes)
+        if (start := kwargs.pop("start", 1)) == "auto":
+            start = self.latest_ordered_list_index
+            self.latest_ordered_list_index += len(nodes)
         else:
-            self.latest_ordered_list_length = len(nodes)
+            start = int(start)
+            self.latest_ordered_list_index = len(nodes) + start
 
         self._save(
             ListNode(
                 ordered=ordered,
                 main_node=True,
+                start=start,
                 children=nodes,
                 subtype=subtype,
                 args=args,

@@ -234,6 +234,7 @@ class BaseVisitor:
                 "ordered": node.ordered,
                 "items": self.visitlist(node, node.children, *args, **kwargs),
                 "main_node": node.main_node,
+                "start": node.start,
             }
         )
 

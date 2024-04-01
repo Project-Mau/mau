@@ -246,8 +246,7 @@ class BaseVisitor:
         result["data"].update(
             {
                 "content_type": node.content_type,
-                "uri_args": node.uri_args,
-                "uri_kwargs": node.uri_kwargs,
+                "uris": node.uris,
                 "title": self.visit(node.title, *args, **kwargs),
             }
         )

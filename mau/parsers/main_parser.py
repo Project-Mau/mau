@@ -838,32 +838,17 @@ class MainParser(BaseParser):
 
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
-        # Read the content URIs
-        uri_args = []
-        uri_kwargs = {}
-        with self:
-            arguments = self._get_token(BLTokenTypes.TEXT).value
-
-            current_context = self._current_token.context
-
-            arguments_parser = ArgumentsParser.analyse(
-                arguments, current_context, self.environment
-            )
-
-            uri_args, uri_kwargs, _, _ = arguments_parser.process_arguments()
+        uris = self._get_token(BLTokenTypes.TEXT).value
+        uris = uris.split(",")
 
         if content_type == "image":
-            return self._parse_content_image(
-                uri_args, uri_kwargs, title, subtype, args, kwargs, tags
-            )
+            return self._parse_content_image(uris, title, subtype, args, kwargs, tags)
 
         return self._parse_standard_content(
-            content_type, uri_args, uri_kwargs, title, subtype, args, kwargs, tags
+            content_type, uris, title, subtype, args, kwargs, tags
         )
 
-    def _parse_content_image(
-        self, uri_args, uri_kwargs, title, subtype, args, kwargs, tags
-    ):
+    def _parse_content_image(self, uris, title, subtype, args, kwargs, tags):
         # Parse a content image in the form
         #
         # << image:uri,alt_text,classes
@@ -879,7 +864,7 @@ class MainParser(BaseParser):
             {"alt_text": None, "classes": None},
         )
 
-        uri = uri_args[0]
+        uri = uris[0]
         alt_text = kwargs.pop("alt_text")
         classes = kwargs.pop("classes")
 
@@ -902,15 +887,14 @@ class MainParser(BaseParser):
         return True
 
     def _parse_standard_content(
-        self, content_type, uri_args, uri_kwargs, title, subtype, args, kwargs, tags
+        self, content_type, uris, title, subtype, args, kwargs, tags
     ):
         # This is the fallback for an unknown content type
 
         self._save(
             ContentNode(
                 content_type=content_type,
-                uri_args=uri_args,
-                uri_kwargs=uri_kwargs,
+                uris=uris,
                 title=title,
                 subtype=subtype,
                 args=args,

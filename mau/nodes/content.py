@@ -19,8 +19,7 @@ class ContentNode(Node):
     def __init__(
         self,
         content_type,
-        uri_args=None,
-        uri_kwargs=None,
+        uris,
         title=None,
         parent=None,
         children=None,
@@ -39,15 +38,13 @@ class ContentNode(Node):
         )
         self.content_type = content_type
         self.title = title
-        self.uri_args = uri_args
-        self.uri_kwargs = uri_kwargs
+        self.uris = uris
 
     def _custom_dict(self):
         return {
             "content_type": self.content_type,
             "title": self.title,
-            "uri_args": self.uri_args,
-            "uri_kwargs": self.uri_kwargs,
+            "uris": self.uris,
         }
 
 

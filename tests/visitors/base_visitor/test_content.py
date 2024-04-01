@@ -1,6 +1,6 @@
 from mau.environment.environment import Environment
 from mau.nodes.content import ContentImageNode, ContentNode
-from mau.nodes.inline import TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.visitors.base_visitor import BaseVisitor
 
 
@@ -9,9 +9,8 @@ def test_content_node():
 
     node = ContentNode(
         content_type="sometype",
-        uri_args=["/uri1", "/uri2"],
-        uri_kwargs={"path": "/uri3"},
-        title=TextNode("sometitle"),
+        uris=["/uri1", "/uri2"],
+        title=SentenceNode(children=[TextNode("sometitle")]),
         args=["arg1", "arg2"],
         kwargs={"key1": "value1"},
         tags=["tag1", "tag2"],
@@ -23,17 +22,27 @@ def test_content_node():
         "data": {
             "type": "content",
             "content_type": "sometype",
-            "uri_args": ["/uri1", "/uri2"],
-            "uri_kwargs": {"path": "/uri3"},
+            "uris": ["/uri1", "/uri2"],
             "title": {
                 "data": {
-                    "type": "text",
-                    "value": "sometitle",
+                    "content": [
+                        {
+                            "data": {
+                                "type": "text",
+                                "value": "sometitle",
+                                "args": [],
+                                "kwargs": {},
+                                "subtype": None,
+                                "tags": [],
+                            }
+                        },
+                    ],
+                    "type": "sentence",
                     "args": [],
                     "kwargs": {},
                     "subtype": None,
                     "tags": [],
-                }
+                },
             },
             "args": ["arg1", "arg2"],
             "kwargs": {"key1": "value1"},
@@ -50,7 +59,7 @@ def test_content_image_node():
         uri="someuri",
         alt_text="sometext",
         classes=["class1", "class2"],
-        title=TextNode("sometitle"),
+        title=SentenceNode(children=[TextNode("sometitle")]),
         args=["arg1", "arg2"],
         kwargs={"key1": "value1"},
         tags=["tag1", "tag2"],
@@ -64,13 +73,24 @@ def test_content_image_node():
             "uri": "someuri",
             "title": {
                 "data": {
-                    "type": "text",
-                    "value": "sometitle",
+                    "content": [
+                        {
+                            "data": {
+                                "type": "text",
+                                "value": "sometitle",
+                                "args": [],
+                                "kwargs": {},
+                                "subtype": None,
+                                "tags": [],
+                            }
+                        },
+                    ],
+                    "type": "sentence",
                     "args": [],
                     "kwargs": {},
                     "subtype": None,
                     "tags": [],
-                }
+                },
             },
             "alt_text": "sometext",
             "classes": ["class1", "class2"],

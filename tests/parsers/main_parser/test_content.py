@@ -13,13 +13,12 @@ runner = parser_runner_factory(MainLexer, MainParser)
 def test_include_content():
     source = """
     ["text", #tag1, key1=value1, key2=value2]
-    << ctype1:/path/to/it,/another/path,path=/a/third/one
+    << ctype1:/path/to/it,/another/path
     """
 
     assert runner(source).nodes == [
         ContentNode(
-            uri_args=["/path/to/it", "/another/path"],
-            uri_kwargs={"path": "/a/third/one"},
+            uris=["/path/to/it", "/another/path"],
             content_type="ctype1",
             args=["text"],
             tags=["tag1"],
@@ -36,8 +35,7 @@ def test_include_content_with_subtype():
 
     assert runner(source).nodes == [
         ContentNode(
-            uri_args=["/path/to/it"],
-            uri_kwargs={},
+            uris=["/path/to/it"],
             content_type="ctype1",
             subtype="subtype1",
             args=[],

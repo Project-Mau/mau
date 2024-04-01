@@ -411,6 +411,13 @@ class MainParser(BaseParser):
         text = self._get_token(BLTokenTypes.TEXT).value
         level = len(header)
 
+        preprocess_parser = PreprocessVariablesParser.analyse(
+            text,
+            self._current_token.context,
+            self.environment,
+        )
+        text = preprocess_parser.nodes[0].value
+
         # Create the anchor
         anchor = self.header_anchor(text, level)
 

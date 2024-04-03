@@ -3,8 +3,14 @@ import itertools
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import StyleNode, TextNode, VerbatimNode, WordNode
-from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
+from mau.nodes.inline import StyleNode, TextNode, VerbatimNode, WordNode, SentenceNode
+from mau.nodes.macros import (
+    MacroClassNode,
+    MacroImageNode,
+    MacroLinkNode,
+    MacroNode,
+    # MacroConditionNode,
+)
 from mau.nodes.references import ReferenceNode
 from mau.parsers.arguments import set_names_and_defaults
 from mau.parsers.arguments_parser import ArgumentsParser
@@ -223,6 +229,29 @@ class TextParser(BaseParser):
             classes=classes, children=par.nodes, parent=self.parent_node
         )
 
+    def _parse_macro_if(self, args, kwargs):
+        """
+        Parse a class macro in the form [if](variable, true, false).
+        """
+
+        args, kwargs = set_names_and_defaults(
+            args, kwargs, ["variable", "true", "false"]
+        )
+
+        current_context = self._current_token.context
+
+        variable = kwargs.get("variable")
+
+        if self.environment.getvar(variable) is True:
+            par = self.analyse(kwargs.get("true"), current_context, self.environment)
+        else:
+            par = self.analyse(kwargs.get("false"), current_context, self.environment)
+
+        return SentenceNode(
+            children=par.nodes,
+            parent=self.parent_node,
+        )
+
     def _parse_macro_image(self, args, kwargs):
         """
         Parse an inline image macro in the form
@@ -345,5 +374,8 @@ class TextParser(BaseParser):
 
         if macro_name == "class":
             return self._parse_macro_class(args, kwargs)
+
+        if macro_name == "if":
+            return self._parse_macro_if(args, kwargs)
 
         return MacroNode(macro_name, args=args, kwargs=kwargs, parent=self.parent_node)

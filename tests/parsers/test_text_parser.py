@@ -1,7 +1,13 @@
+from mau.environment.environment import Environment
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import StyleNode, TextNode, VerbatimNode
-from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
+from mau.nodes.inline import StyleNode, TextNode, VerbatimNode, SentenceNode
+from mau.nodes.macros import (
+    MacroClassNode,
+    MacroImageNode,
+    MacroLinkNode,
+    MacroNode,
+)
 from mau.nodes.references import ReferenceNode
 from mau.parsers.text_parser import TextParser
 
@@ -525,3 +531,31 @@ def test_macro_image_with_width_and_height():
     ]
 
     assert runner(source).nodes == expected
+
+
+def test_macro_conditional_true():
+    environment = Environment({"flag": True})
+
+    source = '[if](flag, "TRUE", "FALSE")'
+
+    expected = [
+        SentenceNode(
+            children=[TextNode("TRUE")],
+        ),
+    ]
+
+    assert runner(source, environment=environment).nodes == expected
+
+
+def test_macro_conditional_false():
+    environment = Environment({"flag": False})
+
+    source = '[if](flag, "TRUE", "FALSE")'
+
+    expected = [
+        SentenceNode(
+            children=[TextNode("FALSE")],
+        ),
+    ]
+
+    assert runner(source, environment=environment).nodes == expected

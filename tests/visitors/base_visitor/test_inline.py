@@ -4,7 +4,12 @@ from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
 from mau.nodes.nodes import Node
 from mau.nodes.inline import RawNode, SentenceNode, StyleNode, TextNode, VerbatimNode
-from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
+from mau.nodes.macros import (
+    MacroClassNode,
+    MacroImageNode,
+    MacroLinkNode,
+    MacroNode,
+)
 from mau.nodes.references import ReferenceNode
 from mau.visitors.base_visitor import BaseVisitor
 

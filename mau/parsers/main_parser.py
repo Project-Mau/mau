@@ -244,23 +244,19 @@ class MainParser(BaseParser):
         variable_name = self._get_token(BLTokenTypes.TEXT).value
         self._get_token(BLTokenTypes.LITERAL, ":")
 
-        # Assume the variable is a flag
-        variable_value = True
-
-        # If the name starts with ! it's a false flag
-        if variable_name.startswith("!"):
-            variable_value = False
-            variable_name = variable_name[1:]
-
         # Get the optional value
         value = self._collect_join([Token(BLTokenTypes.EOL)])
 
-        # The value is assigned only if the variable
-        # is not a negative flag. In that case it is ignored
-        if variable_value and len(value) > 0:
-            variable_value = value
+        # If the name starts with "+" it's a true flag
+        # If the name starts with "-" it's a false flag
+        if variable_name.startswith("+"):
+            variable_name = variable_name[1:]
+            value = True
+        elif variable_name.startswith("-"):
+            variable_name = variable_name[1:]
+            value = False
 
-        self.environment.setvar(variable_name, variable_value)
+        self.environment.setvar(variable_name, value)
 
         return True
 

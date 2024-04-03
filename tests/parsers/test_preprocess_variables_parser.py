@@ -51,7 +51,7 @@ def test_replace_variable_with_namespace():
 def test_replace_boolean():
     result = runner("This flag is {flag}", environment=Environment({"flag": True}))
 
-    assert result.nodes == [TextNode("This flag is True")]
+    assert result.nodes == [TextNode("This flag is ")]
 
 
 def test_escape_curly_braces():

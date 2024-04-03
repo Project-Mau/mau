@@ -45,6 +45,11 @@ class PreprocessVariablesParser(BaseParser):
         try:
             variable_value = self.environment.getvar_nodefault(variable_name)
 
+            # Boolean variables are used in
+            # conditions but shouldn't be printed
+            if variable_value in [True, False]:
+                variable_value = ""
+
             self._save(TextNode(variable_value))
         except KeyError:
             self._error(f'Attribute "{variable_name}" has not been defined')

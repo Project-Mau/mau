@@ -131,12 +131,24 @@ def test_variable_definition():
     ]
 
 
-def test_variable_negation():
-    lex = runner(":!variable:")
+def test_variable_flag_true():
+    lex = runner(":+variable:")
 
     assert lex.tokens == [
         Token(TokenTypes.VARIABLE, ":"),
-        Token(BLTokenTypes.TEXT, "!variable"),
+        Token(BLTokenTypes.TEXT, "+variable"),
+        Token(BLTokenTypes.LITERAL, ":"),
+        Token(BLTokenTypes.EOL),
+        Token(BLTokenTypes.EOF),
+    ]
+
+
+def test_variable_flag_false():
+    lex = runner(":-variable:")
+
+    assert lex.tokens == [
+        Token(TokenTypes.VARIABLE, ":"),
+        Token(BLTokenTypes.TEXT, "-variable"),
         Token(BLTokenTypes.LITERAL, ":"),
         Token(BLTokenTypes.EOL),
         Token(BLTokenTypes.EOF),

@@ -10,24 +10,40 @@ init_parser = init_parser_factory(MainLexer, MainParser)
 runner = parser_runner_factory(MainLexer, MainParser)
 
 
-def test_parse_variable_definition_without_value_is_loaded_as_boolean():
+def test_parse_variable_definition_without_value_is_empty():
     source = ":attr:"
+    parser = runner(source)
+
+    assert parser.nodes == []
+    assert parser.environment.asdict() == {"attr": ""}
+
+
+def test_parse_variable_definition_with_plus_is_true():
+    source = ":+attr:"
     parser = runner(source)
 
     assert parser.nodes == []
     assert parser.environment.asdict() == {"attr": True}
 
 
-def test_parse_variable_definition_without_value_can_be_negated():
-    source = ":!attr:"
+def test_parse_variable_definition_with_minus_is_false():
+    source = ":-attr:"
     parser = runner(source)
 
     assert parser.nodes == []
     assert parser.environment.asdict() == {"attr": False}
 
 
-def test_parse_variable_definition_negative_flag_ignores_value():
-    source = ":!attr:42"
+def test_parse_variable_definition_flag_plus_ignores_value():
+    source = ":+attr:42"
+    parser = runner(source)
+
+    assert parser.nodes == []
+    assert parser.environment.asdict() == {"attr": True}
+
+
+def test_parse_variable_definition_flag_minus_ignores_value():
+    source = ":-attr:42"
     parser = runner(source)
 
     assert parser.nodes == []

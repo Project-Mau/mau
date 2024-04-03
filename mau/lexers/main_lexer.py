@@ -160,7 +160,7 @@ class MainLexer(BaseLexer):
         if not self._current_line.startswith(":"):
             return None
 
-        match = rematch(r":([!a-zA-Z0-9\-_\.]+):(.*)?", self._current_line)
+        match = rematch(r":([a-zA-Z0-9_\.\+\-]+):(.*)?", self._current_line)
 
         if not match:  # pragma: no cover
             return None

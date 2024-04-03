@@ -345,7 +345,7 @@ def test_block_negative_condition_doesnt_match():
 
 def test_block_condition_accepts_booleans():
     source = """
-    :render:
+    :+render:
 
     [*block, condition="ifnot:render:"]
     ----

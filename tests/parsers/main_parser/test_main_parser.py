@@ -26,10 +26,7 @@ def test_parse_output():
 
     assert runner(source).output == {
         "content": ContainerNode(children=[]),
-        "footnotes": [],
-        "references": {},
         "toc": TocNode(),
-        "custom_filters": {},
     }
 
 
@@ -41,10 +38,7 @@ def test_parse_output_custom_container():
 
     assert runner(source, environment).output == {
         "content": DocumentNode(children=[]),
-        "footnotes": [],
-        "references": {},
         "toc": TocNode(),
-        "custom_filters": {},
     }
 
 

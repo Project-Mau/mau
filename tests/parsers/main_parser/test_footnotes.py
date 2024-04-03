@@ -152,10 +152,6 @@ def test_footnote_mention_and_content(mock_footnote_anchor):
         ],
     }
 
-    footnote_mention = parser.footnotes_manager.mentions["note1"]
-
-    assert parser.output["footnotes"] == [footnote_mention.to_entry()]
-
 
 @patch("mau.parsers.footnotes.footnote_anchor")
 def test_footnotes_output(mock_footnote_anchor):
@@ -210,27 +206,6 @@ def test_footnotes_output(mock_footnote_anchor):
             ]
         ),
     ]
-
-    assert parser.output == {
-        "content": ContainerNode(children=parser.nodes),
-        "footnotes": [
-            FootnotesEntryNode(
-                children=[
-                    ParagraphNode(
-                        children=[
-                            TextNode("This is the content of the footnote"),
-                        ]
-                    )
-                ],
-                number=1,
-                reference_anchor="ref-footnote-1-XXYY",
-                content_anchor="cnt-footnote-1-XXYY",
-            ),
-        ],
-        "references": {},
-        "toc": TocNode(),
-        "custom_filters": {},
-    }
 
 
 def test_footnote_duplication():

@@ -48,15 +48,13 @@ class FootnotesManager:
         self.data[name] = content
 
     def process_footnotes(self):
-        footnotes = create_footnotes(
+        self.footnotes = create_footnotes(
             self.mentions,
             self.data,
         )
 
         for node in self.command_nodes:
-            node.children = footnotes
-
-        return footnotes
+            node.children = self.footnotes
 
     def update(self, other):
         self.update_mentions(other.mentions)

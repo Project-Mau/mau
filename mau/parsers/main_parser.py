@@ -91,9 +91,7 @@ class MainParser(BaseParser):
         self._title = None
 
         # This is the function used to create the header
-        # anchors. It can be specified through
-        # mau.header_anchor_function to override
-        # the default one.
+        # anchors.
         self.header_anchor = self.environment.getvar(
             "mau.parser.header_anchor_function", header_anchor
         )
@@ -1098,25 +1096,16 @@ class MainParser(BaseParser):
         # the manager merging mentions and data
         # and updating the nodes that contain
         # a list of footnotes
-        footnotes = self.footnotes_manager.process_footnotes()
+        self.footnotes_manager.process_footnotes()
 
         # This processes all references stored in
         # the manager merging mentions and data
         # and updating the nodes that contain
         # a list of references
-        references = self.references_manager.process_references()
+        self.references_manager.process_references()
 
         # Process ToC
         toc = self.toc_manager.process_toc()
-
-        custom_filters = {}
-
-        for name, func in (
-            self.environment.getvar("mau.parser.custom_filters", Environment())
-            .asdict()
-            .items()
-        ):
-            custom_filters[name] = func(self.nodes)
 
         wrapper_node_class = self.environment.getvar(
             "mau.parser.content_wrapper", ContainerNode
@@ -1126,8 +1115,5 @@ class MainParser(BaseParser):
             {
                 "content": wrapper_node_class(children=self.nodes),
                 "toc": toc,
-                "references": references,
-                "footnotes": footnotes,
-                "custom_filters": custom_filters,
             }
         )

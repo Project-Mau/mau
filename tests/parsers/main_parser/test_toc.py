@@ -72,8 +72,6 @@ def test_toc(header_anchor_mock):
                 ),
             ]
         ),
-        "footnotes": [],
-        "references": {},
         "toc": TocNode(
             children=[
                 TocEntryNode(
@@ -94,5 +92,4 @@ def test_toc(header_anchor_mock):
                 ),
             ]
         ),
-        "custom_filters": {},
     }

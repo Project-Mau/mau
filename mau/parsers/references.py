@@ -42,7 +42,7 @@ class ReferencesManager:
         self.data[(content_type, name)] = content
 
     def process_references(self):
-        references = create_references(
+        self.references = create_references(
             self.mentions,
             self.data,
         )
@@ -50,10 +50,10 @@ class ReferencesManager:
         # Filter references according to the node parameters
         for node in self.command_nodes:
             node.children = [
-                i for i in references.values() if i.content_type == node.content_type
+                i
+                for i in self.references.values()
+                if i.content_type == node.content_type
             ]
-
-        return references
 
     def update(self, other):
         self.update_mentions(other.mentions)

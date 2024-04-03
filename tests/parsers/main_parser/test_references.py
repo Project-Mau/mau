@@ -79,7 +79,7 @@ def test_simple_reference(mock_reference_anchor):
 
     parser = runner(source)
 
-    assert parser.output["references"] == {
+    assert parser.references_manager.references == {
         ("content_type", "value"): ReferencesEntryNode(
             "content_type",
             children=[
@@ -114,7 +114,7 @@ def test_reference_data_inside_block(mock_reference_anchor):
 
     parser = runner(source)
 
-    assert parser.output["references"] == {
+    assert parser.references_manager.references == {
         ("content_type", "value"): ReferencesEntryNode(
             "content_type",
             children=[
@@ -149,7 +149,7 @@ def test_reference_mention_and_data_inside_block(mock_reference_anchor):
 
     parser = runner(source)
 
-    assert parser.output["references"] == {
+    assert parser.references_manager.references == {
         ("content_type", "value"): ReferencesEntryNode(
             "content_type",
             children=[
@@ -192,7 +192,7 @@ def test_multiple_content_types(mock_reference_anchor):
 
     parser = runner(source)
 
-    assert parser.output["references"] == {
+    assert parser.references_manager.references == {
         ("content_type1", "name1"): ReferenceNode(
             "content_type1",
             children=[
@@ -389,18 +389,17 @@ def test_references_output(mock_reference_anchor):
                 ),
             ]
         ),
-        "footnotes": [],
-        "references": {
-            ("content_type1", "name1"): ReferencesEntryNode(
-                "content_type1",
-                children=[
-                    ParagraphNode(children=[TextNode("Content type 1, value 1")]),
-                ],
-                number=1,
-                reference_anchor="ref-content_type1-1-XXYY",
-                content_anchor="cnt-content_type1-1-XXYY",
-            )
-        },
         "toc": TocNode(),
-        "custom_filters": {},
+    }
+
+    assert parser.references_manager.references == {
+        ("content_type1", "name1"): ReferencesEntryNode(
+            "content_type1",
+            children=[
+                ParagraphNode(children=[TextNode("Content type 1, value 1")]),
+            ],
+            number=1,
+            reference_anchor="ref-content_type1-1-XXYY",
+            content_anchor="cnt-content_type1-1-XXYY",
+        )
     }

@@ -15,6 +15,7 @@ JOIN_CHARACTERS = {
     "footnotes_entry": "\n",
     "reference": "\n",
     "references_entry": "\n",
+    "source": None,
 }
 
 

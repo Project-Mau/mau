@@ -28,6 +28,7 @@ class BlockNode(Node):
         engine=None,
         preprocessor=None,
         parent=None,
+        parent_position=None,
         children=None,
         secondary_children=None,
         subtype=None,
@@ -37,6 +38,7 @@ class BlockNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,

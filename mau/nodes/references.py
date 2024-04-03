@@ -12,6 +12,7 @@ class ReferenceNode(Node):
         reference_anchor=None,
         content_anchor=None,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -20,6 +21,7 @@ class ReferenceNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,
@@ -43,17 +45,18 @@ class ReferenceNode(Node):
 
     def to_entry(self):
         return ReferencesEntryNode(
-            self.content_type,
-            self.number,
-            self.title,
-            self.reference_anchor,
-            self.content_anchor,
-            self.parent,
-            self.children,
-            self.subtype,
-            self.args,
-            self.kwargs,
-            self.tags,
+            content_type=self.content_type,
+            number=self.number,
+            title=self.title,
+            reference_anchor=self.reference_anchor,
+            content_anchor=self.content_anchor,
+            parent=self.parent,
+            parent_position=self.parent_position,
+            children=self.children,
+            subtype=self.subtype,
+            args=self.args,
+            kwargs=self.kwargs,
+            tags=self.tags,
         )
 
 
@@ -78,6 +81,7 @@ class ReferencesNode(Node):
         self,
         content_type,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -86,6 +90,7 @@ class ReferencesNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,

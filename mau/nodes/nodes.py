@@ -7,6 +7,7 @@ class Node:
     def __init__(
         self,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -14,6 +15,7 @@ class Node:
         tags=None,
     ):
         self.parent = parent
+        self.parent_position = parent_position
         self.subtype = subtype
         self.children = children or []
         self.args = args or []
@@ -71,6 +73,7 @@ class ValueNode(Node):
         self,
         value,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -79,6 +82,7 @@ class ValueNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,

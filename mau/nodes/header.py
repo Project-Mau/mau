@@ -12,6 +12,7 @@ class HeaderNode(Node):
         level,
         anchor,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -20,6 +21,7 @@ class HeaderNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,

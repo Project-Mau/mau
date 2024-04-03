@@ -11,6 +11,7 @@ class CalloutsEntryNode(Node):
         marker,
         value,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -19,6 +20,7 @@ class CalloutsEntryNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,
@@ -45,6 +47,7 @@ class CalloutNode(Node):
         line,
         marker,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -53,6 +56,7 @@ class CalloutNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,
@@ -99,6 +103,7 @@ class SourceNode(Node):
         title=None,
         preprocessor=None,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -107,6 +112,7 @@ class SourceNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,

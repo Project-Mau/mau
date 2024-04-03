@@ -14,6 +14,7 @@ class TocEntryNode(Node):
         value,
         anchor,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -22,6 +23,7 @@ class TocEntryNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,

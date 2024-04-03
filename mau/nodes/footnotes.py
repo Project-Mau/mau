@@ -10,6 +10,7 @@ class FootnoteNode(Node):
         reference_anchor=None,
         content_anchor=None,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -18,6 +19,7 @@ class FootnoteNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,
@@ -37,15 +39,16 @@ class FootnoteNode(Node):
 
     def to_entry(self):
         return FootnotesEntryNode(
-            self.number,
-            self.reference_anchor,
-            self.content_anchor,
-            self.parent,
-            self.children,
-            self.subtype,
-            self.args,
-            self.kwargs,
-            self.tags,
+            number=self.number,
+            reference_anchor=self.reference_anchor,
+            content_anchor=self.content_anchor,
+            parent=self.parent,
+            parent_position=self.parent_position,
+            children=self.children,
+            subtype=self.subtype,
+            args=self.args,
+            kwargs=self.kwargs,
+            tags=self.tags,
         )
 
 

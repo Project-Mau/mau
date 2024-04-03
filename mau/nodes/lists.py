@@ -9,8 +9,8 @@ class ListItemNode(Node):
     def __init__(
         self,
         level,
-        main_node=False,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -19,6 +19,7 @@ class ListItemNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,
@@ -44,6 +45,7 @@ class ListNode(Node):
         main_node=False,
         start=1,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -52,6 +54,7 @@ class ListNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,

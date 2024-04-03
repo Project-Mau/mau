@@ -33,7 +33,7 @@ class BaseParser:
     text_buffer_class = TextBuffer
     lexer_class = BaseLexer
 
-    def __init__(self, environment, parent_node=None):
+    def __init__(self, environment, parent_node=None, parent_position=None):
         # This is the position of the current token.
         self.index = -1
 
@@ -57,6 +57,10 @@ class BaseParser:
         # This is the parent node of all the nodes
         # created by this parser
         self.parent_node = parent_node
+
+        # This is the position of all the nodes
+        # in the parent
+        self.parent_position = parent_position
 
     @property
     def _current_token(self):

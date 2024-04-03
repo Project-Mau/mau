@@ -21,6 +21,7 @@ class NamedArgumentNode(Node):
         key,
         value,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -29,6 +30,7 @@ class NamedArgumentNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,

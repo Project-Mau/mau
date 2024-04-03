@@ -47,34 +47,3 @@ class StyleNode(ValueNode):
     """Describes the style applied to a node."""
 
     node_type = "style"
-
-    # def __init__(
-    #     self,
-    #     value,
-    #     parent=None,
-    #     children=None,
-    #     subtype=None,
-    #     args=None,
-    #     kwargs=None,
-    #     tags=None,
-    # ):
-    #     super().__init__(
-    #         parent=parent,
-    #         children=children,
-    #         subtype=subtype,
-    #         args=args,
-    #         kwargs=kwargs,
-    #         tags=tags,
-    #     )
-    #     self.value = value
-
-    # @property
-    # def _content(self):
-    #     return {
-    #         "type": self.node_type,
-    #         "subtype": self.subtype,
-    #         "value": self.value,
-    #         "args": self.args,
-    #         "kwargs": self.kwargs,
-    #         "tags": self.tags,
-    #     }

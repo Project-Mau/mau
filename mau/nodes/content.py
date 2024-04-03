@@ -22,6 +22,7 @@ class ContentNode(Node):
         uris,
         title=None,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -30,6 +31,7 @@ class ContentNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,
@@ -60,6 +62,7 @@ class ContentImageNode(Node):
         classes=None,
         title=None,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -68,6 +71,7 @@ class ContentImageNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,

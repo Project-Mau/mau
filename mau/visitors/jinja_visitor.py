@@ -63,12 +63,29 @@ def create_templates(prefixes, node_templates, node, extension=None):
 
     node_templates.append(node.node_type)
 
-    # Build ["parent_type.parent_subtype.", "parent_type.", ""]
+    # Build
+    # [
+    # "parent_type.parent_subtype.position",
+    # "parent_type.parent_subtype.",
+    # "parent_type.position",
+    # "parent_type.",
+    # ""
+    # ]
+
     parent_types = [""]
     if node.parent:
         parent_types.append(f"{node.parent.node_type}.")
+
+        if node.parent_position:
+            parent_types.append(f"{node.parent.node_type}.{node.parent_position}.")
+
         if node.parent.subtype:
             parent_types.append(f"{node.parent.node_type}.{node.parent.subtype}.")
+
+            if node.parent_position:
+                parent_types.append(
+                    f"{node.parent.node_type}.{node.parent.subtype}.{node.parent_position}."
+                )
     parent_types = parent_types[::-1]
 
     # Build [".{node_subtype}", ""]
@@ -184,37 +201,7 @@ class JinjaVisitor(BaseVisitor):
 
         # Template names are created with this schema
 
-        # [prefix.][parent_type.][parent_subtype.][node_template][.node_subtype][.ext]
-
-        # The list of possible templates is the following, assuming
-        # there are 2 prefixes "prefix1" and "" (which is added automatically)
-        # and that the node itself outputs 2 templates "node_template1" and
-        # "node_template2".
-
-        # prefix1.parent_type.parent_subtype.node_template1.node_subtype.ext
-        # prefix1.parent_type.parent_subtype.node_template1.ext
-        # prefix1.parent_type.parent_subtype.node_template2.node_subtype.ext
-        # prefix1.parent_type.parent_subtype.node_template2.ext
-        # prefix1.parent_type.node_template1.node_subtype.ext
-        # prefix1.parent_type.node_template1.ext
-        # prefix1.parent_type.node_template2.node_subtype.ext
-        # prefix1.parent_type.node_template2.ext
-        # prefix1.node_template1.node_subtype.ext
-        # prefix1.node_template1.ext
-        # prefix1.node_template2.node_subtype.ext
-        # prefix1.node_template2.ext
-        # parent_type.parent_subtype.node_template1.node_subtype.ext
-        # parent_type.parent_subtype.node_template1.ext
-        # parent_type.parent_subtype.node_template2.node_subtype.ext
-        # parent_type.parent_subtype.node_template2.ext
-        # parent_type.node_template1.node_subtype.ext
-        # parent_type.node_template1.ext
-        # parent_type.node_template2.node_subtype.ext
-        # parent_type.node_template2.ext
-        # node_template1.node_subtype.ext
-        # node_template1.ext
-        # node_template2.node_subtype.ext
-        # node_template2.ext
+        # [prefix.][parent_type.][parent_subtype.][parent_position.][node_template][.node_subtype][.ext]
 
         if node is None:
             return {}

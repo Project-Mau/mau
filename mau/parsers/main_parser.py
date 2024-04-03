@@ -30,8 +30,8 @@ from mau.tokens.tokens import Token
 class MainParser(BaseParser):
     lexer_class = MainLexer
 
-    def __init__(self, environment, parent_node=None):
-        super().__init__(environment, parent_node)
+    def __init__(self, environment, parent_node=None, parent_position=None):
+        super().__init__(environment, parent_node, parent_position)
 
         self.footnotes_manager = FootnotesManager(self)
         self.references_manager = ReferencesManager(self)
@@ -153,7 +153,9 @@ class MainParser(BaseParser):
 
         return " ".join(values)
 
-    def _parse_text_content(self, text, parent_node=None, context=None):
+    def _parse_text_content(
+        self, text, parent_node=None, parent_position=None, context=None
+    ):
         # Parse a piece of text using the TextParser.
 
         current_context = context or self._current_token.context
@@ -172,6 +174,7 @@ class MainParser(BaseParser):
             current_context,
             self.environment,
             parent_node=parent_node,
+            parent_position=parent_position,
         )
 
         # Extract the footnote mentions
@@ -350,10 +353,15 @@ class MainParser(BaseParser):
             current_context,
             self.environment,
             parent_node=self.parent_node,
+            parent_position=self.parent_position,
         )
 
         self._push_title(
-            SentenceNode(parent=self.parent_node, children=text_parser.nodes)
+            SentenceNode(
+                parent=self.parent_node,
+                parent_position=self.parent_position,
+                children=text_parser.nodes,
+            )
         )
 
         return True
@@ -637,7 +645,11 @@ class MainParser(BaseParser):
         environment = self.environment
 
         content_parser = MainParser.analyse(
-            "\n".join(block.children), current_context, environment, parent_node=block
+            "\n".join(block.children),
+            current_context,
+            environment,
+            parent_node=block,
+            parent_position="primary",
         )
 
         secondary_content_parser = MainParser.analyse(
@@ -645,6 +657,7 @@ class MainParser(BaseParser):
             current_context,
             environment,
             parent_node=block,
+            parent_position="secondary",
         )
 
         block.children = content_parser.nodes
@@ -670,7 +683,11 @@ class MainParser(BaseParser):
         environment = Environment()
 
         content_parser = MainParser.analyse(
-            "\n".join(block.children), current_context, environment, parent_node=block
+            "\n".join(block.children),
+            current_context,
+            environment,
+            parent_node=block,
+            parent_position="primary",
         )
 
         secondary_content_parser = MainParser.analyse(
@@ -678,6 +695,7 @@ class MainParser(BaseParser):
             current_context,
             environment,
             parent_node=block,
+            parent_position="secondary",
         )
 
         block.children = content_parser.nodes
@@ -988,7 +1006,12 @@ class MainParser(BaseParser):
 
         # Collect and parse the text of the item
         text = self._collect_text_content()
-        content = self._parse_text_content(text, self.parent_node, context)
+        content = self._parse_text_content(
+            text,
+            parent_node=self.parent_node,
+            parent_position=self.parent_position,
+            context=context,
+        )
 
         # Compute the level of the item
         level = len(header)
@@ -1022,7 +1045,12 @@ class MainParser(BaseParser):
 
                 # Collect and parse the text of the item
                 text = self._collect_text_content()
-                content = self._parse_text_content(text, self.parent_node, context)
+                content = self._parse_text_content(
+                    text,
+                    parent_node=self.parent_node,
+                    parent_position=self.parent_position,
+                    context=context,
+                )
 
                 level = len(header)
 
@@ -1073,13 +1101,17 @@ class MainParser(BaseParser):
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         node = ParagraphNode(
+            parent=self.parent_node,
+            parent_position=self.parent_position,
             subtype=subtype,
             args=args,
             kwargs=kwargs,
             tags=tags,
         )
 
-        node.children = self._parse_text_content(text, node, context)
+        node.children = self._parse_text_content(
+            text, parent_node=node, context=context
+        )
 
         self._save(node)
 

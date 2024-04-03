@@ -10,6 +10,7 @@ class MacroNode(Node):
         self,
         name,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -18,6 +19,7 @@ class MacroNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,
@@ -41,6 +43,7 @@ class MacroClassNode(Node):
         self,
         classes,
         parent=None,
+        parent_position=None,
         children=None,
         subtype=None,
         args=None,
@@ -49,6 +52,7 @@ class MacroClassNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,
@@ -71,6 +75,7 @@ class MacroLinkNode(Node):
     def __init__(
         self,
         target,
+        parent_position=None,
         parent=None,
         children=None,
         subtype=None,
@@ -80,6 +85,7 @@ class MacroLinkNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,
@@ -105,6 +111,7 @@ class MacroImageNode(Node):
         alt_text=None,
         width=None,
         height=None,
+        parent_position=None,
         parent=None,
         children=None,
         subtype=None,
@@ -114,6 +121,7 @@ class MacroImageNode(Node):
     ):
         super().__init__(
             parent=parent,
+            parent_position=parent_position,
             children=children,
             subtype=subtype,
             args=args,

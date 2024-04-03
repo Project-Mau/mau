@@ -15,6 +15,7 @@ def test_create_templates():
     parent_node.subtype = "parent_subtype"
 
     child_node.parent = parent_node
+    child_node.parent_position = "primary"
     parent_node.children.append(child_node)
 
     templates = create_templates(
@@ -22,12 +23,24 @@ def test_create_templates():
     )
 
     assert templates == [
+        "prefix1.parent_type.parent_subtype.primary.node_template1.node_subtype.ext",
+        "prefix1.parent_type.parent_subtype.primary.node_template1.ext",
+        "prefix1.parent_type.parent_subtype.primary.node_template2.node_subtype.ext",
+        "prefix1.parent_type.parent_subtype.primary.node_template2.ext",
+        "prefix1.parent_type.parent_subtype.primary.node_type.node_subtype.ext",
+        "prefix1.parent_type.parent_subtype.primary.node_type.ext",
         "prefix1.parent_type.parent_subtype.node_template1.node_subtype.ext",
         "prefix1.parent_type.parent_subtype.node_template1.ext",
         "prefix1.parent_type.parent_subtype.node_template2.node_subtype.ext",
         "prefix1.parent_type.parent_subtype.node_template2.ext",
         "prefix1.parent_type.parent_subtype.node_type.node_subtype.ext",
         "prefix1.parent_type.parent_subtype.node_type.ext",
+        "prefix1.parent_type.primary.node_template1.node_subtype.ext",
+        "prefix1.parent_type.primary.node_template1.ext",
+        "prefix1.parent_type.primary.node_template2.node_subtype.ext",
+        "prefix1.parent_type.primary.node_template2.ext",
+        "prefix1.parent_type.primary.node_type.node_subtype.ext",
+        "prefix1.parent_type.primary.node_type.ext",
         "prefix1.parent_type.node_template1.node_subtype.ext",
         "prefix1.parent_type.node_template1.ext",
         "prefix1.parent_type.node_template2.node_subtype.ext",
@@ -40,12 +53,24 @@ def test_create_templates():
         "prefix1.node_template2.ext",
         "prefix1.node_type.node_subtype.ext",
         "prefix1.node_type.ext",
+        "parent_type.parent_subtype.primary.node_template1.node_subtype.ext",
+        "parent_type.parent_subtype.primary.node_template1.ext",
+        "parent_type.parent_subtype.primary.node_template2.node_subtype.ext",
+        "parent_type.parent_subtype.primary.node_template2.ext",
+        "parent_type.parent_subtype.primary.node_type.node_subtype.ext",
+        "parent_type.parent_subtype.primary.node_type.ext",
         "parent_type.parent_subtype.node_template1.node_subtype.ext",
         "parent_type.parent_subtype.node_template1.ext",
         "parent_type.parent_subtype.node_template2.node_subtype.ext",
         "parent_type.parent_subtype.node_template2.ext",
         "parent_type.parent_subtype.node_type.node_subtype.ext",
         "parent_type.parent_subtype.node_type.ext",
+        "parent_type.primary.node_template1.node_subtype.ext",
+        "parent_type.primary.node_template1.ext",
+        "parent_type.primary.node_template2.node_subtype.ext",
+        "parent_type.primary.node_template2.ext",
+        "parent_type.primary.node_type.node_subtype.ext",
+        "parent_type.primary.node_type.ext",
         "parent_type.node_template1.node_subtype.ext",
         "parent_type.node_template1.ext",
         "parent_type.node_template2.node_subtype.ext",

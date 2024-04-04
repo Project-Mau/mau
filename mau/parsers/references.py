@@ -60,6 +60,17 @@ class ReferencesManager:
         self.data.update(other.data)
 
     def update_mentions(self, mentions):
+        # Retrieve the references
+        # The format of this dictionary is
+        # {(content_type, name): node}
+        text_references = set(mentions.keys())
+        existing_references = set(self.mentions.keys())
+        duplicate_references = set.intersection(existing_references, text_references)
+
+        if duplicate_references:
+            duplicates_list = ", ".join([str(i) for i in duplicate_references])
+            self.parser._error(f"Duplicate references detected: {duplicates_list}")
+
         self.mentions.update(mentions)
 
 

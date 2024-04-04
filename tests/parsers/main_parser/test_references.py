@@ -1,6 +1,9 @@
 import textwrap
 from unittest.mock import patch
 
+import pytest
+
+from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.inline import TextNode
 from mau.nodes.page import ContainerNode
@@ -403,3 +406,19 @@ def test_references_output(mock_reference_anchor):
             content_anchor="cnt-content_type1-1-XXYY",
         )
     }
+
+
+def test_reference_duplication():
+    source = """
+    [*reference, note, note1]
+    ----
+    This is the content of the reference
+    ----
+
+    This is a paragraph with a reference[reference](note, note1).
+
+    This is a paragraph with the same reference[reference](note, note1).
+    """
+
+    with pytest.raises(MauErrorException):
+        runner(textwrap.dedent(source))

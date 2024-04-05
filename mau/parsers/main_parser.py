@@ -38,54 +38,35 @@ class MainParser(BaseParser):
         self.toc_manager = TocManager(self)
         self.attributes_manager = AttributesManager(self)
 
-        # When we define a block we establish an alias
-        # {alias:actual_block_name}.
-        self.block_aliases = {}
-
-        # Each block we define can have default values
-        # {actual_block_name:kwargs}.
-        self.block_defaults = {}
-
-        # Each block we define can have names for unnamed arguments
-        # {actual_block_name:kwargs}.
-        self.block_names = {}
-
-        # This establishes a default block definition so that
-        # [source] = [source, engine=source]
-        # This definition can be overridden by custom block definitions.
-        self.block_aliases["source"] = None
-        self.block_defaults["source"] = {"engine": "source", "language": "text"}
-        self.block_names["source"] = ["language"]
-
-        self.block_aliases["footnote"] = None
-        self.block_defaults["footnote"] = {"engine": "footnote"}
-        self.block_names["footnote"] = ["name"]
-
-        self.block_aliases["reference"] = None
-        self.block_defaults["reference"] = {"engine": "reference"}
-        self.block_names["reference"] = ["type", "name"]
-
-        self.block_aliases["admonition"] = "admonition"
-        self.block_names["admonition"] = ["class", "icon", "label"]
+        # These are the default block aliases
+        # If subtype is not set it will be the alias itself.
+        self.block_aliases = {
+            "source": {
+                "subtype": None,
+                "mandatory_args": ["language"],
+                "defaults": {"engine": "source", "language": "text"},
+            },
+            "footnote": {
+                "subtype": None,
+                "mandatory_args": ["name"],
+                "defaults": {"engine": "footnote"},
+            },
+            "reference": {
+                "subtype": None,
+                "mandatory_args": ["type", "name"],
+                "defaults": {"engine": "reference"},
+            },
+            "admonition": {
+                "mandatory_args": ["class", "icon", "label"],
+            },
+        }
 
         # Iterate through block definitions passed as variables
-        # for alias, block_definition in (
-        #     self.variables["mau"].get("block_definitions", {}).items()
-        # ):
-        #     try:
-        #         subtype = block_definition["subtype"]
-        #         self.block_aliases[alias] = subtype
-        #     except KeyError:
-        #         raise ConfigurationError(
-        #             f"Block definition '{alias}' is missing key 'subtype'"
-        #         )
-
-        #     try:
-        #         self.block_defaults[subtype] = block_definition["kwargs"]
-        #     except KeyError:
-        #         raise ConfigurationError(
-        #             f"Block definition '{alias}' is missing key 'kwargs'"
-        #         )
+        self.block_aliases.update(
+            self.environment.getvar(
+                "mau.parser.block_definitions", Environment()
+            ).asdict()
+        )
 
         # This is a buffer for a block title
         self._title = None
@@ -297,11 +278,13 @@ class MainParser(BaseParser):
             if len(command_args) < 1:
                 self._error("Block definitions require at least the alias")
 
-            block_alias = command_args.pop(0)
+            alias = command_args.pop(0)
 
-            self.block_aliases[block_alias] = command_subtype
-            self.block_defaults[block_alias] = command_kwargs
-            self.block_names[block_alias] = command_args
+            self.block_aliases[alias] = {
+                "subtype": command_subtype,
+                "mandatory_args": command_args,
+                "defaults": command_kwargs,
+            }
 
         elif name == "toc":
             self.toc_manager.create_toc_node(subtype, args, kwargs, tags)
@@ -526,13 +509,13 @@ class MainParser(BaseParser):
         # Retrieve the block names and defaults for the
         # specific type of block
 
-        block_names = self.block_names.get(subtype, [])
-        block_defaults = self.block_defaults.get(subtype, {})
+        alias = self.block_aliases.get(subtype, {})
 
         # Now replace the alias with the true block type
-        block.subtype = self.block_aliases.get(subtype, subtype)
+        block.subtype = alias.get("subtype", subtype)
+        block_names = alias.get("mandatory_args", [])
+        block_defaults = alias.get("defaults", {})
 
-        # Assign names
         args, kwargs = self._set_names_and_defaults(
             args,
             kwargs,

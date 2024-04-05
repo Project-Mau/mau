@@ -1,6 +1,7 @@
 from unittest.mock import patch
 
 import pytest
+from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode
@@ -406,8 +407,50 @@ def test_command_defblock():
 
     par = runner(source)
 
-    assert par.block_aliases["alias"] == "myblock"
-    assert par.block_defaults["alias"] == {"language": "python", "engine": "source"}
+    assert par.block_aliases["alias"] == {
+        "subtype": "myblock",
+        "mandatory_args": [],
+        "defaults": {"language": "python", "engine": "source"},
+    }
+
+
+def test_define_block_in_environment():
+    source = """
+    """
+
+    environment = Environment()
+    environment.setvar(
+        "mau.parser.block_definitions",
+        {
+            "alias": {
+                "subtype": "type",
+                "mandatory_args": ["arg1", "arg2"],
+                "defaults": {"key1": "value1"},
+            },
+        },
+    )
+
+    par = runner(source, environment=environment)
+
+    assert par.block_aliases["alias"] == {
+        "subtype": "type",
+        "mandatory_args": ["arg1", "arg2"],
+        "defaults": {"key1": "value1"},
+    }
+
+
+def test_command_defblock_no_subtype():
+    source = """
+    ::defblock:alias, language=python, engine=source
+    """
+
+    par = runner(source)
+
+    assert par.block_aliases["alias"] == {
+        "subtype": None,
+        "mandatory_args": [],
+        "defaults": {"language": "python", "engine": "source"},
+    }
 
 
 def test_command_defblock_source():
@@ -416,8 +459,11 @@ def test_command_defblock_source():
 
     par = runner(source)
 
-    assert par.block_aliases["source"] is None
-    assert par.block_defaults["source"] == {"language": "text", "engine": "source"}
+    assert par.block_aliases["source"] == {
+        "subtype": None,
+        "mandatory_args": ["language"],
+        "defaults": {"language": "text", "engine": "source"},
+    }
 
 
 def test_command_defblock_source_can_be_overridden():
@@ -427,8 +473,11 @@ def test_command_defblock_source_can_be_overridden():
 
     par = runner(source)
 
-    assert par.block_aliases["source"] == "source"
-    assert par.block_defaults["source"] == {"language": "python", "engine": "source"}
+    assert par.block_aliases["source"] == {
+        "subtype": "source",
+        "mandatory_args": [],
+        "defaults": {"language": "python", "engine": "source"},
+    }
 
 
 def test_command_defblock_no_args():

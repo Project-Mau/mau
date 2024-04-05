@@ -401,7 +401,7 @@ def test_block_condition_can_use_variable_namespace():
 
 def test_command_defblock():
     source = """
-    ::defblock:alias, myblock, language=python, engine=source
+    ::defblock:alias, *myblock, language=python, engine=source
     """
 
     par = runner(source)
@@ -422,7 +422,7 @@ def test_command_defblock_source():
 
 def test_command_defblock_source_can_be_overridden():
     source = """
-    ::defblock:source, source, language=python, engine=source
+    ::defblock:source, *source, language=python, engine=source
     """
 
     par = runner(source)
@@ -440,18 +440,9 @@ def test_command_defblock_no_args():
         runner(source)
 
 
-def test_command_defblock_single_arg():
-    source = """
-    ::defblock:source
-    """
-
-    with pytest.raises(MauErrorException):
-        runner(source)
-
-
 def test_block_definitions_are_used():
     source = """
-    ::defblock:alias, subtype, name1=value1, name2=value2
+    ::defblock:alias, *subtype, name1=value1, name2=value2
 
     [*alias]
     ----
@@ -475,7 +466,7 @@ def test_block_definitions_are_used():
 
 def test_block_definitions_local_kwargs_overwrite_defined_ones():
     source = """
-    ::defblock:alias, subtype, name1=value1, name2=value2
+    ::defblock:alias, *subtype, name1=value1, name2=value2
 
     [*alias, name1=value99]
     ----
@@ -503,7 +494,7 @@ def test_block_definitions_local_args_are_used():
     # blocks cannot have unnamed arguments.
 
     source = """
-    ::defblock:alias, subtype, name1=value1, name2=value2
+    ::defblock:alias, *subtype, name1=value1, name2=value2
 
     [*alias, attr1, name1=value99]
     ----
@@ -531,7 +522,7 @@ def test_block_definitions_unnamed_args_are_used_as_names():
     # unnamed arguments passed to the block.
 
     source = """
-    ::defblock:alias, subtype, attr1, attr2
+    ::defblock:alias, *subtype, attr1, attr2
 
     [*alias, value1, value2]
     ----
@@ -559,7 +550,7 @@ def test_block_definitions_unnamed_and_named_args():
     # kwargs if not redefined.
 
     source = """
-    ::defblock:alias, subtype, attr1, attr2, attr3=value3
+    ::defblock:alias, *subtype, attr1, attr2, attr3=value3
 
     [*alias, value1, value2]
     ----
@@ -587,7 +578,7 @@ def test_block_definitions_no_values_for_unnamed_args():
     # when the block is created.
 
     source = """
-    ::defblock:alias, subtype, attr1, attr2, attr3=value3
+    ::defblock:alias, *subtype, attr1, attr2, attr3=value3
 
     [*alias]
     ----
@@ -604,7 +595,7 @@ def test_block_definitions_values_without_unnamed_args():
     # specified in the block definition.
 
     source = """
-    ::defblock:alias, subtype, attr3=value3
+    ::defblock:alias, *subtype, attr3=value3
 
     [*alias, value1, value2]
     ----

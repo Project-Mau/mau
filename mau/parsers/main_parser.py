@@ -284,20 +284,22 @@ class MainParser(BaseParser):
                 arguments, current_context, self.environment
             )
 
-            command_args, command_kwargs, _, _ = arguments_parser.process_arguments()
+            (
+                command_args,
+                command_kwargs,
+                _,
+                command_subtype,
+            ) = arguments_parser.process_arguments()
 
         if name == "defblock":
             # Block definitions must have at least 2 arguments,
             # the alias and the block type.
-            if len(command_args) < 2:
-                self._error(
-                    "Block definitions require at least two unnamed arguments: ALIAS and SUBTYPE"
-                )
+            if len(command_args) < 1:
+                self._error("Block definitions require at least the alias")
 
             block_alias = command_args.pop(0)
-            block_type = command_args.pop(0)
 
-            self.block_aliases[block_alias] = block_type
+            self.block_aliases[block_alias] = command_subtype
             self.block_defaults[block_alias] = command_kwargs
             self.block_names[block_alias] = command_args
 

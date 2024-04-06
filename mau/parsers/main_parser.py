@@ -405,11 +405,11 @@ class MainParser(BaseParser):
         )
         text = preprocess_parser.nodes[0].value
 
-        # Create the anchor
-        anchor = self.header_anchor(text, level)
-
         # Consume the parser arguments
         args, kwargs, tags, subtype = self.attributes_manager.pop()
+
+        # Create the anchor
+        anchor = kwargs.pop("anchor", self.header_anchor(text, level))
 
         node = HeaderNode(
             value=text,

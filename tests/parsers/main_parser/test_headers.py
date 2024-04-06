@@ -138,6 +138,23 @@ def test_attributes_header():
     ]
 
 
+def test_header_attributes_can_overwrite_anchor():
+    source = """
+    [arg1, anchor=someheader, key1=value1]
+    = Header
+    """
+
+    assert runner(source).nodes == [
+        HeaderNode(
+            value="Header",
+            level="1",
+            anchor="someheader",
+            args=["arg1"],
+            kwargs={"key1": "value1"},
+        ),
+    ]
+
+
 def test_single_tag_header():
     environment = Environment()
     environment.setvar(

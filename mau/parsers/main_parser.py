@@ -522,7 +522,6 @@ class MainParser(BaseParser):
             block_names,
             block_defaults,
         )
-
         # Extract classes and convert them into a list
         classes = []
         if "classes" in kwargs:

@@ -664,3 +664,31 @@ def test_block_definitions_values_without_unnamed_args():
             kwargs={"attr3": "value3"},
         ),
     ]
+
+
+def test_block_definitions_named_override_unnamed():
+    # This is testing that values passed to the
+    # block at creation time should match the parameters
+    # specified in the block definition.
+
+    source = """
+    ::defblock:alias, *subtype, arg1, key1=value1
+
+    [*alias, value2, arg1=value1]
+    ----
+    ----
+    """
+
+    assert runner(source).nodes == [
+        BlockNode(
+            subtype="subtype",
+            children=[],
+            secondary_children=[],
+            classes=[],
+            title=None,
+            engine=None,
+            preprocessor="none",
+            args=["value2"],
+            kwargs={"arg1": "value1", "key1": "value1"},
+        ),
+    ]

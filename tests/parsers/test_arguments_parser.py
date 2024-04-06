@@ -303,10 +303,10 @@ def test_apply_prototype_clash_between_positional_value_and_named_value():
         args, kwargs, ["attr1", "attr2"], {"attr3": "value3"}
     )
 
-    assert args == []
+    assert args == ["value2"]
     assert kwargs == {
-        "attr1": "value1",
-        "attr2": "value2",
+        "attr1": "value5",
+        "attr2": "value1",
         "attr3": "value3",
     }
     assert tags == []

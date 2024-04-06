@@ -15,6 +15,10 @@ def set_names_and_defaults(
     else:
         _default_values = {}
 
+    # If a named argument provides the value for a
+    # positional name we consider it set
+    positional_names = [i for i in positional_names if i not in kwargs]
+
     # If we pass more positional values than names,
     # some of them won't be converted and become flags
     remaining_args = args[len(positional_names) :]

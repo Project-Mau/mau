@@ -82,6 +82,7 @@ def parser_runner_factory(lexer_class, parser_class, *args, **kwds):
 
         parser = init_parser(textwrap.dedent(source), environment, *args, **kwds)
         parser.parse(parser.tokens)
+        parser.finalise()
 
         return parser
 

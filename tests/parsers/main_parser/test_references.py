@@ -2,7 +2,6 @@ import textwrap
 from unittest.mock import patch
 
 import pytest
-
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.inline import TextNode
@@ -100,12 +99,11 @@ def test_simple_reference(mock_reference_anchor):
 
 
 @patch("mau.parsers.references.reference_anchor")
-def test_reference_data_inside_block(mock_reference_anchor):
+def test_reference_mention_and_data_inside_block(mock_reference_anchor):
     source = """
+    ====
     This is a paragraph with a [reference](content_type, value)
 
-    [someblock]
-    ====
     [*reference, content_type, value]
     ----
     This is a paragraph.
@@ -135,12 +133,45 @@ def test_reference_data_inside_block(mock_reference_anchor):
 
 
 @patch("mau.parsers.references.reference_anchor")
-def test_reference_mention_and_data_inside_block(mock_reference_anchor):
+def test_reference_mention_inside_block(mock_reference_anchor):
     source = """
-    [someblock]
     ====
     This is a paragraph with a [reference](content_type, value)
+    ====
 
+    [*reference, content_type, value]
+    ----
+    This is a paragraph.
+    ----
+    """
+
+    mock_reference_anchor.return_value = "XXYY"
+
+    parser = runner(source)
+
+    assert parser.references_manager.references == {
+        ("content_type", "value"): ReferencesEntryNode(
+            "content_type",
+            children=[
+                ParagraphNode(
+                    children=[
+                        TextNode("This is a paragraph."),
+                    ]
+                ),
+            ],
+            number=1,
+            reference_anchor="ref-content_type-1-XXYY",
+            content_anchor="cnt-content_type-1-XXYY",
+        ),
+    }
+
+
+@patch("mau.parsers.references.reference_anchor")
+def test_reference_data_inside_block(mock_reference_anchor):
+    source = """
+    This is a paragraph with a [reference](content_type, value)
+
+    ====
     [*reference, content_type, value]
     ----
     This is a paragraph.

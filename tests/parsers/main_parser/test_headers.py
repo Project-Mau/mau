@@ -1,8 +1,11 @@
 from unittest.mock import patch
 
+import pytest
 from mau.environment.environment import Environment
+from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.header import HeaderNode
+from mau.nodes.inline import TextNode
 from mau.parsers.main_parser import MainParser, header_anchor
 
 from tests.helpers import init_parser_factory, parser_runner_factory
@@ -46,7 +49,7 @@ def test_custom_header_anchor_function():
     )
 
     assert runner(source, environment).nodes == [
-        HeaderNode("Title of the section", "1", "XXXXXY")
+        HeaderNode(value=[TextNode("Title of the section")], level="1", anchor="XXXXXY")
     ]
 
 
@@ -61,7 +64,7 @@ def test_parse_header_level_1():
     """
 
     assert runner(source, environment).nodes == [
-        HeaderNode("Title of the section", "1", "XXXXXY")
+        HeaderNode(value=[TextNode("Title of the section")], level="1", anchor="XXXXXY")
     ]
 
 
@@ -76,7 +79,9 @@ def test_parse_header_level_3():
     """
 
     assert runner(source, environment).nodes == [
-        HeaderNode("Title of a subsection", "3", "XXXXXX")
+        HeaderNode(
+            value=[TextNode("Title of a subsection")], level="3", anchor="XXXXXX"
+        )
     ]
 
 
@@ -98,21 +103,37 @@ def test_parse_collect_headers():
     parser = runner(source, environment)
 
     assert parser.nodes == [
-        HeaderNode("Header 1", "1", "Header 1-XXXXXX"),
-        HeaderNode("Header 1.1", "2", "Header 1.1-XXXXXX"),
-        HeaderNode("Header 1.2", "2", "Header 1.2-XXXXXX"),
-        HeaderNode("Header 2", "1", "Header 2-XXXXXX"),
-        HeaderNode("Header 2.1", "2", "Header 2.1-XXXXXX"),
-        HeaderNode("Header 2.1.1", "3", "Header 2.1.1-XXXXXX"),
+        HeaderNode(value=[TextNode("Header 1")], level="1", anchor="Header 1-XXXXXX"),
+        HeaderNode(
+            value=[TextNode("Header 1.1")], level="2", anchor="Header 1.1-XXXXXX"
+        ),
+        HeaderNode(
+            value=[TextNode("Header 1.2")], level="2", anchor="Header 1.2-XXXXXX"
+        ),
+        HeaderNode(value=[TextNode("Header 2")], level="1", anchor="Header 2-XXXXXX"),
+        HeaderNode(
+            value=[TextNode("Header 2.1")], level="2", anchor="Header 2.1-XXXXXX"
+        ),
+        HeaderNode(
+            value=[TextNode("Header 2.1.1")], level="3", anchor="Header 2.1.1-XXXXXX"
+        ),
     ]
 
     assert parser.toc_manager.headers == [
-        HeaderNode("Header 1", "1", "Header 1-XXXXXX"),
-        HeaderNode("Header 1.1", "2", "Header 1.1-XXXXXX"),
-        HeaderNode("Header 1.2", "2", "Header 1.2-XXXXXX"),
-        HeaderNode("Header 2", "1", "Header 2-XXXXXX"),
-        HeaderNode("Header 2.1", "2", "Header 2.1-XXXXXX"),
-        HeaderNode("Header 2.1.1", "3", "Header 2.1.1-XXXXXX"),
+        HeaderNode(value=[TextNode("Header 1")], level="1", anchor="Header 1-XXXXXX"),
+        HeaderNode(
+            value=[TextNode("Header 1.1")], level="2", anchor="Header 1.1-XXXXXX"
+        ),
+        HeaderNode(
+            value=[TextNode("Header 1.2")], level="2", anchor="Header 1.2-XXXXXX"
+        ),
+        HeaderNode(value=[TextNode("Header 2")], level="1", anchor="Header 2-XXXXXX"),
+        HeaderNode(
+            value=[TextNode("Header 2.1")], level="2", anchor="Header 2.1-XXXXXX"
+        ),
+        HeaderNode(
+            value=[TextNode("Header 2.1.1")], level="3", anchor="Header 2.1.1-XXXXXX"
+        ),
     ]
 
 
@@ -129,9 +150,9 @@ def test_attributes_header():
 
     assert runner(source, environment).nodes == [
         HeaderNode(
-            "Header",
-            "1",
-            "Header-XXXXXX",
+            value=[TextNode("Header")],
+            level="1",
+            anchor="Header-XXXXXX",
             args=["arg1"],
             kwargs={"key1": "value1"},
         ),
@@ -146,13 +167,51 @@ def test_header_attributes_can_overwrite_anchor():
 
     assert runner(source).nodes == [
         HeaderNode(
-            value="Header",
+            value=[TextNode("Header")],
             level="1",
             anchor="someheader",
             args=["arg1"],
             kwargs={"key1": "value1"},
         ),
     ]
+
+
+def test_header_with_id_is_stored():
+    environment = Environment()
+    environment.setvar(
+        "mau.parser.header_anchor_function", lambda text, level: f"{text}-XXXXXX"
+    )
+
+    source = """
+    [arg1,id=someid,key1=value1]
+    = Header
+    """
+
+    node = HeaderNode(
+        value=[TextNode("Header")],
+        level="1",
+        anchor="Header-XXXXXX",
+        args=["arg1"],
+        kwargs={"id": "someid", "key1": "value1"},
+    )
+
+    parser = runner(source, environment)
+
+    assert parser.nodes == [node]
+    assert parser.internal_links_manager.headers == {"someid": node}
+
+
+def test_header_with_duplicate_id():
+    source = """
+    [arg1,id=someid,key1=value1]
+    = Header
+
+    [id=someid]
+    = Another Header
+    """
+
+    with pytest.raises(MauErrorException):
+        runner(source)
 
 
 def test_single_tag_header():
@@ -168,9 +227,9 @@ def test_single_tag_header():
 
     assert runner(source, environment).nodes == [
         HeaderNode(
-            "Header",
-            "1",
-            "Header-XXXXXX",
+            value=[TextNode("Header")],
+            level="1",
+            anchor="Header-XXXXXX",
             args=["arg1"],
             kwargs={"key1": "value1"},
             tags=["tag1"],
@@ -191,9 +250,9 @@ def test_():
 
     assert runner(source, environment).nodes == [
         HeaderNode(
-            "Header",
-            "1",
-            "Header-XXXXXX",
+            value=[TextNode("Header")],
+            level="1",
+            anchor="Header-XXXXXX",
             args=[],
             kwargs={},
             tags=[],

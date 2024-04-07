@@ -11,8 +11,8 @@ class TocEntryNode(Node):
 
     def __init__(
         self,
-        value,
-        anchor,
+        value=None,
+        anchor=None,
         parent=None,
         parent_position=None,
         children=None,

@@ -2,8 +2,15 @@ import pytest
 from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
+from mau.nodes.header import HeaderNode
 from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode
-from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
+from mau.nodes.macros import (
+    MacroClassNode,
+    MacroHeaderNode,
+    MacroImageNode,
+    MacroLinkNode,
+    MacroNode,
+)
 from mau.nodes.references import ReferenceNode
 from mau.visitors.jinja_visitor import JinjaVisitor
 
@@ -267,6 +274,29 @@ def test_inline_link_node():
     result = visitor.visit(node)
 
     assert result == "sometarget - sometext"
+
+
+def test_inline_header_node():
+    templates = {
+        "text.j2": "{{ value }}",
+        "macro.header.j2": "#{{ header.anchor }} - {{ content }}",
+    }
+
+    environment = Environment()
+    environment.update(templates, "mau.visitor.custom_templates")
+    visitor = JinjaVisitor(environment)
+
+    header_node = HeaderNode(
+        value=[TextNode("Header")], level="2", anchor="XXXXXX", kwargs={"id": "someid"}
+    )
+
+    node = MacroHeaderNode(
+        header_id="someid", header=header_node, children=[TextNode("sometext")]
+    )
+
+    result = visitor.visit(node)
+
+    assert result == "#XXXXXX - sometext"
 
 
 def test_inline_image_node():

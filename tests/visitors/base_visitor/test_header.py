@@ -1,5 +1,6 @@
 from mau.environment.environment import Environment
 from mau.nodes.header import HeaderNode
+from mau.nodes.inline import TextNode
 from mau.visitors.base_visitor import BaseVisitor
 
 
@@ -7,7 +8,7 @@ def test_header_node():
     visitor = BaseVisitor(Environment())
 
     node = HeaderNode(
-        value="Just some text",
+        value=[TextNode("Just some text")],
         level="3",
         anchor="someanchor",
         args=["arg1", "arg2"],
@@ -20,7 +21,18 @@ def test_header_node():
     assert result == {
         "data": {
             "type": "header",
-            "value": "Just some text",
+            "value": [
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "Just some text",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
+                    },
+                }
+            ],
             "level": 3,
             "anchor": "someanchor",
             "subtype": None,

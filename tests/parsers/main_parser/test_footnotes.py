@@ -6,9 +6,7 @@ from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.footnotes import FootnoteNode, FootnotesEntryNode, FootnotesNode
 from mau.nodes.inline import TextNode
-from mau.nodes.page import ContainerNode
 from mau.nodes.paragraph import ParagraphNode
-from mau.nodes.toc import TocNode
 from mau.parsers.footnotes import footnote_anchor
 from mau.parsers.main_parser import MainParser
 
@@ -83,6 +81,7 @@ def test_footnote_content(mock_footnote_anchor):
         "note2": FootnoteNode(number=2),
     }
     parser.parse(parser.tokens)
+    parser.finalise()
 
     assert parser.nodes == []
     assert parser.footnotes_manager.mentions == {
@@ -222,3 +221,129 @@ def test_footnote_duplication():
 
     with pytest.raises(MauErrorException):
         runner(textwrap.dedent(source))
+
+
+@patch("mau.parsers.footnotes.footnote_anchor")
+def test_footnote_data_and_mention_in_block(mock_footnote_anchor):
+    mock_footnote_anchor.return_value = "XXYY"
+
+    source = """
+    ====
+    This is a paragraph with a footnote[footnote](note1).
+
+    [*footnote, note1]
+    ----
+    This is the content of the footnote
+    ----
+    ====
+    """
+
+    parser = runner(textwrap.dedent(source))
+
+    assert parser.footnotes_manager.mentions == {
+        "note1": FootnoteNode(
+            number=1,
+            children=[
+                ParagraphNode(
+                    children=[
+                        TextNode("This is the content of the footnote"),
+                    ]
+                ),
+            ],
+            reference_anchor="ref-footnote-1-XXYY",
+            content_anchor="cnt-footnote-1-XXYY",
+        )
+    }
+    assert parser.footnotes_manager.data == {
+        "note1": [
+            ParagraphNode(
+                children=[
+                    TextNode("This is the content of the footnote"),
+                ]
+            )
+        ],
+    }
+
+
+@patch("mau.parsers.footnotes.footnote_anchor")
+def test_footnote_data_in_block(mock_footnote_anchor):
+    mock_footnote_anchor.return_value = "XXYY"
+
+    source = """
+    This is a paragraph with a footnote[footnote](note1).
+
+    ====
+    [*footnote, note1]
+    ----
+    This is the content of the footnote
+    ----
+    ====
+    """
+
+    parser = runner(textwrap.dedent(source))
+
+    assert parser.footnotes_manager.mentions == {
+        "note1": FootnoteNode(
+            number=1,
+            children=[
+                ParagraphNode(
+                    children=[
+                        TextNode("This is the content of the footnote"),
+                    ]
+                ),
+            ],
+            reference_anchor="ref-footnote-1-XXYY",
+            content_anchor="cnt-footnote-1-XXYY",
+        )
+    }
+    assert parser.footnotes_manager.data == {
+        "note1": [
+            ParagraphNode(
+                children=[
+                    TextNode("This is the content of the footnote"),
+                ]
+            )
+        ],
+    }
+
+
+@patch("mau.parsers.footnotes.footnote_anchor")
+def test_footnote_mention_in_block(mock_footnote_anchor):
+    mock_footnote_anchor.return_value = "XXYY"
+
+    source = """
+    ====
+    This is a paragraph with a footnote[footnote](note1).
+    ====
+
+    [*footnote, note1]
+    ----
+    This is the content of the footnote
+    ----
+    """
+
+    parser = runner(textwrap.dedent(source))
+
+    assert parser.footnotes_manager.mentions == {
+        "note1": FootnoteNode(
+            number=1,
+            children=[
+                ParagraphNode(
+                    children=[
+                        TextNode("This is the content of the footnote"),
+                    ]
+                ),
+            ],
+            reference_anchor="ref-footnote-1-XXYY",
+            content_anchor="cnt-footnote-1-XXYY",
+        )
+    }
+    assert parser.footnotes_manager.data == {
+        "note1": [
+            ParagraphNode(
+                children=[
+                    TextNode("This is the content of the footnote"),
+                ]
+            )
+        ],
+    }

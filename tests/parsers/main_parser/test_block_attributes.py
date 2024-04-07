@@ -234,11 +234,19 @@ def test_block_default_engine_adds_headers_to_global_toc(mock_header_anchor):
     par = runner(source)
 
     assert par.nodes == [
-        HeaderNode("Global header", "1", "XXYY"),
+        HeaderNode(
+            value=[TextNode("Global header")],
+            level="1",
+            anchor="XXYY",
+        ),
         BlockNode(
             subtype="someblock",
             children=[
-                HeaderNode("Block header", "1", "XXYY"),
+                HeaderNode(
+                    value=[TextNode("Block header")],
+                    level="1",
+                    anchor="XXYY",
+                ),
             ],
             secondary_children=[],
             classes=[],
@@ -251,8 +259,16 @@ def test_block_default_engine_adds_headers_to_global_toc(mock_header_anchor):
     ]
 
     assert par.toc_manager.headers == [
-        HeaderNode("Global header", "1", "XXYY"),
-        HeaderNode("Block header", "1", "XXYY"),
+        HeaderNode(
+            value=[TextNode("Global header")],
+            level="1",
+            anchor="XXYY",
+        ),
+        HeaderNode(
+            value=[TextNode("Block header")],
+            level="1",
+            anchor="XXYY",
+        ),
     ]
 
 

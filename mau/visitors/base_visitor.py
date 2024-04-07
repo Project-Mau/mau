@@ -182,6 +182,23 @@ class BaseVisitor:
 
         return result
 
+    def _visit_macro__header(self, node, *args, **kwargs):
+        result = self._visit_default(node, *args, **kwargs)
+        result["data"].update(
+            {
+                "header": {
+                    "anchor": node.header.anchor,
+                    "value": self.visitlist(node, node.header.value, *args, **kwargs),
+                    "level": node.header.level,
+                },
+                "content": self.visitlist(node, node.children, *args, **kwargs)
+                if node.children
+                else self.visitlist(node, node.header.value, *args, **kwargs),
+            }
+        )
+
+        return result
+
     def _visit_macro__image(self, node, *args, **kwargs):
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
@@ -220,7 +237,7 @@ class BaseVisitor:
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
-                "value": node.value,
+                "value": self.visitlist(node, node.value, *args, **kwargs),
                 "level": int(node.level),
                 "anchor": node.anchor,
             }
@@ -351,7 +368,7 @@ class BaseVisitor:
         return {
             "data": {
                 "type": node.node_type,
-                "value": node.value,
+                "value": self.visitlist(node, node.value, *args, **kwargs),
                 "anchor": node.anchor,
                 "children": self.visitlist(node, node.children, *args, **kwargs),
                 "tags": node.tags,

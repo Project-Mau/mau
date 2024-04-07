@@ -1,5 +1,12 @@
+from mau.nodes.header import HeaderNode
 from mau.nodes.inline import TextNode
-from mau.nodes.macros import MacroClassNode, MacroImageNode, MacroLinkNode, MacroNode
+from mau.nodes.macros import (
+    MacroClassNode,
+    MacroHeaderNode,
+    MacroImageNode,
+    MacroLinkNode,
+    MacroNode,
+)
 
 
 def test_macro_node():
@@ -50,3 +57,16 @@ def test_image_node():
     assert node.height == "height"
     assert node.node_type == "macro.image"
     assert node == MacroImageNode("someuri", "somealttext", "width", "height")
+
+
+def test_header_node():
+    header_node = HeaderNode("someheader", "1", "someanchor")
+    node = MacroHeaderNode("someid", header_node, children=[TextNode("sometext")])
+
+    assert node.header_id == "someid"
+    assert node.header == header_node
+    assert node.children == [TextNode("sometext")]
+    assert node.node_type == "macro.header"
+    assert node == MacroHeaderNode(
+        "someid", header_node, children=[TextNode("sometext")]
+    )

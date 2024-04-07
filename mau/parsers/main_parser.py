@@ -16,6 +16,7 @@ from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.attributes import AttributesManager
 from mau.parsers.base_parser import BaseParser
 from mau.parsers.footnotes import FootnotesManager
+from mau.parsers.internal_links import InternalLinksManager
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
 from mau.parsers.references import ReferencesManager
 from mau.parsers.text_parser import TextParser
@@ -33,6 +34,7 @@ class MainParser(BaseParser):
     def __init__(self, environment, parent_node=None, parent_position=None):
         super().__init__(environment, parent_node, parent_position)
 
+        self.internal_links_manager = InternalLinksManager(self)
         self.footnotes_manager = FootnotesManager(self)
         self.references_manager = ReferencesManager(self)
         self.toc_manager = TocManager(self)
@@ -165,6 +167,10 @@ class MainParser(BaseParser):
         # Extract the reference mentions
         # found in this piece of text
         self.references_manager.update_mentions(text_parser.references)
+
+        # Extract the internal links
+        # found in this piece of text
+        self.internal_links_manager.update_links(text_parser.links)
 
         return text_parser.nodes
 
@@ -412,7 +418,6 @@ class MainParser(BaseParser):
         anchor = kwargs.pop("anchor", self.header_anchor(text, level))
 
         node = HeaderNode(
-            value=text,
             level=str(level),
             anchor=anchor,
             subtype=subtype,
@@ -420,6 +425,22 @@ class MainParser(BaseParser):
             kwargs=kwargs,
             tags=tags,
         )
+
+        current_context = self._current_token.context
+
+        # Titles can contain Mau code
+        text_parser = TextParser.analyse(
+            text,
+            current_context,
+            self.environment,
+            parent_node=node,
+        )
+        node.value = text_parser.nodes
+
+        # If there is an id store the header
+        # to be processed by internal links
+        if "id" in node.kwargs:
+            self.internal_links_manager.add_header(node.kwargs["id"], node)
 
         self.toc_manager.add_header_node(node)
 
@@ -657,6 +678,11 @@ class MainParser(BaseParser):
         # main document. Import them.
         self.references_manager.update(content_parser.references_manager)
 
+        # The internal links and headers
+        # found in this block are part of the
+        # main document. Import them.
+        self.internal_links_manager.update(content_parser.internal_links_manager)
+
         self.toc_manager.update(content_parser.toc_manager)
 
         self._save(block)
@@ -673,6 +699,7 @@ class MainParser(BaseParser):
             parent_node=block,
             parent_position="primary",
         )
+        content_parser.finalise()
 
         secondary_content_parser = MainParser.analyse(
             "\n".join(block.secondary_children),
@@ -681,6 +708,7 @@ class MainParser(BaseParser):
             parent_node=block,
             parent_position="secondary",
         )
+        secondary_content_parser.finalise()
 
         block.children = content_parser.nodes
         block.secondary_children = secondary_content_parser.nodes
@@ -842,7 +870,15 @@ class MainParser(BaseParser):
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         uris = self._get_token(BLTokenTypes.TEXT).value
-        uris = uris.split(",")
+
+        with self:
+            current_context = self._current_token.context
+
+            arguments_parser = ArgumentsParser.analyse(
+                uris, current_context, self.environment
+            )
+
+            uris, _, _, _ = arguments_parser.process_arguments()
 
         if content_type == "image":
             return self._parse_content_image(uris, title, subtype, args, kwargs, tags)
@@ -1101,8 +1137,8 @@ class MainParser(BaseParser):
 
         return True
 
-    def parse(self, tokens):
-        super().parse(tokens)
+    def finalise(self):
+        super().finalise()
 
         # This processes all footnotes stored in
         # the manager merging mentions and data
@@ -1115,6 +1151,11 @@ class MainParser(BaseParser):
         # and updating the nodes that contain
         # a list of references
         self.references_manager.process_references()
+
+        # This processes all links stored in
+        # the manager linking them to the
+        # correct headers
+        self.internal_links_manager.process_links()
 
         # Process ToC
         toc = self.toc_manager.process_toc()

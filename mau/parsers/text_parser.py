@@ -3,13 +3,13 @@ import itertools
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import StyleNode, TextNode, VerbatimNode, WordNode, SentenceNode
+from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode, WordNode
 from mau.nodes.macros import (
     MacroClassNode,
+    MacroHeaderNode,
     MacroImageNode,
     MacroLinkNode,
     MacroNode,
-    # MacroConditionNode,
 )
 from mau.nodes.references import ReferenceNode
 from mau.parsers.arguments import set_names_and_defaults
@@ -39,6 +39,9 @@ class TextParser(BaseParser):
         # The format of this dictionary is
         # {("content_type", "name"): node}
         self.references = {}
+
+        # These are the internal links found in this text
+        self.links = []
 
     def _process_functions(self):
         return [self._process_eol, self._process_sentence]
@@ -209,6 +212,32 @@ class TextParser(BaseParser):
             parent=self.parent_node,
             parent_position=self.parent_position,
         )
+
+    def _parse_macro_header(self, args, kwargs):
+        """
+        Parse a link macro in the form [header](header_id, text).
+        """
+
+        args, kwargs = set_names_and_defaults(
+            args, kwargs, ["target", "text"], {"text": ""}
+        )
+
+        target = kwargs.get("target")
+        text = kwargs["text"]
+
+        current_context = self._current_token.context
+        par = self.analyse(text, current_context, self.environment)
+
+        node = MacroHeaderNode(
+            header_id=target,
+            children=par.nodes,
+            parent=self.parent_node,
+            parent_position=self.parent_position,
+        )
+
+        self.links.append(node)
+
+        return node
 
     def _parse_macro_mailto(self, args, kwargs):
         """
@@ -397,6 +426,9 @@ class TextParser(BaseParser):
 
         if macro_name == "link":
             return self._parse_macro_link(args, kwargs)
+
+        if macro_name == "header":
+            return self._parse_macro_header(args, kwargs)
 
         if macro_name == "mailto":
             return self._parse_macro_mailto(args, kwargs)

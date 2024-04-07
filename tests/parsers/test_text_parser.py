@@ -1,9 +1,11 @@
+import pytest
 from mau.environment.environment import Environment
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import StyleNode, TextNode, VerbatimNode, SentenceNode
+from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode
 from mau.nodes.macros import (
     MacroClassNode,
+    MacroHeaderNode,
     MacroImageNode,
     MacroLinkNode,
     MacroNode,
@@ -374,6 +376,26 @@ def test_macro_link():
     ]
 
     assert runner(source).nodes == expected
+
+
+def test_macro_header():
+    source = '[header](id, "link text")'
+
+    node = MacroHeaderNode("id", children=[TextNode("link text")])
+
+    parser = runner(source)
+    assert parser.nodes == [node]
+    assert parser.links == [node]
+
+
+def test_macro_header_without_text():
+    source = "[header](id)"
+
+    node = MacroHeaderNode("id", children=[])
+
+    parser = runner(source)
+    assert parser.nodes == [node]
+    assert parser.links == [node]
 
 
 def test_macro_link_without_text():

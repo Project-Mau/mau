@@ -140,3 +140,39 @@ class MacroImageNode(Node):
             "width": self.width,
             "height": self.height,
         }
+
+
+class MacroHeaderNode(Node):
+    """This node contains a link to a header node."""
+
+    node_type = "macro.header"
+
+    def __init__(
+        self,
+        header_id,
+        header=None,
+        parent_position=None,
+        parent=None,
+        children=None,
+        subtype=None,
+        args=None,
+        kwargs=None,
+        tags=None,
+    ):
+        super().__init__(
+            parent=parent,
+            parent_position=parent_position,
+            children=children,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
+        )
+        self.header_id = header_id
+        self.header = header
+
+    def _custom_dict(self):
+        return {
+            "header_id": self.header_id,
+            "header": self.header,
+        }

@@ -1,5 +1,5 @@
 from mau.environment.environment import Environment
-from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.inline import TextNode
 from mau.nodes.source import CalloutNode, CalloutsEntryNode, SourceNode
 from mau.visitors.base_visitor import BaseVisitor
 

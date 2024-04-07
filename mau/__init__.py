@@ -62,6 +62,7 @@ class Mau:
 
     def run_parser(self, tokens):
         self.parser.parse(tokens)
+        self.parser.finalise()
 
     def create_visitor(self):
         visitor_class = self.environment.getvar("mau.visitor.class")

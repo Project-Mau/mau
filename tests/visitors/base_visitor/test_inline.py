@@ -1,15 +1,15 @@
-import pytest
 from mau.environment.environment import Environment
-from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.nodes import Node
+from mau.nodes.header import HeaderNode
 from mau.nodes.inline import RawNode, SentenceNode, StyleNode, TextNode, VerbatimNode
 from mau.nodes.macros import (
     MacroClassNode,
+    MacroHeaderNode,
     MacroImageNode,
     MacroLinkNode,
     MacroNode,
 )
+from mau.nodes.nodes import Node
 from mau.nodes.references import ReferenceNode
 from mau.visitors.base_visitor import BaseVisitor
 
@@ -440,6 +440,108 @@ def test_link_node():
                 }
             ],
             "target": "sometarget",
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
+        }
+    }
+
+
+def test_header_node():
+    visitor = BaseVisitor(Environment())
+
+    header_node = HeaderNode(
+        value=[TextNode("Header")], level="2", anchor="XXXXXX", kwargs={"id": "someid"}
+    )
+
+    node = MacroHeaderNode(
+        header_id="someid", header=header_node, children=[TextNode("sometext")]
+    )
+
+    result = visitor.visit(node)
+
+    assert result == {
+        "data": {
+            "type": "macro.header",
+            "content": [
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "sometext",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
+                    }
+                }
+            ],
+            "header": {
+                "value": [
+                    {
+                        "data": {
+                            "type": "text",
+                            "value": "Header",
+                            "subtype": None,
+                            "args": [],
+                            "kwargs": {},
+                            "tags": [],
+                        }
+                    }
+                ],
+                "level": "2",
+                "anchor": "XXXXXX",
+            },
+            "subtype": None,
+            "args": [],
+            "kwargs": {},
+            "tags": [],
+        }
+    }
+
+
+def test_header_node_with_no_text():
+    visitor = BaseVisitor(Environment())
+
+    header_node = HeaderNode(
+        value=[TextNode("Header")], level="2", anchor="XXXXXX", kwargs={"id": "someid"}
+    )
+
+    node = MacroHeaderNode(header_id="someid", header=header_node, children=[])
+
+    result = visitor.visit(node)
+
+    assert result == {
+        "data": {
+            "type": "macro.header",
+            "content": [
+                {
+                    "data": {
+                        "type": "text",
+                        "value": "Header",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
+                    }
+                }
+            ],
+            "header": {
+                "value": [
+                    {
+                        "data": {
+                            "type": "text",
+                            "value": "Header",
+                            "subtype": None,
+                            "args": [],
+                            "kwargs": {},
+                            "tags": [],
+                        }
+                    }
+                ],
+                "level": "2",
+                "anchor": "XXXXXX",
+            },
             "subtype": None,
             "args": [],
             "kwargs": {},

@@ -8,9 +8,9 @@ class HeaderNode(Node):
 
     def __init__(
         self,
-        value,
-        level,
-        anchor,
+        value=None,
+        level=None,
+        anchor=None,
         parent=None,
         parent_position=None,
         children=None,

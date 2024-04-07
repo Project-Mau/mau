@@ -257,6 +257,14 @@ class JinjaVisitor(BaseVisitor):
 
         return base
 
+    def _visit_source(self, node, *args, **kwargs):
+        base = super()._visit_source(node)
+        base["templates"] = [
+            f"source.{node.language}",
+        ]
+
+        return base
+
     def _visit_reference(self, node, *args, **kwargs):
         base = super()._visit_reference(node)
         base["templates"] = [

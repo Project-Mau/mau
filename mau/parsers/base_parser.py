@@ -381,3 +381,6 @@ class BaseParser:
         par.parse(lex.tokens)
 
         return par
+
+    def finalise(self):
+        pass

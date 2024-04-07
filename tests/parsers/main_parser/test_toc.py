@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.header import HeaderNode
+from mau.nodes.inline import TextNode
 from mau.nodes.page import ContainerNode
 from mau.nodes.toc import TocEntryNode, TocNode
 from mau.parsers.main_parser import MainParser
@@ -47,24 +48,36 @@ def test_toc(header_anchor_mock):
     assert parser.output == {
         "content": ContainerNode(
             children=[
-                HeaderNode("Header 1", "1", "Header 1-XXXXXX"),
-                HeaderNode("Header 1.1", "2", "Header 1.1-XXXXXX"),
-                HeaderNode("Header 2", "1", "Header 2-XXXXXX"),
+                HeaderNode(
+                    value=[TextNode("Header 1")],
+                    level="1",
+                    anchor="Header 1-XXXXXX",
+                ),
+                HeaderNode(
+                    value=[TextNode("Header 1.1")],
+                    level="2",
+                    anchor="Header 1.1-XXXXXX",
+                ),
+                HeaderNode(
+                    value=[TextNode("Header 2")],
+                    level="1",
+                    anchor="Header 2-XXXXXX",
+                ),
                 TocNode(
                     children=[
                         TocEntryNode(
-                            value="Header 1",
+                            value=[TextNode("Header 1")],
                             anchor="Header 1-XXXXXX",
                             children=[
                                 TocEntryNode(
-                                    value="Header 1.1",
+                                    value=[TextNode("Header 1.1")],
                                     anchor="Header 1.1-XXXXXX",
                                     children=[],
                                 ),
                             ],
                         ),
                         TocEntryNode(
-                            value="Header 2",
+                            value=[TextNode("Header 2")],
                             anchor="Header 2-XXXXXX",
                             children=[],
                         ),
@@ -75,18 +88,18 @@ def test_toc(header_anchor_mock):
         "toc": TocNode(
             children=[
                 TocEntryNode(
-                    value="Header 1",
+                    value=[TextNode("Header 1")],
                     anchor="Header 1-XXXXXX",
                     children=[
                         TocEntryNode(
-                            value="Header 1.1",
+                            value=[TextNode("Header 1.1")],
                             anchor="Header 1.1-XXXXXX",
                             children=[],
                         ),
                     ],
                 ),
                 TocEntryNode(
-                    value="Header 2",
+                    value=[TextNode("Header 2")],
                     anchor="Header 2-XXXXXX",
                     children=[],
                 ),

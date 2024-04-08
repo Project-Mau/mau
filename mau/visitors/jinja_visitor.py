@@ -94,12 +94,17 @@ def create_templates(prefixes, node_templates, node, extension=None):
         node_subtypes.append(f".{node.subtype}")
     node_subtypes = node_subtypes[::-1]
 
+    # Build [".{tag1}", ".{tag2}", ..., ""]
+    node_tags = [f".{tag}" for tag in node.tags]
+    node_tags.append("")
+
     templates = [
-        f"{prefix}{parent_type}{node_template}{node_subtype}"
+        f"{prefix}{parent_type}{node_template}{node_subtype}{node_tag}"
         for prefix in prefixes
         for parent_type in parent_types
         for node_template in node_templates
         for node_subtype in node_subtypes
+        for node_tag in node_tags
     ]
 
     # The template full name contains the extension

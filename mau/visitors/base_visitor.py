@@ -227,6 +227,7 @@ class BaseVisitor:
         result = self._visit_default(node, *args, **kwargs)
         result["data"].update(
             {
+                "title": self.visit(node.title, *args, **kwargs),
                 "content": self.visitlist(node, node.children, *args, **kwargs),
             }
         )

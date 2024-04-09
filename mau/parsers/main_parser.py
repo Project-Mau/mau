@@ -1110,13 +1110,18 @@ class MainParser(BaseParser):
         # Process ToC
         toc = self.toc_manager.process_toc()
 
-        wrapper_node_class = self.environment.getvar(
-            "mau.parser.content_wrapper", ContainerNode
+        content_wrapper = self.environment.getvar(
+            "mau.parser.content_wrapper", ContainerNode()
         )
+        content_wrapper.children = self.nodes
+
+        toc_wrapper = self.environment.getvar("mau.parser.toc_wrapper", ContainerNode())
+        toc_wrapper.children = [toc]
+        toc.parent = toc_wrapper
 
         self.output.update(
             {
-                "content": wrapper_node_class(children=self.nodes),
-                "toc": toc,
+                "content": content_wrapper,
+                "toc": toc_wrapper,
             }
         )

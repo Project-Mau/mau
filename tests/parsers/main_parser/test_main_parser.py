@@ -26,19 +26,33 @@ def test_parse_output():
 
     assert runner(source).output == {
         "content": ContainerNode(children=[]),
-        "toc": TocNode(),
+        "toc": ContainerNode(children=[TocNode()]),
     }
 
 
-def test_parse_output_custom_container():
+def test_parse_output_custom_content_container():
     source = ""
 
     environment = Environment()
-    environment.setvar("mau.parser.content_wrapper", DocumentNode)
+    document = DocumentNode()
+    environment.setvar("mau.parser.content_wrapper", document)
 
     assert runner(source, environment).output == {
-        "content": DocumentNode(children=[]),
-        "toc": TocNode(),
+        "content": document,
+        "toc": ContainerNode(children=[TocNode()]),
+    }
+
+
+def test_parse_output_custom_toc_container():
+    source = ""
+
+    environment = Environment()
+    document = DocumentNode()
+    environment.setvar("mau.parser.toc_wrapper", document)
+
+    assert runner(source, environment).output == {
+        "content": ContainerNode(children=[]),
+        "toc": document,
     }
 
 

@@ -85,24 +85,28 @@ def test_toc(header_anchor_mock):
                 ),
             ]
         ),
-        "toc": TocNode(
+        "toc": ContainerNode(
             children=[
-                TocEntryNode(
-                    value=[TextNode("Header 1")],
-                    anchor="Header 1-XXXXXX",
+                TocNode(
                     children=[
                         TocEntryNode(
-                            value=[TextNode("Header 1.1")],
-                            anchor="Header 1.1-XXXXXX",
+                            value=[TextNode("Header 1")],
+                            anchor="Header 1-XXXXXX",
+                            children=[
+                                TocEntryNode(
+                                    value=[TextNode("Header 1.1")],
+                                    anchor="Header 1.1-XXXXXX",
+                                    children=[],
+                                ),
+                            ],
+                        ),
+                        TocEntryNode(
+                            value=[TextNode("Header 2")],
+                            anchor="Header 2-XXXXXX",
                             children=[],
                         ),
-                    ],
-                ),
-                TocEntryNode(
-                    value=[TextNode("Header 2")],
-                    anchor="Header 2-XXXXXX",
-                    children=[],
-                ),
+                    ]
+                )
             ]
         ),
     }

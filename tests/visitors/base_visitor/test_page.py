@@ -65,6 +65,7 @@ def test_document_node():
                                 }
                             }
                         ],
+                        "title": {},
                         "subtype": None,
                         "args": ["arg1", "arg2"],
                         "kwargs": {"key1": "value1"},

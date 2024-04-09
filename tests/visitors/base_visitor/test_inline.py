@@ -10,7 +10,6 @@ from mau.nodes.macros import (
     MacroNode,
 )
 from mau.nodes.nodes import Node
-from mau.nodes.references import ReferenceNode
 from mau.visitors.base_visitor import BaseVisitor
 
 
@@ -316,68 +315,6 @@ def test_footnote_node():
                     }
                 },
             ],
-            "subtype": None,
-            "args": [],
-            "kwargs": {},
-            "tags": [],
-        }
-    }
-
-
-def test_reference_node():
-    visitor = BaseVisitor(Environment())
-
-    node = ReferenceNode(
-        content_type="somecontent",
-        children=[TextNode("Just some text.")],
-        number="5",
-        title=SentenceNode(children=[TextNode("Some title")]),
-        reference_anchor="someanchor",
-        content_anchor="someanchor-def",
-    )
-
-    result = visitor.visit(node)
-
-    assert result == {
-        "data": {
-            "type": "reference",
-            "content_type": "somecontent",
-            "number": "5",
-            "reference_anchor": "someanchor",
-            "content_anchor": "someanchor-def",
-            "content": [
-                {
-                    "data": {
-                        "type": "text",
-                        "value": "Just some text.",
-                        "subtype": None,
-                        "args": [],
-                        "kwargs": {},
-                        "tags": [],
-                    },
-                }
-            ],
-            "title": {
-                "data": {
-                    "type": "sentence",
-                    "content": [
-                        {
-                            "data": {
-                                "type": "text",
-                                "value": "Some title",
-                                "subtype": None,
-                                "args": [],
-                                "kwargs": {},
-                                "tags": [],
-                            },
-                        }
-                    ],
-                    "subtype": None,
-                    "args": [],
-                    "kwargs": {},
-                    "tags": [],
-                }
-            },
             "subtype": None,
             "args": [],
             "kwargs": {},

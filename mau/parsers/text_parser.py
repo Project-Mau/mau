@@ -11,7 +11,6 @@ from mau.nodes.macros import (
     MacroLinkNode,
     MacroNode,
 )
-from mau.nodes.references import ReferenceNode
 from mau.parsers.arguments import set_names_and_defaults
 from mau.parsers.arguments_parser import ArgumentsParser
 from mau.parsers.base_parser import BaseParser
@@ -34,11 +33,6 @@ class TextParser(BaseParser):
         # The format of this dictionary is
         # {"name": node}
         self.footnotes = {}
-
-        # These are the references found in this text
-        # The format of this dictionary is
-        # {("content_type", "name"): node}
-        self.references = {}
 
         # These are the internal links found in this text
         self.links = []
@@ -355,25 +349,6 @@ class TextParser(BaseParser):
 
         return node
 
-    def _parse_macro_reference(self, args, kwargs):
-        """
-        Parse a reference macro in the form
-        [reference](type, name).
-        """
-
-        args, kwargs = set_names_and_defaults(args, kwargs, ["type", "name"])
-
-        content_type = kwargs["type"]
-        name = kwargs["name"]
-
-        node = ReferenceNode(
-            content_type, parent=self.parent_node, parent_position=self.parent_position
-        )
-
-        self.references[(content_type, name)] = node
-
-        return node
-
     def _collect_macro_args(self):
         self._get_token(TokenTypes.LITERAL, "(")
 
@@ -438,9 +413,6 @@ class TextParser(BaseParser):
 
         if macro_name == "footnote":
             return self._parse_macro_footnote(args, kwargs)
-
-        if macro_name == "reference":
-            return self._parse_macro_reference(args, kwargs)
 
         if macro_name == "class":
             return self._parse_macro_class(args, kwargs)

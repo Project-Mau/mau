@@ -13,8 +13,6 @@ JOIN_CHARACTERS = {
     "block": "\n",
     "footnote": "\n",
     "footnotes_entry": "\n",
-    "reference": "\n",
-    "references_entry": "\n",
     "source": None,
 }
 
@@ -266,30 +264,6 @@ class JinjaVisitor(BaseVisitor):
         base = super()._visit_source(node)
         base["templates"] = [
             f"source.{node.language}",
-        ]
-
-        return base
-
-    def _visit_reference(self, node, *args, **kwargs):
-        base = super()._visit_reference(node)
-        base["templates"] = [
-            f"reference.{node.content_type}",
-        ]
-
-        return base
-
-    def _visit_references(self, node, *args, **kwargs):
-        base = super()._visit_references(node)
-        base["templates"] = [
-            f"references.{node.content_type}",
-        ]
-
-        return base
-
-    def _visit_references_entry(self, node, *args, **kwargs):
-        base = super()._visit_references_entry(node)
-        base["templates"] = [
-            f"references_entry.{node.content_type}",
         ]
 
         return base

@@ -10,7 +10,6 @@ from mau.nodes.macros import (
     MacroLinkNode,
     MacroNode,
 )
-from mau.nodes.references import ReferenceNode
 from mau.parsers.text_parser import TextParser
 
 from tests.helpers import init_parser_factory, parser_runner_factory
@@ -460,19 +459,6 @@ def test_macro_footnote():
     parser = runner(source)
     assert parser.nodes == expected
     assert parser.footnotes == {"notename": footnote_node}
-
-
-def test_macro_reference():
-    source = "[reference](ctype, name)"
-
-    reference_node = ReferenceNode("ctype")
-    expected = [reference_node]
-
-    parser = runner(source)
-    assert parser.nodes == expected
-    assert parser.references == {
-        ("ctype", "name"): reference_node,
-    }
 
 
 def test_single_class():

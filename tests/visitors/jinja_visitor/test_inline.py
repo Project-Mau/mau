@@ -11,7 +11,6 @@ from mau.nodes.macros import (
     MacroLinkNode,
     MacroNode,
 )
-from mau.nodes.references import ReferenceNode
 from mau.visitors.jinja_visitor import JinjaVisitor
 
 
@@ -209,37 +208,6 @@ def test_inline_footnote_node():
     result = visitor.visit(node)
 
     assert result == "Just some text. - 5 - someanchor - someanchor-def"
-
-
-def test_inline_reference_node():
-    templates = {
-        "text.j2": "{{ value }}",
-        "sentence.j2": "{{ content }}",
-        "reference.somecontent.j2": (
-            "{{ content_type }} - {{ content }} - "
-            "{{ number }} - {{ title }} - {{ reference_anchor }} - {{ content_anchor }}"
-        ),
-    }
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
-
-    node = ReferenceNode(
-        "somecontent",
-        children=[TextNode("Just some text.")],
-        number="5",
-        title=SentenceNode(children=[TextNode("Some title")]),
-        reference_anchor="someanchor",
-        content_anchor="someanchor-def",
-    )
-
-    result = visitor.visit(node)
-
-    assert result == (
-        "somecontent - Just some text. "
-        "- 5 - Some title - someanchor - someanchor-def"
-    )
 
 
 def test_inline_class_node():

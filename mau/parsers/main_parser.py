@@ -18,7 +18,6 @@ from mau.parsers.base_parser import BaseParser
 from mau.parsers.footnotes import FootnotesManager
 from mau.parsers.internal_links import InternalLinksManager
 from mau.parsers.preprocess_variables_parser import PreprocessVariablesParser
-from mau.parsers.references import ReferencesManager
 from mau.parsers.text_parser import TextParser
 from mau.parsers.toc import TocManager, header_anchor
 from mau.tokens.tokens import Token
@@ -36,7 +35,6 @@ class MainParser(BaseParser):
 
         self.internal_links_manager = InternalLinksManager(self)
         self.footnotes_manager = FootnotesManager(self)
-        self.references_manager = ReferencesManager(self)
         self.toc_manager = TocManager(self)
         self.attributes_manager = AttributesManager(self)
 
@@ -52,11 +50,6 @@ class MainParser(BaseParser):
                 "subtype": None,
                 "mandatory_args": ["name"],
                 "defaults": {"engine": "footnote"},
-            },
-            "reference": {
-                "subtype": None,
-                "mandatory_args": ["type", "name"],
-                "defaults": {"engine": "reference"},
             },
             "admonition": {
                 "mandatory_args": ["class", "icon", "label"],
@@ -163,10 +156,6 @@ class MainParser(BaseParser):
         # Extract the footnote mentions
         # found in this piece of text
         self.footnotes_manager.update_mentions(text_parser.footnotes)
-
-        # Extract the reference mentions
-        # found in this piece of text
-        self.references_manager.update_mentions(text_parser.references)
 
         # Extract the internal links
         # found in this piece of text
@@ -298,23 +287,6 @@ class MainParser(BaseParser):
         elif name == "footnotes":
             # Create a footnotes node
             self.footnotes_manager.create_node(subtype, args, kwargs, tags)
-
-        elif name == "references":
-            # Assign names
-            command_args, command_kwargs = self._set_names_and_defaults(
-                command_args, command_kwargs, ["content_type"]
-            )
-
-            content_type = command_kwargs.pop("content_type")
-
-            # Create a references node
-            self.references_manager.create_node(
-                content_type,
-                subtype,
-                args,
-                kwargs,
-                tags,
-            )
 
         return True
 
@@ -596,8 +568,6 @@ class MainParser(BaseParser):
             self._parse_source_engine(block)
         elif block.engine == "footnote":
             self._parse_footnote_engine(block)
-        elif block.engine == "reference":
-            self._parse_reference_engine(block)
         elif block.engine == "raw":
             self._parse_raw_engine(block)
         elif block.engine == "mau":
@@ -621,19 +591,6 @@ class MainParser(BaseParser):
         )
 
         self.footnotes_manager.add_data(name, content_parser.nodes)
-
-    def _parse_reference_engine(self, block):
-        content_type = block.kwargs["type"]
-        name = block.kwargs["name"]
-
-        content_parser = MainParser.analyse(
-            "\n".join(block.children),
-            self._current_token.context,
-            self.environment,
-            parent_node=block,
-        )
-
-        self.references_manager.add_data(content_type, name, content_parser.nodes)
 
     def _parse_raw_engine(self, block):
         # Engine "raw" doesn't process the content,
@@ -672,11 +629,6 @@ class MainParser(BaseParser):
         # found in this block are part of the
         # main document. Import them.
         self.footnotes_manager.update(content_parser.footnotes_manager)
-
-        # The reference mentions and definitions
-        # found in this block are part of the
-        # main document. Import them.
-        self.references_manager.update(content_parser.references_manager)
 
         # The internal links and headers
         # found in this block are part of the
@@ -1149,12 +1101,6 @@ class MainParser(BaseParser):
         # and updating the nodes that contain
         # a list of footnotes
         self.footnotes_manager.process_footnotes()
-
-        # This processes all references stored in
-        # the manager merging mentions and data
-        # and updating the nodes that contain
-        # a list of references
-        self.references_manager.process_references()
 
         # This processes all links stored in
         # the manager linking them to the

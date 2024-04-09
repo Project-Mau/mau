@@ -1,5 +1,5 @@
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.nodes.macros import MacroLinkNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser
@@ -62,5 +62,19 @@ def test_attributes_paragraph():
             args=["arg1"],
             kwargs={"key1": "value1"},
             subtype="type",
+        ),
+    ]
+
+
+def test_paragraph_title():
+    source = """
+    .Title
+    This is text
+    """
+
+    assert runner(source).nodes == [
+        ParagraphNode(
+            children=[TextNode("This is text")],
+            title=SentenceNode(children=[TextNode("Title")]),
         ),
     ]

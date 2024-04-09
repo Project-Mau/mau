@@ -1120,7 +1120,11 @@ class MainParser(BaseParser):
         # Consume the arguments
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
+        # Consume the title
+        title = self._pop_title()
+
         node = ParagraphNode(
+            title=title,
             parent=self.parent_node,
             parent_position=self.parent_position,
             subtype=subtype,

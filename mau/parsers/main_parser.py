@@ -1116,8 +1116,7 @@ class MainParser(BaseParser):
         content_wrapper.children = self.nodes
 
         toc_wrapper = self.environment.getvar("mau.parser.toc_wrapper", ContainerNode())
-        toc_wrapper.children = [toc]
-        toc.parent = toc_wrapper
+        toc_wrapper.add_children([toc])
 
         self.output.update(
             {

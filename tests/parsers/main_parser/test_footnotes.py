@@ -80,7 +80,6 @@ def test_footnote_content(mock_footnote_anchor):
         "note1": FootnoteNode(number=1),
         "note2": FootnoteNode(number=2),
     }
-    parser.parse(parser.tokens)
     parser.finalise()
 
     assert parser.nodes == []
@@ -347,3 +346,35 @@ def test_footnote_mention_in_block(mock_footnote_anchor):
             )
         ],
     }
+
+
+# If footnotes are not assigned correctly,
+# the following test will fail as the parent of
+# both footnotes will be the second FootnotesNode
+@patch("mau.parsers.footnotes.footnote_anchor")
+def test_footnotes_parent(mock_footnote_anchor):
+    mock_footnote_anchor.return_value = "XXYY"
+
+    source = """
+    Footnote [footnote](note1).
+
+    [*footnote, note1]
+    ----
+    ----
+
+    ::footnotes:
+
+    [#tag1]
+    ::footnotes:
+    """
+
+    parser = runner(textwrap.dedent(source))
+
+    first_footnotes = parser.nodes[1]
+    second_footnotes = parser.nodes[2]
+
+    first_footnotes_footnote = first_footnotes.children[0]
+    second_footnotes_footnote = second_footnotes.children[0]
+
+    assert first_footnotes_footnote.parent == first_footnotes
+    assert second_footnotes_footnote.parent == second_footnotes

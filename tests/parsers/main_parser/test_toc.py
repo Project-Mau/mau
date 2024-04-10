@@ -110,3 +110,7 @@ def test_toc(header_anchor_mock):
             ]
         ),
     }
+
+    toc_node = parser.output["toc"].children[0]
+
+    assert toc_node.parent == parser.output["toc"]

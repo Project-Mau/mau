@@ -25,6 +25,11 @@ class Node:
     def _custom_dict(self):
         return {}
 
+    def add_children(self, children):
+        self.children.extend(children)
+        for child in children:
+            child.parent = self
+
     def asdict(self):
         base = {
             # Parent is excluded to avoid

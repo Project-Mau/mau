@@ -54,7 +54,28 @@ class FootnotesManager:
         )
 
         for node in self.command_nodes:
-            node.children = self.footnotes
+            # create_footnotes is called
+            # multiple times to create new
+            # entries for each command.
+            # If we don't do it, all commands
+            # will share the same entries and in case
+            # of multiple ::footnotes: the parent
+            # of all entries will be the last
+            # command footnotes.
+            node.add_children(
+                create_footnotes(
+                    self.mentions,
+                    self.data,
+                )
+            )
+
+            # node.children = create_footnotes(
+            #     self.mentions,
+            #     self.data,
+            # )
+
+            # for child in node.children:
+            #     child.parent = node
 
     def update(self, other):
         self.update_mentions(other.mentions)

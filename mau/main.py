@@ -11,7 +11,7 @@ from mau.nodes.page import DocumentNode
 from tabulate import tabulate
 
 __version__ = metadata.version("mau")
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 visitor_classes = load_visitors()
 visitors = {i.format_code: i for i in visitor_classes}
@@ -143,6 +143,7 @@ def main():
     # is generated fromthe list of plugins
     visitor_class = visitors[args.format]
     environment.setvar("mau.visitor.class", visitor_class)
+    environment.setvar("mau.visitor.format", args.format)
 
     # Find out the name of the output file
     output_file = args.output_file or args.input_file.replace(
@@ -152,7 +153,7 @@ def main():
     # Wrap the content with a DocumentNode
     # so that the output can be rendered as
     # a stand-alone document
-    environment.setvar("mau.parser.content_wrapper", DocumentNode)
+    environment.setvar("mau.parser.content_wrapper", DocumentNode())
 
     # The Mau object configured with what we figured out above.
     mau = Mau(
@@ -169,6 +170,7 @@ def main():
 
     # Run the lexer on the input data
     try:
+        logger.info(f"* Lexing {args.input_file}")
         mau.run_lexer(text)
 
         if args.lexonly:
@@ -182,6 +184,7 @@ def main():
 
             sys.exit(1)
 
+        logger.info(f"* Parsing {args.input_file}")
         mau.run_parser(mau.lexer.tokens)
 
         if args.parseonly:
@@ -190,6 +193,7 @@ def main():
 
             sys.exit(1)
 
+        logger.info(f"* Rendering {args.input_file}")
         output = mau.run_visitor(mau.parser.output["content"])
 
     except ConfigurationError as exception:

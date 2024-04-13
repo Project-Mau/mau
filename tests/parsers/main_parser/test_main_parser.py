@@ -47,7 +47,7 @@ def test_parse_output_custom_toc_container():
     source = ""
 
     environment = Environment()
-    document = DocumentNode()
+    document = DocumentNode(children=[TocNode()])
     environment.setvar("mau.parser.toc_wrapper", document)
 
     assert runner(source, environment).output == {

@@ -236,6 +236,7 @@ class BaseVisitor:
 
     def _visit_header(self, node, *args, **kwargs):
         result = self._visit_default(node, *args, **kwargs)
+
         result["data"].update(
             {
                 "value": self.visitlist(node, node.value, *args, **kwargs),

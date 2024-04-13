@@ -1,5 +1,4 @@
 from mau.environment.environment import Environment
-from mau.nodes.page import ContainerNode
 from mau.nodes.footnotes import FootnoteNode, FootnotesNode
 from mau.nodes.inline import TextNode
 from mau.visitors.jinja_visitor import JinjaVisitor

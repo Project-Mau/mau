@@ -1,4 +1,3 @@
-import pytest
 from mau.environment.environment import Environment
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode

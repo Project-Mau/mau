@@ -1,5 +1,5 @@
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.inline import TextNode, SentenceNode
+from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.macros import MacroLinkNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser

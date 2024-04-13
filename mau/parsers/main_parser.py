@@ -1110,12 +1110,17 @@ class MainParser(BaseParser):
         # Process ToC
         toc = self.toc_manager.process_toc()
 
+        # The content wrappers are cloned to avoid
+        # storing the whole parsed document in the
+        # environment.
         content_wrapper = self.environment.getvar(
             "mau.parser.content_wrapper", ContainerNode()
-        )
+        ).clone()
         content_wrapper.children = self.nodes
 
-        toc_wrapper = self.environment.getvar("mau.parser.toc_wrapper", ContainerNode())
+        toc_wrapper = self.environment.getvar(
+            "mau.parser.toc_wrapper", ContainerNode()
+        ).clone()
         toc_wrapper.add_children([toc])
 
         self.output.update(

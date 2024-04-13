@@ -12,8 +12,19 @@ class HorizontalRuleNode(Node):
 class ContainerNode(Node):
     node_type = "container"
 
+    def clone(self):
+        return self.__class__(
+            parent=self.parent,
+            parent_position=self.parent_position,
+            children=self.children,
+            subtype=self.subtype,
+            args=self.args,
+            kwargs=self.kwargs,
+            tags=self.tags,
+        )
 
-class DocumentNode(Node):
+
+class DocumentNode(ContainerNode):
     """A document.
 
     This node represents the full document.

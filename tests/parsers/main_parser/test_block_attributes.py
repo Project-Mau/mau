@@ -67,7 +67,9 @@ def test_parse_block_title_and_attributes():
     ----
     """
 
-    assert runner(source).nodes == [
+    parser = runner(source)
+
+    assert parser.nodes == [
         BlockNode(
             subtype="subtype",
             classes=[],
@@ -82,6 +84,12 @@ def test_parse_block_title_and_attributes():
             kwargs={"name1": "value1", "name2": "value2"},
         )
     ]
+
+    block_node = parser.nodes[0]
+    text_node = block_node.title.children[0]
+
+    assert text_node.parent == block_node
+    assert text_node.parent_position == "title"
 
 
 def test_parse_block_title_and_attributes_are_reset():

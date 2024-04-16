@@ -267,3 +267,68 @@ class JinjaVisitor(BaseVisitor):
         ]
 
         return base
+
+
+d = {
+    "mau": {
+        "parser": {
+            "block_definitions": {
+                "tip": {
+                    "subtype": "admonition,",
+                    "mandatory_args": ["label"],
+                    "defaults": {"class": "tip", "icon": "lightbulb"},
+                }
+            },
+            "content_wrapper": {
+                "type": "document",
+                "subtype": None,
+                "children": [],
+                "args": [],
+                "kwargs": {},
+                "tags": [],
+            },
+        },
+        "visitor": {
+            "templates_directory": "mau/templates",
+            "class": "mau_tex_visitor.TexVisitor",
+            "format": "tex",
+        },
+    },
+    "website": False,
+    "output_format": "tex",
+    "pelican": {"title": "A basic example"},
+    "GITHUB": 'admonition,note,github,"Source code"',
+    "gh-rentomatic": "https://github.com/pycabook/rentomatic",
+}
+
+b = {
+    "mau": {
+        "parser": {
+            "block_definitions": {
+                "tip": {
+                    "subtype": "admonition,",
+                    "mandatory_args": ["label"],
+                    "defaults": {"class": "tip", "icon": "lightbulb"},
+                }
+            },
+            "content_wrapper": {
+                "type": "document",
+                "subtype": None,
+                "children": [],
+                "args": [],
+                "kwargs": {},
+                "tags": [],
+            },
+        },
+        "visitor": {
+            "templates_directory": "mau/templates",
+            "class": "mau_tex_visitor.TexVisitor",
+            "format": "tex",
+        },
+    },
+    "website": False,
+    "output_format": "tex",
+    "pelican": {"title": "A basic example"},
+    "GITHUB": 'admonition,note,github,"Source code"',
+    "gh-rentomatic": "https://github.com/pycabook/rentomatic",
+}

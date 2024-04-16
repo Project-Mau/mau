@@ -72,9 +72,17 @@ def test_paragraph_title():
     This is text
     """
 
-    assert runner(source).nodes == [
+    parser = runner(source)
+
+    assert parser.nodes == [
         ParagraphNode(
             children=[TextNode("This is text")],
             title=SentenceNode(children=[TextNode("Title")]),
         ),
     ]
+
+    paragraph_node = parser.nodes[0]
+    text_node = paragraph_node.title.children[0]
+
+    assert text_node.parent == paragraph_node
+    assert text_node.parent_position == "title"

@@ -64,7 +64,7 @@ class MainParser(BaseParser):
         )
 
         # This is a buffer for a block title
-        self._title = None
+        self._title = (None, None, None)
 
         # This is the function used to create the header
         # anchors.
@@ -99,19 +99,38 @@ class MainParser(BaseParser):
             self._process_paragraph,
         ]
 
-    def _pop_title(self):
+    def _reset_title(self):
+        self._title = (None, self._current_token.context, self.environment)
+
+    def _pop_title(self, node):
         # This return the title and resets the
         # cached one, so no other block will
         # use it.
-        title = self._title
-        self._title = None
-        return title
+        text, context, environment = self._title
+        self._reset_title()
 
-    def _push_title(self, title):
+        if text is None:
+            return None
+
+        text_parser = TextParser.analyse(
+            text,
+            context,
+            environment,
+            parent_node=node,
+            parent_position="title",
+        )
+
+        return SentenceNode(
+            parent=node,
+            parent_position="title",
+            children=text_parser.nodes,
+        )
+
+    def _push_title(self, text, context, environment):
         # When we parse a title we can store it here
         # so that it is available to the next block
         # that will use it.
-        self._title = title
+        self._title = (text, context, environment)
 
     def _collect_text_content(self):
         # Collects all adjacent text tokens
@@ -308,24 +327,7 @@ class MainParser(BaseParser):
         text = self._get_token(BLTokenTypes.TEXT).value
         self._get_token(BLTokenTypes.EOL)
 
-        current_context = self._current_token.context
-
-        # Titles can contain Mau code
-        text_parser = TextParser.analyse(
-            text,
-            current_context,
-            self.environment,
-            parent_node=self.parent_node,
-            parent_position=self.parent_position,
-        )
-
-        self._push_title(
-            SentenceNode(
-                parent=self.parent_node,
-                parent_position=self.parent_position,
-                children=text_parser.nodes,
-            )
-        )
+        self._push_title(text, self._current_token.context, self.environment)
 
         return True
 
@@ -484,9 +486,6 @@ class MainParser(BaseParser):
         # Create the block
         block = BlockNode(children=content, secondary_children=secondary_content)
 
-        # Consume the title
-        block.title = self._pop_title()
-
         # Consume the arguments
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
@@ -598,6 +597,7 @@ class MainParser(BaseParser):
         # a RawNode per line.
         block.children = [RawNode(line) for line in block.children]
         block.secondary_children = [RawNode(line) for line in block.secondary_children]
+        block.title = self._pop_title(block)
 
         self._save(block)
 
@@ -622,6 +622,7 @@ class MainParser(BaseParser):
             parent_position="secondary",
         )
 
+        block.title = self._pop_title(block)
         block.children = content_parser.nodes
         block.secondary_children = secondary_content_parser.nodes
 
@@ -662,6 +663,7 @@ class MainParser(BaseParser):
         )
         secondary_content_parser.finalise()
 
+        block.title = self._pop_title(block)
         block.children = content_parser.nodes
         block.secondary_children = secondary_content_parser.nodes
 
@@ -787,20 +789,22 @@ class MainParser(BaseParser):
 
             textlines.append(RawNode(line))
 
-        self._save(
-            SourceNode(
-                code=textlines,
-                language=language,
-                callouts=callout_contents,
-                highlights=highlighted_lines,
-                markers=callout_markers,
-                title=block.title,
-                subtype=block.subtype,
-                args=block.args,
-                kwargs=block.kwargs,
-                tags=block.tags,
-            )
+        node = SourceNode(
+            code=textlines,
+            language=language,
+            callouts=callout_contents,
+            highlights=highlighted_lines,
+            markers=callout_markers,
+            title=block.title,
+            subtype=block.subtype,
+            args=block.args,
+            kwargs=block.kwargs,
+            tags=block.tags,
         )
+
+        node.title = self._pop_title(node)
+
+        self._save(node)
 
     def _process_content(self):
         # Parse content in the form
@@ -817,8 +821,6 @@ class MainParser(BaseParser):
         content_type = self._get_token(BLTokenTypes.TEXT).value
         self._get_token(BLTokenTypes.LITERAL, ":")
 
-        title = self._pop_title()
-
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
         uris = self._get_token(BLTokenTypes.TEXT).value
@@ -833,13 +835,13 @@ class MainParser(BaseParser):
             uris, _, _, _ = arguments_parser.process_arguments()
 
         if content_type == "image":
-            return self._parse_content_image(uris, title, subtype, args, kwargs, tags)
+            return self._parse_content_image(uris, subtype, args, kwargs, tags)
 
         return self._parse_standard_content(
-            content_type, uris, title, subtype, args, kwargs, tags
+            content_type, uris, subtype, args, kwargs, tags
         )
 
-    def _parse_content_image(self, uris, title, subtype, args, kwargs, tags):
+    def _parse_content_image(self, uris, subtype, args, kwargs, tags):
         # Parse a content image in the form
         #
         # << image:uri,alt_text,classes
@@ -862,37 +864,35 @@ class MainParser(BaseParser):
         if classes:
             classes = classes.split(",")
 
-        self._save(
-            ContentImageNode(
-                uri=uri,
-                alt_text=alt_text,
-                classes=classes,
-                title=title,
-                subtype=subtype,
-                args=args,
-                kwargs=kwargs,
-                tags=tags,
-            )
+        node = ContentImageNode(
+            uri=uri,
+            alt_text=alt_text,
+            classes=classes,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
         )
+
+        node.title = self._pop_title(node)
+        self._save(node)
 
         return True
 
-    def _parse_standard_content(
-        self, content_type, uris, title, subtype, args, kwargs, tags
-    ):
+    def _parse_standard_content(self, content_type, uris, subtype, args, kwargs, tags):
         # This is the fallback for an unknown content type
 
-        self._save(
-            ContentNode(
-                content_type=content_type,
-                uris=uris,
-                title=title,
-                subtype=subtype,
-                args=args,
-                kwargs=kwargs,
-                tags=tags,
-            )
+        node = ContentNode(
+            content_type=content_type,
+            uris=uris,
+            subtype=subtype,
+            args=args,
+            kwargs=kwargs,
+            tags=tags,
         )
+
+        node.title = self._pop_title(node)
+        self._save(node)
 
         return True
 
@@ -1072,11 +1072,7 @@ class MainParser(BaseParser):
         # Consume the arguments
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
-        # Consume the title
-        title = self._pop_title()
-
         node = ParagraphNode(
-            title=title,
             parent=self.parent_node,
             parent_position=self.parent_position,
             subtype=subtype,
@@ -1084,6 +1080,8 @@ class MainParser(BaseParser):
             kwargs=kwargs,
             tags=tags,
         )
+
+        node.title = self._pop_title(node)
 
         node.children = self._parse_text_content(
             text, parent_node=node, context=context

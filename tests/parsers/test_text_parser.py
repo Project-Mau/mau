@@ -616,3 +616,120 @@ def test_macro_if_false_default_is_empty():
     expected = [SentenceNode()]
 
     assert runner(source, environment=environment).nodes == expected
+
+
+def test_macro_ifeval_true():
+    environment = Environment(
+        {
+            "flag": True,
+            "underscore": "_sometext_",
+            "star": "*othertext*",
+        }
+    )
+
+    source = "[ifeval](flag, underscore, star)"
+
+    expected = [
+        SentenceNode(
+            children=[
+                StyleNode(
+                    value="underscore",
+                    children=[
+                        TextNode("sometext"),
+                    ],
+                )
+            ],
+        ),
+    ]
+
+    assert runner(source, environment=environment).nodes == expected
+
+
+def test_macro_ifeval_false():
+    environment = Environment(
+        {
+            "flag": False,
+            "underscore": "_sometext_",
+            "star": "*othertext*",
+        }
+    )
+
+    source = "[ifeval](!flag, underscore, star)"
+
+    expected = [
+        SentenceNode(
+            children=[
+                StyleNode(
+                    value="underscore",
+                    children=[
+                        TextNode("sometext"),
+                    ],
+                )
+            ],
+        ),
+    ]
+
+    assert runner(source, environment=environment).nodes == expected
+
+
+def test_macro_ifeval_false_is_not_evaluated():
+    environment = Environment(
+        {
+            "flag": True,
+            "style": "_sometext_",
+            "header": "[header](notexists)",
+        }
+    )
+
+    source = "[ifeval](flag, style, header)"
+
+    expected = [
+        SentenceNode(
+            children=[
+                StyleNode(
+                    value="underscore",
+                    children=[
+                        TextNode("sometext"),
+                    ],
+                )
+            ],
+        ),
+    ]
+
+    assert runner(source, environment=environment).nodes == expected
+
+
+def test_macro_ifeval_true_is_not_evaluated():
+    environment = Environment(
+        {
+            "flag": False,
+            "style": "_sometext_",
+            "header": "[header](notexists)",
+        }
+    )
+
+    source = "[ifeval](flag, header, style)"
+
+    expected = [
+        SentenceNode(
+            children=[
+                StyleNode(
+                    value="underscore",
+                    children=[
+                        TextNode("sometext"),
+                    ],
+                )
+            ],
+        ),
+    ]
+
+    assert runner(source, environment=environment).nodes == expected
+
+
+def test_macro_ifeval_not_a_flag():
+    environment = Environment({"flag": "something"})
+
+    source = "[ifeval](flag, notavar, neither)"
+
+    with pytest.raises(MauErrorException):
+        runner(source, environment=environment)

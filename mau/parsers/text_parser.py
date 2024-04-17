@@ -310,11 +310,58 @@ class TextParser(BaseParser):
             value = not value
 
         if value is True:
-            par = self.analyse(kwargs.get("true"), current_context, self.environment)
+            text = kwargs.get("true")
         elif value is False:
-            par = self.analyse(kwargs.get("false"), current_context, self.environment)
+            text = kwargs.get("false")
         else:
             self._error(f"Invalid value for flag {variable}: {value}")
+
+        par = self.analyse(text, current_context, self.environment)
+
+        return SentenceNode(
+            children=par.nodes,
+            parent=self.parent_node,
+            parent_position=self.parent_position,
+        )
+
+    def _parse_macro_ifeval(self, args, kwargs):
+        """
+        Parse a class macro in the form [ifeval](variable, true_text, false_text).
+        'true_text' is parsed only if the test is true,
+        'false_text' is parsed only if the test is false.
+        """
+
+        args, kwargs = set_names_and_defaults(
+            args,
+            kwargs,
+            ["variable", "true", "false"],
+            {"false": ""},
+        )
+
+        current_context = self._current_token.context
+
+        variable = kwargs.get("variable")
+        test = True
+
+        if variable.startswith("!"):
+            variable = variable[1:]
+            test = False
+
+        value = self.environment.getvar(variable)
+        if not test:
+            value = not value
+
+        if value is True:
+            text_variable = self.environment.getvar(kwargs.get("true"))
+        elif value is False:
+            text_variable = self.environment.getvar(kwargs.get("false"))
+        else:
+            self._error(f"Invalid value for flag {variable}: {value}")
+
+        par = self.analyse(text_variable, current_context, self.environment)
+
+        self.footnotes.update(par.footnotes)
+        self.links.extend(par.links)
 
         return SentenceNode(
             children=par.nodes,
@@ -433,6 +480,9 @@ class TextParser(BaseParser):
 
         if macro_name == "if":
             return self._parse_macro_if(args, kwargs)
+
+        if macro_name == "ifeval":
+            return self._parse_macro_ifeval(args, kwargs)
 
         return MacroNode(
             macro_name,

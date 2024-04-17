@@ -253,6 +253,13 @@ class MainParser(BaseParser):
         elif variable_name.startswith("-"):
             variable_name = variable_name[1:]
             value = False
+        else:
+            preprocess_parser = PreprocessVariablesParser.analyse(
+                value,
+                self._current_token.context,
+                self.environment,
+            )
+            value = preprocess_parser.nodes[0].value
 
         self.environment.setvar(variable_name, value)
 

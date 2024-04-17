@@ -168,3 +168,20 @@ def test_variables_are_preprocessed():
             ],
         )
     ]
+
+
+def test_variable_replacement_in_variable():
+    source = """
+    :answer:42
+    :sentence:The answer is {answer}
+
+    {sentence}
+    """
+
+    parser = runner(source)
+
+    assert parser.nodes == [
+        ParagraphNode(
+            children=[TextNode("The answer is 42")],
+        )
+    ]

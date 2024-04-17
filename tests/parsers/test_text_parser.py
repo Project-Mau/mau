@@ -1,4 +1,7 @@
+import pytest
+
 from mau.environment.environment import Environment
+from mau.errors import MauErrorException
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
 from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode
@@ -540,7 +543,7 @@ def test_macro_image_with_width_and_height():
     assert runner(source).nodes == expected
 
 
-def test_macro_conditional_true():
+def test_macro_if_true():
     environment = Environment({"flag": True})
 
     source = '[if](flag, "TRUE", "FALSE")'
@@ -554,7 +557,21 @@ def test_macro_conditional_true():
     assert runner(source, environment=environment).nodes == expected
 
 
-def test_macro_conditional_false():
+def test_macro_if_not_true():
+    environment = Environment({"flag": True})
+
+    source = '[if](!flag, "TRUE", "FALSE")'
+
+    expected = [
+        SentenceNode(
+            children=[TextNode("FALSE")],
+        ),
+    ]
+
+    assert runner(source, environment=environment).nodes == expected
+
+
+def test_macro_if_false():
     environment = Environment({"flag": False})
 
     source = '[if](flag, "TRUE", "FALSE")'
@@ -564,5 +581,38 @@ def test_macro_conditional_false():
             children=[TextNode("FALSE")],
         ),
     ]
+
+    assert runner(source, environment=environment).nodes == expected
+
+
+def test_macro_if_not_false():
+    environment = Environment({"flag": False})
+
+    source = '[if](!flag, "TRUE", "FALSE")'
+
+    expected = [
+        SentenceNode(
+            children=[TextNode("TRUE")],
+        ),
+    ]
+
+    assert runner(source, environment=environment).nodes == expected
+
+
+def test_macro_if_not_a_flag():
+    environment = Environment({"flag": "something"})
+
+    source = '[if](flag, "TRUE", "FALSE")'
+
+    with pytest.raises(MauErrorException):
+        runner(source, environment=environment)
+
+
+def test_macro_if_false_default_is_empty():
+    environment = Environment({"flag": False})
+
+    source = '[if](flag, "TRUE")'
+
+    expected = [SentenceNode()]
 
     assert runner(source, environment=environment).nodes == expected

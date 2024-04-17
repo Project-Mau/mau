@@ -290,17 +290,31 @@ class TextParser(BaseParser):
         """
 
         args, kwargs = set_names_and_defaults(
-            args, kwargs, ["variable", "true", "false"]
+            args,
+            kwargs,
+            ["variable", "true", "false"],
+            {"false": ""},
         )
 
         current_context = self._current_token.context
 
         variable = kwargs.get("variable")
+        test = True
 
-        if self.environment.getvar(variable) is True:
+        if variable.startswith("!"):
+            variable = variable[1:]
+            test = False
+
+        value = self.environment.getvar(variable)
+        if not test:
+            value = not value
+
+        if value is True:
             par = self.analyse(kwargs.get("true"), current_context, self.environment)
-        else:
+        elif value is False:
             par = self.analyse(kwargs.get("false"), current_context, self.environment)
+        else:
+            self._error(f"Invalid value for flag {variable}: {value}")
 
         return SentenceNode(
             children=par.nodes,

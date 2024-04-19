@@ -6,7 +6,7 @@ from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import RawNode, SentenceNode, TextNode
+from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser
 
@@ -179,51 +179,6 @@ def test_block_engine():
 
     with pytest.raises(MauErrorException):
         runner(source)
-
-
-def test_block_mau_has_no_external_variables():
-    source = """
-    :answer:42
-    [*block, engine=mau]
-    ----
-    The answer is {answer}.
-    ----
-    """
-
-    with pytest.raises(MauErrorException):
-        assert runner(source)
-
-
-def test_block_raw_engine():
-    source = """
-    [*block, engine=raw]
-    ----
-    Raw content
-    on multiple lines
-    ----
-    Secondary content
-    on multiple lines as well
-    """
-
-    assert runner(source).nodes == [
-        BlockNode(
-            subtype="block",
-            children=[
-                RawNode("Raw content"),
-                RawNode("on multiple lines"),
-            ],
-            secondary_children=[
-                RawNode("Secondary content"),
-                RawNode("on multiple lines as well"),
-            ],
-            classes=[],
-            title=None,
-            engine="raw",
-            preprocessor="none",
-            args=[],
-            kwargs={},
-        )
-    ]
 
 
 @patch("mau.parsers.main_parser.header_anchor")

@@ -77,6 +77,10 @@ class MainParser(BaseParser):
         # next one when start=auto
         self.latest_ordered_list_index = 0
 
+        # This is the dictionary of block groups
+        # defineed in the document
+        self.grouped_blocks = {}
+
         # This is the final output of the parser
         self.output = {}
 
@@ -570,84 +574,22 @@ class MainParser(BaseParser):
 
         if block.engine is None:
             self._parse_default_engine(block)
+        elif block.engine == "mau":
+            self._parse_mau_engine(block)
         elif block.engine == "source":
             self._parse_source_engine(block)
         elif block.engine == "footnote":
             self._parse_footnote_engine(block)
         elif block.engine == "raw":
             self._parse_raw_engine(block)
-        elif block.engine == "mau":
-            self._parse_mau_engine(block)
+        elif block.engine == "group":
+            self._parse_group_engine(block)
         else:
             self._error(f"Engine {block.engine} is not available")
 
         return True
 
-    def _parse_footnote_engine(self, block):
-        # The current block contains footnote data.
-        # Extract the content and store it in
-        # the footnotes manager.
-        name = block.kwargs.pop("name")
-
-        content_parser = MainParser.analyse(
-            "\n".join(block.children),
-            self._current_token.context,
-            self.environment,
-            parent_node=block,
-        )
-
-        self.footnotes_manager.add_data(name, content_parser.nodes)
-
-    def _parse_raw_engine(self, block):
-        # Engine "raw" doesn't process the content,
-        # so we just pass it untouched in the form of
-        # a RawNode per line.
-        block.children = [RawNode(line) for line in block.children]
-        block.secondary_children = [RawNode(line) for line in block.secondary_children]
-        block.title = self._pop_title(block)
-
-        self._save(block)
-
-    def _parse_default_engine(self, block):
-        current_context = self._current_token.context
-
-        environment = self.environment
-
-        content_parser = MainParser.analyse(
-            "\n".join(block.children),
-            current_context,
-            environment,
-            parent_node=block,
-            parent_position="primary",
-        )
-
-        secondary_content_parser = MainParser.analyse(
-            "\n".join(block.secondary_children),
-            current_context,
-            environment,
-            parent_node=block,
-            parent_position="secondary",
-        )
-
-        block.title = self._pop_title(block)
-        block.children = content_parser.nodes
-        block.secondary_children = secondary_content_parser.nodes
-
-        # The footnote mentions and definitions
-        # found in this block are part of the
-        # main document. Import them.
-        self.footnotes_manager.update(content_parser.footnotes_manager)
-
-        # The internal links and headers
-        # found in this block are part of the
-        # main document. Import them.
-        self.internal_links_manager.update(content_parser.internal_links_manager)
-
-        self.toc_manager.update(content_parser.toc_manager)
-
-        self._save(block)
-
-    def _parse_mau_engine(self, block):
+    def _parse_block_content(self, block):
         current_context = self._current_token.context
 
         environment = Environment()
@@ -673,6 +615,77 @@ class MainParser(BaseParser):
         block.title = self._pop_title(block)
         block.children = content_parser.nodes
         block.secondary_children = secondary_content_parser.nodes
+
+        return block, content_parser
+
+    def _parse_block_content_update(self, block):
+        block, content_parser = self._parse_block_content(block)
+
+        # The footnote mentions and definitions
+        # found in this block are part of the
+        # main document. Import them.
+        self.footnotes_manager.update(content_parser.footnotes_manager)
+
+        # The internal links and headers
+        # found in this block are part of the
+        # main document. Import them.
+        self.internal_links_manager.update(content_parser.internal_links_manager)
+
+        self.toc_manager.update(content_parser.toc_manager)
+
+        return block, content_parser
+
+    def _parse_mau_engine(self, block):
+        block, _ = self._parse_block_content(block)
+        self._save(block)
+
+    def _parse_default_engine(self, block):
+        block, _ = self._parse_block_content_update(block)
+        self._save(block)
+
+    def _parse_group_engine(self, block):
+        block.args, block.kwargs = self._set_names_and_defaults(
+            block.args,
+            block.kwargs,
+            ["group", "position"],
+        )
+
+        group_name = block.kwargs.pop("group")
+        position = block.kwargs.pop("position")
+
+        group = self.grouped_blocks.setdefault(group_name, {})
+
+        if position in group:
+            self._error(
+                f"Block with position {position} already defined in group {group_name}"
+            )
+
+        group[position] = block
+
+        block, _ = self._parse_block_content_update(block)
+
+    def _parse_footnote_engine(self, block):
+        # The current block contains footnote data.
+        # Extract the content and store it in
+        # the footnotes manager.
+        name = block.kwargs.pop("name")
+
+        content_parser = MainParser.analyse(
+            "\n".join(block.children),
+            self._current_token.context,
+            self.environment,
+            parent_node=block,
+        )
+
+        self.footnotes_manager.add_data(name, content_parser.nodes)
+
+    def _parse_raw_engine(self, block):
+        # Engine "raw" doesn't process the content,
+        # so we just pass it untouched in the form of
+        # a RawNode per line.
+        block.children = [RawNode(line) for line in block.children]
+        block.secondary_children = [RawNode(line) for line in block.secondary_children]
+        block.title = self._pop_title(block)
 
         self._save(block)
 

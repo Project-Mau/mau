@@ -1,5 +1,7 @@
 from unittest.mock import patch
 
+import pytest
+from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode
 from mau.nodes.header import HeaderNode
@@ -181,3 +183,16 @@ def test_engine_mau_toc(mock_header_anchor):
         HeaderNode(value=[TextNode("Header 1")], level="1", anchor="XXYY"),
         HeaderNode(value=[TextNode("Header 2")], level="1", anchor="XXYY"),
     ]
+
+
+def test_block_mau_has_no_external_variables():
+    source = """
+    :answer:42
+    [*block, engine=mau]
+    ----
+    The answer is {answer}.
+    ----
+    """
+
+    with pytest.raises(MauErrorException):
+        assert runner(source)

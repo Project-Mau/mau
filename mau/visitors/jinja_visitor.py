@@ -260,6 +260,15 @@ class JinjaVisitor(BaseVisitor):
 
         return base
 
+    def _visit_block_group(self, node, *args, **kwargs):
+        base = super()._visit_block_group(node)
+
+        base["templates"] = [
+            f"block_group.{node.group_name}",
+        ]
+
+        return base
+
     def _visit_source(self, node, *args, **kwargs):
         base = super()._visit_source(node)
         base["templates"] = [
@@ -267,68 +276,3 @@ class JinjaVisitor(BaseVisitor):
         ]
 
         return base
-
-
-d = {
-    "mau": {
-        "parser": {
-            "block_definitions": {
-                "tip": {
-                    "subtype": "admonition,",
-                    "mandatory_args": ["label"],
-                    "defaults": {"class": "tip", "icon": "lightbulb"},
-                }
-            },
-            "content_wrapper": {
-                "type": "document",
-                "subtype": None,
-                "children": [],
-                "args": [],
-                "kwargs": {},
-                "tags": [],
-            },
-        },
-        "visitor": {
-            "templates_directory": "mau/templates",
-            "class": "mau_tex_visitor.TexVisitor",
-            "format": "tex",
-        },
-    },
-    "website": False,
-    "output_format": "tex",
-    "pelican": {"title": "A basic example"},
-    "GITHUB": 'admonition,note,github,"Source code"',
-    "gh-rentomatic": "https://github.com/pycabook/rentomatic",
-}
-
-b = {
-    "mau": {
-        "parser": {
-            "block_definitions": {
-                "tip": {
-                    "subtype": "admonition,",
-                    "mandatory_args": ["label"],
-                    "defaults": {"class": "tip", "icon": "lightbulb"},
-                }
-            },
-            "content_wrapper": {
-                "type": "document",
-                "subtype": None,
-                "children": [],
-                "args": [],
-                "kwargs": {},
-                "tags": [],
-            },
-        },
-        "visitor": {
-            "templates_directory": "mau/templates",
-            "class": "mau_tex_visitor.TexVisitor",
-            "format": "tex",
-        },
-    },
-    "website": False,
-    "output_format": "tex",
-    "pelican": {"title": "A basic example"},
-    "GITHUB": 'admonition,note,github,"Source code"',
-    "gh-rentomatic": "https://github.com/pycabook/rentomatic",
-}

@@ -54,6 +54,7 @@ class TocManager:
 
     def update(self, other):
         self.headers.extend(other.headers)
+        self.command_nodes.extend(other.command_nodes)
 
 
 def create_toc(headers, exclude_tag=None):

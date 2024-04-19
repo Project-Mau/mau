@@ -5,6 +5,7 @@ import pytest
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.footnotes import FootnoteNode, FootnotesEntryNode, FootnotesNode
+from mau.nodes.block import BlockNode
 from mau.nodes.inline import TextNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.footnotes import footnote_anchor
@@ -203,6 +204,68 @@ def test_footnotes_output(mock_footnote_anchor):
                 ),
             ]
         ),
+    ]
+
+
+@patch("mau.parsers.footnotes.footnote_anchor")
+def test_footnotes_output_in_block(mock_footnote_anchor):
+    mock_footnote_anchor.return_value = "XXYY"
+
+    source = """
+    ++++
+    This is a paragraph with a footnote[footnote](note1).
+    
+    [*footnote, note1]
+    ----
+    This is the content of the footnote
+    ----
+
+    ::footnotes:
+    ++++
+    """
+
+    parser = runner(textwrap.dedent(source))
+
+    assert parser.nodes == [
+        BlockNode(
+            children=[
+                ParagraphNode(
+                    children=[
+                        TextNode("This is a paragraph with a footnote"),
+                        FootnoteNode(
+                            children=[
+                                ParagraphNode(
+                                    children=[
+                                        TextNode("This is the content of the footnote"),
+                                    ]
+                                )
+                            ],
+                            number=1,
+                            reference_anchor="ref-footnote-1-XXYY",
+                            content_anchor="cnt-footnote-1-XXYY",
+                        ),
+                        TextNode("."),
+                    ]
+                ),
+                FootnotesNode(
+                    children=[
+                        FootnotesEntryNode(
+                            children=[
+                                ParagraphNode(
+                                    children=[
+                                        TextNode("This is the content of the footnote"),
+                                    ]
+                                )
+                            ],
+                            number=1,
+                            reference_anchor="ref-footnote-1-XXYY",
+                            content_anchor="cnt-footnote-1-XXYY",
+                        ),
+                    ]
+                ),
+            ],
+            preprocessor="none",
+        )
     ]
 
 

@@ -1,5 +1,6 @@
 from mau.environment.environment import Environment
-from mau.nodes.block import BlockNode
+from mau.nodes.paragraph import ParagraphNode
+from mau.nodes.block import BlockNode, BlockGroupNode
 from mau.nodes.inline import SentenceNode, TextNode
 from mau.visitors.jinja_visitor import JinjaVisitor
 
@@ -144,3 +145,65 @@ def test_page_block_node_engine_and_subtype_template_has_precedence():
     result = visitor.visit(node)
 
     assert result == "The engine+block template"
+
+
+def test_block_group():
+    templates = {
+        "text.j2": "{{ value }}",
+        "paragraph.j2": "{{ content }}",
+        "sentence.j2": "{{ content }}",
+        "block.group.j2": "The block template {{ subtype }}",
+        "block_group.somegroup.j2": "{% for block in group.values() %}{{ block }}-{% endfor %}",
+        "block.j2": "The wrong template",
+    }
+
+    environment = Environment()
+    environment.update(templates, "mau.visitor.custom_templates")
+    visitor = JinjaVisitor(environment)
+
+    node = BlockGroupNode(
+        group_name="somegroup",
+        group={
+            "left": BlockNode(
+                subtype="sometype1",
+                children=[
+                    ParagraphNode(
+                        children=[
+                            TextNode("Block 1"),
+                        ]
+                    ),
+                ],
+                secondary_children=[],
+                classes=[],
+                title=None,
+                engine="group",
+                preprocessor="none",
+                args=[],
+                kwargs={},
+            ),
+            "right": BlockNode(
+                subtype="sometype2",
+                children=[
+                    ParagraphNode(
+                        children=[
+                            TextNode("Block 2"),
+                        ]
+                    ),
+                ],
+                secondary_children=[],
+                classes=[],
+                title=None,
+                engine="group",
+                preprocessor="none",
+                args=[],
+                kwargs={},
+            ),
+        },
+        args=[],
+        kwargs={},
+        tags=[],
+    )
+
+    result = visitor.visit(node)
+
+    assert result == "The block template sometype1-The block template sometype2-"

@@ -63,6 +63,9 @@ class BaseVisitor:
 
         return visited_nodes
 
+    def visitdict(self, node, nodedict, *args, **kwargs):
+        return {k: self.visit(v, *args, **kwargs) for k, v in nodedict.items()}
+
     def _error(self, message, node=None):
         error = MauVisitorError(
             message=message,
@@ -423,3 +426,15 @@ class BaseVisitor:
 
     def _visit_document(self, node, *args, **kwargs):
         return self._visit_container(node)
+
+    def _visit_block_group(self, node, *args, **kwargs):
+        result = self._visit_default(node, *args, **kwargs)
+        result["data"].update(
+            {
+                "title": self.visit(node.title, *args, **kwargs),
+                "group_name": node.group_name,
+                "group": self.visitdict(node, node.group, *args, **kwargs),
+            }
+        )
+
+        return result

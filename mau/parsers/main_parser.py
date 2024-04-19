@@ -4,7 +4,7 @@ from mau.environment.environment import Environment
 from mau.lexers.base_lexer import TokenTypes as BLTokenTypes
 from mau.lexers.main_lexer import MainLexer
 from mau.lexers.main_lexer import TokenTypes as MLTokenTypes
-from mau.nodes.block import BlockNode
+from mau.nodes.block import BlockNode, BlockGroupNode
 from mau.nodes.content import ContentImageNode, ContentNode
 from mau.nodes.header import HeaderNode
 from mau.nodes.inline import RawNode, SentenceNode
@@ -298,8 +298,6 @@ class MainParser(BaseParser):
             ) = arguments_parser.process_arguments()
 
         if name == "defblock":
-            # Block definitions must have at least 2 arguments,
-            # the alias and the block type.
             if len(command_args) < 1:
                 self._error("Block definitions require at least the alias")
 
@@ -317,6 +315,40 @@ class MainParser(BaseParser):
         elif name == "footnotes":
             # Create a footnotes node
             self.footnotes_manager.create_node(subtype, args, kwargs, tags)
+
+        elif name == "blockgroup":
+            command_args, command_kwargs = self._set_names_and_defaults(
+                command_args,
+                command_kwargs,
+                ["group"],
+            )
+
+            group_name = command_kwargs.pop("group")
+
+            try:
+                group = self.grouped_blocks.pop(group_name)
+            except KeyError:
+                self._error(
+                    (
+                        f"The group of blocks {group_name} doesn't exist. "
+                        "No blocks belong to that group."
+                    )
+                )
+
+            node = BlockGroupNode(
+                group_name=group_name,
+                group=group,
+                subtype=subtype,
+                args=args,
+                kwargs=kwargs,
+                tags=tags,
+            )
+
+            for position, block in group.items():
+                block.parent = node
+                block.parent_position = position
+
+            self.save(node)
 
         return True
 
@@ -592,12 +624,10 @@ class MainParser(BaseParser):
     def _parse_block_content(self, block):
         current_context = self._current_token.context
 
-        environment = Environment()
-
         content_parser = MainParser.analyse(
             "\n".join(block.children),
             current_context,
-            environment,
+            Environment(),
             parent_node=block,
             parent_position="primary",
         )
@@ -606,7 +636,7 @@ class MainParser(BaseParser):
         secondary_content_parser = MainParser.analyse(
             "\n".join(block.secondary_children),
             current_context,
-            environment,
+            Environment(),
             parent_node=block,
             parent_position="secondary",
         )
@@ -616,10 +646,28 @@ class MainParser(BaseParser):
         block.children = content_parser.nodes
         block.secondary_children = secondary_content_parser.nodes
 
-        return block, content_parser
-
     def _parse_block_content_update(self, block):
-        block, content_parser = self._parse_block_content(block)
+        current_context = self._current_token.context
+
+        content_parser = MainParser.analyse(
+            "\n".join(block.children),
+            current_context,
+            self.environment,
+            parent_node=block,
+            parent_position="primary",
+        )
+
+        secondary_content_parser = MainParser.analyse(
+            "\n".join(block.secondary_children),
+            current_context,
+            self.environment,
+            parent_node=block,
+            parent_position="secondary",
+        )
+
+        block.title = self._pop_title(block)
+        block.children = content_parser.nodes
+        block.secondary_children = secondary_content_parser.nodes
 
         # The footnote mentions and definitions
         # found in this block are part of the
@@ -633,14 +681,12 @@ class MainParser(BaseParser):
 
         self.toc_manager.update(content_parser.toc_manager)
 
-        return block, content_parser
-
     def _parse_mau_engine(self, block):
-        block, _ = self._parse_block_content(block)
+        self._parse_block_content(block)
         self._save(block)
 
     def _parse_default_engine(self, block):
-        block, _ = self._parse_block_content_update(block)
+        self._parse_block_content_update(block)
         self._save(block)
 
     def _parse_group_engine(self, block):
@@ -662,7 +708,7 @@ class MainParser(BaseParser):
 
         group[position] = block
 
-        block, _ = self._parse_block_content_update(block)
+        self._parse_block_content_update(block)
 
     def _parse_footnote_engine(self, block):
         # The current block contains footnote data.

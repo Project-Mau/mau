@@ -1,6 +1,8 @@
 from unittest.mock import patch
 
+from mau.environment.environment import Environment
 from mau.lexers.main_lexer import MainLexer
+from mau.nodes.block import BlockNode
 from mau.nodes.header import HeaderNode
 from mau.nodes.inline import TextNode
 from mau.nodes.page import ContainerNode
@@ -31,9 +33,11 @@ def test_command_toc():
     ]
 
 
-@patch("mau.parsers.main_parser.header_anchor")
-def test_toc(header_anchor_mock):
-    header_anchor_mock.side_effect = lambda text, level: f"{text}-XXXXXX"
+def test_toc():
+    environment = Environment()
+    environment.setvar(
+        "mau.parser.header_anchor_function", lambda text, level: f"{text}-XXXXXX"
+    )
 
     source = """
     = Header 1
@@ -43,7 +47,7 @@ def test_toc(header_anchor_mock):
     ::toc:
     """
 
-    parser = runner(source)
+    parser = runner(source, environment)
 
     assert parser.output == {
         "content": ContainerNode(
@@ -83,6 +87,100 @@ def test_toc(header_anchor_mock):
                         ),
                     ]
                 ),
+            ]
+        ),
+        "toc": ContainerNode(
+            children=[
+                TocNode(
+                    children=[
+                        TocEntryNode(
+                            value=[TextNode("Header 1")],
+                            anchor="Header 1-XXXXXX",
+                            children=[
+                                TocEntryNode(
+                                    value=[TextNode("Header 1.1")],
+                                    anchor="Header 1.1-XXXXXX",
+                                    children=[],
+                                ),
+                            ],
+                        ),
+                        TocEntryNode(
+                            value=[TextNode("Header 2")],
+                            anchor="Header 2-XXXXXX",
+                            children=[],
+                        ),
+                    ]
+                )
+            ]
+        ),
+    }
+
+    toc_node = parser.output["toc"].children[0]
+
+    assert toc_node.parent == parser.output["toc"]
+
+
+def test_toc_inside_block():
+    environment = Environment()
+    environment.setvar(
+        "mau.parser.header_anchor_function", lambda text, level: f"{text}-XXXXXX"
+    )
+
+    source = """
+    ----
+    = Header 1
+    == Header 1.1
+    = Header 2
+
+    ::toc:
+    ----
+    """
+
+    parser = runner(source, environment)
+
+    assert parser.output == {
+        "content": ContainerNode(
+            children=[
+                BlockNode(
+                    children=[
+                        HeaderNode(
+                            value=[TextNode("Header 1")],
+                            level="1",
+                            anchor="Header 1-XXXXXX",
+                        ),
+                        HeaderNode(
+                            value=[TextNode("Header 1.1")],
+                            level="2",
+                            anchor="Header 1.1-XXXXXX",
+                        ),
+                        HeaderNode(
+                            value=[TextNode("Header 2")],
+                            level="1",
+                            anchor="Header 2-XXXXXX",
+                        ),
+                        TocNode(
+                            children=[
+                                TocEntryNode(
+                                    value=[TextNode("Header 1")],
+                                    anchor="Header 1-XXXXXX",
+                                    children=[
+                                        TocEntryNode(
+                                            value=[TextNode("Header 1.1")],
+                                            anchor="Header 1.1-XXXXXX",
+                                            children=[],
+                                        ),
+                                    ],
+                                ),
+                                TocEntryNode(
+                                    value=[TextNode("Header 2")],
+                                    anchor="Header 2-XXXXXX",
+                                    children=[],
+                                ),
+                            ]
+                        ),
+                    ],
+                    preprocessor="none",
+                )
             ]
         ),
         "toc": ContainerNode(

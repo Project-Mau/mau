@@ -80,6 +80,7 @@ class FootnotesManager:
     def update(self, other):
         self.update_mentions(other.mentions)
         self.data.update(other.data)
+        self.command_nodes.extend(other.command_nodes)
 
     def update_mentions(self, mentions):
         # Retrieve the footnotes

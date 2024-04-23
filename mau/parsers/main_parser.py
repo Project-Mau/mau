@@ -768,7 +768,7 @@ class MainParser(BaseParser):
         # <name>: <description>
         #
         # Since Mau uses Pygments, the attribute language
-        # is one of the langauges supported by that tool.
+        # is one of the languages supported by that tool.
 
         # Get the delimiter for callouts (":" by default)
         delimiter = block.kwargs.pop("callouts", ":")

@@ -9,9 +9,10 @@ class TokenTypes:
     BLOCK = "BLOCK"
     COMMAND = "COMMAND"
     COMMENT = "COMMENT"
+    CONTENT = "CONTENT"
+    CONTROL = "CONTROL"
     HEADER = "HEADER"
     HORIZONTAL_RULE = "HORIZONTAL_RULE"
-    CONTENT = "CONTENT"
     LIST = "LIST"
     MULTILINE_COMMENT = "MULTILINE_COMMENT"
     TITLE = "TITLE"
@@ -26,6 +27,7 @@ class MainLexer(BaseLexer):
             self._process_horizontal_rule,
             self._process_block,
             self._process_command_or_directive,
+            self._process_control,
             self._process_include,
             self._process_variable,
             self._process_arguments,
@@ -114,6 +116,34 @@ class MainLexer(BaseLexer):
         if match.group(2):
             tokens.append(
                 self._create_token_and_skip(BLTokenTypes.TEXT, match.group(2))
+            )
+
+        tokens.append(self._create_token(BLTokenTypes.EOL))
+
+        self._nextline()
+
+        return tokens
+
+    def _process_control(self):
+        match = rematch(r"@([^:]+):([^:]+):(.*)?", self._current_line)
+
+        if not match:
+            return None
+
+        keyword_name = match.group(1)
+        variable_name = match.group(2)
+
+        tokens = [
+            self._create_token_and_skip(TokenTypes.CONTROL, "@"),
+            self._create_token_and_skip(BLTokenTypes.TEXT, keyword_name),
+            self._create_token_and_skip(BLTokenTypes.LITERAL, ":"),
+            self._create_token_and_skip(BLTokenTypes.TEXT, variable_name),
+            self._create_token_and_skip(BLTokenTypes.LITERAL, ":"),
+        ]
+
+        if match.group(3):
+            tokens.append(
+                self._create_token_and_skip(BLTokenTypes.TEXT, match.group(3))
             )
 
         tokens.append(self._create_token(BLTokenTypes.EOL))

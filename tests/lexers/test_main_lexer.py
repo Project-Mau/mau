@@ -708,3 +708,53 @@ def test_block_has_to_begin_with_four_identical_characters():
         Token(BLTokenTypes.EOL),
         Token(BLTokenTypes.EOF),
     ]
+
+
+def test_conditional():
+    lex = runner("@if:somevar:=value")
+
+    assert lex.tokens == [
+        Token(TokenTypes.CONTROL, "@"),
+        Token(BLTokenTypes.TEXT, "if"),
+        Token(BLTokenTypes.LITERAL, ":"),
+        Token(BLTokenTypes.TEXT, "somevar"),
+        Token(BLTokenTypes.LITERAL, ":"),
+        Token(BLTokenTypes.TEXT, "=value"),
+        Token(BLTokenTypes.EOL),
+        Token(BLTokenTypes.EOF),
+    ]
+
+    assert [i.context for i in lex.tokens] == [
+        Context(0, 0, None, "@if:somevar:=value"),
+        Context(0, 1, None, "@if:somevar:=value"),
+        Context(0, 3, None, "@if:somevar:=value"),
+        Context(0, 4, None, "@if:somevar:=value"),
+        Context(0, 11, None, "@if:somevar:=value"),
+        Context(0, 12, None, "@if:somevar:=value"),
+        Context(0, 18, None, "@if:somevar:=value"),
+        Context(1, 0, None, ""),
+    ]
+
+
+def test_conditional_no_value():
+    lex = runner("@if:somevar:")
+
+    assert lex.tokens == [
+        Token(TokenTypes.CONTROL, "@"),
+        Token(BLTokenTypes.TEXT, "if"),
+        Token(BLTokenTypes.LITERAL, ":"),
+        Token(BLTokenTypes.TEXT, "somevar"),
+        Token(BLTokenTypes.LITERAL, ":"),
+        Token(BLTokenTypes.EOL),
+        Token(BLTokenTypes.EOF),
+    ]
+
+    assert [i.context for i in lex.tokens] == [
+        Context(0, 0, None, "@if:somevar:"),
+        Context(0, 1, None, "@if:somevar:"),
+        Context(0, 3, None, "@if:somevar:"),
+        Context(0, 4, None, "@if:somevar:"),
+        Context(0, 11, None, "@if:somevar:"),
+        Context(0, 12, None, "@if:somevar:"),
+        Context(1, 0, None, ""),
+    ]

@@ -64,7 +64,7 @@ class MainParser(BaseParser):
         )
 
         # This is a buffer for a block title
-        self._title = (None, None, None)
+        self.title = (None, None, None)
 
         # This is the function used to create the header
         # anchors.
@@ -104,13 +104,13 @@ class MainParser(BaseParser):
         ]
 
     def _reset_title(self):
-        self._title = (None, self._current_token.context, self.environment)
+        self.title = (None, None, None)
 
     def _pop_title(self, node):
         # This return the title and resets the
         # cached one, so no other block will
         # use it.
-        text, context, environment = self._title
+        text, context, environment = self.title
         self._reset_title()
 
         if text is None:
@@ -134,7 +134,7 @@ class MainParser(BaseParser):
         # When we parse a title we can store it here
         # so that it is available to the next block
         # that will use it.
-        self._title = (text, context, environment)
+        self.title = (text, context, environment)
 
     def _collect_text_content(self):
         # Collects all adjacent text tokens
@@ -243,8 +243,11 @@ class MainParser(BaseParser):
 
         # Get the mandatory variable name
         self._get_token(MLTokenTypes.VARIABLE, ":")
-        variable_name = self._get_token(BLTokenTypes.TEXT).value
+        variable_token = self._get_token(BLTokenTypes.TEXT)
         self._get_token(BLTokenTypes.LITERAL, ":")
+
+        context = variable_token.context
+        variable_name = variable_token.value
 
         # Get the optional value
         value = self._collect_join([Token(BLTokenTypes.EOL)])
@@ -260,7 +263,7 @@ class MainParser(BaseParser):
         else:
             preprocess_parser = PreprocessVariablesParser.analyse(
                 value,
-                self._current_token.context,
+                context,
                 self.environment,
             )
             value = preprocess_parser.nodes[0].value
@@ -282,12 +285,10 @@ class MainParser(BaseParser):
         command_args = []
         command_kwargs = {}
         with self:
-            arguments = self._get_token(BLTokenTypes.TEXT).value
-
-            current_context = self._current_token.context
+            arguments = self._get_token(BLTokenTypes.TEXT)
 
             arguments_parser = ArgumentsParser.analyse(
-                arguments, current_context, self.environment
+                arguments.value, arguments.context, self.environment
             )
 
             (
@@ -360,7 +361,7 @@ class MainParser(BaseParser):
         # .This is a title
 
         # Parse the mandatory dot
-        self._get_token(MLTokenTypes.TITLE, ".")
+        dot = self._get_token(MLTokenTypes.TITLE, ".")
 
         # Parse the optional white spaces
         with self:
@@ -370,7 +371,7 @@ class MainParser(BaseParser):
         text = self._get_token(BLTokenTypes.TEXT).value
         self._get_token(BLTokenTypes.EOL)
 
-        self._push_title(text, self._current_token.context, self.environment)
+        self._push_title(text, dot.context, self.environment)
 
         return True
 
@@ -379,21 +380,19 @@ class MainParser(BaseParser):
         # [unnamed1, unnamed2, ..., named1=value1, name2=value2, ...]
 
         self._get_token(MLTokenTypes.ARGUMENTS, "[")
-        text = self._get_token(BLTokenTypes.TEXT).value
+        text_token = self._get_token(BLTokenTypes.TEXT)
         self._get_token(BLTokenTypes.LITERAL, "]")
 
-        current_context = self._current_token.context
-
         preprocess_parser = PreprocessVariablesParser.analyse(
-            text,
-            current_context,
+            text_token.value,
+            text_token.context,
             self.environment,
         )
         text = preprocess_parser.nodes[0].value
 
         # Parse the text
         arguments_parser = ArgumentsParser.analyse(
-            text, current_context, self.environment
+            text, text_token.context, self.environment
         )
 
         args, kwargs, tags, subtype = arguments_parser.process_arguments()
@@ -418,12 +417,12 @@ class MainParser(BaseParser):
         self._get_token(BLTokenTypes.WHITESPACE)
 
         # Get the text of the header and calculate the level
-        text = self._get_token(BLTokenTypes.TEXT).value
+        text_token = self._get_token(BLTokenTypes.TEXT)
         level = len(header)
 
         preprocess_parser = PreprocessVariablesParser.analyse(
-            text,
-            self._current_token.context,
+            text_token.value,
+            text_token.context,
             self.environment,
         )
         text = preprocess_parser.nodes[0].value
@@ -443,12 +442,10 @@ class MainParser(BaseParser):
             tags=tags,
         )
 
-        current_context = self._current_token.context
-
         # Titles can contain Mau code
         text_parser = TextParser.analyse(
             text,
-            current_context,
+            text_token.context,
             self.environment,
             parent_node=node,
         )
@@ -889,13 +886,11 @@ class MainParser(BaseParser):
 
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
-        uris = self._get_token(BLTokenTypes.TEXT).value
+        uris = self._get_token(BLTokenTypes.TEXT)
 
         with self:
-            current_context = self._current_token.context
-
             arguments_parser = ArgumentsParser.analyse(
-                uris, current_context, self.environment
+                uris.value, uris.context, self.environment
             )
 
             uris, _, _, _ = arguments_parser.process_arguments()

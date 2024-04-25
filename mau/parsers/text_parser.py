@@ -284,37 +284,74 @@ class TextParser(BaseParser):
             parent_position=self.parent_position,
         )
 
-    def _parse_macro_if(self, args, kwargs):
+    def _parse_macro_control(self, macro_name, args, kwargs):
         """
-        Parse a class macro in the form [if](variable, true, false).
+        Parse a class macro in the form [@if:variable:test](true, false).
         """
+
+        # Skip the initial @
+        macro_name = macro_name[1:]
+
+        try:
+            operator, variable, test = macro_name.split(":", 3)
+        except ValueError:
+            self._error(
+                f"Macro '{macro_name}' is not in the form @operator:variable:test"
+            )
+
+        if operator not in ["if", "ifeval"]:
+            self._error(f"Control operator '{operator}' is not supported")
 
         args, kwargs = set_names_and_defaults(
             args,
             kwargs,
-            ["variable", "true", "false"],
+            ["true", "false"],
             {"false": ""},
         )
 
         current_context = self._current_token.context
 
-        variable = kwargs.get("variable")
-        test = True
+        variable_value = self.environment.getvar(variable, None)
 
-        if variable.startswith("!"):
-            variable = variable[1:]
-            test = False
+        if variable_value is None:
+            self._error(f"Variable '{variable}' has not been defined")
 
-        value = self.environment.getvar(variable)
-        if not test:
-            value = not value
+        test_result = False
 
-        if value is True:
-            text = kwargs.get("true")
-        elif value is False:
-            text = kwargs.get("false")
+        if test.startswith("="):
+            value = test[1:]
+            test_result = variable_value == value
+        elif test.startswith("!="):
+            value = test[2:]
+            test_result = variable_value != value
+        elif test.startswith("&"):
+            value = test[1:]
+
+            if value not in ["true", "false"]:
+                self._error(f"Boolean value '{value}' is invalid")
+
+            # pylint: disable=simplifiable-if-expression
+            value = True if value == "true" else False
+
+            test_result = variable_value and value
         else:
-            self._error(f"Invalid value for flag {variable}: {value}")
+            self._error(f"Test '{test}' is not supported")
+
+        if operator == "if":
+            if test_result is True:
+                text = kwargs.get("true")
+            else:
+                text = kwargs.get("false")
+        else:
+            if test_result is True:
+                text_variable = kwargs.get("true")
+            else:
+                text_variable = kwargs.get("false")
+
+            text = self.environment.getvar(text_variable)
+
+            if text is None:
+                self._error(f"Variable '{text_variable}' has not been defined")
 
         par = self.analyse(text, current_context, self.environment)
 
@@ -324,50 +361,50 @@ class TextParser(BaseParser):
             parent_position=self.parent_position,
         )
 
-    def _parse_macro_ifeval(self, args, kwargs):
-        """
-        Parse a class macro in the form [ifeval](variable, true_text, false_text).
-        'true_text' is parsed only if the test is true,
-        'false_text' is parsed only if the test is false.
-        """
+    # def _parse_macro_ifeval(self, args, kwargs):
+    #     """
+    #     Parse a class macro in the form [ifeval](variable, true_text, false_text).
+    #     'true_text' is parsed only if the test is true,
+    #     'false_text' is parsed only if the test is false.
+    #     """
 
-        args, kwargs = set_names_and_defaults(
-            args,
-            kwargs,
-            ["variable", "true", "false"],
-            {"false": ""},
-        )
+    #     args, kwargs = set_names_and_defaults(
+    #         args,
+    #         kwargs,
+    #         ["variable", "true", "false"],
+    #         {"false": ""},
+    #     )
 
-        current_context = self._current_token.context
+    #     current_context = self._current_token.context
 
-        variable = kwargs.get("variable")
-        test = True
+    #     variable = kwargs.get("variable")
+    #     test = True
 
-        if variable.startswith("!"):
-            variable = variable[1:]
-            test = False
+    #     if variable.startswith("!"):
+    #         variable = variable[1:]
+    #         test = False
 
-        value = self.environment.getvar(variable)
-        if not test:
-            value = not value
+    #     value = self.environment.getvar(variable)
+    #     if not test:
+    #         value = not value
 
-        if value is True:
-            text_variable = self.environment.getvar(kwargs.get("true"))
-        elif value is False:
-            text_variable = self.environment.getvar(kwargs.get("false"))
-        else:
-            self._error(f"Invalid value for flag {variable}: {value}")
+    #     if value is True:
+    #         text_variable = self.environment.getvar(kwargs.get("true"))
+    #     elif value is False:
+    #         text_variable = self.environment.getvar(kwargs.get("false"))
+    #     else:
+    #         self._error(f"Invalid value for flag {variable}: {value}")
 
-        par = self.analyse(text_variable, current_context, self.environment)
+    #     par = self.analyse(text_variable, current_context, self.environment)
 
-        self.footnotes.update(par.footnotes)
-        self.links.extend(par.links)
+    #     self.footnotes.update(par.footnotes)
+    #     self.links.extend(par.links)
 
-        return SentenceNode(
-            children=par.nodes,
-            parent=self.parent_node,
-            parent_position=self.parent_position,
-        )
+    #     return SentenceNode(
+    #         children=par.nodes,
+    #         parent=self.parent_node,
+    #         parent_position=self.parent_position,
+    #     )
 
     def _parse_macro_image(self, args, kwargs):
         """
@@ -460,6 +497,9 @@ class TextParser(BaseParser):
 
         args, kwargs, _, _ = par.process_arguments()
 
+        if macro_name.startswith("@"):
+            return self._parse_macro_control(macro_name, args, kwargs)
+
         if macro_name == "link":
             return self._parse_macro_link(args, kwargs)
 
@@ -478,11 +518,11 @@ class TextParser(BaseParser):
         if macro_name == "class":
             return self._parse_macro_class(args, kwargs)
 
-        if macro_name == "if":
-            return self._parse_macro_if(args, kwargs)
+        # if macro_name == "if":
+        #     return self._parse_macro_if(args, kwargs)
 
-        if macro_name == "ifeval":
-            return self._parse_macro_ifeval(args, kwargs)
+        # if macro_name == "ifeval":
+        #     return self._parse_macro_ifeval(args, kwargs)
 
         return MacroNode(
             macro_name,

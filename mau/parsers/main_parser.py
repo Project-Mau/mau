@@ -64,7 +64,7 @@ class MainParser(BaseParser):
         )
 
         # This is a buffer for a block title
-        self.title = (None, None, None)
+        self.title = (None, None)
 
         # This is a buffer for a control
         self.control = (None, None, None)
@@ -107,17 +107,17 @@ class MainParser(BaseParser):
             self._process_paragraph,
         ]
 
-    def _push_title(self, text, context, environment):
+    def _push_title(self, text, context):
         # When we parse a title we can store it here
         # so that it is available to the next block
         # that will use it.
-        self.title = (text, context, environment)
+        self.title = (text, context)
 
     def _pop_title(self, node):
         # This return the title and resets the
         # cached one, so no other block will
         # use it.
-        text, context, environment = self.title
+        text, context = self.title
         self._reset_title()
 
         if text is None:
@@ -126,7 +126,7 @@ class MainParser(BaseParser):
         text_parser = TextParser.analyse(
             text,
             context,
-            environment,
+            self.environment,
             parent_node=node,
             parent_position="title",
         )
@@ -138,7 +138,7 @@ class MainParser(BaseParser):
         )
 
     def _reset_title(self):
-        self.title = (None, None, None)
+        self.title = (None, None)
 
     def _push_control(self, operator, statement, context):
         self.control = (operator, statement, context)
@@ -426,7 +426,7 @@ class MainParser(BaseParser):
         text = self._get_token(BLTokenTypes.TEXT).value
         self._get_token(BLTokenTypes.EOL)
 
-        self._push_title(text, dot.context, self.environment)
+        self._push_title(text, dot.context)
 
         return True
 

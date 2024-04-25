@@ -26,7 +26,7 @@ def test_initial_title():
 
     parser = runner(source)
 
-    assert parser.title == (None, None, None)
+    assert parser.title == (None, None)
 
 
 def test_push_title():
@@ -35,14 +35,11 @@ def test_push_title():
 
     parser = runner(source)
 
-    parser._push_title(
-        "Just a title", Context(42, 128, "main", ".Just a title"), Environment()
-    )
+    parser._push_title("Just a title", Context(42, 128, "main", ".Just a title"))
 
     assert parser.title == (
         "Just a title",
         Context(42, 128, "main", ".Just a title"),
-        Environment(),
     )
 
 
@@ -54,9 +51,7 @@ def test_pop_title():
 
     parser = runner(source)
 
-    parser._push_title(
-        "Just a title", Context(42, 128, "main", ".Just a title"), Environment()
-    )
+    parser._push_title("Just a title", Context(42, 128, "main", ".Just a title"))
 
     title_node = parser._pop_title(node)
 
@@ -79,7 +74,6 @@ def test_parse_title():
     assert parser.title == (
         "Just a title",
         Context(1, 0, "main", ".Just a title"),
-        Environment(),
     )
 
 
@@ -108,7 +102,7 @@ def test_block_uses_title():
         )
     ]
 
-    assert parser.title == (None, None, None)
+    assert parser.title == (None, None)
 
 
 def test_include_content_uses_title():
@@ -131,4 +125,4 @@ def test_include_content_uses_title():
         )
     ]
 
-    assert parser.title == (None, None, None)
+    assert parser.title == (None, None)

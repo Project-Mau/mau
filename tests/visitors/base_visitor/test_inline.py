@@ -389,7 +389,10 @@ def test_header_node():
     visitor = BaseVisitor(Environment())
 
     header_node = HeaderNode(
-        value=[TextNode("Header")], level="2", anchor="XXXXXX", kwargs={"id": "someid"}
+        value=SentenceNode(children=[TextNode("Header")]),
+        level="2",
+        anchor="XXXXXX",
+        kwargs={"id": "someid"},
     )
 
     node = MacroHeaderNode(
@@ -414,18 +417,27 @@ def test_header_node():
                 }
             ],
             "header": {
-                "value": [
-                    {
-                        "data": {
-                            "type": "text",
-                            "value": "Header",
-                            "subtype": None,
-                            "args": [],
-                            "kwargs": {},
-                            "tags": [],
-                        }
+                "value": {
+                    "data": {
+                        "type": "sentence",
+                        "subtype": None,
+                        "args": [],
+                        "kwargs": {},
+                        "tags": [],
+                        "content": [
+                            {
+                                "data": {
+                                    "type": "text",
+                                    "value": "Header",
+                                    "subtype": None,
+                                    "args": [],
+                                    "kwargs": {},
+                                    "tags": [],
+                                }
+                            }
+                        ],
                     }
-                ],
+                },
                 "level": "2",
                 "anchor": "XXXXXX",
             },
@@ -441,7 +453,10 @@ def test_header_node_with_no_text():
     visitor = BaseVisitor(Environment())
 
     header_node = HeaderNode(
-        value=[TextNode("Header")], level="2", anchor="XXXXXX", kwargs={"id": "someid"}
+        value=SentenceNode(children=[TextNode("Header")]),
+        level="2",
+        anchor="XXXXXX",
+        kwargs={"id": "someid"},
     )
 
     node = MacroHeaderNode(header_id="someid", header=header_node, children=[])
@@ -451,31 +466,49 @@ def test_header_node_with_no_text():
     assert result == {
         "data": {
             "type": "macro.header",
-            "content": [
-                {
+            "content": {
+                "data": {
+                    "type": "sentence",
+                    "subtype": None,
+                    "args": [],
+                    "kwargs": {},
+                    "tags": [],
+                    "content": [
+                        {
+                            "data": {
+                                "type": "text",
+                                "value": "Header",
+                                "subtype": None,
+                                "args": [],
+                                "kwargs": {},
+                                "tags": [],
+                            }
+                        }
+                    ],
+                }
+            },
+            "header": {
+                "value": {
                     "data": {
-                        "type": "text",
-                        "value": "Header",
+                        "type": "sentence",
                         "subtype": None,
                         "args": [],
                         "kwargs": {},
                         "tags": [],
+                        "content": [
+                            {
+                                "data": {
+                                    "type": "text",
+                                    "value": "Header",
+                                    "subtype": None,
+                                    "args": [],
+                                    "kwargs": {},
+                                    "tags": [],
+                                }
+                            }
+                        ],
                     }
-                }
-            ],
-            "header": {
-                "value": [
-                    {
-                        "data": {
-                            "type": "text",
-                            "value": "Header",
-                            "subtype": None,
-                            "args": [],
-                            "kwargs": {},
-                            "tags": [],
-                        }
-                    }
-                ],
+                },
                 "level": "2",
                 "anchor": "XXXXXX",
             },

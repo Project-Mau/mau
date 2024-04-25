@@ -1,12 +1,13 @@
 from mau.environment.environment import Environment
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.visitors.jinja_visitor import JinjaVisitor
 
 
 def test_page_header_node():
     templates = {
         "text.j2": "{{ value }}",
+        "sentence.j2": "{{ content }}",
         "header.j2": (
             "{{ value }} - {{ level }} - {{ anchor }} - {{ args | join(',') }} - "
             "{% for key, value in kwargs|items %}{{ key }}:{{ value }}{% endfor %} - "
@@ -22,7 +23,7 @@ def test_page_header_node():
     kwargs = {"key1": "value1"}
     tags = ["tag1", "tag2"]
     node = HeaderNode(
-        value=[TextNode("Just some text")],
+        value=SentenceNode(children=[TextNode("Just some text")]),
         level="3",
         anchor="someanchor",
         args=args,

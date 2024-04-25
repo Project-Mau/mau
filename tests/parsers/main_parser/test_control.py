@@ -276,7 +276,11 @@ def test_header_uses_control_true():
     parser = runner(source, environment)
 
     assert parser.nodes == [
-        HeaderNode(value=[TextNode("Header")], level="1", anchor="XXXXXX")
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header")]),
+            level="1",
+            anchor="XXXXXX",
+        )
     ]
 
     assert parser.control == (None, None, None)

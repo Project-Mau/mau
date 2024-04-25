@@ -5,7 +5,7 @@ from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.nodes.macros import MacroHeaderNode
 from mau.parsers.main_parser import MainParser
 
@@ -33,7 +33,10 @@ def test_internal_link():
     parser.finalise()
 
     header_node = HeaderNode(
-        value=[TextNode("Header")], level="2", anchor="XXXXXX", kwargs={"id": "someid"}
+        value=SentenceNode(children=[TextNode("Header")]),
+        level="2",
+        anchor="XXXXXX",
+        kwargs={"id": "someid"},
     )
 
     assert parser.internal_links_manager.links == [
@@ -80,7 +83,10 @@ def test_internal_link_header_in_block():
     parser.finalise()
 
     header_node = HeaderNode(
-        value=[TextNode("Header")], level="2", anchor="XXXXXX", kwargs={"id": "someid"}
+        value=SentenceNode(children=[TextNode("Header")]),
+        level="2",
+        anchor="XXXXXX",
+        kwargs={"id": "someid"},
     )
 
     assert parser.internal_links_manager.links == [
@@ -110,7 +116,10 @@ def test_internal_link_link_in_block():
     parser.finalise()
 
     header_node = HeaderNode(
-        value=[TextNode("Header")], level="2", anchor="XXXXXX", kwargs={"id": "someid"}
+        value=SentenceNode(children=[TextNode("Header")]),
+        level="2",
+        anchor="XXXXXX",
+        kwargs={"id": "someid"},
     )
 
     assert parser.internal_links_manager.links == [
@@ -140,7 +149,10 @@ def test_internal_link_link_and_header_in_block():
     parser.finalise()
 
     header_node = HeaderNode(
-        value=[TextNode("Header")], level="2", anchor="XXXXXX", kwargs={"id": "someid"}
+        value=SentenceNode(children=[TextNode("Header")]),
+        level="2",
+        anchor="XXXXXX",
+        kwargs={"id": "someid"},
     )
 
     assert parser.internal_links_manager.links == [

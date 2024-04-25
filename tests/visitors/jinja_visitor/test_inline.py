@@ -3,7 +3,7 @@ from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import StyleNode, TextNode, VerbatimNode
+from mau.nodes.inline import StyleNode, TextNode, VerbatimNode, SentenceNode
 from mau.nodes.macros import (
     MacroClassNode,
     MacroHeaderNode,
@@ -247,6 +247,7 @@ def test_inline_link_node():
 def test_inline_header_node():
     templates = {
         "text.j2": "{{ value }}",
+        "sentence.j2": "{{ content }}",
         "macro.header.j2": "#{{ header.anchor }} - {{ content }}",
     }
 
@@ -255,7 +256,10 @@ def test_inline_header_node():
     visitor = JinjaVisitor(environment)
 
     header_node = HeaderNode(
-        value=[TextNode("Header")], level="2", anchor="XXXXXX", kwargs={"id": "someid"}
+        value=SentenceNode(children=[TextNode("Header")]),
+        level="2",
+        anchor="XXXXXX",
+        kwargs={"id": "someid"},
     )
 
     node = MacroHeaderNode(

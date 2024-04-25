@@ -4,7 +4,7 @@ from mau.environment.environment import Environment
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.nodes.page import ContainerNode
 from mau.nodes.toc import TocEntryNode, TocNode
 from mau.parsers.main_parser import MainParser
@@ -53,35 +53,37 @@ def test_toc():
         "content": ContainerNode(
             children=[
                 HeaderNode(
-                    value=[TextNode("Header 1")],
+                    value=SentenceNode(children=[TextNode("Header 1")]),
                     level="1",
                     anchor="Header 1-XXXXXX",
                 ),
                 HeaderNode(
-                    value=[TextNode("Header 1.1")],
+                    value=SentenceNode(children=[TextNode("Header 1.1")]),
                     level="2",
                     anchor="Header 1.1-XXXXXX",
                 ),
                 HeaderNode(
-                    value=[TextNode("Header 2")],
+                    value=SentenceNode(children=[TextNode("Header 2")]),
                     level="1",
                     anchor="Header 2-XXXXXX",
                 ),
                 TocNode(
                     children=[
                         TocEntryNode(
-                            value=[TextNode("Header 1")],
+                            value=SentenceNode(children=[TextNode("Header 1")]),
                             anchor="Header 1-XXXXXX",
                             children=[
                                 TocEntryNode(
-                                    value=[TextNode("Header 1.1")],
+                                    value=SentenceNode(
+                                        children=[TextNode("Header 1.1")]
+                                    ),
                                     anchor="Header 1.1-XXXXXX",
                                     children=[],
                                 ),
                             ],
                         ),
                         TocEntryNode(
-                            value=[TextNode("Header 2")],
+                            value=SentenceNode(children=[TextNode("Header 2")]),
                             anchor="Header 2-XXXXXX",
                             children=[],
                         ),
@@ -94,18 +96,20 @@ def test_toc():
                 TocNode(
                     children=[
                         TocEntryNode(
-                            value=[TextNode("Header 1")],
+                            value=SentenceNode(children=[TextNode("Header 1")]),
                             anchor="Header 1-XXXXXX",
                             children=[
                                 TocEntryNode(
-                                    value=[TextNode("Header 1.1")],
+                                    value=SentenceNode(
+                                        children=[TextNode("Header 1.1")]
+                                    ),
                                     anchor="Header 1.1-XXXXXX",
                                     children=[],
                                 ),
                             ],
                         ),
                         TocEntryNode(
-                            value=[TextNode("Header 2")],
+                            value=SentenceNode(children=[TextNode("Header 2")]),
                             anchor="Header 2-XXXXXX",
                             children=[],
                         ),
@@ -144,35 +148,37 @@ def test_toc_inside_block():
                 BlockNode(
                     children=[
                         HeaderNode(
-                            value=[TextNode("Header 1")],
+                            value=SentenceNode(children=[TextNode("Header 1")]),
                             level="1",
                             anchor="Header 1-XXXXXX",
                         ),
                         HeaderNode(
-                            value=[TextNode("Header 1.1")],
+                            value=SentenceNode(children=[TextNode("Header 1.1")]),
                             level="2",
                             anchor="Header 1.1-XXXXXX",
                         ),
                         HeaderNode(
-                            value=[TextNode("Header 2")],
+                            value=SentenceNode(children=[TextNode("Header 2")]),
                             level="1",
                             anchor="Header 2-XXXXXX",
                         ),
                         TocNode(
                             children=[
                                 TocEntryNode(
-                                    value=[TextNode("Header 1")],
+                                    value=SentenceNode(children=[TextNode("Header 1")]),
                                     anchor="Header 1-XXXXXX",
                                     children=[
                                         TocEntryNode(
-                                            value=[TextNode("Header 1.1")],
+                                            value=SentenceNode(
+                                                children=[TextNode("Header 1.1")]
+                                            ),
                                             anchor="Header 1.1-XXXXXX",
                                             children=[],
                                         ),
                                     ],
                                 ),
                                 TocEntryNode(
-                                    value=[TextNode("Header 2")],
+                                    value=SentenceNode(children=[TextNode("Header 2")]),
                                     anchor="Header 2-XXXXXX",
                                     children=[],
                                 ),
@@ -188,18 +194,20 @@ def test_toc_inside_block():
                 TocNode(
                     children=[
                         TocEntryNode(
-                            value=[TextNode("Header 1")],
+                            value=SentenceNode(children=[TextNode("Header 1")]),
                             anchor="Header 1-XXXXXX",
                             children=[
                                 TocEntryNode(
-                                    value=[TextNode("Header 1.1")],
+                                    value=SentenceNode(
+                                        children=[TextNode("Header 1.1")]
+                                    ),
                                     anchor="Header 1.1-XXXXXX",
                                     children=[],
                                 ),
                             ],
                         ),
                         TocEntryNode(
-                            value=[TextNode("Header 2")],
+                            value=SentenceNode(children=[TextNode("Header 2")]),
                             anchor="Header 2-XXXXXX",
                             children=[],
                         ),

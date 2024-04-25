@@ -531,7 +531,10 @@ class MainParser(BaseParser):
             self.environment,
             parent_node=node,
         )
-        node.value = text_parser.nodes
+        node.value = SentenceNode(
+            parent=node,
+            children=text_parser.nodes,
+        )
 
         # If there is an id store the header
         # to be processed by internal links

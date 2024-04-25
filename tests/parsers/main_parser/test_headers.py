@@ -5,7 +5,7 @@ from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.parsers.main_parser import MainParser, header_anchor
 
 from tests.helpers import init_parser_factory, parser_runner_factory
@@ -49,7 +49,11 @@ def test_custom_header_anchor_function():
     )
 
     assert runner(source, environment).nodes == [
-        HeaderNode(value=[TextNode("Title of the section")], level="1", anchor="XXXXXY")
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Title of the section")]),
+            level="1",
+            anchor="XXXXXY",
+        )
     ]
 
 
@@ -64,7 +68,11 @@ def test_parse_header_level_1():
     """
 
     assert runner(source, environment).nodes == [
-        HeaderNode(value=[TextNode("Title of the section")], level="1", anchor="XXXXXY")
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Title of the section")]),
+            level="1",
+            anchor="XXXXXY",
+        )
     ]
 
 
@@ -80,7 +88,9 @@ def test_parse_header_level_3():
 
     assert runner(source, environment).nodes == [
         HeaderNode(
-            value=[TextNode("Title of a subsection")], level="3", anchor="XXXXXX"
+            value=SentenceNode(children=[TextNode("Title of a subsection")]),
+            level="3",
+            anchor="XXXXXX",
         )
     ]
 
@@ -103,36 +113,68 @@ def test_parse_collect_headers():
     parser = runner(source, environment)
 
     assert parser.nodes == [
-        HeaderNode(value=[TextNode("Header 1")], level="1", anchor="Header 1-XXXXXX"),
         HeaderNode(
-            value=[TextNode("Header 1.1")], level="2", anchor="Header 1.1-XXXXXX"
+            value=SentenceNode(children=[TextNode("Header 1")]),
+            level="1",
+            anchor="Header 1-XXXXXX",
         ),
         HeaderNode(
-            value=[TextNode("Header 1.2")], level="2", anchor="Header 1.2-XXXXXX"
-        ),
-        HeaderNode(value=[TextNode("Header 2")], level="1", anchor="Header 2-XXXXXX"),
-        HeaderNode(
-            value=[TextNode("Header 2.1")], level="2", anchor="Header 2.1-XXXXXX"
+            value=SentenceNode(children=[TextNode("Header 1.1")]),
+            level="2",
+            anchor="Header 1.1-XXXXXX",
         ),
         HeaderNode(
-            value=[TextNode("Header 2.1.1")], level="3", anchor="Header 2.1.1-XXXXXX"
+            value=SentenceNode(children=[TextNode("Header 1.2")]),
+            level="2",
+            anchor="Header 1.2-XXXXXX",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2")]),
+            level="1",
+            anchor="Header 2-XXXXXX",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2.1")]),
+            level="2",
+            anchor="Header 2.1-XXXXXX",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2.1.1")]),
+            level="3",
+            anchor="Header 2.1.1-XXXXXX",
         ),
     ]
 
     assert parser.toc_manager.headers == [
-        HeaderNode(value=[TextNode("Header 1")], level="1", anchor="Header 1-XXXXXX"),
         HeaderNode(
-            value=[TextNode("Header 1.1")], level="2", anchor="Header 1.1-XXXXXX"
+            value=SentenceNode(children=[TextNode("Header 1")]),
+            level="1",
+            anchor="Header 1-XXXXXX",
         ),
         HeaderNode(
-            value=[TextNode("Header 1.2")], level="2", anchor="Header 1.2-XXXXXX"
-        ),
-        HeaderNode(value=[TextNode("Header 2")], level="1", anchor="Header 2-XXXXXX"),
-        HeaderNode(
-            value=[TextNode("Header 2.1")], level="2", anchor="Header 2.1-XXXXXX"
+            value=SentenceNode(children=[TextNode("Header 1.1")]),
+            level="2",
+            anchor="Header 1.1-XXXXXX",
         ),
         HeaderNode(
-            value=[TextNode("Header 2.1.1")], level="3", anchor="Header 2.1.1-XXXXXX"
+            value=SentenceNode(children=[TextNode("Header 1.2")]),
+            level="2",
+            anchor="Header 1.2-XXXXXX",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2")]),
+            level="1",
+            anchor="Header 2-XXXXXX",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2.1")]),
+            level="2",
+            anchor="Header 2.1-XXXXXX",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2.1.1")]),
+            level="3",
+            anchor="Header 2.1.1-XXXXXX",
         ),
     ]
 
@@ -150,7 +192,7 @@ def test_attributes_header():
 
     assert runner(source, environment).nodes == [
         HeaderNode(
-            value=[TextNode("Header")],
+            value=SentenceNode(children=[TextNode("Header")]),
             level="1",
             anchor="Header-XXXXXX",
             args=["arg1"],
@@ -167,7 +209,7 @@ def test_header_attributes_can_overwrite_anchor():
 
     assert runner(source).nodes == [
         HeaderNode(
-            value=[TextNode("Header")],
+            value=SentenceNode(children=[TextNode("Header")]),
             level="1",
             anchor="someheader",
             args=["arg1"],
@@ -188,7 +230,7 @@ def test_header_with_id_is_stored():
     """
 
     node = HeaderNode(
-        value=[TextNode("Header")],
+        value=SentenceNode(children=[TextNode("Header")]),
         level="1",
         anchor="Header-XXXXXX",
         args=["arg1"],
@@ -227,7 +269,7 @@ def test_single_tag_header():
 
     assert runner(source, environment).nodes == [
         HeaderNode(
-            value=[TextNode("Header")],
+            value=SentenceNode(children=[TextNode("Header")]),
             level="1",
             anchor="Header-XXXXXX",
             args=["arg1"],
@@ -237,7 +279,7 @@ def test_single_tag_header():
     ]
 
 
-def test_():
+def test_headeer_subtype():
     environment = Environment()
     environment.setvar(
         "mau.parser.header_anchor_function", lambda text, level: f"{text}-XXXXXX"
@@ -248,9 +290,10 @@ def test_():
     = Header
     """
 
-    assert runner(source, environment).nodes == [
+    parser = runner(source, environment)
+    assert parser.nodes == [
         HeaderNode(
-            value=[TextNode("Header")],
+            value=SentenceNode(children=[TextNode("Header")]),
             level="1",
             anchor="Header-XXXXXX",
             args=[],
@@ -259,3 +302,8 @@ def test_():
             subtype="type1",
         ),
     ]
+
+    header_node = parser.nodes[0]
+    text_node = header_node.value.children[0]
+
+    assert text_node.parent == header_node

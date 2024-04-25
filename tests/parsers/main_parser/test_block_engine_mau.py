@@ -5,7 +5,7 @@ from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.nodes.toc import TocEntryNode, TocNode
 from mau.parsers.main_parser import MainParser
 
@@ -36,13 +36,29 @@ def test_engine_mau(mock_header_anchor):
     par = runner(source)
 
     assert par.nodes == [
-        HeaderNode(value=[TextNode("Header 1")], level="1", anchor="XXYY"),
-        HeaderNode(value=[TextNode("Header 2")], level="1", anchor="XXYY"),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 1")]),
+            level="1",
+            anchor="XXYY",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2")]),
+            level="1",
+            anchor="XXYY",
+        ),
         BlockNode(
             subtype="sometype",
             children=[
-                HeaderNode(value=[TextNode("Header 3")], level="1", anchor="XXYY"),
-                HeaderNode(value=[TextNode("Header 4")], level="1", anchor="XXYY"),
+                HeaderNode(
+                    value=SentenceNode(children=[TextNode("Header 3")]),
+                    level="1",
+                    anchor="XXYY",
+                ),
+                HeaderNode(
+                    value=SentenceNode(children=[TextNode("Header 4")]),
+                    level="1",
+                    anchor="XXYY",
+                ),
             ],
             secondary_children=[],
             classes=[],
@@ -55,8 +71,16 @@ def test_engine_mau(mock_header_anchor):
     ]
 
     assert par.toc_manager.headers == [
-        HeaderNode(value=[TextNode("Header 1")], level="1", anchor="XXYY"),
-        HeaderNode(value=[TextNode("Header 2")], level="1", anchor="XXYY"),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 1")]),
+            level="1",
+            anchor="XXYY",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2")]),
+            level="1",
+            anchor="XXYY",
+        ),
     ]
 
 
@@ -87,13 +111,29 @@ def test_engine_mau_multiple_blocks_are_independent(mock_header_anchor):
     par = runner(source)
 
     assert par.nodes == [
-        HeaderNode(value=[TextNode("Header 1")], level="1", anchor="XXYY"),
-        HeaderNode(value=[TextNode("Header 2")], level="1", anchor="XXYY"),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 1")]),
+            level="1",
+            anchor="XXYY",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2")]),
+            level="1",
+            anchor="XXYY",
+        ),
         BlockNode(
             subtype="sometype",
             children=[
-                HeaderNode(value=[TextNode("Header 3")], level="1", anchor="XXYY"),
-                HeaderNode(value=[TextNode("Header 4")], level="1", anchor="XXYY"),
+                HeaderNode(
+                    value=SentenceNode(children=[TextNode("Header 3")]),
+                    level="1",
+                    anchor="XXYY",
+                ),
+                HeaderNode(
+                    value=SentenceNode(children=[TextNode("Header 4")]),
+                    level="1",
+                    anchor="XXYY",
+                ),
             ],
             secondary_children=[],
             classes=[],
@@ -106,8 +146,16 @@ def test_engine_mau_multiple_blocks_are_independent(mock_header_anchor):
         BlockNode(
             subtype="sometype",
             children=[
-                HeaderNode(value=[TextNode("Header 5")], level="1", anchor="XXYY"),
-                HeaderNode(value=[TextNode("Header 6")], level="1", anchor="XXYY"),
+                HeaderNode(
+                    value=SentenceNode(children=[TextNode("Header 5")]),
+                    level="1",
+                    anchor="XXYY",
+                ),
+                HeaderNode(
+                    value=SentenceNode(children=[TextNode("Header 6")]),
+                    level="1",
+                    anchor="XXYY",
+                ),
             ],
             secondary_children=[],
             classes=[],
@@ -120,8 +168,16 @@ def test_engine_mau_multiple_blocks_are_independent(mock_header_anchor):
     ]
 
     assert par.toc_manager.headers == [
-        HeaderNode(value=[TextNode("Header 1")], level="1", anchor="XXYY"),
-        HeaderNode(value=[TextNode("Header 2")], level="1", anchor="XXYY"),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 1")]),
+            level="1",
+            anchor="XXYY",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2")]),
+            level="1",
+            anchor="XXYY",
+        ),
     ]
 
 
@@ -149,17 +205,39 @@ def test_engine_mau_toc(mock_header_anchor):
     par = runner(source)
 
     assert par.nodes == [
-        HeaderNode(value=[TextNode("Header 1")], level="1", anchor="XXYY"),
-        HeaderNode(value=[TextNode("Header 2")], level="1", anchor="XXYY"),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 1")]),
+            level="1",
+            anchor="XXYY",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2")]),
+            level="1",
+            anchor="XXYY",
+        ),
         BlockNode(
             subtype="sometype",
             children=[
-                HeaderNode(value=[TextNode("Header 3")], level="1", anchor="XXYY"),
-                HeaderNode(value=[TextNode("Header 4")], level="1", anchor="XXYY"),
+                HeaderNode(
+                    value=SentenceNode(children=[TextNode("Header 3")]),
+                    level="1",
+                    anchor="XXYY",
+                ),
+                HeaderNode(
+                    value=SentenceNode(children=[TextNode("Header 4")]),
+                    level="1",
+                    anchor="XXYY",
+                ),
                 TocNode(
                     children=[
-                        TocEntryNode(value=[TextNode("Header 3")], anchor="XXYY"),
-                        TocEntryNode(value=[TextNode("Header 4")], anchor="XXYY"),
+                        TocEntryNode(
+                            value=SentenceNode(children=[TextNode("Header 3")]),
+                            anchor="XXYY",
+                        ),
+                        TocEntryNode(
+                            value=SentenceNode(children=[TextNode("Header 4")]),
+                            anchor="XXYY",
+                        ),
                     ]
                 ),
             ],
@@ -173,15 +251,27 @@ def test_engine_mau_toc(mock_header_anchor):
         ),
         TocNode(
             children=[
-                TocEntryNode(value=[TextNode("Header 1")], anchor="XXYY"),
-                TocEntryNode(value=[TextNode("Header 2")], anchor="XXYY"),
+                TocEntryNode(
+                    value=SentenceNode(children=[TextNode("Header 1")]), anchor="XXYY"
+                ),
+                TocEntryNode(
+                    value=SentenceNode(children=[TextNode("Header 2")]), anchor="XXYY"
+                ),
             ]
         ),
     ]
 
     assert par.toc_manager.headers == [
-        HeaderNode(value=[TextNode("Header 1")], level="1", anchor="XXYY"),
-        HeaderNode(value=[TextNode("Header 2")], level="1", anchor="XXYY"),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 1")]),
+            level="1",
+            anchor="XXYY",
+        ),
+        HeaderNode(
+            value=SentenceNode(children=[TextNode("Header 2")]),
+            level="1",
+            anchor="XXYY",
+        ),
     ]
 
 

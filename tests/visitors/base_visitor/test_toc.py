@@ -1,5 +1,5 @@
 from mau.environment.environment import Environment
-from mau.nodes.inline import TextNode
+from mau.nodes.inline import TextNode, SentenceNode
 from mau.nodes.toc import TocEntryNode, TocNode
 from mau.visitors.base_visitor import BaseVisitor
 
@@ -10,17 +10,17 @@ def test_toc_node():
     node = TocNode(
         children=[
             TocEntryNode(
-                value=[TextNode("Header 1")],
+                value=SentenceNode(children=[TextNode("Header 1")]),
                 anchor="header-1",
                 children=[
                     TocEntryNode(
-                        value=[TextNode("Header 1.1")],
+                        value=SentenceNode(children=[TextNode("Header 1.1")]),
                         anchor="header-1-1",
                     ),
                 ],
             ),
             TocEntryNode(
-                value=[TextNode("Header 2")],
+                value=SentenceNode(children=[TextNode("Header 2")]),
                 anchor="header-2",
             ),
         ],
@@ -45,35 +45,53 @@ def test_toc_node():
                                     "children": [],
                                     "tags": [],
                                     "type": "toc_entry",
-                                    "value": [
-                                        {
-                                            "data": {
-                                                "type": "text",
-                                                "value": "Header 1.1",
-                                                "subtype": None,
-                                                "args": [],
-                                                "kwargs": {},
-                                                "tags": [],
-                                            }
+                                    "value": {
+                                        "data": {
+                                            "type": "sentence",
+                                            "subtype": None,
+                                            "args": [],
+                                            "kwargs": {},
+                                            "tags": [],
+                                            "content": [
+                                                {
+                                                    "data": {
+                                                        "type": "text",
+                                                        "value": "Header 1.1",
+                                                        "subtype": None,
+                                                        "args": [],
+                                                        "kwargs": {},
+                                                        "tags": [],
+                                                    }
+                                                }
+                                            ],
                                         }
-                                    ],
-                                }
-                            },
-                        ],
-                        "tags": [],
-                        "type": "toc_entry",
-                        "value": [
-                            {
-                                "data": {
-                                    "type": "text",
-                                    "value": "Header 1",
-                                    "subtype": None,
-                                    "args": [],
-                                    "kwargs": {},
-                                    "tags": [],
+                                    },
                                 }
                             }
                         ],
+                        "tags": [],
+                        "type": "toc_entry",
+                        "value": {
+                            "data": {
+                                "type": "sentence",
+                                "subtype": None,
+                                "args": [],
+                                "kwargs": {},
+                                "tags": [],
+                                "content": [
+                                    {
+                                        "data": {
+                                            "type": "text",
+                                            "value": "Header 1",
+                                            "subtype": None,
+                                            "args": [],
+                                            "kwargs": {},
+                                            "tags": [],
+                                        }
+                                    }
+                                ],
+                            }
+                        },
                     }
                 },
                 {
@@ -82,18 +100,27 @@ def test_toc_node():
                         "anchor": "header-2",
                         "children": [],
                         "tags": [],
-                        "value": [
-                            {
-                                "data": {
-                                    "type": "text",
-                                    "value": "Header 2",
-                                    "subtype": None,
-                                    "args": [],
-                                    "kwargs": {},
-                                    "tags": [],
-                                }
+                        "value": {
+                            "data": {
+                                "type": "sentence",
+                                "subtype": None,
+                                "args": [],
+                                "kwargs": {},
+                                "tags": [],
+                                "content": [
+                                    {
+                                        "data": {
+                                            "type": "text",
+                                            "value": "Header 2",
+                                            "subtype": None,
+                                            "args": [],
+                                            "kwargs": {},
+                                            "tags": [],
+                                        }
+                                    }
+                                ],
                             }
-                        ],
+                        },
                     }
                 },
             ],

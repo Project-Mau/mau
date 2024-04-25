@@ -191,12 +191,12 @@ class BaseVisitor:
             {
                 "header": {
                     "anchor": node.header.anchor,
-                    "value": self.visitlist(node, node.header.value, *args, **kwargs),
+                    "value": self.visit(node.header.value, *args, **kwargs),
                     "level": node.header.level,
                 },
                 "content": self.visitlist(node, node.children, *args, **kwargs)
                 if node.children
-                else self.visitlist(node, node.header.value, *args, **kwargs),
+                else self.visit(node.header.value, *args, **kwargs),
             }
         )
 
@@ -242,7 +242,7 @@ class BaseVisitor:
 
         result["data"].update(
             {
-                "value": self.visitlist(node, node.value, *args, **kwargs),
+                "value": self.visit(node.value, *args, **kwargs),
                 "level": int(node.level),
                 "anchor": node.anchor,
             }
@@ -373,7 +373,7 @@ class BaseVisitor:
         return {
             "data": {
                 "type": node.node_type,
-                "value": self.visitlist(node, node.value, *args, **kwargs),
+                "value": self.visit(node.value, *args, **kwargs),
                 "anchor": node.anchor,
                 "children": self.visitlist(node, node.children, *args, **kwargs),
                 "tags": node.tags,

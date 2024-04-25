@@ -157,7 +157,7 @@ class MainParser(BaseParser):
             self._error(f"Control operator '{operator}' is not supported")
 
         try:
-            variable, test = statement.split(":")
+            variable, test = statement.split(":", 1)
         except ValueError:
             self._error(f"Statement '{statement}' is not in the form variable:test")
 

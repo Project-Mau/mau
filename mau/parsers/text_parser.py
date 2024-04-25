@@ -293,7 +293,7 @@ class TextParser(BaseParser):
         macro_name = macro_name[1:]
 
         try:
-            operator, variable, test = macro_name.split(":", 3)
+            operator, variable, test = macro_name.split(":", 2)
         except ValueError:
             self._error(
                 f"Macro '{macro_name}' is not in the form @operator:variable:test"

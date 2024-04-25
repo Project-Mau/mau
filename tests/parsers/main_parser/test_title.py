@@ -5,6 +5,7 @@ from mau.text_buffer.context import Context
 from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
+from mau.nodes.nodes import Node
 from mau.nodes.block import BlockNode
 from mau.nodes.content import ContentNode
 from mau.nodes.header import HeaderNode
@@ -17,6 +18,55 @@ from tests.helpers import init_parser_factory, parser_runner_factory
 init_parser = init_parser_factory(MainLexer, MainParser)
 
 runner = parser_runner_factory(MainLexer, MainParser)
+
+
+def test_initial_title():
+    source = """
+    """
+
+    parser = runner(source)
+
+    assert parser.title == (None, None, None)
+
+
+def test_push_title():
+    source = """
+    """
+
+    parser = runner(source)
+
+    parser._push_title(
+        "Just a title", Context(42, 128, "main", ".Just a title"), Environment()
+    )
+
+    assert parser.title == (
+        "Just a title",
+        Context(42, 128, "main", ".Just a title"),
+        Environment(),
+    )
+
+
+def test_pop_title():
+    source = """
+    """
+
+    node = Node()
+
+    parser = runner(source)
+
+    parser._push_title(
+        "Just a title", Context(42, 128, "main", ".Just a title"), Environment()
+    )
+
+    title_node = parser._pop_title(node)
+
+    assert title_node == SentenceNode(
+        children=[
+            TextNode("Just a title"),
+        ]
+    )
+    assert title_node.parent == node
+    assert title_node.parent_position == "title"
 
 
 def test_parse_title():

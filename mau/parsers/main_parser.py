@@ -66,6 +66,9 @@ class MainParser(BaseParser):
         # This is a buffer for a block title
         self.title = (None, None, None)
 
+        # This is a buffer for a control
+        self.control = (None, None, None)
+
         # This is the function used to create the header
         # anchors.
         self.header_anchor = self.environment.getvar(
@@ -95,6 +98,7 @@ class MainParser(BaseParser):
             self._parse_variable_definition,
             self._process_command,
             self._process_title,
+            self._process_control,
             self._process_arguments,
             self._process_header,
             self._process_block,
@@ -103,8 +107,11 @@ class MainParser(BaseParser):
             self._process_paragraph,
         ]
 
-    def _reset_title(self):
-        self.title = (None, None, None)
+    def _push_title(self, text, context, environment):
+        # When we parse a title we can store it here
+        # so that it is available to the next block
+        # that will use it.
+        self.title = (text, context, environment)
 
     def _pop_title(self, node):
         # This return the title and resets the
@@ -130,11 +137,59 @@ class MainParser(BaseParser):
             children=text_parser.nodes,
         )
 
-    def _push_title(self, text, context, environment):
-        # When we parse a title we can store it here
-        # so that it is available to the next block
-        # that will use it.
-        self.title = (text, context, environment)
+    def _reset_title(self):
+        self.title = (None, None, None)
+
+    def _push_control(self, operator, statement, context):
+        self.control = (operator, statement, context)
+
+    def _pop_control(self):
+        # This return the title and resets the
+        # cached one, so no other block will
+        # use it.
+        operator, statement, context = self.control
+        self._reset_control()
+
+        if operator is None:
+            return True
+
+        if operator != "if":
+            self._error(f"Control operator '{operator}' is not supported")
+
+        try:
+            variable, test = statement.split(":")
+        except ValueError:
+            self._error(f"Statement '{statement}' is not in the form variable:test")
+
+        variable_value = self.environment.getvar(variable, None)
+
+        if variable_value is None:
+            self._error(f"Variable '{variable}' has not been defined")
+
+        if test.startswith("="):
+            value = test[1:]
+            return variable_value == value
+
+        if test.startswith("!="):
+            value = test[2:]
+
+            return variable_value != value
+
+        if test.startswith("&"):
+            value = test[1:]
+
+            if value not in ["true", "false"]:
+                self._error(f"Boolean value '{value}' is invalid")
+
+            # pylint: disable=simplifiable-if-expression
+            value = True if value == "true" else False
+
+            return variable_value and value
+
+        self._error(f"Test '{test}' is not supported")
+
+    def _reset_control(self):
+        self.control = (None, None, None)
 
     def _collect_text_content(self):
         # Collects all adjacent text tokens
@@ -375,6 +430,29 @@ class MainParser(BaseParser):
 
         return True
 
+    def _process_control(self):
+        # Parse a control statement in the form
+        #
+        # @operator:control_statement
+
+        # Parse the mandatory @
+        at = self._get_token(MLTokenTypes.CONTROL, "@")
+
+        # Get the operator
+        operator = self._get_token(BLTokenTypes.TEXT).value
+
+        # Discard the :
+        self._get_token(BLTokenTypes.LITERAL, ":")
+
+        # Get the statement
+        statement = self._get_token(BLTokenTypes.TEXT).value
+
+        self._get_token(BLTokenTypes.EOL)
+
+        self._push_control(operator, statement, at.context)
+
+        return True
+
     def _process_arguments(self):
         # Parse arguments in the form
         # [unnamed1, unnamed2, ..., named1=value1, name2=value2, ...]
@@ -426,6 +504,10 @@ class MainParser(BaseParser):
             self.environment,
         )
         text = preprocess_parser.nodes[0].value
+
+        # Check the control
+        if self._pop_control() is False:
+            return True
 
         # Consume the parser arguments
         args, kwargs, tags, subtype = self.attributes_manager.pop()
@@ -526,24 +608,17 @@ class MainParser(BaseParser):
         # Create the block
         block = BlockNode(children=content, secondary_children=secondary_content)
 
+        block.title = self._pop_title(block)
+
         # Consume the arguments
         args, kwargs, tags, subtype = self.attributes_manager.pop()
 
-        # The first unnamed argument is the block type
-        # try:
-        #     subtype = args.pop(0)
-        # except IndexError:
-        #     subtype = None
+        # Check the control
+        if self._pop_control() is False:
+            return True
 
-        # If there is a block alias for subtype replace it
-        # otherwise use the subtype we already have
-
-        # Retrieve the block names and defaults for the
-        # specific type of block
-
+        # If the subtype is an alias process it
         alias = self.block_aliases.get(subtype, {})
-
-        # Now replace the alias with the true block type
         block.subtype = alias.get("subtype", subtype)
         block_names = alias.get("mandatory_args", [])
         block_defaults = alias.get("defaults", {})
@@ -554,6 +629,7 @@ class MainParser(BaseParser):
             block_names,
             block_defaults,
         )
+
         # Extract classes and convert them into a list
         classes = []
         if "classes" in kwargs:
@@ -562,34 +638,6 @@ class MainParser(BaseParser):
             if classes:
                 classes = classes.split(",")
         block.classes = classes
-
-        # Extract condition if present and process it
-        condition = kwargs.pop("condition", None)
-
-        # Run this only if there is a condition on this block
-        if condition is not None:
-            try:
-                # The condition should be either test:variable:value or test:variable:
-                test, variable, value = condition.split(":")
-            except ValueError:
-                self._error(
-                    (
-                        f"Condition {condition} is not in the form"
-                        '"test:variable:value" or "test:variable:'
-                    )
-                )
-
-            # If there is no value use True
-            if len(value) == 0:
-                value = True
-
-            # Check if the variable matches the value and apply the requested test
-            match = self.environment.getvar(variable) == value
-            result = test == "if"
-
-            # If the condition is not satisfied return
-            if match is not result:
-                return True
 
         # Extract the preprocessor
         block.preprocessor = kwargs.pop("preprocessor", "none")
@@ -639,7 +687,6 @@ class MainParser(BaseParser):
         )
         secondary_content_parser.finalise()
 
-        block.title = self._pop_title(block)
         block.children = content_parser.nodes
         block.secondary_children = secondary_content_parser.nodes
 
@@ -662,7 +709,6 @@ class MainParser(BaseParser):
             parent_position="secondary",
         )
 
-        block.title = self._pop_title(block)
         block.children = content_parser.nodes
         block.secondary_children = secondary_content_parser.nodes
 
@@ -728,7 +774,6 @@ class MainParser(BaseParser):
         # a RawNode per line.
         block.children = [RawNode(line) for line in block.children]
         block.secondary_children = [RawNode(line) for line in block.secondary_children]
-        block.title = self._pop_title(block)
 
         self._save(block)
 
@@ -865,8 +910,6 @@ class MainParser(BaseParser):
             tags=block.tags,
         )
 
-        node.title = self._pop_title(node)
-
         self._save(node)
 
     def _process_content(self):
@@ -894,6 +937,10 @@ class MainParser(BaseParser):
             )
 
             uris, _, _, _ = arguments_parser.process_arguments()
+
+        # Check the control
+        if self._pop_control() is False:
+            return True
 
         if content_type == "image":
             return self._parse_content_image(uris, subtype, args, kwargs, tags)
@@ -1127,6 +1174,10 @@ class MainParser(BaseParser):
                 )
             )
             self._get_token(BLTokenTypes.EOL)
+
+        # Check the control
+        if self._pop_control() is False:
+            return True
 
         text = " ".join(lines)
 

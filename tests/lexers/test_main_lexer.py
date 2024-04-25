@@ -717,9 +717,7 @@ def test_conditional():
         Token(TokenTypes.CONTROL, "@"),
         Token(BLTokenTypes.TEXT, "if"),
         Token(BLTokenTypes.LITERAL, ":"),
-        Token(BLTokenTypes.TEXT, "somevar"),
-        Token(BLTokenTypes.LITERAL, ":"),
-        Token(BLTokenTypes.TEXT, "=value"),
+        Token(BLTokenTypes.TEXT, "somevar:=value"),
         Token(BLTokenTypes.EOL),
         Token(BLTokenTypes.EOF),
     ]
@@ -729,8 +727,6 @@ def test_conditional():
         Context(0, 1, None, "@if:somevar:=value"),
         Context(0, 3, None, "@if:somevar:=value"),
         Context(0, 4, None, "@if:somevar:=value"),
-        Context(0, 11, None, "@if:somevar:=value"),
-        Context(0, 12, None, "@if:somevar:=value"),
         Context(0, 18, None, "@if:somevar:=value"),
         Context(1, 0, None, ""),
     ]
@@ -743,8 +739,7 @@ def test_conditional_no_value():
         Token(TokenTypes.CONTROL, "@"),
         Token(BLTokenTypes.TEXT, "if"),
         Token(BLTokenTypes.LITERAL, ":"),
-        Token(BLTokenTypes.TEXT, "somevar"),
-        Token(BLTokenTypes.LITERAL, ":"),
+        Token(BLTokenTypes.TEXT, "somevar:"),
         Token(BLTokenTypes.EOL),
         Token(BLTokenTypes.EOF),
     ]
@@ -754,7 +749,6 @@ def test_conditional_no_value():
         Context(0, 1, None, "@if:somevar:"),
         Context(0, 3, None, "@if:somevar:"),
         Context(0, 4, None, "@if:somevar:"),
-        Context(0, 11, None, "@if:somevar:"),
         Context(0, 12, None, "@if:somevar:"),
         Context(1, 0, None, ""),
     ]

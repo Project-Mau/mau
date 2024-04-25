@@ -125,26 +125,20 @@ class MainLexer(BaseLexer):
         return tokens
 
     def _process_control(self):
-        match = rematch(r"@([^:]+):([^:]+):(.*)?", self._current_line)
+        match = rematch(r"@([^:]+):(.*)", self._current_line)
 
         if not match:
             return None
 
-        keyword_name = match.group(1)
-        variable_name = match.group(2)
+        operator = match.group(1)
+        statement = match.group(2)
 
         tokens = [
             self._create_token_and_skip(TokenTypes.CONTROL, "@"),
-            self._create_token_and_skip(BLTokenTypes.TEXT, keyword_name),
+            self._create_token_and_skip(BLTokenTypes.TEXT, operator),
             self._create_token_and_skip(BLTokenTypes.LITERAL, ":"),
-            self._create_token_and_skip(BLTokenTypes.TEXT, variable_name),
-            self._create_token_and_skip(BLTokenTypes.LITERAL, ":"),
+            self._create_token_and_skip(BLTokenTypes.TEXT, statement),
         ]
-
-        if match.group(3):
-            tokens.append(
-                self._create_token_and_skip(BLTokenTypes.TEXT, match.group(3))
-            )
 
         tokens.append(self._create_token(BLTokenTypes.EOL))
 

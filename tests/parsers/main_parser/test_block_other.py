@@ -13,7 +13,7 @@ runner = parser_runner_factory(MainLexer, MainParser)
 
 def test_admonition():
     source = """
-    [*admonition,someclass,someicon,somelabel]
+    [*admonition,someclass,someicon]
     ----
     Content
     ----
@@ -35,7 +35,7 @@ def test_admonition():
             engine=None,
             preprocessor="none",
             args=[],
-            kwargs={"class": "someclass", "icon": "someicon", "label": "somelabel"},
+            kwargs={"class": "someclass", "icon": "someicon"},
         )
     ]
 

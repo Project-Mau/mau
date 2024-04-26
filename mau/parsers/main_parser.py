@@ -52,7 +52,7 @@ class MainParser(BaseParser):
                 "defaults": {"engine": "footnote"},
             },
             "admonition": {
-                "mandatory_args": ["class", "icon", "label"],
+                "mandatory_args": ["class", "icon"],
             },
         }
 

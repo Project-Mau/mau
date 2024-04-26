@@ -47,3 +47,13 @@ def test_verbatim_open():
     ]
 
     assert runner(source).nodes == expected
+
+
+def test_verbatim_escape_characters():
+    source = r"`$Many$ %different% \words`"
+
+    expected = [
+        VerbatimNode(r"$Many$ %different% \words"),
+    ]
+
+    assert runner(source).nodes == expected

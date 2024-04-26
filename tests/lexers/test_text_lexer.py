@@ -81,6 +81,30 @@ def test_backtick():
     ]
 
 
+def test_dollar():
+    lex = runner("$dollar$")
+
+    assert lex.tokens == [
+        Token(TokenTypes.LITERAL, "$"),
+        Token(TokenTypes.TEXT, "dollar"),
+        Token(TokenTypes.LITERAL, "$"),
+        Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
+    ]
+
+
+def test_percent():
+    lex = runner("%percent%")
+
+    assert lex.tokens == [
+        Token(TokenTypes.LITERAL, "%"),
+        Token(TokenTypes.TEXT, "percent"),
+        Token(TokenTypes.LITERAL, "%"),
+        Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
+    ]
+
+
 def test_curly_braces():
     lex = runner("{curly}")
 
@@ -212,6 +236,48 @@ def test_escaped_quotes():
         Token(TokenTypes.TEXT, "quotes"),
         Token(TokenTypes.LITERAL, "\\"),
         Token(TokenTypes.LITERAL, '"'),
+        Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
+    ]
+
+
+def test_escaped_backticks():
+    lex = runner(r"\`backticks\`")
+
+    assert lex.tokens == [
+        Token(TokenTypes.LITERAL, "\\"),
+        Token(TokenTypes.LITERAL, "`"),
+        Token(TokenTypes.TEXT, "backticks"),
+        Token(TokenTypes.LITERAL, "\\"),
+        Token(TokenTypes.LITERAL, "`"),
+        Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
+    ]
+
+
+def test_escaped_dollar():
+    lex = runner(r"\$dollar\$")
+
+    assert lex.tokens == [
+        Token(TokenTypes.LITERAL, "\\"),
+        Token(TokenTypes.LITERAL, "$"),
+        Token(TokenTypes.TEXT, "dollar"),
+        Token(TokenTypes.LITERAL, "\\"),
+        Token(TokenTypes.LITERAL, "$"),
+        Token(TokenTypes.EOL),
+        Token(TokenTypes.EOF),
+    ]
+
+
+def test_escaped_percent():
+    lex = runner(r"\%pecent\%")
+
+    assert lex.tokens == [
+        Token(TokenTypes.LITERAL, "\\"),
+        Token(TokenTypes.LITERAL, "%"),
+        Token(TokenTypes.TEXT, "pecent"),
+        Token(TokenTypes.LITERAL, "\\"),
+        Token(TokenTypes.LITERAL, "%"),
         Token(TokenTypes.EOL),
         Token(TokenTypes.EOF),
     ]

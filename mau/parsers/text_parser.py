@@ -3,7 +3,13 @@ import itertools
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode, WordNode
+from mau.nodes.inline import (
+    SentenceNode,
+    StyleNode,
+    TextNode,
+    VerbatimNode,
+    WordNode,
+)
 from mau.nodes.macros import (
     MacroClassNode,
     MacroHeaderNode,
@@ -123,6 +129,9 @@ class TextParser(BaseParser):
             return self._parse_verbatim()
 
         with self:
+            return self._parse_escaped()
+
+        with self:
             return self._parse_style()
 
         return self._parse_word()
@@ -179,6 +188,27 @@ class TextParser(BaseParser):
         self._get_token(TokenTypes.LITERAL, "`")
 
         return VerbatimNode(
+            content, parent=self.parent_node, parent_position=self.parent_position
+        )
+
+    def _parse_escaped(self):
+        """
+        Parse $escaped$ or %escaped% text.
+        """
+
+        # Get the escaped marker
+        marker = self._get_token(TokenTypes.LITERAL, check=lambda x: x in "$%").value
+
+        # Get the content tokens until the
+        # next verbatim marker or EOL
+        content = self._collect_join(
+            [Token(TokenTypes.LITERAL, marker), Token(TokenTypes.EOL)],
+        )
+
+        # Remove the closing marker
+        self._get_token(TokenTypes.LITERAL, marker)
+
+        return TextNode(
             content, parent=self.parent_node, parent_position=self.parent_position
         )
 
@@ -360,51 +390,6 @@ class TextParser(BaseParser):
             parent=self.parent_node,
             parent_position=self.parent_position,
         )
-
-    # def _parse_macro_ifeval(self, args, kwargs):
-    #     """
-    #     Parse a class macro in the form [ifeval](variable, true_text, false_text).
-    #     'true_text' is parsed only if the test is true,
-    #     'false_text' is parsed only if the test is false.
-    #     """
-
-    #     args, kwargs = set_names_and_defaults(
-    #         args,
-    #         kwargs,
-    #         ["variable", "true", "false"],
-    #         {"false": ""},
-    #     )
-
-    #     current_context = self._current_token.context
-
-    #     variable = kwargs.get("variable")
-    #     test = True
-
-    #     if variable.startswith("!"):
-    #         variable = variable[1:]
-    #         test = False
-
-    #     value = self.environment.getvar(variable)
-    #     if not test:
-    #         value = not value
-
-    #     if value is True:
-    #         text_variable = self.environment.getvar(kwargs.get("true"))
-    #     elif value is False:
-    #         text_variable = self.environment.getvar(kwargs.get("false"))
-    #     else:
-    #         self._error(f"Invalid value for flag {variable}: {value}")
-
-    #     par = self.analyse(text_variable, current_context, self.environment)
-
-    #     self.footnotes.update(par.footnotes)
-    #     self.links.extend(par.links)
-
-    #     return SentenceNode(
-    #         children=par.nodes,
-    #         parent=self.parent_node,
-    #         parent_position=self.parent_position,
-    #     )
 
     def _parse_macro_image(self, args, kwargs):
         """

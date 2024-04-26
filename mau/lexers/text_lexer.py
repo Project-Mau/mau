@@ -12,13 +12,13 @@ class TextLexer(BaseLexer):
         return [self._create_token_and_skip(TokenTypes.TEXT, " ")]
 
     def _process_literal(self):
-        if self._current_char not in '~^_*`{}()[]\\"':
+        if self._current_char not in '~^_*`{}()[]\\"$%':
             return None
 
         return [self._create_token_and_skip(TokenTypes.LITERAL, self._current_char)]
 
     def _process_text(self):
-        match = rematch(r'[^~\^_*`{}()[\]"\\ ]+', self._tail)
+        match = rematch(r'[^~\^_*`{}()[\]"\\ \$%]+', self._tail)
 
         if not match:  # pragma: no cover
             return None

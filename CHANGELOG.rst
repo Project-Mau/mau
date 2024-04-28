@@ -14,20 +14,26 @@ Please be aware that this major release contains breaking changes from Mau 3. Al
 - [enhancement] List start can be forced through the attribute `start` and automated to link to a previous list.
 - [enhancement] Macros can contain rich text.
 - [enhancement] New macro `[header](id)` that creates an internal link to a header with that `id`.
-- [enhancement] New macro `if` that renders text conditionally with new syntax to negate the test and a default value for the false case.
+- [enhancement] New macro `if` that renders text conditionally.
 - [enhancement] New macro `ifeval` that renders the content of variables conditionally (short-circuit evaluation). 
 - [enhancement] Paragraphs now store a title defined before them.
 - [enhancement] Parser output contains a separate ToC that can be rendered using different templates (e.g. using a prefix).
 - [enhancement] The list of template names that Mau considers for each node has been considerably increased. Now templates can include the parent type, subtype, the node position in the parent node, visitor prefixes, node subtype, and node tags.
 - [enhancement] The variable `mau.visitor.format` contains the output format.
+- [enhancement] Added `$` and `%` to escape text like verbatim without using `VerbatimNode`.
 - [internal] All nodes contain a link to the parent node and to the position they have in it.
-- [internal] Blocks use positions `primary` and `secondary` for children. Title nodes are given the position `title`.
+- [internal] Blocks use positions `primary` and `secondary` for children.
+- [internal] Titles and headers use `SentenceNode` and all nodes inside the sentence are given the position `title` or `header` respectively.
 - [internal] All nodes receive the same basic arguments to promote a uniform interface.
 - [syntax] Content nodes receive only the content type and the list of URIs, all other parameters are passed as attributes.
 - [syntax] New way to define and print boolean variables
 - [syntax] Node subtype is created using `*` in the attributes. All document nodes can now have a subtype.
 - [syntax] Removed reference engine, reference macro, and references command from syntax.
 - [syntax] The variable `mau.parser.content_wrapper` now accepts an instance and not a class any more, which allows to customise the wrapper through attributes like subtype and tags.
+- [syntax] New syntax for control statements that allow uniform conditional rendering of document and text nodes.
+- [syntax] Removed `condition` flag to render blocks (replaced with control statements).
+- [syntax] Admonitions don't use the argument `label` any more. They use the block title.
+- [syntax] Macro `class` now accepts multiple classes as arguments instead of using a comma-separated single argument.
 
 Version 3.1.0
 =============

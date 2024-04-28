@@ -291,12 +291,10 @@ class TextParser(BaseParser):
 
     def _parse_macro_class(self, args, kwargs):
         """
-        Parse a class macro in the form [class](text, "class1,class2,...").
+        Parse a class macro in the form [class](text, class1, class2, ...).
         """
 
-        args, kwargs = set_names_and_defaults(
-            args, kwargs, ["text", "classes"], {"classes": ""}
-        )
+        args, kwargs = set_names_and_defaults(args, kwargs, ["text"])
 
         current_context = self._current_token.context
 
@@ -304,11 +302,8 @@ class TextParser(BaseParser):
 
         par = self.analyse(text, current_context, self.environment)
 
-        # Multiple classes are separated by commas
-        classes = kwargs["classes"].split(",")
-
         return MacroClassNode(
-            classes=classes,
+            classes=args,
             children=par.nodes,
             parent=self.parent_node,
             parent_position=self.parent_position,

@@ -28,7 +28,7 @@ def test_single_class():
 
 
 def test_multiple_classes():
-    source = 'Some text [class]("text with that class", "classname1,classname2")'
+    source = 'Some text [class]("text with that class", classname1, classname2)'
 
     expected = [
         TextNode("Some text "),

@@ -1,5 +1,4 @@
 import pytest
-
 from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.text_lexer import TextLexer

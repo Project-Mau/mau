@@ -5,7 +5,7 @@ from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import TextNode, SentenceNode
+from mau.nodes.inline import SentenceNode, TextNode
 from mau.parsers.main_parser import MainParser, header_anchor
 
 from tests.helpers import init_parser_factory, parser_runner_factory

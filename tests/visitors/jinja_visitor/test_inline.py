@@ -3,7 +3,7 @@ from mau.environment.environment import Environment
 from mau.errors import MauErrorException
 from mau.nodes.footnotes import FootnoteNode
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import StyleNode, TextNode, VerbatimNode, SentenceNode
+from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode
 from mau.nodes.macros import (
     MacroClassNode,
     MacroHeaderNode,

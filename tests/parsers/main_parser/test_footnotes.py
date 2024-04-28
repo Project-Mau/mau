@@ -4,8 +4,8 @@ from unittest.mock import patch
 import pytest
 from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
-from mau.nodes.footnotes import FootnoteNode, FootnotesEntryNode, FootnotesNode
 from mau.nodes.block import BlockNode
+from mau.nodes.footnotes import FootnoteNode, FootnotesEntryNode, FootnotesNode
 from mau.nodes.inline import TextNode
 from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.footnotes import footnote_anchor

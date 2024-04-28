@@ -3,13 +3,7 @@ import itertools
 from mau.lexers.base_lexer import Token, TokenTypes
 from mau.lexers.text_lexer import TextLexer
 from mau.nodes.footnotes import FootnoteNode
-from mau.nodes.inline import (
-    SentenceNode,
-    StyleNode,
-    TextNode,
-    VerbatimNode,
-    WordNode,
-)
+from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode, WordNode
 from mau.nodes.macros import (
     MacroClassNode,
     MacroHeaderNode,

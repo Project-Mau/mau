@@ -1,5 +1,5 @@
 from mau.environment.environment import Environment
-from mau.nodes.inline import TextNode, SentenceNode
+from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.toc import TocEntryNode, TocNode
 from mau.visitors.base_visitor import BaseVisitor
 

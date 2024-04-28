@@ -1,6 +1,6 @@
 from mau.environment.environment import Environment
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import TextNode, SentenceNode
+from mau.nodes.inline import SentenceNode, TextNode
 from mau.visitors.jinja_visitor import JinjaVisitor
 
 

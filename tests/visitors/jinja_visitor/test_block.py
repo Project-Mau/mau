@@ -1,7 +1,7 @@
 from mau.environment.environment import Environment
-from mau.nodes.paragraph import ParagraphNode
-from mau.nodes.block import BlockNode, BlockGroupNode
+from mau.nodes.block import BlockGroupNode, BlockNode
 from mau.nodes.inline import SentenceNode, TextNode
+from mau.nodes.paragraph import ParagraphNode
 from mau.visitors.jinja_visitor import JinjaVisitor
 
 

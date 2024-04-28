@@ -4,7 +4,7 @@ from mau.environment.environment import Environment
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import TextNode, SentenceNode
+from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.page import ContainerNode
 from mau.nodes.toc import TocEntryNode, TocNode
 from mau.parsers.main_parser import MainParser

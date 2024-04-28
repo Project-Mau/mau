@@ -1,5 +1,4 @@
 from mau.lexers.text_lexer import TextLexer
-from mau.nodes.inline import TextNode
 from mau.nodes.macros import MacroImageNode
 from mau.parsers.text_parser import TextParser
 

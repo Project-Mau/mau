@@ -1,15 +1,8 @@
-from unittest.mock import patch
-
-import pytest
-from mau.environment.environment import Environment
-from mau.errors import MauErrorException
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode
 from mau.nodes.content import ContentNode
-from mau.nodes.header import HeaderNode
 from mau.nodes.inline import SentenceNode, TextNode
 from mau.nodes.nodes import Node
-from mau.nodes.paragraph import ParagraphNode
 from mau.parsers.main_parser import MainParser
 from mau.text_buffer.context import Context
 

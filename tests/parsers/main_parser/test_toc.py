@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 from mau.environment.environment import Environment
 from mau.lexers.main_lexer import MainLexer
 from mau.nodes.block import BlockNode

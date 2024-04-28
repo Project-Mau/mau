@@ -26,36 +26,11 @@ To convert Mau sources into HTML just run
 mau -i source.mau -o destination.html -f html
 ```
 
-To use Mau in your tool you can run it programmatically
-
-``` python
-from mau import Mau, load_visitors
-
-visitor_classes = load_visitors()
-
-visitors = {i.format_code: i for i in visitor_classes}
-visitor_class = visitors["html"]
-
-mau = Mau(
-    "path/of/the/source",
-    visitor_class=visitor_class,
-)
-
-lexer = self._mau.run_lexer(text)
-parser = self._mau.run_parser(lexer.tokens)
-content = self._mau.process(parser.nodes, parser.environment)
-
-if visitor_class.transform:
-    content = visitor_class.transform(content)
-```
-
-Check out Mau [documentation](https://mau.readthedocs.io/en/latest/) for further information.
+Check out Mau [documentation](https://project-mau.github.io/) for further information.
 
 ## Pelican plugin
 
 There is a Pelican plugin that enables you to use Mau in your blog. Check it at https://github.com/pelican-plugins/mau-reader.
-
-You can see the plugin in action at https://www.thedigitalcatonline.com/blog/2021/02/22/mau-a-lightweight-markup-language/ and on other pages in my blog.
 
 ## Support
 

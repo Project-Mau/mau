@@ -1,0 +1,35 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: This will be rendered
+          kwargs: {}
+          subtype: null
+          tags: []
+          title: {}
+          type: paragraph
+      engine: null
+      kwargs: {}
+      preprocessor: none
+      secondary_content: []
+      subtype: aside
+      tags: []
+      title: {}
+      type: block
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

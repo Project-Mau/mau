@@ -1,0 +1,451 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: test-footnotes-1e66
+      args: []
+      kwargs: {}
+      level: 1
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Test footnotes
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  - data:
+      anchor: header-1-1aa5
+      args: []
+      kwargs: {}
+      level: 1
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Header 1
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This file tests that footnotes work as intended
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: 'Which means that links work and that I can add the command '
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: verbatim
+                  value: footnotes
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: ' anywhere in the text.'
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-1-85ceb360
+          kwargs: {}
+          number: 1
+          reference_anchor: ref-footnote-1-85ceb360
+          subtype: null
+          tags: []
+          type: footnote
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      anchor: header-2-871b
+      args: []
+      kwargs: {}
+      level: 2
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Header 2
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: 'The list of footnotes should be computed while the parser works
+            on the text, so I expect the command '
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: verbatim
+          value: footnotes
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: ' to contain all of them in any part of the text'
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: This is my hope, at least.
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-2-bdab20a1
+          kwargs: {}
+          number: 2
+          reference_anchor: ref-footnote-2-bdab20a1
+          subtype: null
+          tags: []
+          type: footnote
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      entries:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: 'Which means that links work and that I can add the command '
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: verbatim
+                  value: footnotes
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: ' anywhere in the text.'
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-1-85ceb360
+          kwargs: {}
+          number: 1
+          reference_anchor: ref-footnote-1-85ceb360
+          subtype: null
+          tags: []
+          type: footnotes_entry
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: This is my hope, at least.
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-2-bdab20a1
+          kwargs: {}
+          number: 2
+          reference_anchor: ref-footnote-2-bdab20a1
+          subtype: null
+          tags: []
+          type: footnotes_entry
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: Which, as I said, should appear both in the list above and
+                    in the one below.
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-3-2f06f09a
+          kwargs: {}
+          number: 3
+          reference_anchor: ref-footnote-3-2f06f09a
+          subtype: null
+          tags: []
+          type: footnotes_entry
+      kwargs: {}
+      subtype: null
+      tags: []
+      type: footnotes
+  - data:
+      anchor: header-3-702d
+      args: []
+      kwargs: {}
+      level: 3
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Header 3
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This is here just to add another footnote
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: Which, as I said, should appear both in the list above and
+                    in the one below.
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-3-2f06f09a
+          kwargs: {}
+          number: 3
+          reference_anchor: ref-footnote-3-2f06f09a
+          subtype: null
+          tags: []
+          type: footnote
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: .
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      entries:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: 'Which means that links work and that I can add the command '
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: verbatim
+                  value: footnotes
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: ' anywhere in the text.'
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-1-85ceb360
+          kwargs: {}
+          number: 1
+          reference_anchor: ref-footnote-1-85ceb360
+          subtype: null
+          tags: []
+          type: footnotes_entry
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: This is my hope, at least.
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-2-bdab20a1
+          kwargs: {}
+          number: 2
+          reference_anchor: ref-footnote-2-bdab20a1
+          subtype: null
+          tags: []
+          type: footnotes_entry
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: Which, as I said, should appear both in the list above and
+                    in the one below.
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-3-2f06f09a
+          kwargs: {}
+          number: 3
+          reference_anchor: ref-footnote-3-2f06f09a
+          subtype: null
+          tags: []
+          type: footnotes_entry
+      kwargs: {}
+      subtype: null
+      tags: []
+      type: footnotes
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

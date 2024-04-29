@@ -1,0 +1,38 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This document contains multiple paragraphs.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: They are separated by an empty line.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

@@ -1,0 +1,16 @@
+----
+This is a block without attributes. It should be rendered as a div, however.
+----
+
+++++
+This is another block between two markers `++++`.
+++++
+
+The four characters can be escaped
+
+\----
+
+[*sometype]
+----
+A block with a subtype
+----

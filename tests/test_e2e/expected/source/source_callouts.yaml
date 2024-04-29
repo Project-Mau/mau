@@ -1,0 +1,85 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      callouts:
+      - data:
+          args: []
+          kwargs: {}
+          marker: '1'
+          subtype: null
+          tags: []
+          type: callouts_entry
+          value: The name of the function
+      - data:
+          args: []
+          kwargs: {}
+          marker: '2'
+          subtype: null
+          tags: []
+          type: callouts_entry
+          value: Some memory-related wizardry
+      classes: []
+      code:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: 'def header_anchor(text, level):'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    return "h{}-{}-{}".format('
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '        level, quote(text.lower())[:20], str(id(text))[:8]'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    )  # pragma: no cover'
+      highlights: []
+      kwargs: {}
+      language: python
+      lines: 4
+      markers:
+      - data:
+          args: []
+          kwargs: {}
+          line: 0
+          marker: '1'
+          subtype: null
+          tags: []
+          type: callout
+      - null
+      - data:
+          args: []
+          kwargs: {}
+          line: 2
+          marker: '2'
+          subtype: null
+          tags: []
+          type: callout
+      - null
+      preprocessor: null
+      subtype: null
+      tags: []
+      title: {}
+      type: source
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

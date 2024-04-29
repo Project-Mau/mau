@@ -1,0 +1,134 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: This is a block without attributes. It should be rendered as
+                a div, however.
+          kwargs: {}
+          subtype: null
+          tags: []
+          title: {}
+          type: paragraph
+      engine: null
+      kwargs: {}
+      preprocessor: none
+      secondary_content: []
+      subtype: null
+      tags: []
+      title: {}
+      type: block
+  - data:
+      args: []
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: 'This is another block between two markers '
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: verbatim
+              value: ++++
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: .
+          kwargs: {}
+          subtype: null
+          tags: []
+          title: {}
+          type: paragraph
+      engine: null
+      kwargs: {}
+      preprocessor: none
+      secondary_content: []
+      subtype: null
+      tags: []
+      title: {}
+      type: block
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: The four characters can be escaped
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: '----'
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: A block with a subtype
+          kwargs: {}
+          subtype: null
+          tags: []
+          title: {}
+          type: paragraph
+      engine: null
+      kwargs: {}
+      preprocessor: none
+      secondary_content: []
+      subtype: sometype
+      tags: []
+      title: {}
+      type: block
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

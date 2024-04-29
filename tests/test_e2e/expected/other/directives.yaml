@@ -1,0 +1,61 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: test-directives-93d4
+      args: []
+      kwargs: {}
+      level: 1
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Test directives
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This file tests Mau directives
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This text has been included through a directive
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

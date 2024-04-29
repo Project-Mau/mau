@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from mau.environment.environment import Environment
 from mau.errors import MauErrorException

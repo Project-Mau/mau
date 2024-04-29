@@ -1,0 +1,80 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This file contains a footnote
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: This is a footnote
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-1-02376935
+          kwargs: {}
+          number: 1
+          reference_anchor: ref-footnote-1-02376935
+          subtype: null
+          tags: []
+          type: footnote
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      entries:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: This is a footnote
+              kwargs: {}
+              subtype: null
+              tags: []
+              title: {}
+              type: paragraph
+          content_anchor: cnt-footnote-1-02376935
+          kwargs: {}
+          number: 1
+          reference_anchor: ref-footnote-1-02376935
+          subtype: null
+          tags: []
+          type: footnotes_entry
+      kwargs: {}
+      subtype: null
+      tags: []
+      type: footnotes
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

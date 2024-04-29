@@ -1,0 +1,17 @@
+= Test ToC
+
+== Works as intended
+
+This file tests that headers work as intended.
+
+=== More on the ToC
+
+The ToC is the list of all headers in the file, and it should be possible to include it in any part of it. Like here
+
+::toc:
+
+== Conclusion 
+
+This is another example, the ToC here should be the same as the ToC above.
+
+::toc:

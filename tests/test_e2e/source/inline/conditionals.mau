@@ -1,0 +1,6 @@
+:+true:
+:-false:
+
+A true statement is [@if:true:&true]("TRUE", "FALSE").
+
+A false statement is [@if:false:&true]("TRUE", "FALSE").

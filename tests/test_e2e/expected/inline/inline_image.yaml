@@ -1,0 +1,40 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: 'A paragraph with an inline image '
+      - data:
+          alt_text: null
+          args: []
+          height: null
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: macro.image
+          uri: https://www.thedigitalcatonline.com/images/global/favicon.jpg
+          width: null
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: .
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

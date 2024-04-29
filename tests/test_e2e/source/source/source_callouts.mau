@@ -1,0 +1,9 @@
+[*source,python]
+----
+def header_anchor(text, level)::1:
+    return "h{}-{}-{}".format(
+        level, quote(text.lower())[:20], str(id(text))[:8]:2:
+    )  # pragma: no cover
+----
+1: The name of the function
+2: Some memory-related wizardry

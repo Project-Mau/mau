@@ -1,0 +1,5 @@
+[*admonition, class="warning", icon="someicon"]
+.somelabel
+----
+This is an admonition, which is a specific type of block with a `class`, and `icon`, and a `label` that work as a title. This block is implemented purely through Jinja templates.
+----

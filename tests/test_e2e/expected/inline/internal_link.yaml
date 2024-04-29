@@ -1,0 +1,86 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: 'This is an '
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: internal link
+          header:
+            anchor: header-d1ef
+            level: '1'
+            value:
+              data:
+                args: []
+                content:
+                - data:
+                    args: []
+                    kwargs: {}
+                    subtype: null
+                    tags: []
+                    type: text
+                    value: Header
+                kwargs: {}
+                subtype: null
+                tags: []
+                type: sentence
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: macro.header
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: .
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      anchor: header-d1ef
+      args: []
+      kwargs:
+        id: someid
+      level: 1
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Header
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

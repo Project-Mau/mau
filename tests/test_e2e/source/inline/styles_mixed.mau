@@ -1,0 +1,15 @@
+You can have _*strong and empashized*_ text.
+
+You can also apply styles to _*`verbatim`*_.
+
+But verbatim will `_*preserve*_` them.
+
+You can use _single *markers.
+
+But you \_need\_ to escape pairs.
+
+Even though you can escape \_only one_ of the two.
+
+If you have \_more than two\_ it's better to just \_escape\_ all of them.
+
+Oh, this is valid for `verbatim as well.

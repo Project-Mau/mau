@@ -1,0 +1,57 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: test-toc-4aa7
+      args: []
+      kwargs: {}
+      level: 1
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Test ToC
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  - data:
+      args: []
+      entries:
+      - data:
+          anchor: test-toc-4aa7
+          children: []
+          tags: []
+          type: toc_entry
+          value:
+            data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: Test ToC
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: sentence
+      kwargs: {}
+      tags: []
+      type: toc
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

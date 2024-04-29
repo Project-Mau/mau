@@ -1,0 +1,47 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This includes an image with a caption
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      alt_text: null
+      args: []
+      classes: null
+      kwargs: {}
+      subtype: null
+      tags: []
+      title:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: A beautiful image
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+      type: content_image
+      uri: https://images.unsplash.com/photo-1534106474077-f9e9c6f5a47c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

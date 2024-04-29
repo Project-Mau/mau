@@ -1,0 +1,44 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: Under this paragraph there is a horizontal line.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      type: horizontal_rule
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: Above this paragraph there is a horizontal line.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

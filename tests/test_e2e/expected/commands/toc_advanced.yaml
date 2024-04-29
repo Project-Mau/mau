@@ -1,0 +1,319 @@
+data:
+  args: []
+  content:
+  - data:
+      anchor: test-toc-4aa7
+      args: []
+      kwargs: {}
+      level: 1
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Test ToC
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  - data:
+      anchor: works-as-intended-2f4d
+      args: []
+      kwargs: {}
+      level: 2
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Works as intended
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This file tests that headers work as intended.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      anchor: more-on-the-toc-709a
+      args: []
+      kwargs: {}
+      level: 3
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: More on the ToC
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: The ToC is the list of all headers in the file, and it should be
+            possible to include it in any part of it. Like here
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      entries:
+      - data:
+          anchor: test-toc-4aa7
+          children:
+          - data:
+              anchor: works-as-intended-2f4d
+              children:
+              - data:
+                  anchor: more-on-the-toc-709a
+                  children: []
+                  tags: []
+                  type: toc_entry
+                  value:
+                    data:
+                      args: []
+                      content:
+                      - data:
+                          args: []
+                          kwargs: {}
+                          subtype: null
+                          tags: []
+                          type: text
+                          value: More on the ToC
+                      kwargs: {}
+                      subtype: null
+                      tags: []
+                      type: sentence
+              tags: []
+              type: toc_entry
+              value:
+                data:
+                  args: []
+                  content:
+                  - data:
+                      args: []
+                      kwargs: {}
+                      subtype: null
+                      tags: []
+                      type: text
+                      value: Works as intended
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: sentence
+          - data:
+              anchor: conclusion-ec49
+              children: []
+              tags: []
+              type: toc_entry
+              value:
+                data:
+                  args: []
+                  content:
+                  - data:
+                      args: []
+                      kwargs: {}
+                      subtype: null
+                      tags: []
+                      type: text
+                      value: 'Conclusion '
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: sentence
+          tags: []
+          type: toc_entry
+          value:
+            data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: Test ToC
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: sentence
+      kwargs: {}
+      tags: []
+      type: toc
+  - data:
+      anchor: conclusion-ec49
+      args: []
+      kwargs: {}
+      level: 2
+      subtype: null
+      tags: []
+      type: header
+      value:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: 'Conclusion '
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This is another example, the ToC here should be the same as the ToC
+            above.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      entries:
+      - data:
+          anchor: test-toc-4aa7
+          children:
+          - data:
+              anchor: works-as-intended-2f4d
+              children:
+              - data:
+                  anchor: more-on-the-toc-709a
+                  children: []
+                  tags: []
+                  type: toc_entry
+                  value:
+                    data:
+                      args: []
+                      content:
+                      - data:
+                          args: []
+                          kwargs: {}
+                          subtype: null
+                          tags: []
+                          type: text
+                          value: More on the ToC
+                      kwargs: {}
+                      subtype: null
+                      tags: []
+                      type: sentence
+              tags: []
+              type: toc_entry
+              value:
+                data:
+                  args: []
+                  content:
+                  - data:
+                      args: []
+                      kwargs: {}
+                      subtype: null
+                      tags: []
+                      type: text
+                      value: Works as intended
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: sentence
+          - data:
+              anchor: conclusion-ec49
+              children: []
+              tags: []
+              type: toc_entry
+              value:
+                data:
+                  args: []
+                  content:
+                  - data:
+                      args: []
+                      kwargs: {}
+                      subtype: null
+                      tags: []
+                      type: text
+                      value: 'Conclusion '
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: sentence
+          tags: []
+          type: toc_entry
+          value:
+            data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: Test ToC
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: sentence
+      kwargs: {}
+      tags: []
+      type: toc
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

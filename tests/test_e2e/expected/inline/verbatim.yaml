@@ -1,0 +1,37 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: 'This paragraph contains '
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: verbatim
+          value: verbatim
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: ' text.'
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

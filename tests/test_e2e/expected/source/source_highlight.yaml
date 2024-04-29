@@ -1,0 +1,157 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      callouts: []
+      classes: []
+      code:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: 'def header_anchor(text, level):'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    """'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    Return a sanitised anchor for a header.'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    """'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: ''
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    # Everything lowercase'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    sanitised_text = text.lower()'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: ''
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    # Get only letters, numbers, dashes, spaces, and dots'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    sanitised_text = "".join(re.findall("[a-z0-9-\\. ]+", sanitised_text))'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: ''
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    # Remove multiple spaces'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    sanitised_text = "-".join(sanitised_text.split())'
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: ''
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: raw
+          value: '    return sanitised_text'
+      highlights: []
+      kwargs: {}
+      language: python
+      lines: 15
+      markers:
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      preprocessor: null
+      subtype: null
+      tags: []
+      title:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Python code
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+      type: source
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

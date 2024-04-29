@@ -1,0 +1,13 @@
+:wikipedia_link:[link]("https://en.wikipedia.org/wiki/42_(number)")
+
+A variable can contain Mau code: {wikipedia_link}.
+
+:+true:
+:-false:
+
+Booleans: {true} and {false}.
+
+:value:5
+:module.value:6
+
+Namespaces with a dotted syntax: {value} and {module.value}.

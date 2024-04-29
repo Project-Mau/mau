@@ -1,0 +1,95 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: 'This is an admonition, which is a specific type of block with
+                a '
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: verbatim
+              value: class
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: ', and '
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: verbatim
+              value: icon
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: ', and a '
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: verbatim
+              value: label
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: ' that work as a title. This block is implemented purely through
+                Jinja templates.'
+          kwargs: {}
+          subtype: null
+          tags: []
+          title: {}
+          type: paragraph
+      engine: null
+      kwargs:
+        class: warning
+        icon: someicon
+      preprocessor: none
+      secondary_content: []
+      subtype: admonition
+      tags: []
+      title:
+        data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: somelabel
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: sentence
+      type: block
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

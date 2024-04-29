@@ -1,0 +1,202 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: 'You can have '
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: strong and empashized
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: style
+              value: star
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: style
+          value: underscore
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: ' text.'
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: 'You can also apply styles to '
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: verbatim
+                  value: verbatim
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: style
+              value: star
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: style
+          value: underscore
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: .
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: 'But verbatim will '
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: verbatim
+          value: _*preserve*_
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: ' them.'
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: You can use _single *markers.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: But you _need_ to escape pairs.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: Even though you can escape _only one_ of the two.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: If you have _more than two_ it's better to just _escape_ all of them.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: Oh, this is valid for `verbatim as well.
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

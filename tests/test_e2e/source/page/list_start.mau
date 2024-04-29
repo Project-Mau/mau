@@ -1,0 +1,22 @@
+This is an ordered list that starts at 5
+
+[start=5]
+# Item 5
+# Item 6
+## Item 6.1
+## Item 6.2
+# Item 7
+
+This is an ordered list that starts at 8 automatically
+
+[start=auto]
+# Item 8
+# Item 9
+# Item 10
+
+Unordered lists ignore the start
+
+[start=42]
+* An item
+* Another item
+* A third item

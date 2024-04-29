@@ -1,0 +1,258 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This is an ordered list that starts at 5
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      items:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Item 5
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Item 6
+          - data:
+              args: []
+              items:
+              - data:
+                  args: []
+                  content:
+                  - data:
+                      args: []
+                      kwargs: {}
+                      subtype: null
+                      tags: []
+                      type: text
+                      value: Item 6.1
+                  kwargs: {}
+                  level: 2
+                  subtype: null
+                  tags: []
+                  type: list_item
+              - data:
+                  args: []
+                  content:
+                  - data:
+                      args: []
+                      kwargs: {}
+                      subtype: null
+                      tags: []
+                      type: text
+                      value: Item 6.2
+                  kwargs: {}
+                  level: 2
+                  subtype: null
+                  tags: []
+                  type: list_item
+              kwargs: {}
+              main_node: false
+              ordered: true
+              start: 1
+              subtype: null
+              tags: []
+              type: list
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Item 7
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      kwargs: {}
+      main_node: true
+      ordered: true
+      start: 5
+      subtype: null
+      tags: []
+      type: list
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This is an ordered list that starts at 8 automatically
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      items:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Item 8
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Item 9
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Item 10
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      kwargs: {}
+      main_node: true
+      ordered: true
+      start: 8
+      subtype: null
+      tags: []
+      type: list
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: Unordered lists ignore the start
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      items:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: An item
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Another item
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: A third item
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      kwargs: {}
+      main_node: true
+      ordered: false
+      start: 42
+      subtype: null
+      tags: []
+      type: list
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

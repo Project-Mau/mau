@@ -1,0 +1,5 @@
+Links like there was no [link]("https://www.thedigitalcatonline.com", "tomorrow").
+
+Also without text: [link]("https://www.thedigitalcatonline.com").
+
+Link text should be parsed [link]("https://example.com", text="*tomorrow*").

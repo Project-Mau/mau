@@ -1,0 +1,118 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      content:
+      - data:
+          args: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          type: text
+          value: This is an ordered list
+      kwargs: {}
+      subtype: null
+      tags: []
+      title: {}
+      type: paragraph
+  - data:
+      args: []
+      items:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Item 1
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Item 2
+          - data:
+              args: []
+              items:
+              - data:
+                  args: []
+                  content:
+                  - data:
+                      args: []
+                      kwargs: {}
+                      subtype: null
+                      tags: []
+                      type: text
+                      value: Item 2.1
+                  kwargs: {}
+                  level: 2
+                  subtype: null
+                  tags: []
+                  type: list_item
+              - data:
+                  args: []
+                  content:
+                  - data:
+                      args: []
+                      kwargs: {}
+                      subtype: null
+                      tags: []
+                      type: text
+                      value: Item 2.2
+                  kwargs: {}
+                  level: 2
+                  subtype: null
+                  tags: []
+                  type: list_item
+              kwargs: {}
+              main_node: false
+              ordered: true
+              start: 1
+              subtype: null
+              tags: []
+              type: list
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: Item 3
+          kwargs: {}
+          level: 1
+          subtype: null
+          tags: []
+          type: list_item
+      kwargs: {}
+      main_node: true
+      ordered: true
+      start: 1
+      subtype: null
+      tags: []
+      type: list
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

@@ -1,0 +1,13 @@
+:render:yes
+
+@if:render:=yes
+[*aside]
+----
+This will be rendered
+----
+
+@if:render:=no
+[*aside]
+----
+This will not be rendered
+----

@@ -1,0 +1,74 @@
+data:
+  args: []
+  content:
+  - data:
+      args: []
+      classes: []
+      content:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: "Some of the newer ones are having trouble because they never\
+                \ really mastered some basic techniques, but they\u2019re working\
+                \ hard and improving."
+          kwargs: {}
+          subtype: null
+          tags: []
+          title: {}
+          type: paragraph
+      engine: null
+      kwargs: {}
+      preprocessor: none
+      secondary_content:
+      - data:
+          args: []
+          content:
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: 'Orson Scott Card, '
+          - data:
+              args: []
+              content:
+              - data:
+                  args: []
+                  kwargs: {}
+                  subtype: null
+                  tags: []
+                  type: text
+                  value: Ender's Game
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: style
+              value: underscore
+          - data:
+              args: []
+              kwargs: {}
+              subtype: null
+              tags: []
+              type: text
+              value: ' (1985)'
+          kwargs: {}
+          subtype: null
+          tags: []
+          title: {}
+          type: paragraph
+      subtype: quote
+      tags: []
+      title: {}
+      type: block
+  kwargs: {}
+  subtype: null
+  tags: []
+  type: document
+

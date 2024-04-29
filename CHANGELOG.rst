@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 4.0.1
+=============
+
+- [internal] Added end-to-end tests for BaseVisitor
+
 Version 4.0.0
 =============
 

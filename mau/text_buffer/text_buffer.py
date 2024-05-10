@@ -161,9 +161,4 @@ class TextBuffer:
         Skips the given number of characters (default 1). Can silently
         go over the end of the line.
         """
-        new_column = self.column + chars
-
-        if new_column > len(self.current_line):
-            new_column = len(self.current_line)
-
-        self.column = new_column
+        self.column = min(self.column + chars, len(self.current_line))

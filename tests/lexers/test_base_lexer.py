@@ -29,31 +29,6 @@ def test_text_buffer_properties():
     mock_text_buffer.skip.assert_called_with(4)
 
 
-def test_create_token():
-    mock_text_buffer = Mock()
-    lex = BaseLexer(Environment())
-    lex.text_buffer = mock_text_buffer
-
-    token = lex._create_token("sometype", "somevalue")
-    assert token == Token("sometype", "somevalue")
-    assert token.context == lex.text_buffer.context
-
-
-@patch("mau.lexers.base_lexer.BaseLexer._nextline")
-def test_create_tokens_from_line(mock_nextline):
-    text_buffer = TextBuffer("Content")
-    lex = BaseLexer(Environment())
-    lex.text_buffer = text_buffer
-
-    tokens = lex._create_tokens_from_line(TokenTypes.TEXT)
-
-    assert tokens == [
-        Token(TokenTypes.TEXT, "Content"),
-        Token(TokenTypes.EOL),
-    ]
-    mock_nextline.assert_called()
-
-
 def test_create_token_and_skip():
     mock_text_buffer = Mock()
     lex = BaseLexer(Environment())

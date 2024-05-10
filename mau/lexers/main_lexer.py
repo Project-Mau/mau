@@ -42,7 +42,16 @@ class MainLexer(BaseLexer):
         if self._current_line != "////":
             return None
 
-        return self._create_tokens_from_line(TokenTypes.MULTILINE_COMMENT)
+        tokens = [
+            self._create_token_and_skip(
+                TokenTypes.MULTILINE_COMMENT, self._current_line
+            ),
+            self._create_token_and_skip(BLTokenTypes.EOL),
+        ]
+
+        self._nextline()
+
+        return tokens
 
     def _process_comment(self):
         match = rematch(r"^(//.*)", self._current_line)
@@ -52,7 +61,7 @@ class MainLexer(BaseLexer):
 
         tokens = [
             self._create_token_and_skip(TokenTypes.COMMENT, match.group(1)),
-            self._create_token(BLTokenTypes.EOL),
+            self._create_token_and_skip(BLTokenTypes.EOL),
         ]
 
         self._nextline()
@@ -77,7 +86,14 @@ class MainLexer(BaseLexer):
         if match is None:
             return None
 
-        return self._create_tokens_from_line(TokenTypes.BLOCK)
+        tokens = [
+            self._create_token_and_skip(TokenTypes.BLOCK, self._current_line),
+            self._create_token_and_skip(BLTokenTypes.EOL),
+        ]
+
+        self._nextline()
+
+        return tokens
 
     def _run_directive(self, name, value):
         if name == "include":
@@ -118,7 +134,7 @@ class MainLexer(BaseLexer):
                 self._create_token_and_skip(BLTokenTypes.TEXT, match.group(2))
             )
 
-        tokens.append(self._create_token(BLTokenTypes.EOL))
+        tokens.append(self._create_token_and_skip(BLTokenTypes.EOL))
 
         self._nextline()
 
@@ -140,7 +156,7 @@ class MainLexer(BaseLexer):
             self._create_token_and_skip(BLTokenTypes.TEXT, statement),
         ]
 
-        tokens.append(self._create_token(BLTokenTypes.EOL))
+        tokens.append(self._create_token_and_skip(BLTokenTypes.EOL))
 
         self._nextline()
 
@@ -174,7 +190,7 @@ class MainLexer(BaseLexer):
                 self._create_token_and_skip(BLTokenTypes.TEXT, match.group(3))
             )
 
-        tokens.append(self._create_token(BLTokenTypes.EOL))
+        tokens.append(self._create_token_and_skip(BLTokenTypes.EOL))
 
         self._nextline()
 
@@ -200,7 +216,7 @@ class MainLexer(BaseLexer):
                 self._create_token_and_skip(BLTokenTypes.TEXT, (match.group(2)))
             )
 
-        tokens.append(self._create_token(BLTokenTypes.EOL))
+        tokens.append(self._create_token_and_skip(BLTokenTypes.EOL))
 
         self._nextline()
 
@@ -216,10 +232,10 @@ class MainLexer(BaseLexer):
         line = self._current_line[1:-1]
 
         tokens = [
-            self._create_token(TokenTypes.ARGUMENTS, "["),
-            self._create_token(BLTokenTypes.TEXT, line),
-            self._create_token(BLTokenTypes.LITERAL, "]"),
-            self._create_token(BLTokenTypes.EOL),
+            self._create_token_and_skip(TokenTypes.ARGUMENTS, "["),
+            self._create_token_and_skip(BLTokenTypes.TEXT, line),
+            self._create_token_and_skip(BLTokenTypes.LITERAL, "]"),
+            self._create_token_and_skip(BLTokenTypes.EOL),
         ]
 
         self._nextline()
@@ -247,7 +263,7 @@ class MainLexer(BaseLexer):
         tokens.extend(
             [
                 self._create_token_and_skip(BLTokenTypes.TEXT, match.group(2)),
-                self._create_token(BLTokenTypes.EOL),
+                self._create_token_and_skip(BLTokenTypes.EOL),
             ]
         )
 
@@ -276,7 +292,7 @@ class MainLexer(BaseLexer):
                 self._create_token_and_skip(TokenTypes.LIST, match.group(2)),
                 self._create_token_and_skip(BLTokenTypes.WHITESPACE, match.group(3)),
                 self._create_token_and_skip(BLTokenTypes.TEXT, match.group(4)),
-                self._create_token(BLTokenTypes.EOL),
+                self._create_token_and_skip(BLTokenTypes.EOL),
             ]
         )
 
@@ -303,7 +319,7 @@ class MainLexer(BaseLexer):
         tokens.extend(
             [
                 self._create_token_and_skip(BLTokenTypes.TEXT, match.group(3)),
-                self._create_token(BLTokenTypes.EOL),
+                self._create_token_and_skip(BLTokenTypes.EOL),
             ]
         )
 

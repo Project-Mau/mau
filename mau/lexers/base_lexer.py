@@ -150,42 +150,21 @@ class BaseLexer:
     def _process_error(self):
         self._error("No function found to process context.")
 
-    def _create_token(self, token_type, token_value=None):
-        # Create a token at the current position,
-        # passing the current context.
-        # This doesn't change the position in the buffer
-
-        return Token(token_type, token_value, self._context)
-
-    def _create_token_and_skip(self, token_type, token_value):
+    def _create_token_and_skip(self, token_type, token_value=None):
         # Create the token and advance the position
         # in the text buffer to skip the characters
         # that are part of the token.
 
-        token = self._create_token(token_type, token_value)
+        token = Token(token_type, token_value, self._context)
 
-        self._skip(token_value)
+        if token_value:
+            self._skip(token_value)
 
         return token
 
-    def _create_tokens_from_line(self, token_type):
-        # Create a token of the given type using the
-        # whole current line as value.
-        # Returns the token and EOL, then moves
-        # to the next line.
-
-        tokens = [
-            self._create_token_and_skip(token_type, self._current_line),
-            self._create_token(TokenTypes.EOL),
-        ]
-
-        self._nextline()
-
-        return tokens
-
     def _process_eof(self):
         if self.text_buffer.eof:
-            return [self._create_token(TokenTypes.EOF)]
+            return [self._create_token_and_skip(TokenTypes.EOF)]
 
         return None
 
@@ -206,7 +185,7 @@ class BaseLexer:
     def _process_text_line(self):
         tokens = [
             self._create_token_and_skip(TokenTypes.TEXT, self._tail),
-            self._create_token(TokenTypes.EOL),
+            self._create_token_and_skip(TokenTypes.EOL),
         ]
 
         self._nextline()

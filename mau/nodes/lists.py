@@ -16,6 +16,7 @@ class ListItemNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -25,6 +26,7 @@ class ListItemNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.level = level
 
@@ -51,6 +53,7 @@ class ListNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -60,6 +63,7 @@ class ListNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.ordered = ordered
         self.main_node = main_node

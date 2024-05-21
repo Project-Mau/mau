@@ -18,6 +18,7 @@ class HeaderNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -27,6 +28,7 @@ class HeaderNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.value = value
         self.level = level

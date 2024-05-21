@@ -28,6 +28,7 @@ class ContentNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -37,6 +38,7 @@ class ContentNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.content_type = content_type
         self.title = title
@@ -68,6 +70,7 @@ class ContentImageNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -77,6 +80,7 @@ class ContentImageNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.uri = uri
         self.title = title

@@ -27,6 +27,7 @@ class NamedArgumentNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -36,6 +37,7 @@ class NamedArgumentNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.key = key
         self.value = value

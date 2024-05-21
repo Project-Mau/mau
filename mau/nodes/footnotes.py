@@ -16,6 +16,7 @@ class FootnoteNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -25,6 +26,7 @@ class FootnoteNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.number = number
         self.reference_anchor = reference_anchor
@@ -49,6 +51,7 @@ class FootnoteNode(Node):
             args=self.args,
             kwargs=self.kwargs,
             tags=self.tags,
+            context=self.context,
         )
 
 

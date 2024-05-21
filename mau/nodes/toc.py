@@ -20,6 +20,7 @@ class TocEntryNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -29,6 +30,7 @@ class TocEntryNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.value = value
         self.anchor = anchor

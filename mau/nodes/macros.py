@@ -16,6 +16,7 @@ class MacroNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -25,6 +26,7 @@ class MacroNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.name = name
 
@@ -49,6 +51,7 @@ class MacroClassNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -58,6 +61,7 @@ class MacroClassNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.classes = classes
 
@@ -82,6 +86,7 @@ class MacroLinkNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -91,6 +96,7 @@ class MacroLinkNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.target = target
 
@@ -118,6 +124,7 @@ class MacroImageNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -127,6 +134,7 @@ class MacroImageNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.uri = uri
         self.alt_text = alt_text
@@ -158,6 +166,7 @@ class MacroHeaderNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -167,6 +176,7 @@ class MacroHeaderNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.header_id = header_id
         self.header = header

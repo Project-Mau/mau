@@ -13,6 +13,7 @@ class Node:
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         self.parent = parent
         self.parent_position = parent_position
@@ -21,6 +22,7 @@ class Node:
         self.args = args or []
         self.kwargs = kwargs or {}
         self.tags = tags or []
+        self.context = context
 
     def _custom_dict(self):
         return {}
@@ -84,6 +86,7 @@ class ValueNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -93,6 +96,7 @@ class ValueNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.value = value
 

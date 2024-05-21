@@ -21,6 +21,7 @@ class ContainerNode(Node):
             args=self.args,
             kwargs=self.kwargs,
             tags=self.tags,
+            context=self.context,
         )
 
 

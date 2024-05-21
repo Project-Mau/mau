@@ -35,6 +35,7 @@ class BlockNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -44,6 +45,7 @@ class BlockNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.classes = classes or []
         self.title = title
@@ -78,6 +80,7 @@ class BlockGroupNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -87,6 +90,7 @@ class BlockGroupNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.title = title
         self.group_name = group_name

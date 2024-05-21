@@ -16,6 +16,7 @@ class ParagraphNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -25,6 +26,7 @@ class ParagraphNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.title = title
 

@@ -17,6 +17,7 @@ class CalloutsEntryNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -26,6 +27,7 @@ class CalloutsEntryNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.marker = marker
         self.value = value
@@ -53,6 +55,7 @@ class CalloutNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -62,6 +65,7 @@ class CalloutNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.line = line
         self.marker = marker
@@ -109,6 +113,7 @@ class SourceNode(Node):
         args=None,
         kwargs=None,
         tags=None,
+        context=None,
     ):
         super().__init__(
             parent=parent,
@@ -118,6 +123,7 @@ class SourceNode(Node):
             args=args,
             kwargs=kwargs,
             tags=tags,
+            context=context,
         )
         self.code = code or []
         self.language = language

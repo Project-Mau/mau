@@ -103,9 +103,9 @@ def test_attributes_marker_in_text():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 16, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 16),
+        Context(1, 0),
     ]
 
 
@@ -122,12 +122,12 @@ def test_variable_definition():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 1, None),
-        Context(0, 9, None),
-        Context(0, 10, None),
-        Context(0, 18, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 1),
+        Context(0, 9),
+        Context(0, 10),
+        Context(0, 18),
+        Context(1, 0),
     ]
 
 
@@ -202,14 +202,14 @@ def test_multiple_lines():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 12, None),
-        Context(1, 0, None),
-        Context(1, 25, None),
-        Context(2, 0, None),
-        Context(3, 0, None),
-        Context(3, 18, None),
-        Context(4, 0, None),
+        Context(0, 0),
+        Context(0, 12),
+        Context(1, 0),
+        Context(1, 25),
+        Context(2, 0),
+        Context(3, 0),
+        Context(3, 18),
+        Context(4, 0),
     ]
 
 
@@ -224,10 +224,10 @@ def test_title():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 1, None),
-        Context(0, 8, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 1),
+        Context(0, 8),
+        Context(1, 0),
     ]
 
 
@@ -243,11 +243,11 @@ def test_title_with_space():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 1, None),
-        Context(0, 7, None),
-        Context(0, 14, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 1),
+        Context(0, 7),
+        Context(0, 14),
+        Context(1, 0),
     ]
 
 
@@ -264,12 +264,12 @@ def test_command():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 2, None),
-        Context(0, 9, None),
-        Context(0, 10, None),
-        Context(0, 19, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 2),
+        Context(0, 9),
+        Context(0, 10),
+        Context(0, 19),
+        Context(1, 0),
     ]
 
 
@@ -322,16 +322,16 @@ def test_multiline_comment():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 4, None),
-        Context(1, 0, None),
-        Context(1, 12, None),
-        Context(2, 0, None),
-        Context(3, 0, None),
-        Context(3, 15, None),
-        Context(4, 0, None),
-        Context(4, 4, None),
-        Context(5, 0, None),
+        Context(0, 0),
+        Context(0, 4),
+        Context(1, 0),
+        Context(1, 12),
+        Context(2, 0),
+        Context(3, 0),
+        Context(3, 15),
+        Context(4, 0),
+        Context(4, 4),
+        Context(5, 0),
     ]
 
 
@@ -348,12 +348,12 @@ def test_include_content():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 2, None),
-        Context(0, 6, None),
-        Context(0, 7, None),
-        Context(0, 22, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 2),
+        Context(0, 6),
+        Context(0, 7),
+        Context(0, 22),
+        Context(1, 0),
     ]
 
 
@@ -371,13 +371,13 @@ def test_include_content_with_space():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 2, None),
-        Context(0, 8, None),
-        Context(0, 12, None),
-        Context(0, 13, None),
-        Context(0, 28, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 2),
+        Context(0, 8),
+        Context(0, 12),
+        Context(0, 13),
+        Context(0, 28),
+        Context(1, 0),
     ]
 
 
@@ -393,11 +393,11 @@ def test_include_content_without_arguments():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 2, None),
-        Context(0, 6, None),
-        Context(0, 7, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 2),
+        Context(0, 6),
+        Context(0, 7),
+        Context(1, 0),
     ]
 
 
@@ -413,11 +413,11 @@ def test_unordered_list():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 1, None),
-        Context(0, 2, None),
-        Context(0, 6, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 1),
+        Context(0, 2),
+        Context(0, 6),
+        Context(1, 0),
     ]
 
 
@@ -495,10 +495,10 @@ def test_header():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 1, None),
-        Context(0, 7, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 1),
+        Context(0, 7),
+        Context(1, 0),
     ]
 
 
@@ -609,16 +609,16 @@ def test_block():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 4, None),
-        Context(1, 0, None),
-        Context(1, 12, None),
-        Context(2, 0, None),
-        Context(3, 0, None),
-        Context(3, 15, None),
-        Context(4, 0, None),
-        Context(4, 4, None),
-        Context(5, 0, None),
+        Context(0, 0),
+        Context(0, 4),
+        Context(1, 0),
+        Context(1, 12),
+        Context(2, 0),
+        Context(3, 0),
+        Context(3, 15),
+        Context(4, 0),
+        Context(4, 4),
+        Context(5, 0),
     ]
 
 
@@ -649,16 +649,16 @@ def test_block_four_characters():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 4, None),
-        Context(1, 0, None),
-        Context(1, 12, None),
-        Context(2, 0, None),
-        Context(3, 0, None),
-        Context(3, 15, None),
-        Context(4, 0, None),
-        Context(4, 4, None),
-        Context(5, 0, None),
+        Context(0, 0),
+        Context(0, 4),
+        Context(1, 0),
+        Context(1, 12),
+        Context(2, 0),
+        Context(3, 0),
+        Context(3, 15),
+        Context(4, 0),
+        Context(4, 4),
+        Context(5, 0),
     ]
 
 
@@ -684,13 +684,13 @@ def test_block_with_comment():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 4, None),
-        Context(1, 0, None),
-        Context(1, 10, None),
-        Context(2, 0, None),
-        Context(2, 4, None),
-        Context(3, 0, None),
+        Context(0, 0),
+        Context(0, 4),
+        Context(1, 0),
+        Context(1, 10),
+        Context(2, 0),
+        Context(2, 4),
+        Context(3, 0),
     ]
 
 
@@ -723,12 +723,12 @@ def test_conditional():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 1, None),
-        Context(0, 3, None),
-        Context(0, 4, None),
-        Context(0, 18, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 1),
+        Context(0, 3),
+        Context(0, 4),
+        Context(0, 18),
+        Context(1, 0),
     ]
 
 
@@ -745,10 +745,10 @@ def test_conditional_no_value():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None),
-        Context(0, 1, None),
-        Context(0, 3, None),
-        Context(0, 4, None),
-        Context(0, 12, None),
-        Context(1, 0, None),
+        Context(0, 0),
+        Context(0, 1),
+        Context(0, 3),
+        Context(0, 4),
+        Context(0, 12),
+        Context(1, 0),
     ]

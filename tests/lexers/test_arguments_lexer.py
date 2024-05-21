@@ -158,9 +158,9 @@ def test_context():
     ]
 
     assert [t.context for t in lex.tokens] == [
-        Context(line=0, column=0, source=None),
-        Context(line=0, column=9, source=None),
-        Context(line=0, column=10, source=None),
-        Context(line=0, column=16, source=None),
-        Context(line=1, column=0, source=None),
+        Context(line=0, column=0),
+        Context(line=0, column=9),
+        Context(line=0, column=10),
+        Context(line=0, column=16),
+        Context(line=1, column=0),
     ]

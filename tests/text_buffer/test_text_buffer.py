@@ -189,7 +189,6 @@ def test_text_buffer_default_context():
 
     assert text_buffer.context.asdict() == {
         "source": None,
-        "text": "that I will use",
         "line": 2,
         "column": 6,
     }
@@ -213,7 +212,6 @@ def test_text_buffer_initial_context():
     assert text_buffer.column == 0
     assert text_buffer.context.asdict() == {
         "source": "main",
-        "text": "Some text",
         "line": 72,
         "column": 123,
     }

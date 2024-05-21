@@ -12,14 +12,12 @@ class Context:
     line: int = 0
     column: int = 0
     source: Optional[str] = None
-    text: str = ""
 
     def asdict(self):
         return {
             "line": self.line,
             "column": self.column,
             "source": self.source,
-            "text": self.text,
         }
 
     def __repr__(self):

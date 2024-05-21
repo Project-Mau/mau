@@ -160,29 +160,26 @@ def test_positions_default_context():
     lex.process(text_buffer)
 
     assert [i.context.asdict() for i in lex.tokens] == [
-        {"column": 0, "line": 0, "source": None, "text": "This is a line of text"},
-        {"column": 22, "line": 0, "source": None, "text": "This is a line of text"},
-        {"column": 0, "line": 1, "source": None, "text": ""},
-        {"column": 0, "line": 2, "source": None, "text": "---"},
-        {"column": 3, "line": 2, "source": None, "text": "---"},
-        {"column": 0, "line": 3, "source": None, "text": ""},
+        {"column": 0, "line": 0, "source": None},
+        {"column": 22, "line": 0, "source": None},
+        {"column": 0, "line": 1, "source": None},
+        {"column": 0, "line": 2, "source": None},
+        {"column": 3, "line": 2, "source": None},
+        {"column": 0, "line": 3, "source": None},
         {
             "column": 0,
             "line": 4,
             "source": None,
-            "text": "This is another line of text",
         },
         {
             "column": 28,
             "line": 4,
             "source": None,
-            "text": "This is another line of text",
         },
         {
             "column": 0,
             "line": 5,
             "source": None,
-            "text": "",
         },
     ]
 
@@ -202,28 +199,25 @@ def test_positions():
     lex.process(text_buffer)
 
     assert [i.context.asdict() for i in lex.tokens] == [
-        {"column": 123, "line": 42, "source": "main", "text": "This is a line of text"},
-        {"column": 145, "line": 42, "source": "main", "text": "This is a line of text"},
-        {"column": 123, "line": 43, "source": "main", "text": ""},
-        {"column": 123, "line": 44, "source": "main", "text": "---"},
-        {"column": 126, "line": 44, "source": "main", "text": "---"},
-        {"column": 123, "line": 45, "source": "main", "text": ""},
+        {"column": 123, "line": 42, "source": "main"},
+        {"column": 145, "line": 42, "source": "main"},
+        {"column": 123, "line": 43, "source": "main"},
+        {"column": 123, "line": 44, "source": "main"},
+        {"column": 126, "line": 44, "source": "main"},
+        {"column": 123, "line": 45, "source": "main"},
         {
             "column": 123,
             "line": 46,
             "source": "main",
-            "text": "This is another line of text",
         },
         {
             "column": 151,
             "line": 46,
             "source": "main",
-            "text": "This is another line of text",
         },
         {
             "column": 123,
             "line": 47,
             "source": "main",
-            "text": "",
         },
     ]

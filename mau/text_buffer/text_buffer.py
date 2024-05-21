@@ -64,7 +64,6 @@ class TextBuffer:
             line=self.line + self.initial_context.line,
             column=self.column + self.initial_context.column,
             source=self.initial_context.source,
-            text=self.current_line,
         )
 
     @property

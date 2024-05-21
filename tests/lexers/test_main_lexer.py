@@ -103,9 +103,9 @@ def test_attributes_marker_in_text():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "Not [attributes]"),
-        Context(0, 16, None, "Not [attributes]"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 16, None),
+        Context(1, 0, None),
     ]
 
 
@@ -122,12 +122,12 @@ def test_variable_definition():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, ":variable:value123"),
-        Context(0, 1, None, ":variable:value123"),
-        Context(0, 9, None, ":variable:value123"),
-        Context(0, 10, None, ":variable:value123"),
-        Context(0, 18, None, ":variable:value123"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 1, None),
+        Context(0, 9, None),
+        Context(0, 10, None),
+        Context(0, 18, None),
+        Context(1, 0, None),
     ]
 
 
@@ -202,14 +202,14 @@ def test_multiple_lines():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "This is text"),
-        Context(0, 12, None, "This is text"),
-        Context(1, 0, None, "split into multiple lines"),
-        Context(1, 25, None, "split into multiple lines"),
-        Context(2, 0, None, ""),
-        Context(3, 0, None, "with an empty line"),
-        Context(3, 18, None, "with an empty line"),
-        Context(4, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 12, None),
+        Context(1, 0, None),
+        Context(1, 25, None),
+        Context(2, 0, None),
+        Context(3, 0, None),
+        Context(3, 18, None),
+        Context(4, 0, None),
     ]
 
 
@@ -224,10 +224,10 @@ def test_title():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, ".A title"),
-        Context(0, 1, None, ".A title"),
-        Context(0, 8, None, ".A title"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 1, None),
+        Context(0, 8, None),
+        Context(1, 0, None),
     ]
 
 
@@ -243,11 +243,11 @@ def test_title_with_space():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, ".      A title"),
-        Context(0, 1, None, ".      A title"),
-        Context(0, 7, None, ".      A title"),
-        Context(0, 14, None, ".      A title"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 1, None),
+        Context(0, 7, None),
+        Context(0, 14, None),
+        Context(1, 0, None),
     ]
 
 
@@ -264,12 +264,12 @@ def test_command():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "::command:arg0,arg1"),
-        Context(0, 2, None, "::command:arg0,arg1"),
-        Context(0, 9, None, "::command:arg0,arg1"),
-        Context(0, 10, None, "::command:arg0,arg1"),
-        Context(0, 19, None, "::command:arg0,arg1"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 2, None),
+        Context(0, 9, None),
+        Context(0, 10, None),
+        Context(0, 19, None),
+        Context(1, 0, None),
     ]
 
 
@@ -322,16 +322,16 @@ def test_multiline_comment():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "////"),
-        Context(0, 4, None, "////"),
-        Context(1, 0, None, "Some comment"),
-        Context(1, 12, None, "Some comment"),
-        Context(2, 0, None, ""),
-        Context(3, 0, None, "   another line"),
-        Context(3, 15, None, "   another line"),
-        Context(4, 0, None, "////"),
-        Context(4, 4, None, "////"),
-        Context(5, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 4, None),
+        Context(1, 0, None),
+        Context(1, 12, None),
+        Context(2, 0, None),
+        Context(3, 0, None),
+        Context(3, 15, None),
+        Context(4, 0, None),
+        Context(4, 4, None),
+        Context(5, 0, None),
     ]
 
 
@@ -348,12 +348,12 @@ def test_include_content():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "<<type:/path/to/it.jpg"),
-        Context(0, 2, None, "<<type:/path/to/it.jpg"),
-        Context(0, 6, None, "<<type:/path/to/it.jpg"),
-        Context(0, 7, None, "<<type:/path/to/it.jpg"),
-        Context(0, 22, None, "<<type:/path/to/it.jpg"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 2, None),
+        Context(0, 6, None),
+        Context(0, 7, None),
+        Context(0, 22, None),
+        Context(1, 0, None),
     ]
 
 
@@ -371,13 +371,13 @@ def test_include_content_with_space():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "<<      type:/path/to/it.jpg"),
-        Context(0, 2, None, "<<      type:/path/to/it.jpg"),
-        Context(0, 8, None, "<<      type:/path/to/it.jpg"),
-        Context(0, 12, None, "<<      type:/path/to/it.jpg"),
-        Context(0, 13, None, "<<      type:/path/to/it.jpg"),
-        Context(0, 28, None, "<<      type:/path/to/it.jpg"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 2, None),
+        Context(0, 8, None),
+        Context(0, 12, None),
+        Context(0, 13, None),
+        Context(0, 28, None),
+        Context(1, 0, None),
     ]
 
 
@@ -393,11 +393,11 @@ def test_include_content_without_arguments():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "<<type:"),
-        Context(0, 2, None, "<<type:"),
-        Context(0, 6, None, "<<type:"),
-        Context(0, 7, None, "<<type:"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 2, None),
+        Context(0, 6, None),
+        Context(0, 7, None),
+        Context(1, 0, None),
     ]
 
 
@@ -413,11 +413,11 @@ def test_unordered_list():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "* Item"),
-        Context(0, 1, None, "* Item"),
-        Context(0, 2, None, "* Item"),
-        Context(0, 6, None, "* Item"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 1, None),
+        Context(0, 2, None),
+        Context(0, 6, None),
+        Context(1, 0, None),
     ]
 
 
@@ -495,10 +495,10 @@ def test_header():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "=Header"),
-        Context(0, 1, None, "=Header"),
-        Context(0, 7, None, "=Header"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 1, None),
+        Context(0, 7, None),
+        Context(1, 0, None),
     ]
 
 
@@ -576,9 +576,9 @@ def test_import_directive(mock_file):  # pylint: disable=unused-argument
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, "/path/to/file", "just some data"),
-        Context(0, 14, "/path/to/file", "just some data"),
-        Context(1, 0, None),
+        Context(0, 0, "/path/to/file"),
+        Context(0, 14, "/path/to/file"),
+        Context(1, 0),
     ]
 
 
@@ -609,16 +609,16 @@ def test_block():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "----"),
-        Context(0, 4, None, "----"),
-        Context(1, 0, None, "Some comment"),
-        Context(1, 12, None, "Some comment"),
-        Context(2, 0, None, ""),
-        Context(3, 0, None, "   another line"),
-        Context(3, 15, None, "   another line"),
-        Context(4, 0, None, "----"),
-        Context(4, 4, None, "----"),
-        Context(5, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 4, None),
+        Context(1, 0, None),
+        Context(1, 12, None),
+        Context(2, 0, None),
+        Context(3, 0, None),
+        Context(3, 15, None),
+        Context(4, 0, None),
+        Context(4, 4, None),
+        Context(5, 0, None),
     ]
 
 
@@ -649,16 +649,16 @@ def test_block_four_characters():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "####"),
-        Context(0, 4, None, "####"),
-        Context(1, 0, None, "Some comment"),
-        Context(1, 12, None, "Some comment"),
-        Context(2, 0, None, ""),
-        Context(3, 0, None, "   another line"),
-        Context(3, 15, None, "   another line"),
-        Context(4, 0, None, "####"),
-        Context(4, 4, None, "####"),
-        Context(5, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 4, None),
+        Context(1, 0, None),
+        Context(1, 12, None),
+        Context(2, 0, None),
+        Context(3, 0, None),
+        Context(3, 15, None),
+        Context(4, 0, None),
+        Context(4, 4, None),
+        Context(5, 0, None),
     ]
 
 
@@ -684,13 +684,13 @@ def test_block_with_comment():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "----"),
-        Context(0, 4, None, "----"),
-        Context(1, 0, None, "// Comment"),
-        Context(1, 10, None, "// Comment"),
-        Context(2, 0, None, "----"),
-        Context(2, 4, None, "----"),
-        Context(3, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 4, None),
+        Context(1, 0, None),
+        Context(1, 10, None),
+        Context(2, 0, None),
+        Context(2, 4, None),
+        Context(3, 0, None),
     ]
 
 
@@ -723,12 +723,12 @@ def test_conditional():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "@if:somevar:=value"),
-        Context(0, 1, None, "@if:somevar:=value"),
-        Context(0, 3, None, "@if:somevar:=value"),
-        Context(0, 4, None, "@if:somevar:=value"),
-        Context(0, 18, None, "@if:somevar:=value"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 1, None),
+        Context(0, 3, None),
+        Context(0, 4, None),
+        Context(0, 18, None),
+        Context(1, 0, None),
     ]
 
 
@@ -745,10 +745,10 @@ def test_conditional_no_value():
     ]
 
     assert [i.context for i in lex.tokens] == [
-        Context(0, 0, None, "@if:somevar:"),
-        Context(0, 1, None, "@if:somevar:"),
-        Context(0, 3, None, "@if:somevar:"),
-        Context(0, 4, None, "@if:somevar:"),
-        Context(0, 12, None, "@if:somevar:"),
-        Context(1, 0, None, ""),
+        Context(0, 0, None),
+        Context(0, 1, None),
+        Context(0, 3, None),
+        Context(0, 4, None),
+        Context(0, 12, None),
+        Context(1, 0, None),
     ]

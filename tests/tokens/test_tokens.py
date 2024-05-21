@@ -42,7 +42,7 @@ def test_empty_token_has_length_zero():
 
 
 def test_token_accepts_context():
-    context = Context(source="main", text="sometext", line=123, column=456)
+    context = Context(source="main", line=123, column=456)
 
     token = Token("sometype", "somevalue", context=context)
 
@@ -52,7 +52,7 @@ def test_token_accepts_context():
 
 
 def test_token_equality_ignores_context():
-    context = Context(source="main", text="sometext", line=123, column=456)
+    context = Context(source="main", line=123, column=456)
 
     assert Token("sometype", "somevalue", context=context) == Token(
         "sometype", "somevalue"
@@ -71,7 +71,7 @@ def test_token_equality_with_any():
 
 
 def test_token_match_considers_context():
-    context = Context(source="main", text="sometext", line=123, column=456)
+    context = Context(source="main", line=123, column=456)
 
     assert not Token("sometype", "somevalue", context=context).match(
         Token("sometype", "somevalue")

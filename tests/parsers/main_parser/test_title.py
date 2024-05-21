@@ -28,11 +28,11 @@ def test_push_title():
 
     parser = runner(source)
 
-    parser._push_title("Just a title", Context(42, 128, "main", ".Just a title"))
+    parser._push_title("Just a title", Context(42, 128, "main"))
 
     assert parser.title == (
         "Just a title",
-        Context(42, 128, "main", ".Just a title"),
+        Context(42, 128, "main"),
     )
 
 
@@ -44,7 +44,7 @@ def test_pop_title():
 
     parser = runner(source)
 
-    parser._push_title("Just a title", Context(42, 128, "main", ".Just a title"))
+    parser._push_title("Just a title", Context(42, 128, "main"))
 
     title_node = parser._pop_title(node)
 
@@ -66,7 +66,7 @@ def test_parse_title():
 
     assert parser.title == (
         "Just a title",
-        Context(1, 0, "main", ".Just a title"),
+        Context(1, 0, "main"),
     )
 
 

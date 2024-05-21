@@ -35,13 +35,13 @@ def test_push_control():
     parser._push_control(
         "operator",
         "statement",
-        Context(42, 128, "main", "@operator:statement"),
+        Context(42, 128, "main"),
     )
 
     assert parser.control == (
         "operator",
         "statement",
-        Context(42, 128, "main", "@operator:statement"),
+        Context(42, 128, "main"),
     )
 
 
@@ -61,7 +61,7 @@ def test_pop_control_equal():
 
     parser = runner(source)
 
-    parser._push_control("if", "flag:=42", Context(42, 128, "main", "@if:flag"))
+    parser._push_control("if", "flag:=42", Context(42, 128, "main"))
 
     assert parser._pop_control() is True
 
@@ -73,7 +73,7 @@ def test_pop_control_not_equal():
 
     parser = runner(source)
 
-    parser._push_control("if", "flag:!=42", Context(42, 128, "main", "@if:flag"))
+    parser._push_control("if", "flag:!=42", Context(42, 128, "main"))
 
     assert parser._pop_control() is False
 
@@ -85,7 +85,7 @@ def test_pop_control_boolean_true():
 
     parser = runner(source)
 
-    parser._push_control("if", "flag:&true", Context(42, 128, "main", "@if:flag"))
+    parser._push_control("if", "flag:&true", Context(42, 128, "main"))
 
     assert parser._pop_control() is True
 
@@ -97,7 +97,7 @@ def test_pop_control_boolean_false():
 
     parser = runner(source)
 
-    parser._push_control("if", "flag:&false", Context(42, 128, "main", "@if:flag"))
+    parser._push_control("if", "flag:&false", Context(42, 128, "main"))
 
     assert parser._pop_control() is False
 
@@ -109,7 +109,7 @@ def test_pop_control_boolean_invalid():
 
     parser = runner(source)
 
-    parser._push_control("if", "flag:&something", Context(42, 128, "main", "@if:flag"))
+    parser._push_control("if", "flag:&something", Context(42, 128, "main"))
 
     with pytest.raises(MauErrorException):
         parser._pop_control()
@@ -121,9 +121,7 @@ def test_pop_control_not_if():
 
     parser = runner(source)
 
-    parser._push_control(
-        "something", "flag:&something", Context(42, 128, "main", "@if:flag")
-    )
+    parser._push_control("something", "flag:&something", Context(42, 128, "main"))
 
     with pytest.raises(MauErrorException):
         parser._pop_control()
@@ -135,7 +133,7 @@ def test_pop_control_invalid_statement_format():
 
     parser = runner(source)
 
-    parser._push_control("if", "flag=42", Context(42, 128, "main", "@if:flag"))
+    parser._push_control("if", "flag=42", Context(42, 128, "main"))
 
     with pytest.raises(MauErrorException):
         parser._pop_control()
@@ -147,7 +145,7 @@ def test_pop_control_variable_not_defined():
 
     parser = runner(source)
 
-    parser._push_control("if", "flag:=42", Context(42, 128, "main", "@if:flag"))
+    parser._push_control("if", "flag:=42", Context(42, 128, "main"))
 
     with pytest.raises(MauErrorException):
         parser._pop_control()
@@ -160,7 +158,7 @@ def test_pop_control_test_not_supported():
 
     parser = runner(source)
 
-    parser._push_control("if", "flag:*42", Context(42, 128, "main", "@if:flag"))
+    parser._push_control("if", "flag:*42", Context(42, 128, "main"))
 
     with pytest.raises(MauErrorException):
         parser._pop_control()
@@ -176,7 +174,7 @@ def test_parse_control():
     assert parser.control == (
         "operator",
         "variable:test",
-        Context(1, 0, "main", "@operator:variable:test"),
+        Context(1, 0, "main"),
     )
 
 

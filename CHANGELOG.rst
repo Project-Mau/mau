@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 4.0.2
+=============
+
+- [fix] Fixed bug in configuration file loading. The file was loaded without a namespace. Now variables in the config file are loaded under the namespace `mau`.
+
 Version 4.0.1
 =============
 

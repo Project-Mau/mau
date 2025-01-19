@@ -135,7 +135,8 @@ def main():
         with open(args.config_file, "r", encoding="utf-8") as config_file:
             config = yaml.load(config_file, Loader=yaml.FullLoader)
 
-    environment = Environment(config)
+    environment = Environment()
+    environment.update(config, "mau")
 
     # Select the visitor class according to the target
     # format specified on the command line

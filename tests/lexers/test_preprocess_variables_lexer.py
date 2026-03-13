@@ -1,8 +1,12 @@
-from mau.lexers.base_lexer import TokenTypes
+from mau.lexers.base_lexer import TokenType
 from mau.lexers.preprocess_variables_lexer import PreprocessVariablesLexer
-from mau.tokens.tokens import Token
-
-from tests.helpers import init_lexer_factory, lexer_runner_factory
+from mau.test_helpers import (
+    compare_asdict_list,
+    generate_context,
+    init_lexer_factory,
+    lexer_runner_factory,
+)
+from mau.token import Token
 
 init_lexer = init_lexer_factory(PreprocessVariablesLexer)
 
@@ -12,137 +16,82 @@ runner = lexer_runner_factory(PreprocessVariablesLexer)
 def test_normal_text():
     lex = runner("Some text")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "S"),
-        Token(TokenTypes.TEXT, "o"),
-        Token(TokenTypes.TEXT, "m"),
-        Token(TokenTypes.TEXT, "e"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "e"),
-        Token(TokenTypes.TEXT, "x"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "Some text", generate_context(0, 0, 0, 9)),
+            Token(TokenType.EOF, "", generate_context(0, 9, 0, 9)),
+        ],
+    )
 
 
 def test_match_only_backticks_and_curly_braces():
     lex = runner("Normal text `{curly}` _other_ *text*")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "N"),
-        Token(TokenTypes.TEXT, "o"),
-        Token(TokenTypes.TEXT, "r"),
-        Token(TokenTypes.TEXT, "m"),
-        Token(TokenTypes.TEXT, "a"),
-        Token(TokenTypes.TEXT, "l"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "e"),
-        Token(TokenTypes.TEXT, "x"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.LITERAL, "`"),
-        Token(TokenTypes.LITERAL, "{"),
-        Token(TokenTypes.TEXT, "c"),
-        Token(TokenTypes.TEXT, "u"),
-        Token(TokenTypes.TEXT, "r"),
-        Token(TokenTypes.TEXT, "l"),
-        Token(TokenTypes.TEXT, "y"),
-        Token(TokenTypes.LITERAL, "}"),
-        Token(TokenTypes.LITERAL, "`"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.TEXT, "_"),
-        Token(TokenTypes.TEXT, "o"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "h"),
-        Token(TokenTypes.TEXT, "e"),
-        Token(TokenTypes.TEXT, "r"),
-        Token(TokenTypes.TEXT, "_"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.TEXT, "*"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "e"),
-        Token(TokenTypes.TEXT, "x"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "*"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "Normal text ", generate_context(0, 0, 0, 12)),
+            Token(TokenType.LITERAL, "`", generate_context(0, 12, 0, 13)),
+            Token(TokenType.LITERAL, "{", generate_context(0, 13, 0, 14)),
+            Token(TokenType.TEXT, "curly", generate_context(0, 14, 0, 19)),
+            Token(TokenType.LITERAL, "}", generate_context(0, 19, 0, 20)),
+            Token(TokenType.LITERAL, "`", generate_context(0, 20, 0, 21)),
+            Token(TokenType.TEXT, " _other_ *text*", generate_context(0, 21, 0, 36)),
+            Token(TokenType.EOF, "", generate_context(0, 36, 0, 36)),
+        ],
+    )
 
 
 def test_escape_curly_braces():
     lex = runner(r"Normal text \{curly\} _other_ *text*")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "N"),
-        Token(TokenTypes.TEXT, "o"),
-        Token(TokenTypes.TEXT, "r"),
-        Token(TokenTypes.TEXT, "m"),
-        Token(TokenTypes.TEXT, "a"),
-        Token(TokenTypes.TEXT, "l"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "e"),
-        Token(TokenTypes.TEXT, "x"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.LITERAL, "\\"),
-        Token(TokenTypes.LITERAL, "{"),
-        Token(TokenTypes.TEXT, "c"),
-        Token(TokenTypes.TEXT, "u"),
-        Token(TokenTypes.TEXT, "r"),
-        Token(TokenTypes.TEXT, "l"),
-        Token(TokenTypes.TEXT, "y"),
-        Token(TokenTypes.LITERAL, "\\"),
-        Token(TokenTypes.LITERAL, "}"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.TEXT, "_"),
-        Token(TokenTypes.TEXT, "o"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "h"),
-        Token(TokenTypes.TEXT, "e"),
-        Token(TokenTypes.TEXT, "r"),
-        Token(TokenTypes.TEXT, "_"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.TEXT, "*"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "e"),
-        Token(TokenTypes.TEXT, "x"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "*"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "Normal text ", generate_context(0, 0, 0, 12)),
+            Token(TokenType.LITERAL, "\\", generate_context(0, 12, 0, 13)),
+            Token(TokenType.LITERAL, "{", generate_context(0, 13, 0, 14)),
+            Token(TokenType.TEXT, "curly", generate_context(0, 14, 0, 19)),
+            Token(TokenType.LITERAL, "\\", generate_context(0, 19, 0, 20)),
+            Token(TokenType.LITERAL, "}", generate_context(0, 20, 0, 21)),
+            Token(TokenType.TEXT, " _other_ *text*", generate_context(0, 21, 0, 36)),
+            Token(TokenType.EOF, "", generate_context(0, 36, 0, 36)),
+        ],
+    )
 
 
 def test_preserve_escapes():
     lex = runner(r"Normal \text \_other\_")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "N"),
-        Token(TokenTypes.TEXT, "o"),
-        Token(TokenTypes.TEXT, "r"),
-        Token(TokenTypes.TEXT, "m"),
-        Token(TokenTypes.TEXT, "a"),
-        Token(TokenTypes.TEXT, "l"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.LITERAL, "\\"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "e"),
-        Token(TokenTypes.TEXT, "x"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, " "),
-        Token(TokenTypes.LITERAL, "\\"),
-        Token(TokenTypes.TEXT, "_"),
-        Token(TokenTypes.TEXT, "o"),
-        Token(TokenTypes.TEXT, "t"),
-        Token(TokenTypes.TEXT, "h"),
-        Token(TokenTypes.TEXT, "e"),
-        Token(TokenTypes.TEXT, "r"),
-        Token(TokenTypes.LITERAL, "\\"),
-        Token(TokenTypes.TEXT, "_"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "Normal ", generate_context(0, 0, 0, 7)),
+            Token(TokenType.LITERAL, "\\", generate_context(0, 7, 0, 8)),
+            Token(TokenType.TEXT, "text ", generate_context(0, 8, 0, 13)),
+            Token(TokenType.LITERAL, "\\", generate_context(0, 13, 0, 14)),
+            Token(TokenType.TEXT, "_other", generate_context(0, 14, 0, 20)),
+            Token(TokenType.LITERAL, "\\", generate_context(0, 20, 0, 21)),
+            Token(TokenType.TEXT, "_", generate_context(0, 21, 0, 22)),
+            Token(TokenType.EOF, "", generate_context(0, 22, 0, 22)),
+        ],
+    )
+
+
+def test_match_curly_braces_at_beginning_and_end():
+    lex = runner("{begin} and {end}")
+
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.LITERAL, "{", generate_context(0, 0, 0, 1)),
+            Token(TokenType.TEXT, "begin", generate_context(0, 1, 0, 6)),
+            Token(TokenType.LITERAL, "}", generate_context(0, 6, 0, 7)),
+            Token(TokenType.TEXT, " and ", generate_context(0, 7, 0, 12)),
+            Token(TokenType.LITERAL, "{", generate_context(0, 12, 0, 13)),
+            Token(TokenType.TEXT, "end", generate_context(0, 13, 0, 16)),
+            Token(TokenType.LITERAL, "}", generate_context(0, 16, 0, 17)),
+            Token(TokenType.EOF, "", generate_context(0, 17, 0, 17)),
+        ],
+    )

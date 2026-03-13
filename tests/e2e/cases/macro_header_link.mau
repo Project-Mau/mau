@@ -1,0 +1,6 @@
+[name=myheader]
+= This header has the name myheader
+
+This paragraph contains a link to a header with text: [header](myheader, "Link to the header")
+
+This paragraph contains a link to a header without text: [header](myheader)

@@ -1,0 +1,6 @@
+////
+This is a multiline comment.
+Both types of comments, are detected by the lexer
+but discarded, so the parser and the visitor
+never see them.
+////

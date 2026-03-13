@@ -1,0 +1,8 @@
+[footnote=mynote]
+----
+This is the content of the footnote.
+----
+
+This paragraph contain a note[footnote](mynote).
+
+::footnotes

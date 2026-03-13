@@ -1,26 +1,29 @@
-from mau.errors import MauError, MauErrorException
-from mau.helpers import rematch
-from mau.text_buffer.context import print_context
-from mau.tokens.tokens import Token
+import logging
+import re
+from typing import Callable
+
+from mau.environment.environment import Environment
+from mau.message import BaseMessageHandler, MauException, MauLexerErrorMessage
+from mau.text_buffer import Context, Position, TextBuffer, adjust_context
+from mau.token import Token, TokenType
+
+logger = logging.getLogger(__name__)
 
 
-class MauLexerError(MauError):
-    source = "lexer"
-
-    def print_details(self):  # pragma: no cover
-        super().print_details()
-
-        context = self.details["context"]
-        print_context(context)
+def rematch(regexp, text):
+    # Match the regexp on the current line.
+    return re.match(regexp, text)
 
 
-class TokenTypes:
-    EMPTY = "EMPTY"
-    EOF = "EOF"
-    EOL = "EOL"
-    LITERAL = "LITERAL"
-    TEXT = "TEXT"
-    WHITESPACE = "WHITESPACE"
+def create_lexer_exception(text: str, source: str, position: Position | None = None):
+    message = MauLexerErrorMessage(text=text, source=source, position=position)
+
+    return MauException(message)
+
+
+def print_tokens(tokens: list[Token]):
+    for token in tokens:
+        print(f"{token.type} {repr(token.value)} {adjust_context(token.context)}")
 
 
 class BaseLexer:
@@ -29,57 +32,55 @@ class BaseLexer:
     The lexer decomposes the input text into a list of tokens
     and provides basic navigation functions in the
     output results.
+
+    This class provides the base machinery for a lexer,
+    running a sequence of functions until one of them
+    successfully identifies a token.
     """
 
-    def __init__(self, environment):
-        self.text_buffer = None
+    def __init__(
+        self,
+        text_buffer: TextBuffer,
+        message_handler: BaseMessageHandler,
+        environment: Environment | None = None,
+    ):
+        self.text_buffer: TextBuffer = text_buffer
 
-        # These are the tokens identified so far
-        self.tokens = []
+        # This is the list of the tokens that
+        # the lexer extracts.
+        self.tokens: list[Token] = []
 
-        # The last visited context. Used to detect loops.
-        self.last_visited_context = None
+        # The last visited position. Used to detect loops.
+        self._last_position: Position | None = None
 
-        # The configuration environment
-        self.environment = environment
+        # The message handler instance.
+        self.message_handler = message_handler
 
-    def process(self, text_buffer):
-        self.text_buffer = text_buffer
-
-        # Process tokens until we reach the end of file
-        self._process()
-        while True:
-            # Check if the last thing we processed is an EOF
-            if len(self.tokens) > 0 and self.tokens[-1].type is TokenTypes.EOF:
-                break
-
-            self._process()
-
-        # if Token(TokenTypes.EOF) in self.tokens:
-        #     self.tokens.remove(Token(TokenTypes.EOF))
+        # The configuration environment.
+        self.environment: Environment = environment or Environment()
 
     @property
-    def _current_char(self):
-        # Return the current character
+    def _current_char(self) -> str:
+        # Return the current character.
         return self.text_buffer.current_char
 
     @property
-    def _current_line(self):
-        # Return the current line
+    def _current_line(self) -> str:
+        # Return the current line.
         return self.text_buffer.current_line
 
     @property
-    def _context(self):
-        # Return the context
-        return self.text_buffer.context
+    def _position(self) -> Position:
+        # Return the context.
+        return self.text_buffer.position
 
     @property
-    def _tail(self):
-        # A wrapper to return the rest of the line
+    def _tail(self) -> str:
+        # A wrapper to return the rest of the line.
         return self.text_buffer.tail
 
     def _nextline(self):
-        # Skip the whole line including the EOL
+        # Skip the whole line including the EOL.
         self.text_buffer.nextline()
 
     def _skip(self, value):
@@ -89,33 +90,85 @@ class BaseLexer:
         if value is not None:
             self.text_buffer.skip(len(value))
 
-    def _error(self, message=None):
-        error = MauLexerError(
-            message=message,
-            details={
-                "context": self._context,
-            },
+    def _create_token_and_skip(
+        self, token_type, token_value: str | None = None
+    ) -> Token:
+        # Create the token and advance the position
+        # in the text buffer to skip the characters
+        # that are part of the token.
+
+        # If the token value is None,
+        # transform it into an empty string.
+        # This is useful as regular expression
+        # groups can be None if they are optional.
+        token_value = token_value or ""
+
+        # Get the initial position.
+        initial_position = self._position
+
+        # Move past the token_value.
+        self.text_buffer.skip(len(token_value))
+
+        # Get the final position.
+        final_position = self._position
+
+        # Create the context.
+        context = Context(
+            *initial_position,
+            *final_position,
+            self.text_buffer.source_filename,
         )
 
-        raise MauErrorException(error)
+        token = Token(token_type, token_value, context)
+
+        return token
+
+    def process(self):
+        """Process the text and extract tokens
+        using the registered processing functions.
+        """
+
+        # Process tokens until we reach the end of file.
+        self._process()
+        while True:
+            # Check if the last thing we processed is an EOF.
+            # In that case the process is over.
+            if len(self.tokens) > 0 and self.tokens[-1].type is TokenType.EOF:
+                break
+
+            # There are other tokens to find.
+            self._process()
 
     def _process(self):
-        # This should not be touched by child classes
-        # as it is the core of the lexer. It tries
-        # each function in the list returned by
-        # _process_functions and stores all the resulting
-        # tokens.
-        # All lexers process first EOF and EOL, and last
-        # an error. This is mandatory as the underlying
-        # text buffer doesn't flinch when we are past
-        # EOL or EOF, and returns an empty string.
-        # However, this means the parse can't skip the
-        # token (it's empty) and end up in an infinite
-        # loop, so we have to actively check that.
+        # This is the core of the lexer.
+        # It should not be overridden by child classes.
+        #
+        # The function tries each function in the list
+        # returned by _process_functions and stores
+        # all the resulting tokens.
+        #
+        # All lexers process first EOF, empty line, and
+        # trailing spaces, then all the provided functions.
+        # Last, the function calls the error function,
+        # as it hasn't found a suitable processing function.
+        #
+        # The lexer actively monitors if the newly
+        # processed token is different from the previous
+        # one (context included).
+        # If not, this means we entered an infinite loop,
+        # and this might happen as the processing functions
+        # are provided by subclasses, and they might
+        # be incorrect, for example missing to skip
+        # the content of the token.
+        #
         # A lexer function must return None
-        # when characters do not match the rule.
+        # when characters do not match its rule.
 
-        process_functions = [self._process_eof, self._process_eol]
+        process_functions = [
+            self._process_eof,
+            self._process_empty_line,
+            self._process_trailing_spaces,
+        ]
         process_functions.extend(self._process_functions())
         process_functions.append(self._process_error)
 
@@ -123,13 +176,14 @@ class BaseLexer:
         # lexing functions. Those functions keep trying
         # to parse the same context, so if we spot that
         # we are doing it we should raise an error.
-        if (
-            self.last_visited_context is not None
-            and self.last_visited_context == self._context
-        ):
-            self._error("Loop detected, cannot process context.")  # pragma: no cover
+        if self._last_position is not None and self._last_position == self._position:
+            raise create_lexer_exception(
+                text="Loop detected, cannot process context",
+                source=self.text_buffer.source_filename,
+                position=self._position,
+            )  # pragma: no cover
 
-        self.last_visited_context = self._context
+        self._last_position = self._position
 
         for process_func in process_functions:
             # This ensures result is always either None or a list
@@ -142,52 +196,76 @@ class BaseLexer:
 
             return
 
-    def _process_functions(self):
+    def _process_functions(self) -> list[Callable[[], list[Token] | None]]:
         return [
-            self._process_text_line,
+            self._process_text,
         ]
 
     def _process_error(self):
-        self._error("No function found to process context.")
+        raise create_lexer_exception(
+            text="Cannot process token.",
+            source=self.text_buffer.source_filename,
+            position=self._position,
+        )
 
-    def _create_token_and_skip(self, token_type, token_value=None):
-        # Create the token and advance the position
-        # in the text buffer to skip the characters
-        # that are part of the token.
+    def _process_eof(self) -> list[Token] | None:
+        # If we are not at the end of
+        # the buffer just return.
+        if not self.text_buffer.eof:
+            return None
 
-        token = Token(token_type, token_value, self._context)
+        # Build the EOF token.
+        tokens = [self._create_token_and_skip(TokenType.EOF)]
 
-        if token_value:
-            self._skip(token_value)
+        return tokens
 
-        return token
+    def _process_empty_line(self) -> list[Token] | None:
+        # This detects an fully empty line,
+        # that we want to preserve.
 
-    def _process_eof(self):
-        if self.text_buffer.eof:
-            return [self._create_token_and_skip(TokenTypes.EOF)]
+        # Match a line of pure spaces.
+        match = rematch(r"^\ *$", self._current_line)
 
-        return None
-
-    def _process_eol(self):
-        # This cannot use TextBuffer.eol as we want to eat any spaces
-        # that are present in the line.
-        match = rematch(r"\ *$", self._tail)
-
+        # If there is no match just return.
         if not match:
             return None
 
-        token = self._create_token_and_skip(TokenTypes.EOL, self._tail)
+        # Build the EOL token, preserving spaces.
+        tokens = [self._create_token_and_skip(TokenType.EOL, self._current_line)]
 
+        # Move to the next line.
         self._nextline()
 
-        return [token]
+        return tokens
 
-    def _process_text_line(self):
+    def _process_trailing_spaces(self) -> list[Token] | None:
+        # This detects and skips any trailing spaces,
+        # reaches the end of line and proceeds to the next line.
+
+        # Match only spaces from here
+        # to the end of the line.
+        match = rematch(r"\ *$", self._tail)
+
+        # If there is no match just return.
+        if not match:
+            return None
+
+        # Skip the spaces we found.
+        self._skip(self._tail)
+
+        # Move to the next line.
+        self._nextline()
+
+        return []
+
+    def _process_text(self) -> list[Token] | None:
+        # Build a text token with everything
+        # contained in this line until the end.
         tokens = [
-            self._create_token_and_skip(TokenTypes.TEXT, self._tail),
-            self._create_token_and_skip(TokenTypes.EOL),
+            self._create_token_and_skip(TokenType.TEXT, self._tail),
         ]
 
+        # Move to the next line.
         self._nextline()
 
         return tokens

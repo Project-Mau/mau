@@ -1,0 +1,195 @@
+_type: document
+args: []
+content:
+- _type: block
+  args: []
+  classes: []
+  content:
+  - _type: paragraph
+    args: []
+    content:
+    - _type: paragraph-line
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: 'This is a block surrounded by '
+      - _type: verbatim
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: '@@@@'
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: .
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  subtype: null
+  tags: []
+- _type: block
+  args: []
+  classes: []
+  content:
+  - _type: paragraph
+    args: []
+    content:
+    - _type: paragraph-line
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: 'This is a block surrounded by '
+      - _type: verbatim
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: '####'
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: .
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  subtype: null
+  tags: []
+- _type: block
+  args: []
+  classes: []
+  content:
+  - _type: paragraph
+    args: []
+    content:
+    - _type: paragraph-line
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: This is the outer block, level 0.
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    subtype: null
+    tags: []
+  - _type: block
+    args: []
+    classes: []
+    content:
+    - _type: paragraph
+      args: []
+      content:
+      - _type: paragraph-line
+        args: []
+        content:
+        - _type: text
+          args: []
+          internal_tags: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          value: This is an inner block, level 1.
+        internal_tags: []
+        kwargs: {}
+        labels: {}
+        subtype: null
+        tags: []
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      subtype: null
+      tags: []
+    - _type: block
+      args: []
+      classes: []
+      content:
+      - _type: paragraph
+        args: []
+        content:
+        - _type: paragraph-line
+          args: []
+          content:
+          - _type: text
+            args: []
+            internal_tags: []
+            kwargs: {}
+            subtype: null
+            tags: []
+            value: This is an inner block, level 2.
+          internal_tags: []
+          kwargs: {}
+          labels: {}
+          subtype: null
+          tags: []
+        internal_tags: []
+        kwargs: {}
+        labels: {}
+        subtype: null
+        tags: []
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  subtype: null
+  tags: []
+internal_tags: []
+kwargs: {}
+subtype: null
+tags: []

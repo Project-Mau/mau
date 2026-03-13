@@ -1,0 +1,15 @@
+---
+
+[arg, #tag, *subtype, key=value]
+---
+
+. A title for the rule
+---
+
+:var:42
+
+@if var == 42
+---
+
+@if var == 43
+---

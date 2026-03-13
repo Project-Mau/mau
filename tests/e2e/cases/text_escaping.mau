@@ -1,0 +1,9 @@
+Paragraph with escapes: verbatim escapes dollar and percent `$%`,
+dollar escapes percent $%$,
+and percent escapes dollar %$%.
+$
+Text line with escaped Mau syntax: $[not](a macro)$, \`not verbatim\`.
+
+HTML Characters like < and >, e.g. <p> are accepted.
+
+Volcano: 🌋 (direct)

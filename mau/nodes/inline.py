@@ -1,4 +1,7 @@
-from mau.nodes.nodes import Node, ValueNode
+from collections.abc import Sequence
+
+from mau.nodes.node import Node, NodeContentMixin, NodeInfo, ValueNode
+from mau.nodes.node_arguments import NodeArguments
 
 
 class WordNode(ValueNode):
@@ -7,7 +10,7 @@ class WordNode(ValueNode):
     a TextNode
     """
 
-    node_type = "word"
+    type = "word"
 
 
 class TextNode(ValueNode):
@@ -15,35 +18,47 @@ class TextNode(ValueNode):
     as a collation of multiple WordNode objects
     """
 
-    node_type = "text"
-
-
-class RawNode(ValueNode):
-    """This contains plain text but the content
-    should be treated as raw data and left untouched.
-    E.g. it shouldn't be escaped.
-    """
-
-    node_type = "raw"
+    type = "text"
 
 
 class VerbatimNode(ValueNode):
     """This node contains verbatim text."""
 
-    node_type = "verbatim"
+    type = "verbatim"
 
 
-class SentenceNode(Node):
-    """A recursive container node.
-
-    This node represents the content of a paragraph, but it is recursive,
-    while ParagraphNode is not.
-    """
-
-    node_type = "sentence"
-
-
-class StyleNode(ValueNode):
+class StyleNode(Node, NodeContentMixin):
     """Describes the style applied to a node."""
 
-    node_type = "style"
+    type = "style"
+
+    def __init__(
+        self,
+        style: str,
+        content: Sequence[Node] | None = None,
+        parent: Node | None = None,
+        arguments: NodeArguments | None = None,
+        info: NodeInfo | None = None,
+    ):
+        super().__init__(parent=parent, arguments=arguments, info=info)
+        NodeContentMixin.__init__(self, content)
+
+        self.style = style
+
+    def deepcopy(self, parent=None):  # pragma: no cover
+        # Create a new node and perform base deepcopy.
+        new_node = super().deepcopy(parent)
+
+        # Shallow copies.
+        new_node.style = self.style
+
+        # Recursive deep copies.
+        self._deepcopy_content(new_node)
+
+        return new_node
+
+    @property
+    def custom_template_fields(self) -> dict:
+        return {
+            "style": self.style,
+        }

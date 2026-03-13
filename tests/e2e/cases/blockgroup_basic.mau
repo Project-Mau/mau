@@ -1,0 +1,23 @@
+[group=mygroup, position=position1]
+----
+This is a block within in the group `mygroup` at position `position1`.
+----
+
+[group=mygroup, position=position2]
+----
+This is a block within in the group `mygroup` at position `position2`.
+----
+
+::blockgroup:mygroup
+
+[group=mixedgroup, position=position1]
+----
+This is a normal block.
+----
+
+[group=mixedgroup, position=position2, engine=source, language=python]
+----
+s = "This is a block with Python content."
+----
+
+::blockgroup:mixedgroup

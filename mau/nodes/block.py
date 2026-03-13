@@ -1,104 +1,51 @@
-from mau.nodes.nodes import Node
+from collections.abc import Mapping, Sequence
+
+from mau.nodes.node import (
+    Node,
+    NodeArguments,
+    NodeContentMixin,
+    NodeInfo,
+    NodeLabelsMixin,
+)
 
 
-class BlockNode(Node):
+class BlockNode(Node, NodeLabelsMixin, NodeContentMixin):
     """A block.
 
     This node contains a generic block.
 
     Arguments:
-        blocktype: the type of this block
-        content: content of the block
-        secondary_content: secondary content of this block
-        title: title of this block
         classes: a comma-separated list of classes
         engine: the engine used to render this block
         preprocessor: the preprocessor used for this block
-        args: unnamed arguments
-        kwargs: named arguments
-        tags: tags
     """
 
-    node_type = "block"
+    type = "block"
 
     def __init__(
         self,
-        classes=None,
-        title=None,
-        engine=None,
-        preprocessor=None,
-        parent=None,
-        parent_position=None,
-        children=None,
-        secondary_children=None,
-        subtype=None,
-        args=None,
-        kwargs=None,
-        tags=None,
-        context=None,
+        classes: Sequence[str] | None = None,
+        content: Sequence[Node] | None = None,
+        labels: Mapping[str, Node] | None = None,
+        parent: Node | None = None,
+        arguments: NodeArguments | None = None,
+        info: NodeInfo | None = None,
     ):
-        super().__init__(
-            parent=parent,
-            parent_position=parent_position,
-            children=children,
-            subtype=subtype,
-            args=args,
-            kwargs=kwargs,
-            tags=tags,
-            context=context,
-        )
+        super().__init__(parent=parent, arguments=arguments, info=info)
+        NodeContentMixin.__init__(self, content)
+        NodeLabelsMixin.__init__(self, labels)
+
         self.classes = classes or []
-        self.title = title
-        self.engine = engine
-        self.preprocessor = preprocessor
-        self.secondary_children = secondary_children or []
 
-    def _custom_dict(self):
-        return {
-            "classes": self.classes,
-            "title": self.title,
-            "engine": self.engine,
-            "preprocessor": self.preprocessor,
-            "secondary_children": self.secondary_children,
-        }
+    def deepcopy(self, parent=None):  # pragma: nocover
+        # Create a new node and perform base deepcopy.
+        new_node = super().deepcopy(parent)
 
+        # Shallow copies.
+        new_node.classes = list(self.classes)
 
-class BlockGroupNode(Node):
-    """This instructs Mau to insert a group of nodes."""
+        # Recursive deep copies.
+        self._deepcopy_content(new_node)
+        self._deepcopy_labels(new_node)
 
-    node_type = "block_group"
-
-    def __init__(
-        self,
-        group_name,
-        group,
-        title=None,
-        parent=None,
-        parent_position=None,
-        children=None,
-        subtype=None,
-        args=None,
-        kwargs=None,
-        tags=None,
-        context=None,
-    ):
-        super().__init__(
-            parent=parent,
-            parent_position=parent_position,
-            children=children,
-            subtype=subtype,
-            args=args,
-            kwargs=kwargs,
-            tags=tags,
-            context=context,
-        )
-        self.title = title
-        self.group_name = group_name
-        self.group = group
-
-    def _custom_dict(self):
-        return {
-            "title": self.title,
-            "group_name": self.group_name,
-            "group": self.group,
-        }
+        return new_node

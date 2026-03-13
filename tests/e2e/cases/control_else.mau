@@ -1,0 +1,6 @@
+:answer:42
+. Some title
+@if answer!=42
+This paragraph will not be rendered.
+
+This paragraph will not receive the title.

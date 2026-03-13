@@ -1,71 +1,96 @@
-from abc import ABC
-from collections.abc import MutableMapping
+from __future__ import annotations
+
+from .helpers import flatten_nested_dict, nest_flattened_dict
 
 
-class EnvironmentABC(ABC):
-    pass
+class Environment:
+    """
+    This is a class that hosts a nested configuration.
 
+    An Environment contains a dictionary of
+    configuration variables that can be queried using flat
+    variable names like `a.b.c`.
+    """
 
-def flatten_nested_dict(nested, parent_key=None, separator="."):
-    flat = {}
+    def __init__(self):
+        # This is the internal dictionary, which
+        # is always kept in its flattened version.
+        self._variables: dict = {}
 
-    for key, value in nested.items():
-        key = f"{parent_key}{separator}{key}" if parent_key else key
+    @classmethod
+    def from_dict(cls, other: dict, namespace: str | None = None):
+        env = cls()
+        env.dupdate(other, namespace)
+        return env
 
-        if isinstance(value, MutableMapping) and len(value) != 0:
-            flat.update(flatten_nested_dict(value, key, separator=separator))
-        else:
-            flat[key] = value
+    @classmethod
+    def from_environment(cls, other: Environment, namespace: str | None = None):
+        return cls().from_dict(other.asdict(), namespace)
 
-    return flat
+    def update(self, other: Environment, namespace: str | None = None, overwrite=True):
+        # Create an environment, to get all
+        # plain variables with the right
+        # namespace.
+        new_env = Environment.from_dict(other._variables, namespace)
 
+        if overwrite:
+            self._variables.update(new_env._variables)
+            return
 
-def nest_flattened_dict(flat, separator="."):
-    def _split(key, value, separator, output):
-        key, *rest = key.split(separator, 1)
+        new_env._variables.update(self._variables)
+        self._variables = new_env._variables
 
-        if rest:
-            _split(
-                rest[0],
-                value,
-                separator,
-                output.setdefault(key, {}),
-            )
-        else:
-            output[key] = value
+    def dupdate(self, other: dict, namespace: str | None = None):
+        # If there is a namespace store the
+        # new dictionary under it.
+        if namespace:
+            other = {namespace: other}
 
-    result = {}
+        self._variables.update(flatten_nested_dict(other))
 
-    for key, value in flat.items():
-        _split(key, value, separator, result)
+    def asdict(self) -> dict[str, str | dict]:
+        return nest_flattened_dict(self._variables)
 
-    return result
+    def asflatdict(self) -> dict[str, str]:
+        return self._variables
 
+    def __setitem__(self, key, value):
+        # If the value is a dictionary, we need to include
+        # it into the Environment namespace.
+        # This is why we don't update self._variables directly.
+        self.dupdate({key: value})
 
-class Environment(EnvironmentABC):
-    def __init__(self, other=None):
-        self._variables = {}
+    def __getitem__(self, key):
+        return self._variables[key]
 
-        if other is not None:
-            self.update(other)
-
-    def clone(self):
-        return self.__class__(self._variables)
-
-    def setvar(self, key, value):
-        self.update({key: value})
-        # self._variables[key] = value
-
-    def getvar(self, key, default=None):
+    def get(self, key, default=None):
         try:
+            # If the key is present in the flat
+            # index we can just return the
+            # corresponding value.
             return self._variables[key]
         except KeyError:
+            # The key is not there, let's
+            # check if it works as a namespace.
+
+            # Add the dot to transform the
+            # key into a namespace prefix.
             prefix = f"{key}."
 
+            # Find all the flat keys that
+            # start with that prefix.
             keys = [k for k in self._variables if k.startswith(prefix)]
 
+            # If we found matching keys,
+            # we need to return the corresponding
+            # items as an Environment.
+            #
+            # For each matching key, we create
+            # the key without prefix and store
+            # the value under it. Then, we
+            # promote to an Environment.
             if len(keys) != 0:
-                return Environment(
+                return self.__class__.from_dict(
                     {
                         k.removeprefix(prefix): v
                         for k, v in self._variables.items()
@@ -73,33 +98,6 @@ class Environment(EnvironmentABC):
                     }
                 )
 
+            # If we can't find matching keys
+            # we should return the default value.
             return default
-
-    def getvar_nodefault(self, key):
-        return self._variables[key]
-
-    def update(self, other, namespace=None):
-        if isinstance(other, EnvironmentABC):
-            if not namespace:
-                self._variables.update(other._variables)
-                return
-
-            self._variables.update(flatten_nested_dict({namespace: other._variables}))
-        else:
-            if not namespace:
-                self._variables.update(flatten_nested_dict(other))
-                return
-
-            self._variables.update(flatten_nested_dict({namespace: other}))
-
-    def asdict(self):
-        return nest_flattened_dict(self._variables)
-
-    def asflatdict(self):
-        return self._variables
-
-    def __repr__(self):  # pragma: no cover
-        return f"{self.asdict()}"
-
-    def __eq__(self, other):
-        return self._variables == other._variables

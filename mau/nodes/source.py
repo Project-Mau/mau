@@ -1,149 +1,86 @@
-from mau.nodes.nodes import Node
+from collections.abc import Mapping, Sequence
+
+from mau.nodes.node import Node, NodeInfo, NodeLabelsMixin, ValueNode
+from mau.nodes.node_arguments import NodeArguments
 
 
-class CalloutsEntryNode(Node):
-    # This is an entry in the list of callouts after source code
-
-    node_type = "callouts_entry"
-
-    def __init__(
-        self,
-        marker,
-        value,
-        parent=None,
-        parent_position=None,
-        children=None,
-        subtype=None,
-        args=None,
-        kwargs=None,
-        tags=None,
-        context=None,
-    ):
-        super().__init__(
-            parent=parent,
-            parent_position=parent_position,
-            children=children,
-            subtype=subtype,
-            args=args,
-            kwargs=kwargs,
-            tags=tags,
-            context=context,
-        )
-        self.marker = marker
-        self.value = value
-
-    def _custom_dict(self):
-        return {
-            "value": self.value,
-            "marker": self.marker,
-        }
-
-
-class CalloutNode(Node):
+class SourceMarkerNode(ValueNode):
     # This is a marker near a source code line
 
-    node_type = "callout"
+    type = "source-marker"
+
+
+class SourceLineNode(Node):
+    """A line of verbatim text or source code."""
+
+    type = "source-line"
 
     def __init__(
         self,
-        line,
-        marker,
-        parent=None,
-        parent_position=None,
-        children=None,
-        subtype=None,
-        args=None,
-        kwargs=None,
-        tags=None,
-        context=None,
+        line_number: str,
+        line_content: str,
+        highlight_style: str | None = None,
+        marker: SourceMarkerNode | None = None,
+        parent: Node | None = None,
+        arguments: NodeArguments | None = None,
+        info: NodeInfo | None = None,
     ):
-        super().__init__(
-            parent=parent,
-            parent_position=parent_position,
-            children=children,
-            subtype=subtype,
-            args=args,
-            kwargs=kwargs,
-            tags=tags,
-            context=context,
-        )
-        self.line = line
+        super().__init__(parent=parent, arguments=arguments, info=info)
+
+        self.line_number = line_number
+        self.line_content = line_content
+        self.highlight_style = highlight_style
         self.marker = marker
 
-    def _custom_dict(self):
-        return {
-            "line": self.line,
-            "marker": self.marker,
-        }
+    def deepcopy(self, parent=None):  # pragma: no cover
+        # Create a new node and perform base deepcopy.
+        new_node = super().deepcopy(parent)
+
+        # Shallow copies.
+        new_node.line_number = self.line_number
+        new_node.line_content = self.line_content
+        new_node.highlight_style = self.highlight_style
+        new_node.marker = self.marker.deepcopy(parent=new_node) if self.marker else None
+
+        return new_node
 
 
-class SourceNode(Node):
+class SourceNode(Node, NodeLabelsMixin):
     """A block of verbatim text or source code.
 
     This node contains verbatim text or source code.
-
-    Arguments:
-        language: the language of the code contained in this block
-        callouts: a list of callout CalloutEntryNode objects
-        markers: list of CalloutNode objects
-        highlights: list of lines that have to be highlighted
-        delimiter: callouts delimiter
-        code: content of the block
-        title: title of this block
-        kwargs: named arguments
     """
 
-    node_type = "source"
+    type = "source"
 
     def __init__(
         self,
-        code=None,
-        language="text",
-        callouts=None,
-        delimiter=":",
-        markers=None,
-        highlights=None,
-        classes=None,
-        title=None,
-        preprocessor=None,
-        parent=None,
-        parent_position=None,
-        children=None,
-        subtype=None,
-        args=None,
-        kwargs=None,
-        tags=None,
-        context=None,
+        language: str | None = None,
+        classes: Sequence[str] | None = None,
+        content: Sequence[SourceLineNode] | None = None,
+        labels: Mapping[str, Node] | None = None,
+        parent: Node | None = None,
+        arguments: NodeArguments | None = None,
+        info: NodeInfo | None = None,
     ):
-        super().__init__(
-            parent=parent,
-            parent_position=parent_position,
-            children=children,
-            subtype=subtype,
-            args=args,
-            kwargs=kwargs,
-            tags=tags,
-            context=context,
-        )
-        self.code = code or []
-        self.language = language
-        self.callouts = callouts or []
-        self.delimiter = delimiter
-        self.markers = markers or []
-        self.highlights = highlights or []
-        self.classes = classes or []
-        self.title = title
-        self.preprocessor = preprocessor
+        super().__init__(parent=parent, arguments=arguments, info=info)
 
-    def _custom_dict(self):
-        return {
-            "code": self.code,
-            "language": self.language,
-            "callouts": self.callouts,
-            "delimiter": self.delimiter,
-            "markers": self.markers,
-            "highlights": self.highlights,
-            "classes": self.classes,
-            "title": self.title,
-            "preprocessor": self.preprocessor,
-        }
+        NodeLabelsMixin.__init__(self, labels)
+
+        self.language = language
+        self.classes = classes or []
+        self.content = content or []
+
+    def deepcopy(self, parent=None):  # pragma: no cover
+        # Create a new node and perform base deepcopy.
+        new_node = super().deepcopy(parent)
+
+        # Shallow copies.
+        new_node.language = self.language
+        new_node.classes = list(self.classes)
+        new_node.content = [child.deepcopy(parent=new_node) for child in self.content]
+
+        # Recursive deep copies.
+        self._deepcopy_labels(new_node)
+
+        return new_node

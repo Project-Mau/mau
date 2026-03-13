@@ -1,0 +1,297 @@
+_type: document
+args: []
+content:
+- _type: list
+  args: []
+  content:
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 1
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  - _type: list
+    args: []
+    content:
+    - _type: list-item
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Unordered list item 1.1
+      internal_tags: []
+      kwargs: {}
+      level: 2
+      subtype: null
+      tags: []
+    - _type: list-item
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Unordered list item 1.2
+      internal_tags: []
+      kwargs: {}
+      level: 2
+      subtype: null
+      tags: []
+    - _type: list-item
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Unordered list item 1.3
+      internal_tags: []
+      kwargs: {}
+      level: 2
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    main_node: false
+    ordered: false
+    start: 1
+    subtype: null
+    tags: []
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 2
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  main_node: true
+  ordered: true
+  start: 1
+  subtype: null
+  tags: []
+- _type: list
+  args: []
+  content:
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 20
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 21
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 22
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs:
+    start: '20'
+  labels: {}
+  main_node: true
+  ordered: true
+  start: 20
+  subtype: null
+  tags: []
+- _type: list
+  args: []
+  content:
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 1
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 2
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 3
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  main_node: true
+  ordered: true
+  start: 1
+  subtype: null
+  tags: []
+- _type: paragraph
+  args: []
+  content:
+  - _type: paragraph-line
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Some paragraph that interrupts the list.
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  subtype: null
+  tags: []
+- _type: list
+  args: []
+  content:
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 4
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 5
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Ordered list item 6
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs:
+    start: auto
+  labels: {}
+  main_node: true
+  ordered: true
+  start: 4
+  subtype: null
+  tags: []
+internal_tags: []
+kwargs: {}
+subtype: null
+tags: []

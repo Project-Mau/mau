@@ -1,113 +1,63 @@
-import pytest
 from mau.environment.environment import Environment
-from mau.errors import MauErrorException
-from mau.nodes.footnotes import FootnoteNode
+from mau.nodes.footnote import FootnoteNode
 from mau.nodes.header import HeaderNode
-from mau.nodes.inline import SentenceNode, StyleNode, TextNode, VerbatimNode
-from mau.nodes.macros import (
+from mau.nodes.inline import StyleNode, TextNode, VerbatimNode
+from mau.nodes.macro import (
     MacroClassNode,
+    MacroFootnoteNode,
     MacroHeaderNode,
     MacroImageNode,
     MacroLinkNode,
     MacroNode,
 )
+from mau.nodes.node_arguments import NodeArguments
+from mau.test_helpers import NullMessageHandler
 from mau.visitors.jinja_visitor import JinjaVisitor
-
-
-def test_default_values():
-    visitor = JinjaVisitor(Environment())
-
-    assert visitor.default_templates == Environment()
-    assert visitor.environment_options == {}
-    assert visitor.extension == "j2"
-    assert visitor.toc is None
-    assert visitor.footnotes is None
-
-    assert visitor.templates == Environment()
-
-
-def test_custom_templates():
-    templates = {"key": "value"}
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-
-    visitor = JinjaVisitor(environment)
-
-    assert visitor.templates.asdict() == templates
-
-
-def test_custom_templates_with_default_templates():
-    class MyJinjaVisitor(JinjaVisitor):
-        default_templates = {"defaultkey": "defaultvalue"}
-
-    templates = {"key": "value"}
-    merged_templates = Environment({"defaultkey": "defaultvalue", "key": "value"})
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-
-    visitor = MyJinjaVisitor(environment)
-
-    assert visitor.templates == merged_templates
-
-
-def test_no_templates():
-    templates = {}
-
-    environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
-
-    node = TextNode("Just some text.")
-
-    with pytest.raises(MauErrorException):
-        visitor.visit(node)
 
 
 def test_inline_text_node():
     templates = {
-        "text.j2": "{{ value }}",
+        "text.j2": "#{{ value }}#",
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
     node = TextNode("Just some text.")
 
     result = visitor.visit(node)
 
-    assert result == "Just some text."
+    assert result == "#Just some text.#"
 
 
 def test_inline_verbatim_node():
     templates = {
-        "verbatim.j2": "{{ value }}",
+        "verbatim.j2": "`{{ value }}`",
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
     node = VerbatimNode("Just some text.")
 
     result = visitor.visit(node)
 
-    assert result == "Just some text."
+    assert result == "`Just some text.`"
 
 
 def test_inline_style_node_star():
     templates = {
         "text.j2": "{{ value }}",
-        "style.star.j2": "*{{ content }}*",
+        "style.style__star.j2": "*{{ content }}*",
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
-    node = StyleNode("star", children=[TextNode("Just some text.")])
+    node = StyleNode("star", content=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -117,14 +67,14 @@ def test_inline_style_node_star():
 def test_inline_style_node_underscore():
     templates = {
         "text.j2": "{{ value }}",
-        "style.underscore.j2": "_{{ content }}_",
+        "style.style__underscore.j2": "_{{ content }}_",
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
-    node = StyleNode("underscore", children=[TextNode("Just some text.")])
+    node = StyleNode("underscore", content=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -134,14 +84,14 @@ def test_inline_style_node_underscore():
 def test_inline_style_node_tilde():
     templates = {
         "text.j2": "{{ value }}",
-        "style.tilde.j2": "~{{ content }}~",
+        "style.style__tilde.j2": "~{{ content }}~",
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
-    node = StyleNode("tilde", children=[TextNode("Just some text.")])
+    node = StyleNode("tilde", content=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -151,14 +101,14 @@ def test_inline_style_node_tilde():
 def test_inline_style_node_caret():
     templates = {
         "text.j2": "{{ value }}",
-        "style.caret.j2": "^{{ content }}^",
+        "style.style__caret.j2": "^{{ content }}^",
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
-    node = StyleNode("caret", children=[TextNode("Just some text.")])
+    node = StyleNode("caret", content=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -168,59 +118,68 @@ def test_inline_style_node_caret():
 def test_inline_macro_node():
     templates = {
         "text.j2": "{{ value }}",
-        "macro.j2": (
+        "macro.name__somename.j2": (
             "{{ name }} - {{ args | join(',') }} - "
             "{% for key, value in kwargs|items %}{{ key }}:{{ value }}{% endfor %}"
         ),
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
-    node = MacroNode("somename", args=["arg1", "arg2"], kwargs={"key1": "value1"})
+    node = MacroNode(
+        "somename",
+        arguments=NodeArguments(
+            unnamed_args=["arg1", "arg2"],
+            named_args={"key1": "value1"},
+        ),
+    )
 
     result = visitor.visit(node)
 
     assert result == "somename - arg1,arg2 - key1:value1"
 
 
-def test_inline_footnote_node():
+def test_inline_macro_footnote_node():
     templates = {
         "text.j2": "{{ value }}",
-        "footnote.j2": (
-            "{{ content }} - {{ number }} - "
-            "{{ reference_anchor }} - {{ content_anchor }}"
+        "macro-footnote.j2": (
+            "{{ footnote.content }} - {{ footnote.name }} - "
+            "{{ footnote.public_id }} - {{ footnote.internal_id }}"
         ),
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
-    node = FootnoteNode(
-        children=[TextNode("Just some text.")],
-        number="5",
-        reference_anchor="someanchor",
-        content_anchor="someanchor-def",
+    node = MacroFootnoteNode(
+        name="somenote",
+        footnote=FootnoteNode(
+            content=[TextNode("Just some text.")],
+            name="somenote",
+            public_id="public_id",
+            internal_id="internal_id",
+        ),
     )
 
     result = visitor.visit(node)
 
-    assert result == "Just some text. - 5 - someanchor - someanchor-def"
+    assert result == "Just some text. - somenote - public_id - internal_id"
 
 
 def test_inline_class_node():
     templates = {
         "text.j2": "{{ value }}",
-        "macro.class.j2": "{{ classes | join(',') }} - {{ content }}",
+        "macro-class.j2": "{{ classes | join(',') }} - {{ content }}",
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
-    node = MacroClassNode(["class1", "class2"], children=[TextNode("Just some text.")])
+    node = MacroClassNode(["class1", "class2"], content=[TextNode("Just some text.")])
 
     result = visitor.visit(node)
 
@@ -230,14 +189,14 @@ def test_inline_class_node():
 def test_inline_link_node():
     templates = {
         "text.j2": "{{ value }}",
-        "macro.link.j2": "{{ target }} - {{ content }}",
+        "macro-link.j2": "{{ target }} - {{ content }}",
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
-    node = MacroLinkNode(target="sometarget", children=[TextNode("sometext")])
+    node = MacroLinkNode(target="sometarget", content=[TextNode("sometext")])
 
     result = visitor.visit(node)
 
@@ -248,22 +207,27 @@ def test_inline_header_node():
     templates = {
         "text.j2": "{{ value }}",
         "sentence.j2": "{{ content }}",
-        "macro.header.j2": "#{{ header.anchor }} - {{ content }}",
+        "macro-header.j2": "#{{ header.internal_id }} - {{ content }}",
+        "header.j2": "#{{ internal_id }}  {{ content }}",
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
     header_node = HeaderNode(
-        value=SentenceNode(children=[TextNode("Header")]),
-        level="2",
-        anchor="XXXXXX",
-        kwargs={"id": "someid"},
+        level=2,
+        content=[TextNode("Header")],
+        internal_id="XXXXXX",
+        name="someid",
     )
 
     node = MacroHeaderNode(
-        header_id="someid", header=header_node, children=[TextNode("sometext")]
+        target_name="someid",
+        header=header_node,
+        content=[
+            TextNode("sometext"),
+        ],
     )
 
     result = visitor.visit(node)
@@ -274,12 +238,12 @@ def test_inline_header_node():
 def test_inline_image_node():
     templates = {
         "text.j2": "{{ value }}",
-        "macro.image.j2": "{{ uri }} - {{ alt_text }} - {{ width }}x{{ height }}",
+        "macro-image.j2": "{{ uri }} - {{ alt_text }} - {{ width }}x{{ height }}",
     }
 
     environment = Environment()
-    environment.update(templates, "mau.visitor.custom_templates")
-    visitor = JinjaVisitor(environment)
+    environment.dupdate(templates, "mau.visitor.templates.custom")
+    visitor = JinjaVisitor(NullMessageHandler(), environment)
 
     node = MacroImageNode(uri="someuri", alt_text="sometext", width="100", height="400")
 

@@ -1,0 +1,8 @@
+:var:42
+:var_1:42
+:namespace.var:42
+:+var:
+:-var:
+:+var:42
+:+somevar:
+:somevar:true

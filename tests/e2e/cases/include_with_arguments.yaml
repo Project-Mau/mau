@@ -1,0 +1,29 @@
+_type: document
+args: []
+content:
+- _type: include
+  args:
+  - someuri
+  ctype: type
+  internal_tags: []
+  kwargs:
+    key: value
+  labels: {}
+  subtype: subtype
+  tags:
+  - tag
+- _type: include
+  args:
+  - someuri
+  ctype: type
+  internal_tags: []
+  kwargs:
+    key: value
+  labels: {}
+  subtype: subtype
+  tags:
+  - tag
+internal_tags: []
+kwargs: {}
+subtype: null
+tags: []

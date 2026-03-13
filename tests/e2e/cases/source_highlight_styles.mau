@@ -1,0 +1,5 @@
+[engine=source, language=python]
+----
+def sum(a, b):
+    return a + b:@added:
+----

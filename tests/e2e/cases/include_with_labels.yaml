@@ -1,0 +1,32 @@
+_type: document
+args: []
+content:
+- _type: include
+  args:
+  - someuri
+  ctype: type
+  internal_tags: []
+  kwargs: {}
+  labels:
+    somerole:
+      _type: label
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Somelabel
+      internal_tags: []
+      kwargs: {}
+      role: somerole
+      subtype: null
+      tags: []
+  subtype: null
+  tags: []
+internal_tags: []
+kwargs: {}
+subtype: null
+tags: []

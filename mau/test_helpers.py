@@ -199,7 +199,7 @@ def lexer_runner_factory(lexer_class, *args, **kwds):
     init_lexer = init_lexer_factory(lexer_class)
 
     def _run(text, environment: Environment | None = None, **kwargs):
-        kwds.update(kwargs)
+        merged = {**kwds, **kwargs}
 
         environment = environment or Environment()
 
@@ -208,7 +208,7 @@ def lexer_runner_factory(lexer_class, *args, **kwds):
             source_filename=TEST_CONTEXT_SOURCE,
         )
 
-        lexer = init_lexer(text_buffer, environment, *args, **kwds)
+        lexer = init_lexer(text_buffer, environment, *args, **merged)
         lexer.process()
 
         return lexer
@@ -220,7 +220,7 @@ def init_tokens_manager_factory(lexer_class, tokens_manager_class):
     def _init_tokens_manager(text: str, environment):
         text_buffer = TextBuffer(text, source_filename=TEST_CONTEXT_SOURCE)
 
-        lex = lexer_class(text_buffer, environment)
+        lex = lexer_class(text_buffer, NullMessageHandler(), environment)
         lex.process()
 
         tm = tokens_manager_class(lex.tokens)
@@ -272,11 +272,11 @@ def parser_runner_factory(lexer_class, parser_class, *args, **kwds):
     init_parser = init_parser_factory(lexer_class, parser_class)
 
     def _run(source, environment=None, **kwargs):
-        kwds.update(kwargs)
+        merged = {**kwds, **kwargs}
 
         environment = environment or Environment()
 
-        parser = init_parser(source, environment, *args, **kwds)
+        parser = init_parser(source, environment, *args, **merged)
 
         parser.parse()
 

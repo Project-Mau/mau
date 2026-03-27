@@ -7,37 +7,36 @@ Position = tuple[int, int]
 
 def adjust_context(context: Context):
     """Text files in editors are indexed from 1
-    both vertically (lines) and horizontally
-    (columns), while internally, we
+    vertically (lines), while internally, we
     deal with lists which are indexed from 0.
 
-    This function moves the given context
-    to 1,1, making it readable by a human.
+    This function shifts the given context's
+    lines by 1, making it readable by a human.
+    Columns are kept as-is.
     """
     return context.clone().move_to(1, 0)
 
 
 def adjust_context_dict(context_dict: dict):
     """Text files in editors are indexed from 1
-    both vertically (lines) and horizontally
-    (columns), while internally, we
+    vertically (lines), while internally, we
     deal with lists which are indexed from 0.
 
-    This function moves the given context
-    to 1,1, making it readable by a human.
+    This function shifts the given context's
+    lines by 1, making it readable by a human.
+    Columns are kept as-is.
     """
     return Context(**context_dict).move_to(1, 0)
 
 
 def adjust_position(position: Position):
     """Text files in editors are indexed from 1
-    both vertically (lines) and horizontally
-    (columns), while internally, we
+    vertically (lines), while internally, we
     deal with lists which are indexed from 0.
 
-    This function shifts the given position
-    by 1 both vertically and horizontally,
-    making it readable by a human.
+    This function shifts the given position's
+    line by 1, making it readable by a human.
+    Columns are kept as-is.
     """
     return (position[0] + 1, position[1])
 

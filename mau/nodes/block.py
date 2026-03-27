@@ -37,7 +37,7 @@ class BlockNode(Node, NodeLabelsMixin, NodeContentMixin):
 
         self.classes = classes or []
 
-    def deepcopy(self, parent=None):  # pragma: nocover
+    def deepcopy(self, parent=None):  # pragma: no cover
         # Create a new node and perform base deepcopy.
         new_node = super().deepcopy(parent)
 

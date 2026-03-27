@@ -55,6 +55,10 @@ class Control:
                 return variable_value == self.value
             case ControlComparisons.BANG_EQUAL:
                 return variable_value != self.value
+            case _:
+                raise ValueError(
+                    f"Unsupported comparison: {self.comparison}"
+                )
 
 
 class ControlBuffer:

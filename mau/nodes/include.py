@@ -356,6 +356,7 @@ class BlockGroupItemNode(Node):
     ):
         super().__init__(parent=parent, arguments=arguments, info=info)
 
+        self.group = group
         self.position = position
         self.block = block
 
@@ -364,6 +365,7 @@ class BlockGroupItemNode(Node):
         new_node = super().deepcopy(parent)
 
         # Shallow copies.
+        new_node.group = self.group
         new_node.position = self.position
         new_node.block = self.block.deepcopy(parent=new_node)
 

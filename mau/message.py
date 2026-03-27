@@ -118,7 +118,7 @@ class LogMessageHandler(BaseMessageHandler):
 
     def _process_visitor_debug_message(
         self,
-        message: MauVisitorErrorMessage,
+        message: MauVisitorErrorMessage | MauVisitorDebugMessage,
         logging_level,
     ):
         values = {}

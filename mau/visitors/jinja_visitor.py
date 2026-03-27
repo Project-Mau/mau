@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import sys
 from collections import defaultdict
 from collections.abc import Sequence
 from dataclasses import dataclass, field
@@ -188,10 +187,7 @@ def _load_available_template_providers():  # pragma: no cover
     # Load all the template providers belonging
     # to the group "mau.templates".
 
-    if sys.version_info < (3, 10):
-        from importlib_metadata import entry_points
-    else:
-        from importlib.metadata import entry_points
+    from importlib.metadata import entry_points
 
     discovered_plugins = entry_points(group="mau.templates")
 

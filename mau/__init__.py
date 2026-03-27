@@ -48,12 +48,7 @@ def load_visitors():  # pragma: no cover
     Mau package without running into circular imports.
     """
 
-    import sys
-
-    if sys.version_info < (3, 10):
-        from importlib_metadata import entry_points
-    else:
-        from importlib.metadata import entry_points
+    from importlib.metadata import entry_points
 
     # Load all packages that register
     # themselves under the group

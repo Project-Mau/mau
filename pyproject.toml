@@ -50,7 +50,7 @@ development = [
 ]
 
 [project.scripts]
-mau = "main:main"
+mau = "mau.cli:main"
 
 [tool.coverage.run]
 source = ["mau"]

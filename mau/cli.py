@@ -23,10 +23,6 @@ install(show_locals=True)
 
 logger = logging.getLogger(__name__)
 
-# Load a dictionary of all visitors,
-# indexed by the output format.
-visitors: dict[str, Type[BaseVisitor]] = load_visitors()
-
 
 def write_output(output, output_file, postprocess=None):
     if postprocess:
@@ -45,7 +41,7 @@ def write_output(output, output_file, postprocess=None):
         out.write("\n")
 
 
-def create_parser():
+def create_parser(visitors):
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
@@ -170,8 +166,12 @@ def main():
     # INITIAL SETUP
     ###############################################
 
+    # Load a dictionary of all visitors,
+    # indexed by the output format.
+    visitors: dict[str, Type[BaseVisitor]] = load_visitors()
+
     # Create the parser.
-    argparser = create_parser()
+    argparser = create_parser(visitors)
 
     # Get arguments and logging set up.
     args = argparser.parse_args()

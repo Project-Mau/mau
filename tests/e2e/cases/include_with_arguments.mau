@@ -1,0 +1,4 @@
+<< type:someuri, #tag, *subtype, key=value
+
+[someuri, #tag, *subtype, key=value]
+<< type

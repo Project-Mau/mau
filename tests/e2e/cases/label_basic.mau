@@ -1,0 +1,8 @@
+.details This is a label with role "details"
+
+.details This is *a label* with _styles_
+
+. This is a title
+.title This is also a title
+
+This paragraph will receive the title.

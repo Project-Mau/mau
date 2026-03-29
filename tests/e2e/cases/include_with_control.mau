@@ -1,0 +1,7 @@
+:var:42
+
+@if var == 42
+<< type:some_uri_shown
+
+@if var == 43
+<< type:some_uri_not_shown

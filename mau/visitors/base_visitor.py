@@ -1,97 +1,251 @@
-import functools
-import logging
+from collections.abc import Mapping, Sequence
+from typing import Type
 
-import yaml
-from mau.errors import MauError, MauErrorException
-
-_logger = logging.getLogger(__name__)
-
-
-class MauVisitorError(MauError):
-    source = "visitor"
-
-    def print_details(self):  # pragma: no cover
-        super().print_details()
-
-        print("Node:")
-        print(self.details["node"])
+from mau.environment.environment import Environment
+from mau.message import (
+    BaseMessageHandler,
+    MauException,
+    MauMessage,
+    MauVisitorDebugMessage,
+    MauVisitorErrorMessage,
+)
+from mau.nodes.node import Node
+from mau.text_buffer import adjust_context, adjust_context_dict
 
 
-class NoAliasDumper(yaml.SafeDumper):  # pragma: no cover
-    # pylint: disable=unused-argument
-    def ignore_aliases(self, data):
-        return True
+def create_visitor_message(
+    message_class: Type[MauMessage],
+    text: str,
+    node: Node | None = None,
+    data: dict | None = None,
+    environment: Environment | None = None,
+    additional_info: dict[str, str] | None = None,
+):
+    context = None
+    if data:
+        context = adjust_context_dict(data["_context"])
+    elif node:
+        context = adjust_context(node.info.context)
+
+    return message_class(
+        text=text,
+        context=context,
+        node_type=node.type if node else None,
+        data=data,
+        environment=environment,
+        additional_info=additional_info,
+    )
 
 
-no_aliases_dump = functools.partial(yaml.dump, Dumper=NoAliasDumper)
+def create_visitor_debug_message(
+    text: str,
+    node: Node | None = None,
+    data: dict | None = None,
+    environment: Environment | None = None,
+    additional_info: dict[str, str] | None = None,
+):
+    return create_visitor_message(
+        MauVisitorDebugMessage,
+        text,
+        node,
+        data,
+        environment,
+        additional_info,
+    )
+
+
+def create_visitor_exception(
+    text: str,
+    node: Node | None = None,
+    data: dict | None = None,
+    environment: Environment | None = None,
+    additional_info: dict[str, str] | None = None,
+):
+    message = create_visitor_message(
+        MauVisitorErrorMessage,
+        text,
+        node,
+        data,
+        environment,
+        additional_info,
+    )
+
+    return MauException(message)
 
 
 class BaseVisitor:
-    format_code = "yaml"
+    # The output format that identifies this visitor.
+    format_code = "python"
     extension = ""
-    transform = no_aliases_dump
 
-    _join_with = {}
-    _join_with_default = None
-
-    # pylint: disable=unused-argument
-    def __init__(self, environment, *args, **kwds):
+    def __init__(
+        self,
+        message_handler: BaseMessageHandler,
+        environment: Environment | None = None,
+    ):
         self.toc = None
         self.footnotes = None
 
-        self.environment = environment
+        # The message handler instance.
+        self.message_handler = message_handler
 
-    def visit(self, node, *args, **kwargs):
-        # The visitor has to define functions for each node type.
-        # Those shall return a dictionary with the key "data" that
-        # contains the result of the visit.
+        # The configuration environment
+        self.environment: Environment = environment or Environment()
+
+    def process(self, node: Node | None, **kwargs):
+        # This function is the entry point of the visitor.
+        # It visits a node, and the subnodes
+        # recursively, but allows the visitor to
+        # preprocess the input and postprocess
+        # the output.
+
+        # Preprocess the input node.
+        node = self._preprocess(node, **kwargs)
+
+        # Visit the node.
+        result = self.visit(node, **kwargs)
+
+        # Postprocess the result.
+        result = self._postprocess(result, **kwargs)
+
+        return result
+
+    def _preprocess(self, node: Node | None, **kwargs):
+        # The base visitor has no
+        # preprocess code.
+        return node
+
+    def _postprocess(self, result, **kwargs):
+        # The base visitor has no
+        # postprocess code.
+        return result
+
+    def _debug_additional_info(self, node: Node, result: dict):  # pragma: no cover
+        # This function provides additional
+        # debug information for a node and
+        # its visited output.
+        return {}
+
+    def _debug_result(self, node: Node, result: dict):  # pragma: no cover
+        # This function creates a debug
+        # message from the visitor.
+
+        # Create the message.
+        message = create_visitor_debug_message(
+            text="This is a debug message activated by a Mau internal tag.",
+            node=node,
+            data=result,
+            environment=self.environment,
+            additional_info=self._debug_additional_info(node, result),
+        )
+
+        # Send the message through the handler.
+        self.message_handler.process(message)
+
+    def visit(self, node: Node | None, **kwargs):
+        # Simple implementation of the visitor pattern.
+        # Here, the visitor passes itself to the node
+        # through the method `accept`
+        # The node calls a suitable method of the
+        # visitor, and the result is returned here.
+        #
+        # All visitor functions return a dictionary with
+        # the key "data" that contains the result of the visit.
         # This is done to provide space for metadata or other values
         # like templates used to render the node.
 
         if node is None:
             return {}
 
-        return node.accept(self, *args, **kwargs)
+        result = node.accept(self, **kwargs)
 
-    def visitlist(self, node, nodes, *args, **kwargs):
-        join_with = self._join_with.get(node.node_type, self._join_with_default)
+        # Get the internal tags from
+        # the output. Check if they activate
+        # debugging for the present node.
+        if "debug" in result.get("internal_tags", []):  # pragma: no cover
+            self._debug_result(node, result)
 
-        visited_nodes = [self.visit(i, *args, **kwargs) for i in nodes]
+        if transformer := kwargs.get("transformer"):
+            result = transformer(result)
 
-        if join_with is not None:
-            return join_with.join(visited_nodes)
+        return result
 
-        return visited_nodes
+    def visit_data(self, node: Node | None, **kwargs):
+        # Visit a node and return its data dict,
+        # skipping template rendering in subclass visitors.
+        # Children are still visited normally.
 
-    def visitdict(self, node, nodedict, *args, **kwargs):
-        return {k: self.visit(v, *args, **kwargs) for k, v in nodedict.items()}
+        if node is None:
+            return {}
 
-    def _error(self, message, node=None):
-        error = MauVisitorError(
-            message=message,
-            details={
-                "node": node,
-            },
-        )
+        return node.accept(self, **kwargs)
 
-        raise MauErrorException(error)
+    def visitlist(self, current_node: Node, nodes_list: Sequence[Node], **kwargs):
+        # Visit all the nodes in the given sequence.
+        return [self.visit(node, **kwargs) for node in nodes_list]
 
-    def _visit_default(self, node, *args, **kwargs):
+    def visitdict(self, current_node: Node, nodes_dict: Mapping[str, Node], **kwargs):
+        # Visit all the nodes in the given dictionary.
+        return {k: self.visit(node, **kwargs) for k, node in nodes_dict.items()}
+
+    def visitdictlist(
+        self,
+        current_node: Node,
+        nodes_dict: Mapping[str, Sequence[Node]],
+        **kwargs,
+    ):
+        # Visit all the nodes in the given dictionary.
         return {
-            "data": {
-                "type": node.node_type,
-                "subtype": node.subtype,
-                "args": node.args,
-                "kwargs": node.kwargs,
-                "tags": node.tags,
-            },
+            k: self.visitlist(current_node, nodes, **kwargs)
+            for k, nodes in nodes_dict.items()
         }
 
-    # Inline nodes
+    def _add_visit_content(self, result: dict, node: Node, **kwargs):
+        result.update(
+            {
+                "content": self.visitlist(node, node.content, **kwargs),
+            }
+        )
 
-    def _visit_raw(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _add_visit_labels(self, result: dict, node: Node, **kwargs):
+        result.update(
+            {
+                "labels": self.visitdict(node, node.labels, **kwargs),
+            }
+        )
+
+    def _get_node_data(self, node: Node, **kwargs) -> dict:
+        if not node:
+            return {}
+
+        result = {
+            "_type": node.type,
+            "args": node.arguments.unnamed_args,
+            "kwargs": node.arguments.named_args,
+            "tags": node.arguments.tags,
+            "internal_tags": node.arguments.internal_tags,
+            "subtype": node.arguments.subtype,
+        }
+
+        if kwargs.get("add_context", True):
+            result["_context"] = node.info.context.asdict()
+
+        return result
+
+    def _visit_default(self, node: Node, **kwargs) -> dict:
+        # This is the default code to visit a node.
+
+        data = self._get_node_data(node, **kwargs)
+
+        if kwargs.get("add_parent", True):
+            data["parent"] = self._get_node_data(node.parent, **kwargs)
+
+        return data
+
+    def _visit_value(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
                 "value": node.value,
             }
@@ -99,50 +253,68 @@ class BaseVisitor:
 
         return result
 
-    def _visit_text(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
-            {
-                "value": node.value,
-            }
-        )
+    def _visit_wrapper(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        self._add_visit_content(result, node, **kwargs)
 
         return result
 
-    def _visit_verbatim(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_label(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
-                "value": node.value,
+                "role": node.role,
             }
         )
 
+        self._add_visit_content(result, node, **kwargs)
+
         return result
 
-    def _visit_sentence(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_text(self, node: Node, **kwargs) -> dict:
+        return self._visit_value(node, **kwargs)
+
+    def _visit_verbatim(self, node: Node, **kwargs) -> dict:
+        return self._visit_value(node, **kwargs)
+
+    def _visit_word(self, node: Node, **kwargs) -> dict:
+        return self._visit_value(node, **kwargs)
+
+    def _visit_style(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
-                "content": self.visitlist(node, node.children, *args, **kwargs),
+                "style": node.style,
             }
         )
 
+        self._add_visit_content(result, node, **kwargs)
+
         return result
 
-    def _visit_style(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_header(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
-                "value": node.value,
-                "content": self.visitlist(node, node.children, *args, **kwargs),
+                "level": node.level,
+                "internal_id": node.internal_id,
+                "name": node.name,
             }
         )
 
+        self._add_visit_content(result, node, **kwargs)
+        self._add_visit_labels(result, node, **kwargs)
+
         return result
 
-    def _visit_macro(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_macro(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
                 "name": node.name,
             }
@@ -150,61 +322,58 @@ class BaseVisitor:
 
         return result
 
-    def _visit_footnote(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
-            {
-                "content": self.visitlist(node, node.children, *args, **kwargs),
-                "number": node.number,
-                "reference_anchor": node.reference_anchor,
-                "content_anchor": node.content_anchor,
-            }
-        )
+    def _visit_macro_class(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
 
-        return result
-
-    def _visit_macro__class(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+        result.update(
             {
                 "classes": node.classes,
-                "content": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 
+        self._add_visit_content(result, node, **kwargs)
+
         return result
 
-    def _visit_macro__link(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_macro_link(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
                 "target": node.target,
-                "content": self.visitlist(node, node.children, *args, **kwargs),
             }
         )
 
+        self._add_visit_content(result, node, **kwargs)
+
         return result
 
-    def _visit_macro__header(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_macro_unicode(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
-                "header": {
-                    "anchor": node.header.anchor,
-                    "value": self.visit(node.header.value, *args, **kwargs),
-                    "level": node.header.level,
-                },
-                "content": self.visitlist(node, node.children, *args, **kwargs)
-                if node.children
-                else self.visit(node.header.value, *args, **kwargs),
+                "value": node.value,
             }
         )
 
         return result
 
-    def _visit_macro__image(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_macro_raw(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "value": node.value,
+            }
+        )
+
+        return result
+
+    def _visit_macro_image(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
                 "uri": node.uri,
                 "alt_text": node.alt_text,
@@ -215,226 +384,309 @@ class BaseVisitor:
 
         return result
 
-    def _visit_list_item(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_macro_header(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
-                "level": int(node.level),
-                "content": self.visitlist(node, node.children, *args, **kwargs),
+                "target_name": node.target_name,
+                "header": self.visit_data(node.header, **kwargs),
+            }
+        )
+
+        self._add_visit_content(result, node, **kwargs)
+
+        return result
+
+    def _visit_footnote(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "name": node.name,
+                "public_id": node.public_id,
+                "internal_id": node.internal_id,
+            }
+        )
+
+        self._add_visit_content(result, node, **kwargs)
+
+        return result
+
+    def _visit_macro_footnote(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "footnote": self.visit_data(node.footnote, **kwargs),
             }
         )
 
         return result
 
-    def _visit_paragraph(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_footnotes_item(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
-                "title": self.visit(node.title, *args, **kwargs),
-                "content": self.visitlist(node, node.children, *args, **kwargs),
+                "footnote": self.visit_data(node.footnote, **kwargs),
             }
         )
 
         return result
 
-    def _visit_header(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
+    def _visit_footnotes(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
 
-        result["data"].update(
+        result.update(
             {
-                "value": self.visit(node.value, *args, **kwargs),
-                "level": int(node.level),
-                "anchor": node.anchor,
+                "footnotes": self.visitlist(node, node.footnotes, **kwargs),
+            }
+        )
+
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_toc_item(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "header": self.visit_data(node.header, **kwargs),
+                "entries": self.visitlist(node, node.entries, **kwargs),
             }
         )
 
         return result
 
-    def _visit_list(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_toc(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "plain_entries": self.visitlist(node, node.plain_entries, **kwargs),
+                "nested_entries": self.visitlist(node, node.nested_entries, **kwargs),
+            }
+        )
+
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_blockgroup_item(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "position": node.position,
+                "block_data": self.visit_data(node.block, **kwargs),
+                "block": self.visit(node.block, **kwargs),
+            }
+        )
+
+        return result
+
+    def _visit_blockgroup(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "name": node.name,
+                "items": self.visitdict(node, node.items, **kwargs),
+            }
+        )
+
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_block(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "classes": node.classes,
+            }
+        )
+
+        self._add_visit_content(result, node, **kwargs)
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_horizontal_rule(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_document(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        self._add_visit_content(result, node, **kwargs)
+
+        return result
+
+    def _visit_include(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "ctype": node.ctype,
+            }
+        )
+
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_include_image(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "uri": node.uri,
+                "alt_text": node.alt_text,
+                "classes": node.classes,
+            }
+        )
+
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_include_mau(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "uri": node.uri,
+            }
+        )
+
+        self._add_visit_content(result, node, **kwargs)
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_include_raw(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "uri": node.uri,
+            }
+        )
+
+        self._add_visit_content(result, node, **kwargs)
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_list_item(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "level": node.level,
+            }
+        )
+
+        self._add_visit_content(result, node, **kwargs)
+
+        return result
+
+    def _visit_list(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
                 "ordered": node.ordered,
-                "items": self.visitlist(node, node.children, *args, **kwargs),
                 "main_node": node.main_node,
                 "start": node.start,
             }
         )
 
+        self._add_visit_content(result, node, **kwargs)
+        self._add_visit_labels(result, node, **kwargs)
+
         return result
 
-    def _visit_content(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_paragraph(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
-                "content_type": node.content_type,
-                "uris": node.uris,
-                "title": self.visit(node.title, *args, **kwargs),
+                "content": self.visitlist(node, node.content, **kwargs),
+            }
+        )
+
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_paragraph_line(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        self._add_visit_content(result, node, **kwargs)
+        self._add_visit_labels(result, node, **kwargs)
+
+        return result
+
+    def _visit_source_marker(self, node: Node, **kwargs) -> dict:
+        return self._visit_value(node, **kwargs)
+
+    def _visit_source_line(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
+            {
+                "line_number": node.line_number,
+                "line_content": node.line_content,
+                "highlight_style": node.highlight_style,
+                "marker": self.visit(node.marker, **kwargs),
             }
         )
 
         return result
 
-    def _visit_content_image(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_source(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+        result.update(
             {
-                "uri": node.uri,
-                "alt_text": node.alt_text,
-                "classes": node.classes,
-                "title": self.visit(node.title, *args, **kwargs),
-            }
-        )
-
-        return result
-
-    def _visit_block(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
-            {
-                "content": self.visitlist(node, node.children, *args, **kwargs),
-                "secondary_content": self.visitlist(
-                    node, node.secondary_children, *args, **kwargs
-                ),
-                "subtype": node.subtype,
-                "classes": node.classes,
-                "title": self.visit(node.title, *args, **kwargs),
-                "engine": node.engine,
-                "preprocessor": node.preprocessor,
-            }
-        )
-
-        return result
-
-    def _visit_source(self, node, *args, **kwargs):
-        for method_name in [
-            "_visit_source__default",
-            f"_visit_source_{node.language}",
-        ]:
-            try:
-                method = getattr(self, method_name)
-            except AttributeError:
-                continue
-
-        return method(node)
-
-    def _visit_source__default(self, node, *args, **kwargs):
-        code = self.visitlist(node, node.code, *args, **kwargs)
-
-        # This is a list of callouts for each line
-        # None if the callout is not present, otherwise
-        # the rendered callout
-        markers = [None] * len(code)
-
-        for marker in node.markers:
-            markers[marker.line] = self.visit(marker, *args, **kwargs)
-
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
-            {
-                "code": code,
-                "subtype": node.subtype,
                 "language": node.language,
-                "callouts": self.visitlist(node, node.callouts, *args, **kwargs),
-                "highlights": node.highlights,
-                "markers": markers,
                 "classes": node.classes,
-                "title": self.visit(node.title, *args, **kwargs),
-                "preprocessor": node.preprocessor,
-                "lines": len(node.code),
             }
         )
 
-        return result
-
-    def _visit_callout(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
-            {
-                "line": node.line,
-                "marker": node.marker,
-            }
-        )
+        self._add_visit_content(result, node, **kwargs)
+        self._add_visit_labels(result, node, **kwargs)
 
         return result
 
-    def _visit_callouts_entry(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+    def _visit_raw_line(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
+
+        result.update(
             {
-                "marker": node.marker,
                 "value": node.value,
             }
         )
 
         return result
 
-    def _visit_toc_entry(self, node, *args, **kwargs):
-        return {
-            "data": {
-                "type": node.node_type,
-                "value": self.visit(node.value, *args, **kwargs),
-                "anchor": node.anchor,
-                "children": self.visitlist(node, node.children, *args, **kwargs),
-                "tags": node.tags,
-            },
-        }
+    def _visit_raw(self, node: Node, **kwargs) -> dict:
+        result = self._visit_default(node, **kwargs)
 
-    def _visit_toc(self, node, *args, **kwargs):
-        return {
-            "data": {
-                "type": node.node_type,
-                "entries": self.visitlist(node, node.children, *args, **kwargs),
-                "args": node.args,
-                "kwargs": node.kwargs,
-                "tags": node.tags,
-            },
-        }
-
-    def _visit_footnotes(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
+        result.update(
             {
-                "entries": self.visitlist(node, node.children, *args, **kwargs),
+                "classes": node.classes,
             }
         )
 
-        return result
-
-    def _visit_footnotes_entry(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
-            {
-                "content": self.visitlist(node, node.children, *args, **kwargs),
-                "number": node.number,
-                "reference_anchor": node.reference_anchor,
-                "content_anchor": node.content_anchor,
-            }
-        )
-
-        return result
-
-    def _visit_container(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
-            {
-                "content": self.visitlist(node, node.children, *args, **kwargs),
-            }
-        )
-
-        return result
-
-    def _visit_document(self, node, *args, **kwargs):
-        return self._visit_container(node)
-
-    def _visit_block_group(self, node, *args, **kwargs):
-        result = self._visit_default(node, *args, **kwargs)
-        result["data"].update(
-            {
-                "title": self.visit(node.title, *args, **kwargs),
-                "group_name": node.group_name,
-                "group": self.visitdict(node, node.group, *args, **kwargs),
-            }
-        )
+        self._add_visit_content(result, node, **kwargs)
+        self._add_visit_labels(result, node, **kwargs)
 
         return result

@@ -1,0 +1,11 @@
+[engine=source, language=python]
+----
+def sum(a, b):
+    return a + b:1:
+----
+
+[engine=source, language=python, marker_delimiter="|"]
+----
+def sum(a, b):
+    return a + b|1|
+----

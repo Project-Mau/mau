@@ -1,166 +1,151 @@
-from mau.environment.environment import Environment
 from mau.lexers.arguments_lexer import ArgumentsLexer
-from mau.lexers.base_lexer import TokenTypes
-from mau.text_buffer.context import Context
-from mau.text_buffer.text_buffer import TextBuffer
-from mau.tokens.tokens import Token
+from mau.lexers.base_lexer import TokenType
+from mau.test_helpers import (
+    compare_asdict_list,
+    generate_context,
+    init_lexer_factory,
+    lexer_runner_factory,
+)
+from mau.token import Token
+
+init_lexer = init_lexer_factory(ArgumentsLexer)
+
+runner = lexer_runner_factory(ArgumentsLexer)
 
 
 def test_single_unnamed_argument():
-    text_buffer = TextBuffer("value1")
-    lex = ArgumentsLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner("value1")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "value1"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "value1", generate_context(0, 0, 0, 6)),
+            Token(TokenType.EOF, "", generate_context(0, 6, 0, 6)),
+        ],
+    )
 
 
 def test_single_named_argument():
-    text_buffer = TextBuffer("argument1=value1")
-    lex = ArgumentsLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner("argument1=value1")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "argument1"),
-        Token(TokenTypes.LITERAL, "="),
-        Token(TokenTypes.TEXT, "value1"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "argument1", generate_context(0, 0, 0, 9)),
+            Token(TokenType.LITERAL, "=", generate_context(0, 9, 0, 10)),
+            Token(TokenType.TEXT, "value1", generate_context(0, 10, 0, 16)),
+            Token(TokenType.EOF, "", generate_context(0, 16, 0, 16)),
+        ],
+    )
 
 
 def test_multiple_unnamed_arguments():
-    text_buffer = TextBuffer("value1, value2")
-    lex = ArgumentsLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner("value1, value2")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "value1"),
-        Token(TokenTypes.LITERAL, ","),
-        Token(TokenTypes.WHITESPACE, " "),
-        Token(TokenTypes.TEXT, "value2"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "value1", generate_context(0, 0, 0, 6)),
+            Token(TokenType.LITERAL, ",", generate_context(0, 6, 0, 7)),
+            Token(TokenType.WHITESPACE, " ", generate_context(0, 7, 0, 8)),
+            Token(TokenType.TEXT, "value2", generate_context(0, 8, 0, 14)),
+            Token(TokenType.EOF, "", generate_context(0, 14, 0, 14)),
+        ],
+    )
 
 
 def test_multiple_named_arguments():
-    text_buffer = TextBuffer("argument1=value1, argument2=value2")
-    lex = ArgumentsLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner("argument1=value1, argument2=value2")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "argument1"),
-        Token(TokenTypes.LITERAL, "="),
-        Token(TokenTypes.TEXT, "value1"),
-        Token(TokenTypes.LITERAL, ","),
-        Token(TokenTypes.WHITESPACE, " "),
-        Token(TokenTypes.TEXT, "argument2"),
-        Token(TokenTypes.LITERAL, "="),
-        Token(TokenTypes.TEXT, "value2"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "argument1", generate_context(0, 0, 0, 9)),
+            Token(TokenType.LITERAL, "=", generate_context(0, 9, 0, 10)),
+            Token(TokenType.TEXT, "value1", generate_context(0, 10, 0, 16)),
+            Token(TokenType.LITERAL, ",", generate_context(0, 16, 0, 17)),
+            Token(TokenType.WHITESPACE, " ", generate_context(0, 17, 0, 18)),
+            Token(TokenType.TEXT, "argument2", generate_context(0, 18, 0, 27)),
+            Token(TokenType.LITERAL, "=", generate_context(0, 27, 0, 28)),
+            Token(TokenType.TEXT, "value2", generate_context(0, 28, 0, 34)),
+            Token(TokenType.EOF, "", generate_context(0, 34, 0, 34)),
+        ],
+    )
 
 
 def test_mixed_arguments():
-    text_buffer = TextBuffer("value1, value2,argument1=value1, argument2=value2")
-    lex = ArgumentsLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner("value1, value2,argument1=value1, argument2=value2")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "value1"),
-        Token(TokenTypes.LITERAL, ","),
-        Token(TokenTypes.WHITESPACE, " "),
-        Token(TokenTypes.TEXT, "value2"),
-        Token(TokenTypes.LITERAL, ","),
-        Token(TokenTypes.TEXT, "argument1"),
-        Token(TokenTypes.LITERAL, "="),
-        Token(TokenTypes.TEXT, "value1"),
-        Token(TokenTypes.LITERAL, ","),
-        Token(TokenTypes.WHITESPACE, " "),
-        Token(TokenTypes.TEXT, "argument2"),
-        Token(TokenTypes.LITERAL, "="),
-        Token(TokenTypes.TEXT, "value2"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "value1", generate_context(0, 0, 0, 6)),
+            Token(TokenType.LITERAL, ",", generate_context(0, 6, 0, 7)),
+            Token(TokenType.WHITESPACE, " ", generate_context(0, 7, 0, 8)),
+            Token(TokenType.TEXT, "value2", generate_context(0, 8, 0, 14)),
+            Token(TokenType.LITERAL, ",", generate_context(0, 14, 0, 15)),
+            Token(TokenType.TEXT, "argument1", generate_context(0, 15, 0, 24)),
+            Token(TokenType.LITERAL, "=", generate_context(0, 24, 0, 25)),
+            Token(TokenType.TEXT, "value1", generate_context(0, 25, 0, 31)),
+            Token(TokenType.LITERAL, ",", generate_context(0, 31, 0, 32)),
+            Token(TokenType.WHITESPACE, " ", generate_context(0, 32, 0, 33)),
+            Token(TokenType.TEXT, "argument2", generate_context(0, 33, 0, 42)),
+            Token(TokenType.LITERAL, "=", generate_context(0, 42, 0, 43)),
+            Token(TokenType.TEXT, "value2", generate_context(0, 43, 0, 49)),
+            Token(TokenType.EOF, "", generate_context(0, 49, 0, 49)),
+        ],
+    )
 
 
 def test_quotes():
-    text_buffer = TextBuffer('argument1="value1,value2"')
-    lex = ArgumentsLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner('argument1="value1,value2"')
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "argument1"),
-        Token(TokenTypes.LITERAL, "="),
-        Token(TokenTypes.LITERAL, '"'),
-        Token(TokenTypes.TEXT, "value1"),
-        Token(TokenTypes.LITERAL, ","),
-        Token(TokenTypes.TEXT, "value2"),
-        Token(TokenTypes.LITERAL, '"'),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "argument1", generate_context(0, 0, 0, 9)),
+            Token(TokenType.LITERAL, "=", generate_context(0, 9, 0, 10)),
+            Token(TokenType.LITERAL, '"', generate_context(0, 10, 0, 11)),
+            Token(TokenType.TEXT, "value1", generate_context(0, 11, 0, 17)),
+            Token(TokenType.LITERAL, ",", generate_context(0, 17, 0, 18)),
+            Token(TokenType.TEXT, "value2", generate_context(0, 18, 0, 24)),
+            Token(TokenType.LITERAL, '"', generate_context(0, 24, 0, 25)),
+            Token(TokenType.EOF, "", generate_context(0, 25, 0, 25)),
+        ],
+    )
 
 
 def test_spaces():
-    text_buffer = TextBuffer("argument1=value1 value2")
-    lex = ArgumentsLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner("argument1=value1 value2")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "argument1"),
-        Token(TokenTypes.LITERAL, "="),
-        Token(TokenTypes.TEXT, "value1"),
-        Token(TokenTypes.WHITESPACE, " "),
-        Token(TokenTypes.TEXT, "value2"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "argument1", generate_context(0, 0, 0, 9)),
+            Token(TokenType.LITERAL, "=", generate_context(0, 9, 0, 10)),
+            Token(TokenType.TEXT, "value1", generate_context(0, 10, 0, 16)),
+            Token(TokenType.WHITESPACE, " ", generate_context(0, 16, 0, 17)),
+            Token(TokenType.TEXT, "value2", generate_context(0, 17, 0, 23)),
+            Token(TokenType.EOF, "", generate_context(0, 23, 0, 23)),
+        ],
+    )
 
 
 def test_escaped_quotes():
-    text_buffer = TextBuffer(r"Argument \"with\" quotes")
-    lex = ArgumentsLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner(r"argument \"with\" quotes")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "Argument"),
-        Token(TokenTypes.WHITESPACE, " "),
-        Token(TokenTypes.LITERAL, "\\"),
-        Token(TokenTypes.LITERAL, '"'),
-        Token(TokenTypes.TEXT, "with"),
-        Token(TokenTypes.LITERAL, "\\"),
-        Token(TokenTypes.LITERAL, '"'),
-        Token(TokenTypes.WHITESPACE, " "),
-        Token(TokenTypes.TEXT, "quotes"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
-
-
-def test_context():
-    text_buffer = TextBuffer("argument1=value1")
-    lex = ArgumentsLexer(Environment())
-    lex.process(text_buffer)
-
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "argument1"),
-        Token(TokenTypes.LITERAL, "="),
-        Token(TokenTypes.TEXT, "value1"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
-
-    assert [t.context for t in lex.tokens] == [
-        Context(line=0, column=0),
-        Context(line=0, column=9),
-        Context(line=0, column=10),
-        Context(line=0, column=16),
-        Context(line=1, column=0),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "argument", generate_context(0, 0, 0, 8)),
+            Token(TokenType.WHITESPACE, " ", generate_context(0, 8, 0, 9)),
+            Token(TokenType.LITERAL, "\\", generate_context(0, 9, 0, 10)),
+            Token(TokenType.LITERAL, '"', generate_context(0, 10, 0, 11)),
+            Token(TokenType.TEXT, "with", generate_context(0, 11, 0, 15)),
+            Token(TokenType.LITERAL, "\\", generate_context(0, 15, 0, 16)),
+            Token(TokenType.LITERAL, '"', generate_context(0, 16, 0, 17)),
+            Token(TokenType.WHITESPACE, " ", generate_context(0, 17, 0, 18)),
+            Token(TokenType.TEXT, "quotes", generate_context(0, 18, 0, 24)),
+            Token(TokenType.EOF, "", generate_context(0, 24, 0, 24)),
+        ],
+    )

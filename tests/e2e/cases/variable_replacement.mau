@@ -1,0 +1,7 @@
+:var:42
+
+Value of `var`: {var}
+
+:namespace.var:42
+
+Value of `namespace.var`: {namespace.var}

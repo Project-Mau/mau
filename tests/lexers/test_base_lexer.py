@@ -1,98 +1,337 @@
+import textwrap
 from unittest.mock import Mock, patch
 
 import pytest
-from mau.environment.environment import Environment
-from mau.errors import MauErrorException
-from mau.lexers.base_lexer import BaseLexer, TokenTypes
-from mau.text_buffer.context import Context
-from mau.text_buffer.text_buffer import TextBuffer
-from mau.tokens.tokens import Token
 
-from tests.helpers import dedent
+from mau.environment.environment import Environment
+from mau.lexers.base_lexer import (
+    BaseLexer,
+    rematch,
+)
+from mau.message import MauException, MauMessageType
+from mau.test_helpers import (
+    TEST_CONTEXT_SOURCE,
+    NullMessageHandler,
+    compare_asdict_list,
+    dedent,
+    generate_context,
+    init_lexer_factory,
+    lexer_runner_factory,
+)
+from mau.text_buffer import TextBuffer
+from mau.token import Token, TokenType
+
+init_lexer = init_lexer_factory(BaseLexer)
+
+runner = lexer_runner_factory(BaseLexer)
+
+
+@patch("mau.lexers.base_lexer.re")
+def test_rematch(mock_re):
+    mock_regexp = Mock()
+    mock_text = Mock()
+
+    rematch(mock_regexp, mock_text)
+
+    mock_re.match.assert_called_with(mock_regexp, mock_text)
 
 
 def test_text_buffer_properties():
     mock_text_buffer = Mock()
-    lex = BaseLexer(Environment())
-    lex.text_buffer = mock_text_buffer
+    test_environment = Environment()
+
+    lex = BaseLexer(
+        mock_text_buffer,
+        NullMessageHandler(),
+        test_environment,
+    )
+
+    assert lex.text_buffer == mock_text_buffer
+    assert lex.tokens == []
+    assert lex.environment == test_environment
 
     assert lex._current_char == mock_text_buffer.current_char
-
     assert lex._current_line == mock_text_buffer.current_line
-
+    assert lex._position == mock_text_buffer.position
     assert lex._tail == mock_text_buffer.tail
 
     lex._nextline()
     mock_text_buffer.nextline.assert_called()
 
-    lex._skip("four")
-    mock_text_buffer.skip.assert_called_with(4)
+    lex._skip("sometext")
+    mock_text_buffer.skip.assert_called_with(8)
 
 
 def test_create_token_and_skip():
+    text_buffer = TextBuffer("somevalue", source_filename=TEST_CONTEXT_SOURCE)
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    token = lex._create_token_and_skip(TokenType.TEXT, "somevalue")
+
+    assert token == Token(TokenType.TEXT, "somevalue", generate_context(0, 0, 0, 9))
+
+
+def test_create_token_and_skip_with_no_value():
+    text_buffer = TextBuffer("somevalue", source_filename=TEST_CONTEXT_SOURCE)
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    token = lex._create_token_and_skip(TokenType.TEXT)
+
+    assert token == Token(TokenType.TEXT, "", generate_context(0, 0, 0, 0))
+
+
+def test_create_token_and_skip_with_value_none():
+    text_buffer = TextBuffer("somevalue", source_filename=TEST_CONTEXT_SOURCE)
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    token = lex._create_token_and_skip(TokenType.TEXT, None)
+
+    assert token == Token(TokenType.TEXT, "", generate_context(0, 0, 0, 0))
+
+
+def test_process_error():
     mock_text_buffer = Mock()
-    lex = BaseLexer(Environment())
-    lex.text_buffer = mock_text_buffer
-    lex._skip = Mock()
+    lex = BaseLexer(
+        mock_text_buffer,
+        NullMessageHandler(),
+    )
 
-    token = lex._create_token_and_skip("sometype", "somevalue")
-    assert token == Token("sometype", "somevalue")
-    lex._skip.assert_called_with("somevalue")
-
-
-def test_error():
-    mock_text_buffer = Mock()
-    lex = BaseLexer(Environment())
-    lex.text_buffer = mock_text_buffer
-
-    with pytest.raises(MauErrorException):
+    with pytest.raises(MauException) as exc:
         lex._process_error()
 
-
-def test_empty_text():
-    lex = BaseLexer(Environment())
-    lex.process(Mock())
-
-    assert lex.tokens == [
-        Token(TokenTypes.EOF),
-    ]
+    assert exc.value.message.type == MauMessageType.ERROR_LEXER
+    assert exc.value.message.text == "Cannot process token."
 
 
-def test_just_empty_lines():
-    text_buffer = TextBuffer("\n")
-    lex = BaseLexer(Environment())
-    lex.process(text_buffer)
+def test_process_eof_if_true():
+    text_buffer = TextBuffer("", source_filename=TEST_CONTEXT_SOURCE)
 
-    assert lex.tokens == [
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    tokens = lex._process_eof()
+
+    compare_asdict_list(
+        tokens,
+        [
+            Token(TokenType.EOF, "", generate_context(0, 0, 0, 0)),
+        ],
+    )
+
+
+def test_process_eof_if_false():
+    text_buffer = TextBuffer("somevalue", source_filename=TEST_CONTEXT_SOURCE)
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    tokens = lex._process_eof()
+
+    assert tokens is None
+
+
+def test_process_empty_line_empty():
+    test_text = ""
+    text_buffer = TextBuffer(test_text, source_filename=TEST_CONTEXT_SOURCE)
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    tokens = lex._process_empty_line()
+
+    compare_asdict_list(
+        tokens,
+        [
+            Token(TokenType.EOL, test_text, generate_context(0, 0, 0, 0)),
+        ],
+    )
+    assert lex._position == (1, 0)
+
+
+def test_process_empty_line_with_spaces():
+    test_text = "   "
+    text_buffer = TextBuffer(test_text, source_filename=TEST_CONTEXT_SOURCE)
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    tokens = lex._process_empty_line()
+
+    compare_asdict_list(
+        tokens,
+        [
+            Token(TokenType.EOL, test_text, generate_context(0, 0, 0, len(test_text))),
+        ],
+    )
+    assert lex._position == (1, 0)
+
+
+def test_process_empty_line_not_empty():
+    test_text = "sometext"
+    text_buffer = TextBuffer(test_text, source_filename=TEST_CONTEXT_SOURCE)
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    tokens = lex._process_empty_line()
+
+    assert tokens is None
+    assert lex._position == (0, 0)
+
+
+def test_process_trailing_spaces():
+    test_text = "sometext   "
+    text_buffer = TextBuffer(test_text, source_filename=TEST_CONTEXT_SOURCE)
+
+    # This skips the text.
+    text_buffer.column = 8
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    tokens = lex._process_trailing_spaces()
+
+    compare_asdict_list(tokens, [])
+    assert lex._position == (1, 0)
+
+
+def test_process_trailing_spaces_no_spaces():
+    test_text = "sometext"
+    text_buffer = TextBuffer(test_text, source_filename=TEST_CONTEXT_SOURCE)
+
+    # This skips the text.
+    text_buffer.column = 8
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    tokens = lex._process_trailing_spaces()
+
+    compare_asdict_list(tokens, [])
+    assert lex._position == (1, 0)
+
+
+def test_process_trailing_spaces_not_eol():
+    test_text = "sometext  more text"
+    text_buffer = TextBuffer(test_text, source_filename=TEST_CONTEXT_SOURCE)
+
+    # This skips the first word.
+    # There are spaces but also
+    # more words.
+    text_buffer.column = 8
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    tokens = lex._process_trailing_spaces()
+
+    assert tokens is None
+    assert lex._position == (0, 8)
+
+
+def test_process_text():
+    test_text = "sometext"
+    text_buffer = TextBuffer(test_text, source_filename=TEST_CONTEXT_SOURCE)
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    tokens = lex._process_text()
+
+    compare_asdict_list(
+        tokens,
+        [
+            Token(TokenType.TEXT, "sometext", generate_context(0, 0, 0, 8)),
+        ],
+    )
+    assert lex._position == (1, 0)
+
+
+def test_process_text_just_tail():
+    test_text = "sometext and more text"
+    text_buffer = TextBuffer(test_text, source_filename=TEST_CONTEXT_SOURCE)
+
+    # This skips the initial word
+    text_buffer.column = 8
+
+    lex = BaseLexer(
+        text_buffer,
+        NullMessageHandler(),
+    )
+    tokens = lex._process_text()
+
+    compare_asdict_list(
+        tokens,
+        [
+            Token(TokenType.TEXT, " and more text", generate_context(0, 8, 0, 22)),
+        ],
+    )
+    assert lex._position == (1, 0)
+
+
+def test_run_empty_text():
+    lex = runner("")
+
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.EOF, "", generate_context(0, 0, 0, 0)),
+        ],
+    )
+
+
+def test_empty_lines():
+    lex = runner("\n")
+
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.EOL, "", generate_context(0, 0, 0, 0)),
+            Token(TokenType.EOF, "", generate_context(1, 0, 1, 0)),
+        ],
+    )
 
 
 def test_lines_with_only_spaces():
-    text_buffer = TextBuffer("    \n    ")
-    lex = BaseLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner("      \n      ")
 
-    assert lex.tokens == [
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.EOL, "", generate_context(0, 0, 0, 0)),
+            Token(TokenType.EOF, "", generate_context(1, 0, 1, 0)),
+        ],
+    )
 
 
 def test_text():
-    text = "Just simple text"
-    text_buffer = TextBuffer(text)
-    lex = BaseLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner("Just simple text")
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, text),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "Just simple text", generate_context(0, 0, 0, 16)),
+            Token(TokenType.EOF, "", generate_context(1, 0, 1, 0)),
+        ],
+    )
 
 
 def test_multiple_lines():
@@ -104,95 +343,41 @@ def test_multiple_lines():
         with an empty line
         """
     )
-    text_buffer = TextBuffer(text)
-    lex = BaseLexer(Environment())
-    lex.process(text_buffer)
+    lex = runner(text)
 
-    assert lex.tokens == [
-        Token(TokenTypes.TEXT, "This is text"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.TEXT, "split into multiple lines"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.TEXT, "with an empty line"),
-        Token(TokenTypes.EOL),
-        Token(TokenTypes.EOF),
-    ]
-
-
-def test_positions_default_context():
-    text = dedent(
-        """
-        This is a line of text
-
-        ---
-
-        This is another line of text
-        """
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "This is text", generate_context(0, 0, 0, 12)),
+            Token(
+                TokenType.TEXT,
+                "split into multiple lines",
+                generate_context(1, 0, 1, 25),
+            ),
+            Token(TokenType.EOL, "", generate_context(2, 0, 2, 0)),
+            Token(TokenType.TEXT, "with an empty line", generate_context(3, 0, 3, 18)),
+            Token(TokenType.EOF, "", generate_context(4, 0, 4, 0)),
+        ],
     )
-    text_buffer = TextBuffer(text)
-    lex = BaseLexer(Environment())
-    lex.process(text_buffer)
-
-    assert [i.context.asdict() for i in lex.tokens] == [
-        {"column": 0, "line": 0, "source": None},
-        {"column": 22, "line": 0, "source": None},
-        {"column": 0, "line": 1, "source": None},
-        {"column": 0, "line": 2, "source": None},
-        {"column": 3, "line": 2, "source": None},
-        {"column": 0, "line": 3, "source": None},
-        {
-            "column": 0,
-            "line": 4,
-            "source": None,
-        },
-        {
-            "column": 28,
-            "line": 4,
-            "source": None,
-        },
-        {
-            "column": 0,
-            "line": 5,
-            "source": None,
-        },
-    ]
 
 
-def test_positions():
-    text = dedent(
-        """
-        This is a line of text
+def test_text_buffer_offset():
+    source = "Just simple text"
 
-        ---
-
-        This is another line of text
-        """
+    text_buffer = TextBuffer(
+        textwrap.dedent(source),
+        start_line=11,
+        start_column=22,
+        source_filename=TEST_CONTEXT_SOURCE,
     )
-    text_buffer = TextBuffer(text, Context(line=42, column=123, source="main"))
-    lex = BaseLexer(Environment())
-    lex.process(text_buffer)
 
-    assert [i.context.asdict() for i in lex.tokens] == [
-        {"column": 123, "line": 42, "source": "main"},
-        {"column": 145, "line": 42, "source": "main"},
-        {"column": 123, "line": 43, "source": "main"},
-        {"column": 123, "line": 44, "source": "main"},
-        {"column": 126, "line": 44, "source": "main"},
-        {"column": 123, "line": 45, "source": "main"},
-        {
-            "column": 123,
-            "line": 46,
-            "source": "main",
-        },
-        {
-            "column": 151,
-            "line": 46,
-            "source": "main",
-        },
-        {
-            "column": 123,
-            "line": 47,
-            "source": "main",
-        },
-    ]
+    lex = init_lexer(text_buffer)
+    lex.process()
+
+    compare_asdict_list(
+        lex.tokens,
+        [
+            Token(TokenType.TEXT, "Just simple text", generate_context(11, 22, 11, 38)),
+            Token(TokenType.EOF, "", generate_context(12, 0, 12, 0)),
+        ],
+    )

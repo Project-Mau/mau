@@ -1,0 +1,5 @@
+. Title of the block
+[arg1, arg2]
+----
+This is a block with title and attributes.
+----

@@ -1,0 +1,7 @@
+:answer:42
+@if answer!=42
+This paragraph will not be rendered.
+
+:answer:42
+@if answer != 42
+This paragraph will not be rendered.

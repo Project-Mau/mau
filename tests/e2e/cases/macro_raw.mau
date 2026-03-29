@@ -1,0 +1,4 @@
+Sometimes we need to include text verbatim but
+do not want to style it as code. The macro `raw`
+leaves its content untouched.
+This is Mau syntax: [raw]("$escaped$")

@@ -1,0 +1,4 @@
+A link with text: [link](www.wikipedia.org, "the free encyclopedia")
+
+This is a link: [link](https://www.wikipedia.org).
+This is a link: [link](https://www.wikipedia.org, https://www.wikipedia.org).

@@ -1,0 +1,118 @@
+_type: document
+args: []
+content:
+- _type: paragraph
+  args: []
+  content:
+  - _type: paragraph-line
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: 'Text line with styles: '
+    - _type: style
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: star
+      internal_tags: []
+      kwargs: {}
+      style: star
+      subtype: null
+      tags: []
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: ', '
+    - _type: style
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: underscore
+      internal_tags: []
+      kwargs: {}
+      style: underscore
+      subtype: null
+      tags: []
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: ', '
+    - _type: style
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: caret
+      internal_tags: []
+      kwargs: {}
+      style: caret
+      subtype: null
+      tags: []
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: ', '
+    - _type: style
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: tilde
+      internal_tags: []
+      kwargs: {}
+      style: tilde
+      subtype: null
+      tags: []
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: .
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  subtype: null
+  tags: []
+internal_tags: []
+kwargs: {}
+subtype: null
+tags: []

@@ -1,0 +1,127 @@
+_type: document
+args: []
+content:
+- _type: paragraph
+  args: []
+  content:
+  - _type: paragraph-line
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: 'A link with text: '
+    - _type: macro-link
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: the free encyclopedia
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      target: www.wikipedia.org
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  subtype: null
+  tags: []
+- _type: paragraph
+  args: []
+  content:
+  - _type: paragraph-line
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: 'This is a link: '
+    - _type: macro-link
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: https://www.wikipedia.org
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      target: https://www.wikipedia.org
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: .
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    subtype: null
+    tags: []
+  - _type: paragraph-line
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: 'This is a link: '
+    - _type: macro-link
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: https://www.wikipedia.org
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      target: https://www.wikipedia.org
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: .
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  subtype: null
+  tags: []
+internal_tags: []
+kwargs: {}
+subtype: null
+tags: []

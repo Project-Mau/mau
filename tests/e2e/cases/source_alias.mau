@@ -1,0 +1,4 @@
+[*source, python]
+----
+answer: int = 42
+----

@@ -1,0 +1,48 @@
+_type: document
+args: []
+content:
+- _type: list
+  args: []
+  content:
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Unordered list item 1
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  - _type: list-item
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Unordered list item 2
+    internal_tags: []
+    kwargs: {}
+    level: 1
+    subtype: null
+    tags: []
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  main_node: true
+  ordered: false
+  start: 1
+  subtype: null
+  tags: []
+internal_tags: []
+kwargs: {}
+subtype: null
+tags: []

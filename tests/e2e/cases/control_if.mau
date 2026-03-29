@@ -1,0 +1,3 @@
+:answer:42
+@if answer==42
+This paragraph will be rendered.

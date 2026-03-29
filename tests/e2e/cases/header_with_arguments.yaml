@@ -1,0 +1,61 @@
+_type: document
+args: []
+content:
+- _type: header
+  args:
+  - arg1
+  - arg2
+  content:
+  - _type: text
+    args: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+    value: Header 1
+  internal_id: header-1-1aa5
+  internal_tags: []
+  kwargs: {}
+  labels:
+    details:
+      _type: label
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Some details
+      internal_tags: []
+      kwargs: {}
+      role: details
+      subtype: null
+      tags: []
+  level: 1
+  name: null
+  subtype: null
+  tags: []
+- _type: header
+  args: []
+  content:
+  - _type: text
+    args: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+    value: This header won't receive arguments or labels
+  internal_id: this-header-wont-receive-arguments-or-labels-b478
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  level: 1
+  name: null
+  subtype: null
+  tags: []
+internal_tags: []
+kwargs: {}
+subtype: null
+tags: []

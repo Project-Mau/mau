@@ -1,61 +1,156 @@
-from mau.environment.environment import Environment
-from mau.nodes.inline import SentenceNode, TextNode
-from mau.nodes.paragraph import ParagraphNode
-from mau.visitors.base_visitor import BaseVisitor
+from mau.nodes.label import LabelNode
+from mau.nodes.node import Node
+from mau.nodes.paragraph import ParagraphLineNode, ParagraphNode
+from mau.test_helpers import check_visit_node
 
 
-def test_paragraph_node():
-    visitor = BaseVisitor(Environment())
+def test_paragraph_line_node_without_content():
+    node = ParagraphLineNode()
 
-    node = ParagraphNode(
-        title=SentenceNode(children=[TextNode("sometitle")]),
-        children=[TextNode("Just some text")],
-        args=["arg1", "arg2"],
-        kwargs={"key1": "value1"},
-        tags=["tag1", "tag2"],
-    )
+    expected = {
+        "_type": "paragraph-line",
+        "content": [],
+        "labels": {},
+        "kwargs": {},
+        "subtype": None,
+        "tags": [],
+        "internal_tags": [],
+        "args": [],
+    }
 
-    result = visitor.visit(node)
+    check_visit_node(node, expected)
 
-    assert result == {
-        "data": {
-            "type": "paragraph",
-            "title": {
-                "data": {
-                    "content": [
-                        {
-                            "data": {
-                                "type": "text",
-                                "value": "sometitle",
-                                "args": [],
-                                "kwargs": {},
-                                "subtype": None,
-                                "tags": [],
-                            }
-                        },
-                    ],
-                    "type": "sentence",
-                    "args": [],
-                    "kwargs": {},
-                    "subtype": None,
-                    "tags": [],
-                },
+
+def test_paragraph_line_node_with_content():
+    nodes: list[Node] = [Node(), Node()]
+    labels = {"somelabel": LabelNode("somelabel", content=[Node()])}
+
+    node = ParagraphLineNode(content=nodes, labels=labels)
+
+    expected = {
+        "_type": "paragraph-line",
+        "content": [
+            {
+                "_type": "none",
+                "kwargs": {},
+                "subtype": None,
+                "tags": [],
+                "internal_tags": [],
+                "args": [],
             },
-            "content": [
-                {
-                    "data": {
-                        "type": "text",
-                        "value": "Just some text",
-                        "args": [],
+            {
+                "_type": "none",
+                "kwargs": {},
+                "subtype": None,
+                "tags": [],
+                "internal_tags": [],
+                "args": [],
+            },
+        ],
+        "labels": {
+            "somelabel": {
+                "_type": "label",
+                "role": "somelabel",
+                "content": [
+                    {
+                        "_type": "none",
                         "kwargs": {},
                         "subtype": None,
                         "tags": [],
+                        "internal_tags": [],
+                        "args": [],
                     }
-                },
-            ],
-            "subtype": None,
-            "args": ["arg1", "arg2"],
-            "kwargs": {"key1": "value1"},
-            "tags": ["tag1", "tag2"],
-        }
+                ],
+                "kwargs": {},
+                "subtype": None,
+                "tags": [],
+                "internal_tags": [],
+                "args": [],
+            },
+        },
+        "kwargs": {},
+        "subtype": None,
+        "tags": [],
+        "internal_tags": [],
+        "args": [],
     }
+
+    check_visit_node(node, expected)
+
+
+def test_paragraph_node_without_content():
+    node = ParagraphNode()
+
+    expected = {
+        "_type": "paragraph",
+        "content": [],
+        "labels": {},
+        "kwargs": {},
+        "subtype": None,
+        "tags": [],
+        "internal_tags": [],
+        "args": [],
+    }
+
+    check_visit_node(node, expected)
+
+
+def test_paragraph_node_with_content():
+    content: list[ParagraphLineNode] = [ParagraphLineNode(), ParagraphLineNode()]
+    labels = {"somelabel": LabelNode("somelabel", content=[Node()])}
+
+    node = ParagraphNode(content=content, labels=labels)
+
+    expected = {
+        "_type": "paragraph",
+        "content": [
+            {
+                "_type": "paragraph-line",
+                "content": [],
+                "labels": {},
+                "kwargs": {},
+                "subtype": None,
+                "tags": [],
+                "internal_tags": [],
+                "args": [],
+            },
+            {
+                "_type": "paragraph-line",
+                "content": [],
+                "labels": {},
+                "kwargs": {},
+                "subtype": None,
+                "tags": [],
+                "internal_tags": [],
+                "args": [],
+            },
+        ],
+        "labels": {
+            "somelabel": {
+                "_type": "label",
+                "role": "somelabel",
+                "content": [
+                    {
+                        "_type": "none",
+                        "kwargs": {},
+                        "subtype": None,
+                        "tags": [],
+                        "internal_tags": [],
+                        "args": [],
+                    }
+                ],
+                "kwargs": {},
+                "subtype": None,
+                "tags": [],
+                "internal_tags": [],
+                "args": [],
+            },
+        },
+        "kwargs": {},
+        "subtype": None,
+        "tags": [],
+        "internal_tags": [],
+        "args": [],
+    }
+
+    check_visit_node(node, expected)

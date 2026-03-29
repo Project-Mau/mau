@@ -1,0 +1,5 @@
+.details This is the first label
+.details This overwrites the previous label
+.title This doesn't overwrite any label
+
+This paragraph will receive the labels defined above.

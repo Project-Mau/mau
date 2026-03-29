@@ -1,0 +1,12 @@
+:var:44
+
+@if var == 42
+. Title of the block
+[arg1, arg2]
+----
+This block will not be rendered.
+----
+
+----
+This block will not receive title or arguments.
+----

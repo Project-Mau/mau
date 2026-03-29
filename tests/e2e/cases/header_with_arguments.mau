@@ -1,0 +1,12 @@
+[arg1, arg2]
+.details Some details
+= Header 1
+
+:var:44
+
+@if var == 42
+[arg1, arg2]
+.details Some details
+= This header won't be rendered
+
+= This header won't receive arguments or labels

@@ -1,0 +1,10 @@
+[arg1, arg2]
+
+[unnamed1, unnamed2, name1=value1, name2=value2]
+
+[arg1, arg2, #tag1]
+
+[arg1, arg2, *subtype]
+
+[arg1, arg2]
+[arg3, name1=value1]

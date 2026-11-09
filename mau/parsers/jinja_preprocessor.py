@@ -152,6 +152,7 @@ def render_jinja_source(
     source_filename: str | None = None,
     data_key: str | None = None,
     context: Context | None = None,
+    options_environment: Environment | None = None,
 ) -> str:
     """
     Render a Mau source text as a Jinja template.
@@ -168,10 +169,22 @@ def render_jinja_source(
     rendering, used to report errors related to the
     instruction itself, like a missing or invalid
     data key.
+
+    `options_environment` is the environment that
+    contains the Jinja options. It defaults to
+    `environment`, but it can be different, e.g.
+    when the template data is restricted but the
+    Jinja configuration still has to apply.
     """
 
+    # The Jinja options are read from the
+    # template data environment unless a
+    # specific one is given.
+    if options_environment is None:
+        options_environment = environment
+
     # Create the Jinja environment.
-    jinja_environment = jinja2.Environment(**_get_jinja_options(environment))
+    jinja_environment = jinja2.Environment(**_get_jinja_options(options_environment))
 
     # Compile the text from the Mau
     # file as a Jinja template.

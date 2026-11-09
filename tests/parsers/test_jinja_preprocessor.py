@@ -257,6 +257,33 @@ def test_render_custom_jinja_options_override_defaults():
     assert render_jinja_source(source, environment) == "\n* a\n\n"
 
 
+# Test that the Jinja options are read from the
+# options environment if that is specified.
+def test_render_options_environment():
+    options_environment = Environment.from_dict(
+        {
+            "parser": {
+                "jinja": {
+                    "options": {
+                        "variable_start_string": "[[",
+                        "variable_end_string": "]]",
+                    }
+                }
+            },
+        },
+        "mau",
+    )
+    environment = Environment.from_dict({"name": "Mau"})
+
+    result = render_jinja_source(
+        "[[ name ]] {{escaped}}",
+        environment,
+        options_environment=options_environment,
+    )
+
+    assert result == "Mau {{escaped}}"
+
+
 def test_render_non_jinja_exception():
     # Jinja resolves `items` as the dictionary
     # method, which is not iterable. The resulting

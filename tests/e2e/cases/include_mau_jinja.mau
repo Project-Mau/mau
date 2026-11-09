@@ -1,0 +1,3 @@
+*Current version*: {mau.changelog.latest}
+
+<< mau:included/changelog_global.mau, preprocess=jinja

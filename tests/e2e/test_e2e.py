@@ -3,7 +3,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-from mau import Mau
+from mau import BASE_NAMESPACE, Mau
+from mau.environment.environment import Environment
 from mau.test_helpers import NullMessageHandler
 from mau.visitors.yaml_visitor import YamlVisitor
 
@@ -18,6 +19,16 @@ from mau.visitors.yaml_visitor import YamlVisitor
 #
 # Run with `--update-e2e-refs` to regenerate
 # every reference file from the current output.
+#
+# A case can have an optional configuration file
+# `CASE.config.yaml`, loaded under the namespace
+# `mau` like the CLI does with `mau -c`.
+#
+# Cases are processed from the directory `cases/`,
+# so paths in includes like `<< mau:` are relative
+# to it. Files that are only included by other cases
+# must be stored in a subdirectory, otherwise they
+# would be collected as cases themselves.
 
 CASES_DIR = Path(__file__).parent / "cases"
 
@@ -64,14 +75,35 @@ def discover_cases():
     return cases
 
 
+# Build the environment of a case. If the case
+# has a configuration file, its content is loaded
+# under the base namespace, as the CLI does with
+# the option `-c`. Otherwise the environment
+# is empty.
+def load_environment(mau_path):
+    config_path = mau_path.with_suffix(".config.yaml")
+
+    if not config_path.exists():
+        return Environment()
+
+    config = yaml.safe_load(config_path.read_text())
+
+    return Environment.from_dict(config, BASE_NAMESPACE)
+
+
 @pytest.mark.parametrize("mau_path,yaml_path", discover_cases())
-def test_e2e(mau_path, yaml_path, request):
+def test_e2e(mau_path, yaml_path, request, monkeypatch):
+    # Process the case from the directory `cases/`
+    # so that included files can be referenced with
+    # paths relative to it, wherever pytest runs.
+    monkeypatch.chdir(CASES_DIR)
+
     # Run the full Mau pipeline on the
     # source file and strip non-deterministic
     # keys from the result.
     source = mau_path.read_text()
 
-    mau = Mau(NullMessageHandler())
+    mau = Mau(NullMessageHandler(), environment=load_environment(mau_path))
     raw_yaml = mau.process(YamlVisitor, source, str(mau_path))
 
     actual = strip_unstable_keys(yaml.safe_load(raw_yaml))

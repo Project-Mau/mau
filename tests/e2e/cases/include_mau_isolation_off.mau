@@ -1,0 +1,5 @@
+// The headers of non-isolated included
+// files appear in the ToC.
+<< toc
+
+<< mau:included/changelog_global.mau, preprocess=jinja, isolate=false

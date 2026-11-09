@@ -1,0 +1,5 @@
+// Included files are isolated by default,
+// so their headers do not appear in the ToC.
+<< toc
+
+<< mau:included/changelog_global.mau, preprocess=jinja

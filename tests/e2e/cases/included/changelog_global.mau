@@ -1,0 +1,9 @@
+{% for version in mau.changelog.versions %}
+[nobreak]
+== Version {{ version.id }} ({{ version.date }})
+
+{% for change in version.changes %}
+* {{ change }}
+{% endfor %}
+
+{% endfor %}

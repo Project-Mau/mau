@@ -331,7 +331,8 @@ class JinjaVisitor(BaseVisitor):
 
     join_with = {
         "document": "\n",
-        "raw-content": "\n",
+        "raw": "\n",
+        "include-raw": "\n",
         "source": "\n",
         "paragraph": " ",
     }

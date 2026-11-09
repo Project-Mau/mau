@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from mau.parsers.document_parser import DocumentParser
 
 
+import os
 from dataclasses import dataclass, field
 
 from mau.environment.environment import Environment
@@ -37,6 +38,21 @@ from mau.token import TokenType
 # included Mau files. None means that the
 # text is not preprocessed.
 INCLUDE_MAU_PREPROCESSORS = [None, "jinja"]
+
+
+# Return the normalised version of a path:
+# absolute, without `.` and `..` components,
+# and with symbolic links resolved. This allows
+# to recognise the same file when its path is
+# written in different ways, e.g. `a.mau`,
+# `./a.mau`, or `../dir/a.mau`.
+# A missing path (e.g. text that doesn't come
+# from a file) is returned as it is.
+def _normalise_path(path: str | None) -> str | None:
+    if path is None:
+        return None
+
+    return os.path.realpath(path)
 
 
 @dataclass
@@ -215,19 +231,25 @@ def _parse_mau(
             help_text=INCLUDE_MAU_HELP,
         )
 
+    # The list of forbidden inclusions contains
+    # normalised paths, so that a file is recognised
+    # even when its path is written in different ways.
+    current_path = _normalise_path(context.source)
+    included_path = _normalise_path(uri)
+
     # Add this very file to the list of forbidden
     # inclusions. It's 1984 and Farenheit 451
     # all together!
     # We check if the element is already there to
     # prevent double inclusion but still preserve
     # the order.
-    if context.source not in parser.forbidden_includes:
-        parser.forbidden_includes.append(context.source)
+    if current_path is not None and current_path not in parser.forbidden_includes:
+        parser.forbidden_includes.append(current_path)
 
     # Make sure we are not trying to include a file that
     # included this file. It's called infinite recursion,
     # sweetheart.
-    if uri in parser.forbidden_includes:
+    if included_path in parser.forbidden_includes:
         raise create_parser_exception(
             f"To avoid recursion, you cannot include the following files: {parser.forbidden_includes}.",
             context,
@@ -251,8 +273,8 @@ def _parse_mau(
     # We check if the element is already there to
     # prevent double inclusion but still preserve
     # the order.
-    if uri not in parser.forbidden_includes:
-        parser.forbidden_includes.append(uri)
+    if included_path not in parser.forbidden_includes:
+        parser.forbidden_includes.append(included_path)
 
     # Open the given URI and read the text.
     try:

@@ -266,21 +266,26 @@ def _parse_mau(
     current_path = _normalise_path(context.source)
     included_path = _normalise_path(path)
 
-    # Add this very file to the list of forbidden
-    # inclusions. It's 1984 and Farenheit 451
-    # all together!
+    # The forbidden inclusions are the chain of files
+    # that led to this one (the ancestors), plus this
+    # very file. It's 1984 and Farenheit 451 all together!
+    # This is a new list: the parser's own list is never
+    # modified, so that sibling includes do not affect
+    # each other and the same file can be included
+    # multiple times, as long as there is no loop.
     # We check if the element is already there to
     # prevent double inclusion but still preserve
     # the order.
-    if current_path is not None and current_path not in parser.forbidden_includes:
-        parser.forbidden_includes.append(current_path)
+    forbidden_includes = list(parser.forbidden_includes)
+    if current_path is not None and current_path not in forbidden_includes:
+        forbidden_includes.append(current_path)
 
     # Make sure we are not trying to include a file that
     # included this file. It's called infinite recursion,
     # sweetheart.
-    if included_path in parser.forbidden_includes:
+    if included_path in forbidden_includes:
         raise create_parser_exception(
-            f"To avoid recursion, you cannot include the following files: {parser.forbidden_includes}.",
+            f"To avoid recursion, you cannot include the following files: {forbidden_includes}.",
             context,
         )
 
@@ -298,12 +303,9 @@ def _parse_mau(
         call_arguments[new_key] = arguments.named_args.pop(key)
 
     # Add the included URI to the list of forbidden
-    # inclusions. More censorship!
-    # We check if the element is already there to
-    # prevent double inclusion but still preserve
-    # the order.
-    if included_path not in parser.forbidden_includes:
-        parser.forbidden_includes.append(included_path)
+    # inclusions passed to the included file.
+    # More censorship!
+    forbidden_includes.append(included_path)
 
     # Open the given URI and read the text.
     try:
@@ -359,7 +361,7 @@ def _parse_mau(
         start_line=0,
         start_column=0,
         source_filename=source_filename,
-        forbidden_includes=parser.forbidden_includes,
+        forbidden_includes=forbidden_includes,
         isolate=isolate,
         include_paths_strategy=parser.include_paths_strategy,
     )

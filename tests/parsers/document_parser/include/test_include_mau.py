@@ -867,3 +867,109 @@ def test_include_mau_loop_with_different_paths_is_forbidden():
         == f"To avoid recursion, you cannot include the following files: ['{os.path.realpath(TEST_CONTEXT_SOURCE)}', '/path/to/it', '/another/path']."
     )
     assert exc.value.message.context == Context(0, 0, 0, 6, source="/another/path")
+
+
+def test_include_mau_same_file_twice():
+    # This tests that the same file can be
+    # included multiple times in the same
+    # document, as long as there is no loop.
+
+    source = """
+    << mau:/path/to/it
+
+    << mau:/path/to/it
+    """
+
+    m1 = mock_open(read_data="Included text")
+    m2 = mock_open(read_data="Included text")
+
+    with patch(
+        "builtins.open",
+        side_effect=[
+            m1.return_value,
+            m2.return_value,
+        ],
+    ):
+        parser = runner(source)
+
+    assert len(parser.nodes) == 2
+    assert all(isinstance(node, IncludeMauNode) for node in parser.nodes)
+    assert [call.callee_uri for call in parser.output.include_calls] == [
+        "/path/to/it",
+        "/path/to/it",
+    ]
+
+
+def test_include_mau_same_file_from_sibling_includes():
+    # This tests that two sibling included
+    # files can both include the same file
+    # (diamond-shaped inclusion), as this
+    # is not a loop.
+
+    source = """
+    << mau:/path/to/a
+
+    << mau:/path/to/b
+    """
+
+    MAU_TEXT_A = dedent("""
+    << mau:/path/to/common
+    """)
+
+    MAU_TEXT_B = dedent("""
+    << mau:/path/to/common
+    """)
+
+    side_effect = [
+        mock_open(read_data=MAU_TEXT_A).return_value,
+        mock_open(read_data="Common text").return_value,
+        mock_open(read_data=MAU_TEXT_B).return_value,
+        mock_open(read_data="Common text").return_value,
+    ]
+
+    with patch("builtins.open", side_effect=side_effect):
+        parser = runner(source)
+
+    assert [
+        (call.caller_uri, call.callee_uri) for call in parser.output.include_calls
+    ] == [
+        (TEST_CONTEXT_SOURCE, "/path/to/a"),
+        ("/path/to/a", "/path/to/common"),
+        (TEST_CONTEXT_SOURCE, "/path/to/b"),
+        ("/path/to/b", "/path/to/common"),
+    ]
+
+
+def test_include_mau_sibling_inclusion_does_not_leak_into_forbidden_list():
+    # This tests that the files included by a
+    # sibling do not end up in the list of
+    # forbidden inclusions of the parent parser,
+    # while a real loop is still detected.
+
+    source = """
+    << mau:/path/to/a
+
+    << mau:/path/to/b
+    """
+
+    MAU_TEXT_B = dedent("""
+    << mau:/path/to/b
+    """)
+
+    side_effect = [
+        mock_open(read_data="Text A").return_value,
+        mock_open(read_data=MAU_TEXT_B).return_value,
+    ]
+
+    with (
+        pytest.raises(MauException) as exc,
+        patch("builtins.open", side_effect=side_effect),
+    ):
+        runner(source)
+
+    assert exc.value.message.type == MauMessageType.ERROR_PARSER
+    assert (
+        exc.value.message.text
+        == f"To avoid recursion, you cannot include the following files: ['{os.path.realpath(TEST_CONTEXT_SOURCE)}', '/path/to/b']."
+    )
+    assert exc.value.message.context == Context(0, 0, 0, 6, source="/path/to/b")

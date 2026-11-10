@@ -1,0 +1,2 @@
+parser:
+  include_paths_strategy: file

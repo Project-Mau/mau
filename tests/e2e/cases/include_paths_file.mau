@@ -1,0 +1,3 @@
+// Paths of included files are relative
+// to the file that contains the include.
+<< mau:included/relative_parent.mau

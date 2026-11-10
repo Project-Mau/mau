@@ -1,3 +1,4 @@
+import os
 from unittest.mock import call, mock_open, patch
 
 import pytest
@@ -764,7 +765,7 @@ def test_include_mau_self_inclusion_is_forbidden():
     assert exc.value.message.type == MauMessageType.ERROR_PARSER
     assert (
         exc.value.message.text
-        == f"To avoid recursion, you cannot include the following files: ['{TEST_CONTEXT_SOURCE}']."
+        == f"To avoid recursion, you cannot include the following files: ['{os.path.realpath(TEST_CONTEXT_SOURCE)}']."
     )
     assert exc.value.message.context == generate_context(1, 0, 1, 6)
 
@@ -802,6 +803,67 @@ def test_include_mau_loop_is_forbidden():
     assert exc.value.message.type == MauMessageType.ERROR_PARSER
     assert (
         exc.value.message.text
-        == f"To avoid recursion, you cannot include the following files: ['{TEST_CONTEXT_SOURCE}', '/path/to/it', '/another/path']."
+        == f"To avoid recursion, you cannot include the following files: ['{os.path.realpath(TEST_CONTEXT_SOURCE)}', '/path/to/it', '/another/path']."
+    )
+    assert exc.value.message.context == Context(0, 0, 0, 6, source="/another/path")
+
+
+def test_include_mau_self_inclusion_with_different_path_is_forbidden():
+    # This tests that Mau files cannot include
+    # themselves even when the path is written
+    # in a different way.
+
+    environment = Environment.from_dict({"source": f"./{TEST_CONTEXT_SOURCE}"})
+
+    source = """
+    << mau:{source}
+    """
+
+    with pytest.raises(MauException) as exc:
+        runner(source, environment)
+
+    assert exc.value.message.type == MauMessageType.ERROR_PARSER
+    assert (
+        exc.value.message.text
+        == f"To avoid recursion, you cannot include the following files: ['{os.path.realpath(TEST_CONTEXT_SOURCE)}']."
+    )
+
+
+def test_include_mau_loop_with_different_paths_is_forbidden():
+    # This tests that Mau inclusion detects a loop
+    # even when the paths of the same file are
+    # written in different ways.
+
+    source = """
+    << mau:/path/to/it
+    """
+
+    MAU_TEXT_1 = dedent("""
+    << mau:/another/path
+    """)
+
+    MAU_TEXT_2 = dedent("""
+    << mau:/path/other/../to/./it
+    """)
+
+    m1 = mock_open(read_data=MAU_TEXT_1)
+    m2 = mock_open(read_data=MAU_TEXT_2)
+
+    with (
+        pytest.raises(MauException) as exc,
+        patch(
+            "builtins.open",
+            side_effect=[
+                m1.return_value,
+                m2.return_value,
+            ],
+        ),
+    ):
+        runner(source)
+
+    assert exc.value.message.type == MauMessageType.ERROR_PARSER
+    assert (
+        exc.value.message.text
+        == f"To avoid recursion, you cannot include the following files: ['{os.path.realpath(TEST_CONTEXT_SOURCE)}', '/path/to/it', '/another/path']."
     )
     assert exc.value.message.context == Context(0, 0, 0, 6, source="/another/path")

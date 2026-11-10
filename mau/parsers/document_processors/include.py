@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from mau.parsers.document_parser import DocumentParser
 
 
+import os
 from dataclasses import dataclass, field
 
 from mau.environment.environment import Environment
@@ -37,6 +38,44 @@ from mau.token import TokenType
 # included Mau files. None means that the
 # text is not preprocessed.
 INCLUDE_MAU_PREPROCESSORS = [None, "jinja"]
+
+
+# Return the normalised version of a path:
+# absolute, without `.` and `..` components,
+# and with symbolic links resolved. This allows
+# to recognise the same file when its path is
+# written in different ways, e.g. `a.mau`,
+# `./a.mau`, or `../dir/a.mau`.
+# A missing path (e.g. text that doesn't come
+# from a file) is returned as it is.
+def _normalise_path(path: str | None) -> str | None:
+    if path is None:
+        return None
+
+    return os.path.realpath(path)
+
+
+# Return the path used to open an included file
+# (`<< mau:` and `<< raw:`), according to the parser
+# setting `include_paths_strategy`:
+#
+# * `cwd`: relative paths are relative to the
+#   current working directory, so the URI is
+#   used as it is.
+# * `file`: relative paths are relative to the
+#   directory of the file that contains the include.
+#
+# Absolute paths are always used as they are. If the
+# include doesn't come from a file (no source), the
+# path is relative to the current working directory.
+def _resolve_include_path(parser: DocumentParser, uri: str, context: Context) -> str:
+    if os.path.isabs(uri):
+        return uri
+
+    if parser.include_paths_strategy == "file" and context.source is not None:
+        return os.path.join(os.path.dirname(context.source), uri)
+
+    return uri
 
 
 @dataclass
@@ -215,19 +254,31 @@ def _parse_mau(
             help_text=INCLUDE_MAU_HELP,
         )
 
+    # The path used to open the included file.
+    # The node keeps the URI as written, while
+    # everything else (opening the file, error
+    # messages, nested includes) uses this path.
+    path = _resolve_include_path(parser, uri, context)
+
+    # The list of forbidden inclusions contains
+    # normalised paths, so that a file is recognised
+    # even when its path is written in different ways.
+    current_path = _normalise_path(context.source)
+    included_path = _normalise_path(path)
+
     # Add this very file to the list of forbidden
     # inclusions. It's 1984 and Farenheit 451
     # all together!
     # We check if the element is already there to
     # prevent double inclusion but still preserve
     # the order.
-    if context.source not in parser.forbidden_includes:
-        parser.forbidden_includes.append(context.source)
+    if current_path is not None and current_path not in parser.forbidden_includes:
+        parser.forbidden_includes.append(current_path)
 
     # Make sure we are not trying to include a file that
     # included this file. It's called infinite recursion,
     # sweetheart.
-    if uri in parser.forbidden_includes:
+    if included_path in parser.forbidden_includes:
         raise create_parser_exception(
             f"To avoid recursion, you cannot include the following files: {parser.forbidden_includes}.",
             context,
@@ -251,16 +302,16 @@ def _parse_mau(
     # We check if the element is already there to
     # prevent double inclusion but still preserve
     # the order.
-    if uri not in parser.forbidden_includes:
-        parser.forbidden_includes.append(uri)
+    if included_path not in parser.forbidden_includes:
+        parser.forbidden_includes.append(included_path)
 
     # Open the given URI and read the text.
     try:
-        with open(uri, "r", encoding="utf-8") as f:
+        with open(path, "r", encoding="utf-8") as f:
             text = f.read()
     except FileNotFoundError as exc:
         raise create_parser_exception(
-            f"File '{uri}' cannot be read.",
+            f"File '{path}' cannot be read.",
             context,
         ) from exc
 
@@ -279,8 +330,10 @@ def _parse_mau(
     # Unpack the token initial position.
     start_line, start_column = context.start_position
 
-    # Get the token source.
-    source_filename = uri
+    # The source of the included content is the
+    # resolved path, so that its own includes are
+    # resolved relative to it.
+    source_filename = path
 
     # Render the text as a Jinja template
     # if requested. The template data comes
@@ -308,6 +361,7 @@ def _parse_mau(
         source_filename=source_filename,
         forbidden_includes=parser.forbidden_includes,
         isolate=isolate,
+        include_paths_strategy=parser.include_paths_strategy,
     )
 
     if not isolate:
@@ -321,7 +375,7 @@ def _parse_mau(
     parser.output.include_calls.append(
         IncludeCall(
             caller_uri=context.source,
-            callee_uri=uri,
+            callee_uri=path,
             call_arguments=call_arguments,
             info=NodeInfo(context=context),
         )
@@ -351,13 +405,17 @@ def _parse_raw(
             context,
         )
 
+    # The path used to open the included file.
+    # The node keeps the URI as written.
+    path = _resolve_include_path(parser, uri, context)
+
     # Open the given URI and read the text.
     try:
-        with open(uri, "r", encoding="utf-8") as f:
+        with open(path, "r", encoding="utf-8") as f:
             content = f.read()
     except FileNotFoundError as exc:
         raise create_parser_exception(
-            f"File '{uri}' cannot be read.",
+            f"File '{path}' cannot be read.",
             context,
             help_text=INCLUDE_RAW_HELP,
         ) from exc

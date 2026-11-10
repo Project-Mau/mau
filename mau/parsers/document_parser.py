@@ -11,7 +11,7 @@ from mau.message import BaseMessageHandler
 from mau.nodes.document import DocumentNode
 from mau.nodes.include import TocNode
 from mau.nodes.node import Node, NodeInfo
-from mau.parsers.base_parser import BaseParser
+from mau.parsers.base_parser import BaseParser, create_parser_exception
 from mau.parsers.buffers.arguments_buffer import ArgumentsBuffer
 from mau.parsers.buffers.control_buffer import ControlBuffer
 from mau.parsers.buffers.label_buffer import LabelBuffer
@@ -50,6 +50,15 @@ DEFAULT_ARGUMENT_ALIASES = {
     },
 }
 
+# The environment key that sets how relative paths
+# of included files (`<< mau:` and `<< raw:`) are
+# resolved: relative to the current working
+# directory (`cwd`) or relative to the file
+# that contains the include (`file`).
+INCLUDE_PATHS_STRATEGY_KEY = "mau.parser.include_paths_strategy"
+INCLUDE_PATHS_STRATEGY_VALUES = ["cwd", "file"]
+INCLUDE_PATHS_STRATEGY_DEFAULT = "cwd"
+
 
 @dataclass
 class DocumentParserOutput:
@@ -76,6 +85,7 @@ class DocumentParser(BaseParser):
         forbidden_includes: list[str] | None = None,
         *,
         isolate: bool = True,
+        include_paths_strategy: str | None = None,
     ):
         super().__init__(tokens, message_handler, environment, parent_node)
 
@@ -134,6 +144,26 @@ class DocumentParser(BaseParser):
         # and processes them, so that references
         # can cross the boundary in both directions.
         self.isolate = isolate
+
+        # How relative paths of included files are
+        # resolved (see INCLUDE_PATHS_STRATEGY_KEY). Parsers
+        # created for included files and blocks receive
+        # the value of the outer parser, so that the
+        # setting applies to the whole document, even
+        # when an included file doesn't receive the
+        # environment (`pass_environment=false`).
+        if include_paths_strategy is None:
+            include_paths_strategy = self.environment.get(
+                INCLUDE_PATHS_STRATEGY_KEY, INCLUDE_PATHS_STRATEGY_DEFAULT
+            )
+
+        if include_paths_strategy not in INCLUDE_PATHS_STRATEGY_VALUES:
+            raise create_parser_exception(
+                f"Configuration value '{INCLUDE_PATHS_STRATEGY_KEY}' must be one of "
+                f"{INCLUDE_PATHS_STRATEGY_VALUES}, found '{include_paths_strategy}'.",
+            )
+
+        self.include_paths_strategy = include_paths_strategy
 
         # This is the final output of the parser
         self.output = DocumentParserOutput()

@@ -35,6 +35,7 @@ def parse_block_content(
         start_line=start_line,
         start_column=start_column,
         source_filename=source_filename,
+        isolate=isolate,
     )
 
     if not isolate:

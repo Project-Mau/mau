@@ -138,3 +138,68 @@ def test_non_isolated_block_duplicate_header_name():
 
     assert exc.value.message.type == MauMessageType.ERROR_PARSER
     assert exc.value.message.text == "Duplicate header id detected: intro"
+
+
+# Test that a non-isolated block can mention a
+# footnote whose body is outside the block.
+def test_non_isolated_block_footnote_mention_inside_body_outside():
+    source = """
+    [isolate=false]
+    ----
+    Some text with a [footnote](note).
+    ----
+
+    [footnote=note]
+    ----
+    Some text.
+    ----
+    """
+
+    parser = runner(source)
+
+    macro = parser.footnotes_manager.footnote_macros[0]
+
+    assert macro.footnote is parser.footnotes_manager.footnotes_dict["note"]
+
+
+# Test that a link inside a non-isolated block
+# can point to a header outside the block.
+def test_non_isolated_block_header_link_to_header_outside():
+    source = """
+    [name=intro]
+    = Introduction
+
+    [isolate=false]
+    ----
+    See [header](intro).
+    ----
+    """
+
+    parser = runner(source)
+
+    macro = parser.header_links_manager.macros[0]
+
+    assert macro.header is parser.header_links_manager.headers["intro"]
+
+
+# Test that references resolution is deferred through
+# multiple levels of non-isolated blocks.
+def test_nested_non_isolated_blocks_header_link_to_header_outside():
+    source = """
+    [name=intro]
+    = Introduction
+
+    [isolate=false]
+    ----
+    [isolate=false]
+    ####
+    See [header](intro).
+    ####
+    ----
+    """
+
+    parser = runner(source)
+
+    macro = parser.header_links_manager.macros[0]
+
+    assert macro.header is parser.header_links_manager.headers["intro"]

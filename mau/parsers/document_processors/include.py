@@ -29,8 +29,14 @@ from mau.parsers.arguments_parser import (
     process_arguments_with_variables,
 )
 from mau.parsers.base_parser import create_parser_exception
+from mau.parsers.jinja_preprocessor import render_jinja_source
 from mau.text_buffer import Context
 from mau.token import TokenType
+
+# The preprocessors that can be applied to
+# included Mau files. None means that the
+# text is not preprocessed.
+INCLUDE_MAU_PREPROCESSORS = [None, "jinja"]
 
 
 @dataclass
@@ -177,9 +183,34 @@ def _parse_mau(
     # parser, exposing footnotes, headers, and header links.
     isolate = arguments.named_args.pop("isolate", "true") != "false"
 
+    # The optional preprocessor applied to
+    # the text of the included file, and the
+    # optional key of the environment that
+    # contains the data for the preprocessor.
+    preprocess = arguments.named_args.pop("preprocess", None)
+    data_key = arguments.named_args.pop("data", None)
+
     if not uri:
         raise create_parser_exception(
             "Syntax error. You need to specify a URI.",
+            context,
+            help_text=INCLUDE_MAU_HELP,
+        )
+
+    # Check that the requested
+    # preprocessor is available.
+    if preprocess not in INCLUDE_MAU_PREPROCESSORS:
+        raise create_parser_exception(
+            f"Preprocessor '{preprocess}' is not available.",
+            context,
+            help_text=INCLUDE_MAU_HELP,
+        )
+
+    # The data key is used only by the
+    # Jinja preprocessor.
+    if data_key is not None and preprocess != "jinja":
+        raise create_parser_exception(
+            "The argument 'data' requires 'preprocess=jinja'.",
             context,
             help_text=INCLUDE_MAU_HELP,
         )
@@ -250,6 +281,23 @@ def _parse_mau(
 
     # Get the token source.
     source_filename = uri
+
+    # Render the text as a Jinja template
+    # if requested. The template data comes
+    # from the environment of the included
+    # file, so it reflects `pass_environment`
+    # and the call variables, while the Jinja
+    # options always come from the parent
+    # parser configuration.
+    if preprocess == "jinja":
+        text = render_jinja_source(
+            text,
+            environment,
+            source_filename=source_filename,
+            data_key=data_key,
+            context=context,
+            options_environment=parser.environment,
+        )
 
     content_parser = parser.lex_and_parse(
         text=text,

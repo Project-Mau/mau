@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+from pathlib import Path
 from typing import Type
 
 import yaml
@@ -21,7 +22,53 @@ from mau.visitors.base_visitor import BaseVisitor
 
 install(show_locals=True)
 
+DEFAULT_OUTPUT_EXTENSION = "out"
+
 logger = logging.getLogger(__name__)
+
+
+def default_output_file(input_file: str, extension: str) -> str:
+    """
+    Return the name of the output file used
+    when the user doesn't provide one.
+
+    The extension of the input file (e.g. `.mau`) is
+    replaced with the provided extension.
+
+    The extension comes from third party plugins
+    (visitors) and might be provided with or without
+    the leading dot (e.g. `html` or `.html`).
+
+    If the extension is empty the function uses
+    a default extension. If the output file has
+    the same name of the input file the extension
+    is appended again so that the input file is
+    never overwritten.
+    """
+
+    # Normalise the extension to a single
+    # leading dot. Strip surrounding spaces
+    # and use the default extension if the
+    # result is empty.
+    extension = extension.strip().lstrip(".") or DEFAULT_OUTPUT_EXTENSION
+    suffix = f".{extension}"
+
+    # Generate a Path from the input file.
+    input_path = Path(input_file)
+
+    # Append the suffix.
+    output_path = input_path.with_suffix(suffix)
+
+    # Check if the output file has the same
+    # namo of the input file. This happens
+    # if the input file already has the
+    # required extension.
+    # In that case we append the extension
+    # again to the input file name.
+    if output_path == input_path:
+        output_path = input_path.with_name(f"{input_path.name}{suffix}")
+
+    return str(output_path)
 
 
 def write_output(output, output_file, postprocess=None):
@@ -284,8 +331,8 @@ def main():
         sys.exit(1)
 
     # Find out the name of the output file
-    output_file = args.output_file or args.input_file.replace(
-        ".mau", f".{visitor_class.extension}"
+    output_file = args.output_file or default_output_file(
+        args.input_file, visitor_class.extension
     )
 
     # Write the rendered text to

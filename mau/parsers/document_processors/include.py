@@ -170,6 +170,13 @@ def _parse_mau(
     uri = arguments.named_args.pop("uri", None)
     pass_environment = arguments.named_args.pop("pass_environment", "true")
 
+    # Included files are isolated by default. The option
+    # `isolate` mimics the one available to blocks.
+    # If `isolate=false` afther the included content is
+    # parsed the managers will be merged with the main
+    # parser, exposing footnotes, headers, and header links.
+    isolate = arguments.named_args.pop("isolate", "true") != "false"
+
     if not uri:
         raise create_parser_exception(
             "Syntax error. You need to specify a URI.",
@@ -252,7 +259,14 @@ def _parse_mau(
         start_column=0,
         source_filename=source_filename,
         forbidden_includes=parser.forbidden_includes,
+        isolate=isolate,
     )
+
+    if not isolate:
+        # Since the included content  wasn't isolated,
+        # we need to merge the managers created
+        # parsing it.
+        parser.merge_managers(content_parser)
 
     # Add the include call to the parser output.
     # The key is (includer file, included file)

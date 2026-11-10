@@ -14,6 +14,7 @@ Parsers consume tokens produced by the lexers and build a tree of nodes represen
 - `arguments_parser.py` - `ArgumentsParser` parses named/unnamed arguments and handles the alias system.
 - `condition_parser.py` - `ConditionParser` evaluates `@if`/`@unless` conditions.
 - `preprocess_variables_parser.py` - `PreprocessVariablesParser` handles variable definitions during preprocessing.
+- `jinja_preprocessor.py` - `render_jinja_source` renders the text of an included Mau file as a Jinja template before it is parsed (`<< mau:URI, preprocess=jinja`).
 
 ### `document_processors/`
 
@@ -65,6 +66,8 @@ The main parser. It:
 3. Iterates over tokens, dispatching to processors based on token type.
 4. Manages buffers (arguments, labels, control) and managers (TOC, footnotes, headers, block groups).
 5. Handles recursive `<< mau` includes with cycle detection.
+6. Supports non-isolated content (blocks and `<< mau` includes with `isolate=false`). The child parser is created with `isolate=False`, so it doesn't process its ToC, footnotes, and header links. The parent merges them with `merge_managers()` and processes them together with its own.
+7. Reads `mau.parser.include_paths` (`cwd` or `file`), which sets how relative paths in `<< mau` and `<< raw` are resolved. Child parsers for included files and blocks receive the value of their parent through the argument `include_paths`, so the setting applies to the whole document.
 
 Default aliases defined in `DEFAULT_ARGUMENT_ALIASES`:
 - `source` - Sets `engine=source`, names the first positional arg `language`.

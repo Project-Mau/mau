@@ -117,7 +117,7 @@ Special named arguments used by specific nodes:
 - `start=N` or `start=auto` — on ordered lists, sets starting number.
 - `group=NAME, position=POS` — on blocks, assigns block to a block group.
 - `footnote=NAME` — on blocks, turns block into a footnote body.
-- `isolate=false` — on blocks, merges inner headers/footnotes into outer document.
+- `isolate=false` — on blocks and `<< mau` includes, makes inner headers, footnotes, and header links part of the outer document.
 
 ## 8. Control conditions
 
@@ -252,7 +252,14 @@ Customize: `marker_delimiter="|"` changes `:` to `|`. `highlight_marker="#"` cha
 
 ### Block isolation
 
-Blocks are isolated by default: headers and footnotes inside are not added to the global ToC/footnotes list. Use `[isolate=false]` to merge them.
+Blocks are isolated by default: headers, footnotes, and header names inside a block are not part of the document. They are not added to the ToC or to the footnotes list, and footnote and `[header]` references inside the block can only point to targets inside the block.
+
+Use `[isolate=false]` to make the block part of the document:
+
+- its headers appear in the ToC;
+- its footnotes are numbered together with the others;
+- footnote and `[header]` references work across the block boundary in both directions;
+- a header `name` cannot be used both inside and outside the block.
 
 ## 13. Include
 
@@ -262,6 +269,7 @@ Include external content with `<< TYPE`.
 << image:"path/to/image.png"
 << image:uri="path.png", alt_text="desc", classes="c1, c2"
 << mau:path/to/file.mau
+<< raw:path/to/file.txt
 << toc
 << footnotes
 << blockgroup:groupname
@@ -285,11 +293,136 @@ You CANNOT mix inline and boxed arguments.
 
 ```
 << mau:other_file.mau
-<< mau:other_file.mau, call:answer=42    // Pass variables
-<< mau:other_file.mau, pass_environment=false  // Don't inherit env
+<< mau:other_file.mau, call:answer=42              // Pass variables
+<< mau:other_file.mau, pass_environment=false      // Don't inherit env
+<< mau:other_file.mau, isolate=false               // Part of the document
+<< mau:other_file.mau, preprocess=jinja            // Render with Jinja first
+<< mau:other_file.mau, preprocess=jinja, data=mau.changelog
 ```
 
-Included files inherit the current environment. `call:NAME=VALUE` passes new variables. Mau detects and prevents include loops.
+The included file is parsed as Mau and its content is added to the document.
+
+- Relative paths are resolved according to the configuration (see "Include paths" below). By default they are relative to the directory where Mau runs.
+- Included files receive a copy of the current environment, so variables defined inside them do not affect the including file.
+- `call:NAME=VALUE` adds variables to the environment of the included file. Values are strings.
+- `pass_environment=false` gives the included file an empty environment, containing only the `call:` variables.
+- Mau detects and prevents include loops, even when the same file is written with different paths (e.g. `a.mau` and `./a.mau`).
+
+#### Include paths
+
+Relative paths in `<< mau` and `<< raw` are resolved according to the configuration value `parser.include_paths` (the environment key `mau.parser.include_paths`):
+
+- `cwd` (default): relative to the directory where Mau runs.
+- `file`: relative to the directory of the file that contains the include. Includes inside an included file are relative to that file, so the sources don't depend on where Mau runs.
+
+```yaml
+parser:
+  include_paths: file
+```
+
+- Absolute paths are used as they are.
+- If the text doesn't come from a file (e.g. when Mau is used as a library without a source file name), relative paths are relative to the directory where Mau runs.
+- The setting applies to the whole document, including files included with `pass_environment=false`.
+- The include keeps the path as written, while error messages show the path Mau tried to open.
+- Images (`<< image`) are not affected: Mau doesn't open them, and their URI is passed to the output as it is.
+
+#### Isolation
+
+Included files are isolated by default, like blocks (see "Block isolation"). Their headers are not added to the ToC, their footnotes are not added to the footnotes list, and footnote and `[header]` references cannot cross the file boundary.
+
+Use `isolate=false` to make the included file part of the document. It behaves like a block with `[isolate=false]`. With nested includes, every include along the way must use `isolate=false`: content stops at the first isolated include.
+
+#### Jinja preprocessing
+
+With `preprocess=jinja`, the included file is rendered as a Jinja template before it is parsed, and the result is parsed as Mau. This allows generating Mau source from structured data, e.g. lists in the configuration file.
+
+Configuration file `mau.yaml`, loaded with `mau -c mau.yaml`:
+
+```yaml
+changelog:
+  latest: 1.0.1
+  versions:
+    - id: 1.0.0
+      date: 2026-11-04
+      changes:
+        - First change.
+        - Second change.
+    - id: 1.0.1
+      date: 2026-11-05
+      changes:
+        - Third change.
+```
+
+Main file:
+
+```
+*Current version*: {mau.changelog.latest}
+
+<< mau:changelog.mau, preprocess=jinja, isolate=false
+```
+
+Included file `changelog.mau`:
+
+```
+{% for version in mau.changelog.versions %}
+[nobreak]
+== Version {{ version.id }} ({{ version.date }})
+
+{% for change in version.changes %}
+* {{ change }}
+{% endfor %}
+
+{% endfor %}
+```
+
+Mau source produced by Jinja and then parsed:
+
+```
+[nobreak]
+== Version 1.0.0 (2026-11-04)
+
+* First change.
+* Second change.
+
+[nobreak]
+== Version 1.0.1 (2026-11-05)
+
+* Third change.
+```
+
+Template data:
+
+- By default the template receives the environment of the included file as nested data (after `pass_environment` and `call:` are applied). Values from the configuration file are under `mau`, e.g. `mau.changelog.versions`.
+- `data=KEY` gives the template **only** the mapping stored at `KEY`, whose keys become top-level variables. With `data=mau.changelog` the template above uses `{{ latest }}` and `{% for version in versions %}`. `KEY` must exist and must point to a mapping (not a list or a single value).
+- `data` can only be used with `preprocess=jinja`.
+
+Rendering rules:
+
+- Jinja tags like `{% for %}` don't leave empty lines or indentation behind, so list items generated by a loop stay in the same list.
+- Undefined variables are errors.
+- Mau `{name}` variables in the rendered text are replaced as usual, after Jinja.
+- Mau's `{{name}}` escape is consumed by Jinja. To keep it, change the Jinja delimiters in the configuration file (see below).
+- Text coming from the data is parsed as Mau, so characters like `*`, `_`, and `` ` `` become markup.
+- Jinja errors point to the line of the included file. Mau errors found after rendering point to the line of the rendered text.
+- Jinja's dot syntax looks up dictionary methods first: a key named `items`, `keys`, or `values` must be written with brackets, e.g. `version['items']`.
+
+Jinja options can be set in the configuration file under `parser.jinja.options` (the environment key `mau.parser.jinja.options`), and apply even with `pass_environment=false`:
+
+```
+parser:
+  jinja:
+    options:
+      variable_start_string: "[["
+      variable_end_string: "]]"
+```
+
+### Include raw files
+
+```
+<< raw:path/to/file.txt
+```
+
+The content of the file is added to the document as raw lines, like a raw block. It is not parsed as Mau and variables are not replaced. Relative paths are resolved like for `<< mau` (see "Include paths").
 
 ## 14. Footnotes
 
@@ -310,7 +443,7 @@ The footnote body text.
 << toc
 ```
 
-Collects all headers in the document. Affected by block isolation.
+Collects all headers in the document, including those in non-isolated blocks and included files (`isolate=false`).
 
 ## 16. Block groups
 
@@ -420,6 +553,9 @@ To be or not to be.
 | Raw block | `[engine=raw]` + block |
 | Include image | `<< image:"URI"` |
 | Include file | `<< mau:path.mau` |
+| Include file, non-isolated | `<< mau:path.mau, isolate=false` |
+| Include file, Jinja | `<< mau:path.mau, preprocess=jinja[, data=KEY]` |
+| Include raw file | `<< raw:path.txt` |
 | Include ToC | `<< toc` |
 | Include footnotes | `<< footnotes` |
 | Include blockgroup | `<< blockgroup:name` |

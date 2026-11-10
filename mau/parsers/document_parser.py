@@ -74,6 +74,8 @@ class DocumentParser(BaseParser):
         environment: Environment | None = None,
         parent_node=None,
         forbidden_includes: list[str] | None = None,
+        *,
+        isolate: bool = True,
     ):
         super().__init__(tokens, message_handler, environment, parent_node)
 
@@ -121,6 +123,17 @@ class DocumentParser(BaseParser):
         # This is a list as we need to keep the
         # order of calls.
         self.forbidden_includes = forbidden_includes or []
+
+        # An isolated parser processes its own ToC,
+        # footnotes, and header links when parsing
+        # is completed. A non-isolated parser is
+        # used for content that is part of an outer
+        # document (e.g. a block with `isolate=false`).
+        # In that case, the outer parser merges the
+        # managers of this parser into its own
+        # and processes them, so that references
+        # can cross the boundary in both directions.
+        self.isolate = isolate
 
         # This is the final output of the parser
         self.output = DocumentParserOutput()
@@ -228,26 +241,46 @@ class DocumentParser(BaseParser):
 
         return True
 
+    def merge_managers(self, other: DocumentParser):
+        """
+        Merge the content of all managers (footnotes,
+        ToC, and header links) owned by another
+        parser into this parser.
+        """
+
+        # The footnote mentions and definitions.
+        self.footnotes_manager.update(other.footnotes_manager)
+
+        # The headers and the ToC nodes.
+        self.toc_manager.update(other.toc_manager)
+
+        # The named headers and the links to them.
+        self.header_links_manager.update(other.header_links_manager)
+
     def finalise(self):
         super().finalise()
 
-        # This processes all footnotes stored in
-        # the manager merging mentions and data
-        # and updating the nodes that contain
-        # a list of footnotes.
-        self.footnotes_manager.process()
+        # A non-isolated parser leaves the processing
+        # of ToC, footnotes, and header links to the
+        # outer parser that merges its managers.
+        if self.isolate:
+            # This processes all footnotes stored in
+            # the manager merging mentions and data
+            # and updating the nodes that contain
+            # a list of footnotes.
+            self.footnotes_manager.process()
 
-        # Process ToC nodes.
-        # This operation needs to be done before
-        # we process header links, as it creates
-        # the internal IDs for headers that are
-        # used by the header links.
-        self.toc_manager.process()
+            # Process ToC nodes.
+            # This operation needs to be done before
+            # we process header links, as it creates
+            # the internal IDs for headers that are
+            # used by the header links.
+            self.toc_manager.process()
 
-        # This processes all links stored in
-        # the manager linking them to the
-        # correct headers.
-        self.header_links_manager.process()
+            # This processes all links stored in
+            # the manager linking them to the
+            # correct headers.
+            self.header_links_manager.process()
 
         # Process block groups.
         self.blockgroup_manager.process()

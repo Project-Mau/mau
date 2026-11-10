@@ -36,6 +36,7 @@ def parse_block_content(
         start_column=start_column,
         source_filename=source_filename,
         isolate=isolate,
+        include_paths_strategy=parser.include_paths_strategy,
     )
 
     if not isolate:

@@ -343,7 +343,7 @@ The included file is parsed as Mau and its content is added to the document.
 - Included files receive a copy of the current environment, so variables defined inside them do not affect the including file.
 - `call:NAME=VALUE` adds variables to the environment of the included file. Values are strings.
 - `pass_environment=false` gives the included file an empty environment, containing only the `call:` variables. The configuration values (`mau.*`) are not available either, including custom aliases and source highlight style aliases. Only the include paths strategy and the Jinja options are kept (see below). Any value other than `true` disables the environment.
-- Mau detects and prevents include loops, even when the same file is written with different paths (e.g. `a.mau` and `./a.mau`). A file cannot be included twice in the same document, not even in sibling includes.
+- Mau detects and prevents include loops, even when the same file is written with different paths (e.g. `a.mau` and `./a.mau`). A file cannot include itself or any of the files that included it, directly or indirectly. The same file can be included multiple times in a document, for example twice in a row or by two sibling included files.
 
 #### Include paths
 

@@ -3,7 +3,7 @@
 = Header 2
 = Header 3
 
-::toc
+<< toc
 
 ----
 = This header will NOT appear in the document TOC.
@@ -15,6 +15,6 @@
 ----
 
 [arg1, #tag1, *subtype1, key1=value1]
-::toc
+<< toc
 
-::toc:arg1, #tag1, *subtype1, key1=value1
+<< toc:arg1, #tag1, *subtype1, key1=value1

@@ -73,10 +73,144 @@ content:
   name: null
   subtype: null
   tags: []
-- _type: paragraph
+- _type: toc
   args: []
-  content:
-  - _type: paragraph-line
+  internal_tags: []
+  kwargs: {}
+  labels: {}
+  nested_entries:
+  - _type: toc-item
+    args: []
+    entries:
+    - _type: toc-item
+      args: []
+      entries: []
+      header:
+        _type: header
+        args: []
+        content:
+        - _type: text
+          args: []
+          internal_tags: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          value: Header 1.1
+        internal_id: header-1.1-3cc7
+        internal_tags: []
+        kwargs: {}
+        labels: {}
+        level: 2
+        name: null
+        subtype: null
+        tags: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Header 1
+      internal_id: header-1-1aa5
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  - _type: toc-item
+    args: []
+    entries: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Header 2
+      internal_id: header-2-3780
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  - _type: toc-item
+    args: []
+    entries: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Header 3
+      internal_id: header-3-087f
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  - _type: toc-item
+    args: []
+    entries: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: This header will appear in the document ToC.
+      internal_id: this-header-will-appear-in-the-document-toc.-348c
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  plain_entries:
+  - _type: header
     args: []
     content:
     - _type: text
@@ -85,15 +219,87 @@ content:
       kwargs: {}
       subtype: null
       tags: []
-      value: ::toc
+      value: Header 1
+    internal_id: header-1-1aa5
     internal_tags: []
     kwargs: {}
     labels: {}
+    level: 1
+    name: null
     subtype: null
     tags: []
-  internal_tags: []
-  kwargs: {}
-  labels: {}
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Header 1.1
+    internal_id: header-1.1-3cc7
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 2
+    name: null
+    subtype: null
+    tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Header 2
+    internal_id: header-2-3780
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 1
+    name: null
+    subtype: null
+    tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Header 3
+    internal_id: header-3-087f
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 1
+    name: null
+    subtype: null
+    tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: This header will appear in the document ToC.
+    internal_id: this-header-will-appear-in-the-document-toc.-348c
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 1
+    name: null
+    subtype: null
+    tags: []
   subtype: null
   tags: []
 - _type: block
@@ -151,36 +357,146 @@ content:
   labels: {}
   subtype: null
   tags: []
-- _type: paragraph
+- _type: toc
   args:
   - arg1
-  content:
-  - _type: paragraph-line
-    args: []
-    content:
-    - _type: text
-      args: []
-      internal_tags: []
-      kwargs: {}
-      subtype: null
-      tags: []
-      value: ::toc
-    internal_tags: []
-    kwargs: {}
-    labels: {}
-    subtype: null
-    tags: []
   internal_tags: []
   kwargs:
     key1: value1
   labels: {}
-  subtype: subtype1
-  tags:
-  - tag1
-- _type: paragraph
-  args: []
-  content:
-  - _type: paragraph-line
+  nested_entries:
+  - _type: toc-item
+    args: []
+    entries:
+    - _type: toc-item
+      args: []
+      entries: []
+      header:
+        _type: header
+        args: []
+        content:
+        - _type: text
+          args: []
+          internal_tags: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          value: Header 1.1
+        internal_id: header-1.1-3cc7
+        internal_tags: []
+        kwargs: {}
+        labels: {}
+        level: 2
+        name: null
+        subtype: null
+        tags: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Header 1
+      internal_id: header-1-1aa5
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  - _type: toc-item
+    args: []
+    entries: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Header 2
+      internal_id: header-2-3780
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  - _type: toc-item
+    args: []
+    entries: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Header 3
+      internal_id: header-3-087f
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  - _type: toc-item
+    args: []
+    entries: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: This header will appear in the document ToC.
+      internal_id: this-header-will-appear-in-the-document-toc.-348c
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  plain_entries:
+  - _type: header
     args: []
     content:
     - _type: text
@@ -189,17 +505,322 @@ content:
       kwargs: {}
       subtype: null
       tags: []
-      value: '::toc:arg1, #tag1, *subtype1, key1=value1'
+      value: Header 1
+    internal_id: header-1-1aa5
     internal_tags: []
     kwargs: {}
     labels: {}
+    level: 1
+    name: null
     subtype: null
     tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Header 1.1
+    internal_id: header-1.1-3cc7
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 2
+    name: null
+    subtype: null
+    tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Header 2
+    internal_id: header-2-3780
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 1
+    name: null
+    subtype: null
+    tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Header 3
+    internal_id: header-3-087f
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 1
+    name: null
+    subtype: null
+    tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: This header will appear in the document ToC.
+    internal_id: this-header-will-appear-in-the-document-toc.-348c
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 1
+    name: null
+    subtype: null
+    tags: []
+  subtype: subtype1
+  tags:
+  - tag1
+- _type: toc
+  args:
+  - arg1
   internal_tags: []
-  kwargs: {}
+  kwargs:
+    key1: value1
   labels: {}
-  subtype: null
-  tags: []
+  nested_entries:
+  - _type: toc-item
+    args: []
+    entries:
+    - _type: toc-item
+      args: []
+      entries: []
+      header:
+        _type: header
+        args: []
+        content:
+        - _type: text
+          args: []
+          internal_tags: []
+          kwargs: {}
+          subtype: null
+          tags: []
+          value: Header 1.1
+        internal_id: header-1.1-3cc7
+        internal_tags: []
+        kwargs: {}
+        labels: {}
+        level: 2
+        name: null
+        subtype: null
+        tags: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Header 1
+      internal_id: header-1-1aa5
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  - _type: toc-item
+    args: []
+    entries: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Header 2
+      internal_id: header-2-3780
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  - _type: toc-item
+    args: []
+    entries: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: Header 3
+      internal_id: header-3-087f
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  - _type: toc-item
+    args: []
+    entries: []
+    header:
+      _type: header
+      args: []
+      content:
+      - _type: text
+        args: []
+        internal_tags: []
+        kwargs: {}
+        subtype: null
+        tags: []
+        value: This header will appear in the document ToC.
+      internal_id: this-header-will-appear-in-the-document-toc.-348c
+      internal_tags: []
+      kwargs: {}
+      labels: {}
+      level: 1
+      name: null
+      subtype: null
+      tags: []
+    internal_tags: []
+    kwargs: {}
+    subtype: null
+    tags: []
+  plain_entries:
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Header 1
+    internal_id: header-1-1aa5
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 1
+    name: null
+    subtype: null
+    tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Header 1.1
+    internal_id: header-1.1-3cc7
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 2
+    name: null
+    subtype: null
+    tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Header 2
+    internal_id: header-2-3780
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 1
+    name: null
+    subtype: null
+    tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: Header 3
+    internal_id: header-3-087f
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 1
+    name: null
+    subtype: null
+    tags: []
+  - _type: header
+    args: []
+    content:
+    - _type: text
+      args: []
+      internal_tags: []
+      kwargs: {}
+      subtype: null
+      tags: []
+      value: This header will appear in the document ToC.
+    internal_id: this-header-will-appear-in-the-document-toc.-348c
+    internal_tags: []
+    kwargs: {}
+    labels: {}
+    level: 1
+    name: null
+    subtype: null
+    tags: []
+  subtype: subtype1
+  tags:
+  - tag1
 internal_tags: []
 kwargs: {}
 subtype: null

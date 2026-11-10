@@ -228,6 +228,22 @@ class DocumentParser(BaseParser):
 
         return True
 
+    def merge_managers(self, other: DocumentParser):
+        """
+        Merge the content of all managers (footnotes,
+        ToC, and header links) owned by another
+        parser into this parser.
+        """
+
+        # The footnote mentions and definitions.
+        self.footnotes_manager.update(other.footnotes_manager)
+
+        # The headers and the ToC nodes.
+        self.toc_manager.update(other.toc_manager)
+
+        # The named headers and the links to them.
+        self.header_links_manager.update(other.header_links_manager)
+
     def finalise(self):
         super().finalise()
 

@@ -15,7 +15,8 @@ from mau.token import Token
 def parse_block_content(
     parser: DocumentParser, content: Token, arguments: NodeArguments
 ) -> list[Node]:
-    update = arguments.named_args.get("isolate", "true") == "false"
+    # Blocks are isolated unless `isolate=false`.
+    isolate = arguments.named_args.get("isolate", "true") != "false"
 
     # The parsing environment is
     # that of the external parser.
@@ -36,16 +37,11 @@ def parse_block_content(
         source_filename=source_filename,
     )
 
-    if update:
-        # The footnote mentions and definitions
-        # found in this block are part of the
-        # main document. Import them.
-        parser.footnotes_manager.update(content_parser.footnotes_manager)
-
-        # The internal links and headers
-        # found in this block are part of the
-        # main document. Import them.
-        parser.toc_manager.update(content_parser.toc_manager)
+    if not isolate:
+        # Since the block wasn't isolated, we
+        # need to merge the managers created
+        # parsing it.
+        parser.merge_managers(content_parser)
 
     return content_parser.nodes
 

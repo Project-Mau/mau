@@ -73,7 +73,8 @@ class Template:
         # Create the class from a given
         # template name in the form
         #
-        # TYPE[.SUBTPYE][.tg__TAG][.pt__PARENT][.pf__PREFIX]
+        # TYPE[.SUBTYPE][.KEY__VALUE][.tg_TAG][.pt_PARENT]
+        # [.pts_PARENTSUBTYPE][.pts_KEY__VALUE][.pf_PREFIX]
         #
         # where the elements between
         # square brackets can be in any order.
@@ -390,7 +391,7 @@ class JinjaVisitor(BaseVisitor):
         # as a component of the template name).
         # Then, for all selected templates, we
         # need to devise what type of node they
-        # address, and build the MauTemplate
+        # address, and build the Template
         # object that will allow us to
         # order them by specificity.
         templates = []

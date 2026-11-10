@@ -60,7 +60,7 @@ def default_output_file(input_file: str, extension: str) -> str:
     output_path = input_path.with_suffix(suffix)
 
     # Check if the output file has the same
-    # namo of the input file. This happens
+    # name of the input file. This happens
     # if the input file already has the
     # required extension.
     # In that case we append the extension

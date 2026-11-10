@@ -12,7 +12,9 @@ from mau.nodes.node import (
 LIST_HELP = """
 Syntax:
 
-([URI+, ARGS])?
+([ARGS])?
+(@CONTROL)?
+(. LABEL)*
 (*+|#+) TEXT
 
 The list prefix `*` or `#` creates a list item. The prefix can be
@@ -33,8 +35,9 @@ creates an ordered one. The two can be mixed, e.g.
 
 Arguments:
 
-* `start` - Can be a positive integer or "auto", defaults to "auto".
+* `start` - Can be a positive integer or "auto", defaults to 1.
             Controls the starting number for the first item of the list.
+            The value "auto" continues the numbering of the previous list.
 """
 
 

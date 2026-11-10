@@ -25,14 +25,14 @@ BASE_NAMESPACE = "mau"
 
 # All YAML environment files are
 # loaded by default into this
-# secondary namespace (in addition
-# to the base namespace).
+# namespace, nested inside the
+# base namespace (mau.envfiles).
 DEFAULT_ENVIRONMENT_FILES_NAMESPACE = "envfiles"
 
 # All variables defined on the command
 # line are loaded into this
-# secondary namespace (in addition
-# to the base namespace).
+# namespace, nested inside the
+# base namespace (mau.envvars).
 DEFAULT_ENVIRONMENT_VARIABLES_NAMESPACE = "envvars"
 
 
@@ -71,8 +71,8 @@ def load_environment_files(
     files: list[str],
     namespace: str | None = None,
 ):
-    """Load YAML files into dictionaries and
-    convert them into an environment."""
+    """Load YAML files and add their content
+    to the given environment."""
 
     # Set the namespace or use the default one.
     namespace = namespace or DEFAULT_ENVIRONMENT_FILES_NAMESPACE

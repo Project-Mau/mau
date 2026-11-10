@@ -26,11 +26,10 @@ class EngineType(Enum):
 def block_processor(parser: DocumentParser):
     # Parse a block in the form
     #
-    # [block_type]
+    # [ARGS]
     # ----
     # Content
     # ----
-    # Optional secondary content
     #
     # Blocks are delimited by 4 consecutive identical characters.
 
@@ -51,7 +50,7 @@ def block_processor(parser: DocumentParser):
     )
 
     # Get the stored arguments.
-    # Paragraphs can receive arguments
+    # Blocks can receive arguments
     # only through the arguments manager.
     arguments = parser.arguments_buffer.pop_or_default()
 

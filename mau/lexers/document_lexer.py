@@ -299,7 +299,7 @@ class DocumentLexer(BaseLexer):
     def _process_variable(self) -> list[Token] | None:
         # Detect a variable definition in the form
         #
-        # :NAME[:VALUE]
+        # :NAME:[VALUE]
         #
         # The variable NAME can contain alphanumeric
         # characters and the characters
@@ -426,7 +426,7 @@ class DocumentLexer(BaseLexer):
         # Withespace at the beginning of the line is ignored,
         # as Mau considers only the number of prefix symbols
         # to decide the nesting level.
-        # Space between the prefix symbol and text is ignored as well.
+        # At least one space is required between the prefix symbols and the text.
 
         # Try to match the syntax shown above.
         match = rematch(

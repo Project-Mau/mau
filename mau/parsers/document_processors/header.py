@@ -20,8 +20,9 @@ def header_processor(parser: DocumentParser):
     #
     # The number of equal signs is arbitrary
     # and represents the level of the header.
-    # Headers are automatically assigned a unique ID
-    # created using the provided function
+    # Headers can be given an ID with the argument
+    # `internal_id`. Otherwise, the ToC manager assigns
+    # a unique ID created with the provided function
     # parser.header_internal_id_function
 
     # Get all the equal signs.

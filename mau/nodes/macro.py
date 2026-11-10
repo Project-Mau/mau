@@ -16,7 +16,7 @@ A generic macro named NAME that contains the given ARGS.
 MACRO_CLASS_HELP = """
 Syntax:
 
-[class](class1, class2, ...)
+[class](text, class1, class2, ...)
 
 A macro to assign classes to text.
 """
@@ -27,7 +27,7 @@ Syntax:
 [link](target[, text])
 
 A macro that creates a link. The text of the link is the target itself
-unless the option `text` is gien a value.
+unless the option `text` is given a value.
 """
 
 MACRO_IMAGE_HELP = """
@@ -42,10 +42,11 @@ accepts optional `alt_text`, `width`, and `height`.
 MACRO_HEADER_HELP = """
 Syntax:
 
-[header](header_alias)
+[header](name[, text])
 
 A macro that inserts a link to a header. The macro requires
-the header exernal ID as a parameter.
+the name of the header, set with the argument `name` of the header.
+The text of the link is the text of the header unless `text` is given.
 """
 
 MACRO_FOOTNOTE_HELP = """

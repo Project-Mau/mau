@@ -111,12 +111,12 @@ def _process_list_nodes(parser: DocumentParser, parent: Node):
 
 def list_processor(parser: DocumentParser):
     # Parse a list.
-    # Lists can be ordered (using numbers)
+    # Lists can be unordered (using bullets)
     #
     # * One item
     # * Another item
     #
-    # or unordered (using bullets)
+    # or ordered (using numbers)
     #
     # # Item 1
     # # Item 2

@@ -16,8 +16,6 @@ class BlockNode(Node, NodeLabelsMixin, NodeContentMixin):
 
     Arguments:
         classes: a comma-separated list of classes
-        engine: the engine used to render this block
-        preprocessor: the preprocessor used for this block
     """
 
     type = "block"

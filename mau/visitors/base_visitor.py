@@ -149,10 +149,10 @@ class BaseVisitor:
         # The node calls a suitable method of the
         # visitor, and the result is returned here.
         #
-        # All visitor functions return a dictionary with
-        # the key "data" that contains the result of the visit.
-        # This is done to provide space for metadata or other values
-        # like templates used to render the node.
+        # The base visitor functions return a dictionary
+        # with the data of the node (see `_get_node_data`).
+        # Subclasses can return other types, e.g. the
+        # Jinja visitor returns rendered strings.
 
         if node is None:
             return {}

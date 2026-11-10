@@ -83,7 +83,7 @@ class Context:
         return (self.end_line, self.end_column)
 
     def move_to(self, line: int, column: int) -> Context:
-        """Move the context to a new start position."""
+        """Shift the context by the given number of lines and columns."""
         self.start_line += line
         self.end_line += line
         self.start_column += column
@@ -116,17 +116,18 @@ class Context:
 
 # The TextBuffer is an object used to interact with a text file.
 #
-# The object contains by default an empty piece of text and no
-# initial context, but it can accept both at initialisation time.
+# The object contains by default an empty piece of text, but it
+# can accept text at initialisation time.
 #
 # The object itself doesn't interact with files, the text content
 # has to be loaded externally. The `text` parameter is a single
-# string containing newlines, the object will split it internally.
-# When a piece of text is loaded it is split into lines using `\n`.
+# string containing newlines, the object will split it internally
+# into lines using `\n`. The parameter `source_filename` records
+# the file the text comes from (if any).
 #
-# The attribute `initial_context` allows to nest pieces of text that
-# come from different sources. The property `context` takes the
-# initial context into account and adjusts the line and column.
+# The parameters `start_line` and `start_column` allow to nest
+# pieces of text that come from different sources. The property
+# `position` takes them into account and adjusts line and column.
 #
 # The object has several properties:
 # * `eof` - True if the current line is beyond the last line.
@@ -138,15 +139,12 @@ class Context:
 #   or an empty string in case of EOL/EOF.
 # * `peek_char` - The next character of the current line
 #   or an empty string in case of EOL/EOF.
-# * `tail` - The remaining part of the line starting with the next
+# * `tail` - The remaining part of the line starting with the current
 #   character.
-# * `position` - (getter/setter) A tuple (line, column) with the
-#   current position.
-# * `context` - A instance of Context relative to `initial_context`.
+# * `position` - A tuple (line, column) with the current position,
+#   shifted by `start_line` and `start_column`.
 #
-# The class also exposes three main methods:
-# * `load` - Loads a string into the internal buffer. The string is
-#   split using newlines `\n`.
+# The class also exposes two main methods:
 # * `nextline` - Moves to the beginning of the next line.
 # * `skip` - Skips the given number of characters.
 #

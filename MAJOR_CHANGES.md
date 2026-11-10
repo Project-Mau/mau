@@ -38,8 +38,10 @@ See chapter 26 (List of nodes) for the complete list.
 The Jinja visitor template system has been rewritten. Templates are matched using a specificity-based system. Template file names encode claims about the node they target using a dot-separated convention:
 
 ```
-TYPE[.SUBTYPE][.KEY__VALUE][.tg_TAG][.pt_PARENT][.pts_PARENTSUBTYPE][.pf_PREFIX].j2
+TYPE[.SUBTYPE][.KEY__VALUE][.tg_TAG][.pt_PARENT][.pts_PARENTSUBTYPE][.pts_KEY__VALUE][.pf_PREFIX].EXT
 ```
+
+The parts after `TYPE` can be in any order. `EXT` is the template extension of the visitor (e.g. `.j2` for `core:JinjaVisitor`, `.html` for the HTML visitor).
 
 Templates are sorted by specificity and the most specific match wins. Custom template fields allow nodes to expose additional matching criteria beyond type and subtype.
 
@@ -98,6 +100,6 @@ See chapter 15 (Source blocks).
 
 ## Visitor plugin system
 
-Visitors are discovered at runtime through the `mau.visitors` entry point group. Template providers use the `mau.templates` entry point group. The two core visitors (`core:YamlVisitor` and `core:JinjaVisitor`) are always available.
+Visitors are discovered at runtime through the `mau.visitors` entry point group. Template providers use the `mau.templates` entry point group. The two core visitors (`core:YamlVisitor` and `core:JinjaVisitor`) are always available. Plugin visitors are named after the entry point value, e.g. `mau_html_visitor:HtmlVisitor`.
 
 See chapters 24 (Existing visitors), 25 (Create a custom visitor), and 28 (Python interface).

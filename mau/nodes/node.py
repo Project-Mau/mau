@@ -85,9 +85,8 @@ class Node:
         # calls one of the visitor's methods according
         # to the node content type.
 
-        # Some node types contain a dot to allow templates
-        # to be created in a hierarchy of directories
-        # but dots are not allowed in function names
+        # Some node types contain a hyphen (e.g. macro-link)
+        # but hyphens are not allowed in function names
         method_name = f"_visit_{self.type.replace('-', '_')}"
 
         # Try to call the computed method. If not

@@ -19,29 +19,35 @@ A container for flattened variables with dot-notation access.
 
 ```python
 env = Environment()
-env.update({"a.b.c": "value"})
+env.dupdate({"a.b.c": "value"})
 env.get("a.b.c")  # "value"
+env["a.b.c"]      # "value"
 
 # Create from a nested dictionary with a namespace prefix.
-env = Environment.from_dict({"aliases": {"source": {...}}}, namespace="mau.parser")
-# Stored as "mau.parser.aliases.source" = {...}
+env = Environment.from_dict({"aliases": {"source": {"args": {"engine": "source"}}}}, namespace="mau.parser")
+# Stored as "mau.parser.aliases.source.args.engine" = "source"
+
+# A namespace prefix returns a sub-environment.
+env.get("mau.parser.aliases")  # Environment with key "source.args.engine"
 ```
 
 Key methods:
 
 - `from_dict(d, namespace)` - Create from a nested dictionary under a namespace prefix.
-- `from_environment(env)` - Clone an existing environment.
-- `get(key, default)` - Retrieve a value by dotted key.
-- `update(other, overwrite)` - Merge another environment.
-- `dupdate(d, namespace)` - Update from a flat dictionary under a namespace.
-- `asdict()` - Return the internal flat dictionary.
+- `from_environment(env, namespace)` - Clone an existing environment, optionally under a namespace prefix.
+- `get(key, default)` - Retrieve a value by dotted key. If the key is a namespace prefix, return a sub-environment.
+- `update(other, namespace, overwrite)` - Merge another `Environment`. With `overwrite=False` existing keys are kept.
+- `dupdate(d, namespace)` - Update from a dictionary (nested or with dotted keys) under a namespace.
+- `asdict()` - Return the content as a nested dictionary.
+- `asflatdict()` - Return the internal flat dictionary.
+- `env[key]` / `env[key] = value` - Item access with dotted keys.
 
 ## How it connects
 
 The environment is created at startup from:
-1. The YAML configuration file (`-c` flag).
-2. Environment files (`-e` flag).
-3. Environment variables (`-v` flag).
-4. Variables defined in the Mau source (`:name:value`).
+1. The YAML configuration file (`-c` flag), stored under `mau`.
+2. Environment files (`-e` flag), stored under `mau.envfiles`.
+3. Environment variables (`-v` flag), stored under `mau.envvars`.
+4. Variables defined in the Mau source (`:name:value`), stored as they are written.
 
 It is then passed to lexers, parsers, and visitors, where it controls behaviour such as aliases, style mappings, and template paths.

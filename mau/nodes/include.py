@@ -23,7 +23,8 @@ Syntax:
 << TYPE(:URI+, ARGS)?
 
 The include operator `<<` includes content of type TYPE using the provided ARGS.
-The ARGS must contain at least one unnamed URI.
+Types that are not handled by Mau (image, mau, raw, toc, footnotes, blockgroup)
+create a generic include node that stores TYPE and ARGS for the templates.
 """
 
 INCLUDE_IMAGE_HELP = """
@@ -47,6 +48,21 @@ Syntax:
 
 The include operator `<< mau` includes an external Mau file using the provided URI.
 The file will be read and the content parsed and added to the parse tree of the document.
+
+Optional named ARGS:
+
+call:NAME=VALUE        Add the variable NAME to the environment of the included file.
+pass_environment=false Do not pass the current environment to the included file.
+                       The file receives only the `call:` variables.
+isolate=false          Add headers, footnotes, and header links of the included file
+                       to the document. Included files are isolated by default.
+preprocess=jinja       Render the file as a Jinja template before parsing it.
+data=KEY               Use only the mapping stored at KEY as template data.
+                       Requires preprocess=jinja.
+
+Relative URIs are resolved according to the configuration value
+`mau.parser.include_paths_strategy`: relative to the directory where Mau runs (`cwd`,
+the default) or to the directory of the file that contains the include (`file`).
 """
 
 INCLUDE_RAW_HELP = """
@@ -59,6 +75,10 @@ Syntax:
 
 The include operator `<< raw` includes an external raw file using the provided URI.
 The file will be read and the content added to the parse tree of the document as raw lines.
+
+Relative URIs are resolved according to the configuration value
+`mau.parser.include_paths_strategy`: relative to the directory where Mau runs (`cwd`,
+the default) or to the directory of the file that contains the include (`file`).
 """
 
 

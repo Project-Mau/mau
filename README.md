@@ -40,7 +40,7 @@ pip install mau-tex-visitor
    ```
    = My first document
 
-   This is a paragraph with *bold text* and _underlined text_.
+   This is a paragraph with *bold text* and _emphasised text_.
 
    * Item one
    * Item two
@@ -56,7 +56,7 @@ pip install mau-tex-visitor
 3. If you installed `mau-html-visitor`, render it to HTML:
 
    ``` sh
-   mau -i example.mau -t core:HtmlVisitor -o example.html
+   mau -i example.mau -t mau_html_visitor:HtmlVisitor -o example.html
    ```
 
 ## CLI usage
@@ -65,23 +65,25 @@ pip install mau-tex-visitor
 mau -i INPUT_FILE -t VISITOR [-o OUTPUT_FILE] [OPTIONS]
 ```
 
-### Required arguments
+### Main arguments
 
 | Flag | Description |
 |---|---|
-| `-i`, `--input-file` | The Mau source file |
-| `-t`, `--visitor` | The output format visitor (e.g. `core:YamlVisitor`, `core:HtmlVisitor`) |
+| `-i`, `--input-file` | The Mau source file (required) |
+| `-t`, `--visitor` | The output format visitor (e.g. `core:YamlVisitor`, `mau_html_visitor:HtmlVisitor`). Required to render the output, not needed with `--lexer-only` |
+
+The core visitors are `core:YamlVisitor` and `core:JinjaVisitor`. Visitors installed as plugins are named after their package, e.g. `mau_html_visitor:HtmlVisitor` and `mau_tex_visitor:TexVisitor`. Run `mau --help` to see the list of available visitors.
 
 ### Optional arguments
 
 | Flag | Description |
 |---|---|
-| `-o`, `--output-file` | Output file path. Use `-` for standard output. Defaults to the input file name with the visitor's extension |
-| `-c`, `--config-file` | A YAML configuration file |
-| `-e`, `--environment-file` | A YAML file loaded into the environment. Can be repeated. Format: `key=path` or just `path` |
-| `--environment-files-namespace` | Namespace for environment files (default: `envfiles`) |
+| `-o`, `--output-file` | Output file path. Use `-` for standard output. Defaults to the input file name with the visitor's extension (`.out` if the visitor doesn't define one). The input file is never overwritten: if the name would be the same, the extension is appended (e.g. `doc.yaml.yaml`) |
+| `-c`, `--config-file` | A YAML configuration file. Its content is stored under the namespace `mau` |
+| `-e`, `--environment-file` | A YAML file loaded into the environment. Can be repeated. Format: `key=path` or just `path` (the key is the file name without extension) |
+| `--environment-files-namespace` | Namespace for environment files, nested in `mau` (default: `envfiles`, i.e. `mau.envfiles`) |
 | `-v`, `--environment-variable` | An environment variable as `key=value`. Can be repeated. The key can be dotted to add namespaces |
-| `--environment-variables-namespace` | Namespace for environment variables (default: `envvars`) |
+| `--environment-variables-namespace` | Namespace for environment variables, nested in `mau` (default: `envvars`, i.e. `mau.envvars`) |
 | `--verbose` | Set log level to INFO |
 | `--debug` | Set log level to DEBUG |
 | `--lexer-print-output` | Print the tokens produced by the lexer |
@@ -95,13 +97,15 @@ mau -i INPUT_FILE -t VISITOR [-o OUTPUT_FILE] [OPTIONS]
 mau -i document.mau -t core:YamlVisitor -o -
 
 # Render to HTML with an environment variable
-mau -i document.mau -t core:HtmlVisitor -v title="My Doc"
+# (available in the document as {mau.envvars.title})
+mau -i document.mau -t mau_html_visitor:HtmlVisitor -v title="My Doc"
 
 # Render with a config file and debug output
 mau -i document.mau -t core:YamlVisitor -c config.yaml --debug
 
 # Load an environment file
-mau -i document.mau -t core:HtmlVisitor -e metadata=data.yaml
+# (available in the document under mau.envfiles.metadata)
+mau -i document.mau -t mau_html_visitor:HtmlVisitor -e metadata=data.yaml
 ```
 
 ## Library usage

@@ -56,7 +56,8 @@ def parse_source_engine(
     #
     # language The language used to highlight the syntax.
     # marker_delimiter=":" The separator used by marker.
-    # highlight_prefix="@" The special character to turn on highlight.
+    # highlight_marker="@" The special character to turn on highlight.
+    # highlight_default_style="default" The style used by an empty highlight.
     #
     # Since Mau uses Pygments, the attribute language
     # is one of the languages supported by that tool.

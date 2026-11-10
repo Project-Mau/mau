@@ -12,8 +12,8 @@ Lexers scan input text character by character and line by line, recognising patt
 - `document_lexer.py` - `DocumentLexer` recognises document-level constructs (headers, blocks, lists, variables, includes, comments, etc.).
 - `text_lexer.py` - `TextLexer` recognises inline constructs (styles, macros, escape sequences, verbatim text).
 - `arguments_lexer.py` - `ArgumentsLexer` tokenises comma-separated argument lists inside `[...]`.
-- `condition_lexer.py` - `ConditionLexer` tokenises conditional expressions after `@if`, `@unless`, etc.
-- `preprocess_variables_lexer.py` - `PreprocessVariablesLexer` tokenises variable definitions during preprocessing.
+- `condition_lexer.py` - `ConditionLexer` tokenises conditional expressions after `@if` and in the `[if]`/`[ifeval]` macros.
+- `preprocess_variables_lexer.py` - `PreprocessVariablesLexer` tokenises text to find `{name}` variables to replace, handling the `\` and backtick escapes.
 
 ## Key classes
 
@@ -30,7 +30,7 @@ Recognises top-level document elements:
 | `////...////` | (consumed, no token) |
 | `// comment` | (consumed, no token) |
 | `---` | `HORIZONTAL_RULE` |
-| `@@@@...@@@@` | `BLOCK` |
+| `----...----` (exactly 4 identical characters, e.g. `----`, `####`, `@@@@`) | `BLOCK` |
 | `@operator condition` | `CONTROL` |
 | `<< type:args` | `INCLUDE` |
 | `:name:value` | `VARIABLE` |
@@ -46,10 +46,12 @@ Recognises inline syntax within text lines:
 
 | Syntax | Meaning |
 |---|---|
-| `*`, `_`, `~`, `^` | Style delimiters (bold, underline, strikethrough, superscript) |
+| `*`, `_`, `~`, `^` | Style delimiters (`star`, `underscore`, `tilde`, `caret`; the rendering depends on the templates) |
 | `` ` `` | Verbatim text |
 | `[name](args)` | Macro call |
-| `$`, `%`, `\` | Escape characters |
+| `$...$`, `%...%` | Escape whole spans |
+| `\` | Escapes the next character |
+| `"` | Quotes macro arguments |
 
 ## How it connects
 

@@ -16,8 +16,9 @@ def variable_definition_processor(parser: DocumentParser):
     # This parses the definition of a variable
     #
     # Simple variables are defined as :name:value
-    # as True booleans as just :name:
-    # and as False booleas as :!name:
+    # True booleans as :+name:
+    # and False booleans as :-name:
+    # (both are stored as the strings "true" and "false").
     #
     # Variable names can use a namespace with
     # :namespace.name:value
